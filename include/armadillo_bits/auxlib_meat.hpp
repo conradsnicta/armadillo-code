@@ -317,6 +317,8 @@ auxlib::inv_tr(Mat<eT>& out, const Base<eT,T1>& X, const uword layout)
     arma_extra_debug_print("lapack::trtri()");
     lapack::trtri(&uplo, &diag, &n, out.memptr(), &n, &info);
     
+    if(info != 0)  { return false; }
+    
     if(layout == 0)
       {
       out = trimatu(out);  // upper triangular
@@ -326,7 +328,7 @@ auxlib::inv_tr(Mat<eT>& out, const Base<eT,T1>& X, const uword layout)
       out = trimatl(out);  // lower triangular
       }
     
-    return (info == 0);
+    return true;
     }
   #else
     {
@@ -377,6 +379,8 @@ auxlib::inv_sym(Mat<eT>& out, const Base<eT,T1>& X, const uword layout)
     arma_extra_debug_print("lapack::sytri()");
     lapack::sytri(&uplo, &n, out.memptr(), &n, ipiv.memptr(), work.memptr(), &info);
     
+    if(info != 0)  { return false; }
+    
     if(layout == 0)
       {
       out = symmatu(out);
@@ -386,7 +390,7 @@ auxlib::inv_sym(Mat<eT>& out, const Base<eT,T1>& X, const uword layout)
       out = symmatl(out);
       }
     
-    return (info == 0);
+    return true;
     }
   #else
     {
@@ -430,9 +434,11 @@ auxlib::inv_sympd(Mat<eT>& out, const Base<eT,T1>& X)
     arma_extra_debug_print("lapack::potri()");
     lapack::potri(&uplo, &n, out.memptr(), &n, &info);
     
+    if(info != 0)  { return false; }
+    
     out = symmatl(out);
-      
-    return (info == 0);
+    
+    return true;
     }
   #else
     {
@@ -794,8 +800,6 @@ auxlib::lu(Mat<eT>& L, Mat<eT>& U, podarray<blas_int>& ipiv, const Base<eT,T1>& 
   
   #if defined(ARMA_USE_ATLAS) || defined(ARMA_USE_LAPACK)
     {
-    bool status = false;
-    
     #if defined(ARMA_USE_ATLAS)
       {
       arma_debug_assert_atlas_size(U);
@@ -805,7 +809,7 @@ auxlib::lu(Mat<eT>& L, Mat<eT>& U, podarray<blas_int>& ipiv, const Base<eT,T1>& 
       arma_extra_debug_print("atlas::clapack_getrf()");
       int info = atlas::clapack_getrf(atlas::CblasColMajor, U_n_rows, U_n_cols, U.memptr(), U_n_rows, ipiv.memptr());
       
-      status = (info >= 0);
+      if(info < 0)  { return false; }
       }
     #elif defined(ARMA_USE_LAPACK)
       {
@@ -821,10 +825,10 @@ auxlib::lu(Mat<eT>& L, Mat<eT>& U, podarray<blas_int>& ipiv, const Base<eT,T1>& 
       arma_extra_debug_print("lapack::getrf()");
       lapack::getrf(&n_rows, &n_cols, U.memptr(), &n_rows, ipiv.memptr(), &info);
       
+      if(info < 0)  { return false; }
+      
       // take into account that Fortran counts from 1
       arrayops::inplace_minus(ipiv.memptr(), blas_int(1), ipiv.n_elem);
-      
-      status = (info >= 0);
       }
     #endif
     
@@ -849,12 +853,11 @@ auxlib::lu(Mat<eT>& L, Mat<eT>& U, podarray<blas_int>& ipiv, const Base<eT,T1>& 
         }
       }
     
-    return status;
+    return true;
     }
   #else
     {
     arma_stop_logic_error("lu(): use of ATLAS or LAPACK must be enabled");
-    
     return false;
     }
   #endif
@@ -1762,14 +1765,16 @@ auxlib::chol(Mat<eT>& out, const Base<eT,T1>& X, const uword layout)
     
     arma_debug_assert_blas_size(out);
     
-    const uword out_n_rows = out.n_rows;
-    
     char      uplo = (layout == 0) ? 'U' : 'L';
-    blas_int  n    = blas_int(out_n_rows);
+    blas_int  n    = blas_int(out.n_rows);
     blas_int  info = 0;
     
     arma_extra_debug_print("lapack::potrf()");
     lapack::potrf(&uplo, &n, out.memptr(), &n, &info);
+    
+    if(info != 0)  { return false; }
+    
+    const uword out_n_rows = out.n_rows;
     
     if(layout == 0)
       {
@@ -1790,7 +1795,7 @@ auxlib::chol(Mat<eT>& out, const Base<eT,T1>& X, const uword layout)
         }
       }
     
-    return (info == 0);
+    return true;
     }
   #else
     {
@@ -2246,9 +2251,11 @@ auxlib::svd(Mat<eT>& U, Col<eT>& S, Mat<eT>& V, const Base<eT,T1>& X)
     arma_extra_debug_print("lapack::gesvd()");
     lapack::gesvd<eT>(&jobu, &jobvt, &m, &n, A.memptr(), &lda, S.memptr(), U.memptr(), &ldu, V.memptr(), &ldvt, work.memptr(), &lwork, &info);
     
+    if(info != 0)  { return false; }
+    
     op_strans::apply_mat_inplace(V);
     
-    return (info == 0);
+    return true;
     }
   #else
     {
@@ -2325,9 +2332,11 @@ auxlib::svd(Mat< std::complex<T> >& U, Col<T>& S, Mat< std::complex<T> >& V, con
     arma_extra_debug_print("lapack::cx_gesvd()");
     lapack::cx_gesvd<T>(&jobu, &jobvt, &m, &n, A.memptr(), &lda, S.memptr(), U.memptr(), &ldu, V.memptr(), &ldvt, work.memptr(), &lwork, rwork.memptr(), &info);
     
+    if(info != 0)  { return false; }
+    
     op_htrans::apply_mat_inplace(V);
     
-    return (info == 0);
+    return true;
     }
   #else
     {
@@ -2438,9 +2447,11 @@ auxlib::svd_econ(Mat<eT>& U, Col<eT>& S, Mat<eT>& V, const Base<eT,T1>& X, const
     arma_extra_debug_print("lapack::gesvd()");
     lapack::gesvd<eT>(&jobu, &jobvt, &m, &n, A.memptr(), &lda, S.memptr(), U.memptr(), &ldu, V.memptr(), &ldvt, work.memptr(), &lwork, &info);
     
+    if(info != 0)  { return false; }
+    
     op_strans::apply_mat_inplace(V);
     
-    return (info == 0);
+    return true;
     }
   #else
     {
@@ -2554,9 +2565,11 @@ auxlib::svd_econ(Mat< std::complex<T> >& U, Col<T>& S, Mat< std::complex<T> >& V
     arma_extra_debug_print("lapack::cx_gesvd()");
     lapack::cx_gesvd<T>(&jobu, &jobvt, &m, &n, A.memptr(), &lda, S.memptr(), U.memptr(), &ldu, V.memptr(), &ldvt, work.memptr(), &lwork, rwork.memptr(), &info);
     
+    if(info != 0)  { return false; }
+    
     op_htrans::apply_mat_inplace(V);
     
-    return (info == 0);
+    return true;
     }
   #else
     {
@@ -2774,9 +2787,11 @@ auxlib::svd_dc(Mat<eT>& U, Col<eT>& S, Mat<eT>& V, const Base<eT,T1>& X)
     arma_extra_debug_print("lapack::gesdd()");
     lapack::gesdd<eT>(&jobz, &m, &n, A.memptr(), &lda, S.memptr(), U.memptr(), &ldu, V.memptr(), &ldvt, work.memptr(), &lwork, iwork.memptr(), &info);
     
+    if(info != 0)  { return false; }
+    
     op_strans::apply_mat_inplace(V);
     
-    return (info == 0);
+    return true;
     }
   #else
     {
@@ -2848,9 +2863,11 @@ auxlib::svd_dc(Mat< std::complex<T> >& U, Col<T>& S, Mat< std::complex<T> >& V, 
     arma_extra_debug_print("lapack::cx_gesdd()");
     lapack::cx_gesdd<T>(&jobz, &m, &n, A.memptr(), &lda, S.memptr(), U.memptr(), &ldu, V.memptr(), &ldvt, work.memptr(), &lwork, rwork.memptr(), iwork.memptr(), &info);
     
+    if(info != 0)  { return false; }
+    
     op_htrans::apply_mat_inplace(V);
     
-    return (info == 0);
+    return true;
     }
   #else
     {
@@ -2913,9 +2930,11 @@ auxlib::svd_dc_econ(Mat<eT>& U, Col<eT>& S, Mat<eT>& V, const Base<eT,T1>& X)
     arma_extra_debug_print("lapack::gesdd()");
     lapack::gesdd<eT>(&jobz, &m, &n, A.memptr(), &lda, S.memptr(), U.memptr(), &ldu, V.memptr(), &ldvt, work.memptr(), &lwork, iwork.memptr(), &info);
     
+    if(info != 0)  { return false; }
+    
     op_strans::apply_mat_inplace(V);
     
-    return (info == 0);
+    return true;
     }
   #else
     {
@@ -2988,9 +3007,11 @@ auxlib::svd_dc_econ(Mat< std::complex<T> >& U, Col<T>& S, Mat< std::complex<T> >
     arma_extra_debug_print("lapack::cx_gesdd()");
     lapack::cx_gesdd<T>(&jobz, &m, &n, A.memptr(), &lda, S.memptr(), U.memptr(), &ldu, V.memptr(), &ldvt, work.memptr(), &lwork, rwork.memptr(), iwork.memptr(), &info);
     
+    if(info != 0)  { return false; }
+    
     op_htrans::apply_mat_inplace(V);
     
-    return (info == 0);
+    return true;
     }
   #else
     {
@@ -3858,12 +3879,14 @@ auxlib::syl(Mat<eT>& X, const Mat<eT>& A, const Mat<eT>& B, const Mat<eT>& C)
     arma_extra_debug_print("lapack::trsyl()");
     lapack::trsyl<eT>(&trana, &tranb, &isgn, &m, &n, T1.memptr(), &m, T2.memptr(), &n, Y.memptr(), &m, &scale, &info);
     
+    if(info < 0)  { return false; }
+    
     //Y /= scale;
     Y /= (-scale);
     
     X = Z1 * Y * trans(Z2);
     
-    return (info >= 0);
+    return true;
     }
   #else
     {
@@ -3945,9 +3968,11 @@ auxlib::qz(Mat<T>& A, Mat<T>& B, Mat<T>& vsl, Mat<T>& vsr, const Base<T,T1>& X_e
       &info
       );
     
+    if(info != 0)  { return false; }
+    
     op_strans::apply_mat_inplace(vsl);
     
-    return (info == 0);
+    return true;
     }
   #else
     {
@@ -4045,9 +4070,11 @@ auxlib::qz(Mat< std::complex<T> >& A, Mat< std::complex<T> >& B, Mat< std::compl
       &info
       );
     
+    if(info != 0)  { return false; }
+    
     op_htrans::apply_mat_inplace(vsl);
     
-    return (info == 0);
+    return true;
     }
   #else
     {

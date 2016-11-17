@@ -256,8 +256,8 @@ inline
 DoubleShiftQR<eT>::DoubleShiftQR(uword size)
   : n(size)
   , prec(std::numeric_limits<eT>::epsilon())
-  , eps_rel(std::pow(prec, eT(0.75)))
-  , eps_abs(std::min(std::pow(prec, eT(0.75)), n * prec))
+  , eps_rel(prec)
+  , eps_abs(prec)
   , computed(false)
   {
   arma_extra_debug_sigprint();
@@ -275,8 +275,8 @@ DoubleShiftQR<eT>::DoubleShiftQR(const Mat<eT>& mat_obj, eT s, eT t)
   , ref_u(3, n)
   , ref_nr(n)
   , prec(std::numeric_limits<eT>::epsilon())
-  , eps_rel(std::pow(prec, eT(0.75)))
-  , eps_abs(std::min(std::pow(prec, eT(0.75)), n * prec))
+  , eps_rel(prec)
+  , eps_abs(prec)
   , computed(false)
   {
   arma_extra_debug_sigprint();

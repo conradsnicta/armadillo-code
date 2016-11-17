@@ -37,6 +37,7 @@ class SymEigsSolver
   Mat<eT>           fac_H;     // H matrix in the Arnoldi factorisation
   Col<eT>           fac_f;     // residual in the Arnoldi factorisation
   Mat<eT>           ritz_vec;  // ritz vectors
+  Col<eT>           ritz_est;  // last row of ritz_vec
   std::vector<bool> ritz_conv; // indicator of the convergence of ritz values
   const eT          eps;       // the machine precision
                                // e.g. ~= 1e-16 for double type

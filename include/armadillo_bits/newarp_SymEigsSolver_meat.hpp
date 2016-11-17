@@ -167,7 +167,7 @@ SymEigsSolver<eT, SelectionRule, OpType>::num_converged(eT tol)
   for(uword i = 0; i < nev; i++)
     {
     eT thresh = tol * std::max(approx0, std::abs(ritz_val(i)));
-    eT resid = std::abs(ritz_vec(ncv - 1, i)) * f_norm;
+    eT resid = std::abs(ritz_est(i)) * f_norm;
     ritz_conv[i] = (resid < thresh);
     }
 
@@ -185,14 +185,20 @@ SymEigsSolver<eT, SelectionRule, OpType>::nev_adjusted(uword nconv)
 
   uword nev_new = nev;
 
+  for(uword i = nev; i < ncv; i++)
+    {
+    if(std::abs(ritz_est(i)) < eps) { nev_new++; }
+    }
+
   // Adjust nev_new, according to dsaup2.f line 677~684 in ARPACK
-  nev_new = nev + std::min(nconv, (ncv - nev) / 2);
-  if(nev == 1 && ncv >= 6)
+  nev_new += std::min(nconv, (ncv - nev_new) / 2);
+  if(nev_new >= ncv) { nev_new = ncv - 1; }
+  if(nev_new == 1 && ncv >= 6)
     {
     nev_new = ncv / 2;
     }
   else
-  if(nev == 1 && ncv > 2)
+  if(nev_new == 1 && ncv > 2)
     {
     nev_new = 2;
     }
@@ -239,6 +245,7 @@ SymEigsSolver<eT, SelectionRule, OpType>::retrieve_ritzpair()
   for(uword i = 0; i < ncv; i++)
     {
     ritz_val(i) = evals(ind[i]);
+    ritz_est(i) = evecs(ncv - 1, ind[i]);
     }
   for(uword i = 0; i < nev; i++)
     {
@@ -313,6 +320,7 @@ SymEigsSolver<eT, SelectionRule, OpType>::init(eT* init_resid)
   fac_f.zeros(dim_n);
   ritz_val.zeros(ncv);
   ritz_vec.zeros(ncv, nev);
+  ritz_est.zeros(ncv);
   ritz_conv.assign(nev, false);
 
   nmatop = 0;

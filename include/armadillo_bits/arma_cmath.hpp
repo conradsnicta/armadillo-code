@@ -1,10 +1,10 @@
-// Copyright (C) 2008-2014 National ICT Australia (NICTA)
-// 
+// Copyright (C) 2008-2016 National ICT Australia (NICTA)
+//
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 // -------------------------------------------------------------------
-// 
+//
 // Written by Conrad Sanderson - http://conradsanderson.id.au
 
 
@@ -24,7 +24,7 @@ bool
 arma_isfinite(eT val)
   {
   arma_ignore(val);
-    
+
   return true;
   }
 
@@ -50,9 +50,9 @@ arma_isfinite(float x)
   #else
     {
     const float y = (std::numeric_limits<float>::max)();
-    
+
     const volatile float xx = x;
-    
+
     return (xx == xx) && (x >= -y) && (x <= y);
     }
   #endif
@@ -80,9 +80,9 @@ arma_isfinite(double x)
   #else
     {
     const double y = (std::numeric_limits<double>::max)();
-    
+
     const volatile double xx = x;
-    
+
     return (xx == xx) && (x >= -y) && (x <= y);
     }
   #endif
@@ -117,7 +117,7 @@ bool
 arma_isinf(eT val)
   {
   arma_ignore(val);
-    
+
   return false;
   }
 
@@ -139,9 +139,9 @@ arma_isinf(float x)
   #else
     {
     const float y = (std::numeric_limits<float>::max)();
-    
+
     const volatile float xx = x;
-    
+
     return (xx == xx) && ((x < -y) || (x > y));
     }
   #endif
@@ -165,9 +165,9 @@ arma_isinf(double x)
   #else
     {
     const double y = (std::numeric_limits<double>::max)();
-    
+
     const volatile double xx = x;
-    
+
     return (xx == xx) && ((x < -y) || (x > y));
     }
   #endif
@@ -195,7 +195,7 @@ bool
 arma_isnan(eT val)
   {
   arma_ignore(val);
-    
+
   return false;
   }
 
@@ -217,7 +217,7 @@ arma_isnan(float x)
   #else
     {
     const volatile float xx = x;
-    
+
     return (xx != xx);
     }
   #endif
@@ -241,7 +241,7 @@ arma_isnan(double x)
   #else
     {
     const volatile double xx = x;
-    
+
     return (xx != xx);
     }
   #endif
@@ -327,9 +327,9 @@ arma_log1p(const double x)
 
 //
 // wrappers for trigonometric functions
-// 
+//
 // wherever possible, try to use C++11 or TR1 versions of the following functions:
-// 
+//
 // complex acos
 // complex asin
 // complex atan
@@ -341,10 +341,10 @@ arma_log1p(const double x)
 // complex acosh
 // complex asinh
 // complex atanh
-// 
-// 
+//
+//
 // if C++11 or TR1 are not available, we have rudimentary versions of:
-// 
+//
 // real    acosh
 // real    asinh
 // real    atanh
@@ -368,7 +368,7 @@ arma_acos(const std::complex<T>& x)
     {
     arma_ignore(x);
     arma_stop_logic_error("acos(): need C++11 compiler");
-    
+
     return std::complex<T>(0);
     }
   #endif
@@ -393,7 +393,7 @@ arma_asin(const std::complex<T>& x)
     {
     arma_ignore(x);
     arma_stop_logic_error("asin(): need C++11 compiler");
-    
+
     return std::complex<T>(0);
     }
   #endif
@@ -418,7 +418,7 @@ arma_atan(const std::complex<T>& x)
     {
     arma_ignore(x);
     arma_stop_logic_error("atan(): need C++11 compiler");
-    
+
     return std::complex<T>(0);
     }
   #endif
@@ -540,7 +540,7 @@ arma_acosh(const std::complex<T>& x)
     {
     arma_ignore(x);
     arma_stop_logic_error("acosh(): need C++11 compiler");
-    
+
     return std::complex<T>(0);
     }
   #endif
@@ -565,7 +565,7 @@ arma_asinh(const std::complex<T>& x)
     {
     arma_ignore(x);
     arma_stop_logic_error("asinh(): need C++11 compiler");
-    
+
     return std::complex<T>(0);
     }
   #endif
@@ -590,8 +590,48 @@ arma_atanh(const std::complex<T>& x)
     {
     arma_ignore(x);
     arma_stop_logic_error("atanh(): need C++11 compiler");
-    
+
     return std::complex<T>(0);
+    }
+  #endif
+  }
+
+
+
+//
+// wrappers for hypot(x, y) = sqrt(x^2 + y^2)
+
+
+template<typename eT>
+arma_inline
+eT
+arma_hypot(const eT x, const eT y)
+  {
+  #if defined(ARMA_USE_CXX11)
+    {
+    return std::hypot(x, y);
+    }
+  #elif defined(ARMA_HAVE_TR1)
+    {
+    return std::tr1::hypot(x, y);
+    }
+  #else
+    {
+    eT xabs = std::abs(x);
+    eT yabs = std::abs(y);
+    eT larger, ratio;
+    if(xabs > yabs)
+      {
+      larger = xabs;
+      ratio = yabs / xabs;
+      }
+    else
+      {
+      larger = yabs;
+      ratio = xabs / yabs;
+      }
+    if(larger == eT(0))  return eT(0);
+    return larger * std:sqrt(eT(1) + ratio * ratio);
     }
   #endif
   }

@@ -630,7 +630,7 @@ arma_hypot(const eT x, const eT y)
       larger = yabs;
       ratio = xabs / yabs;
       }
-    if(larger == eT(0))  return eT(0);
+    if(larger == eT(0)) { return eT(0); }
     return larger * std:sqrt(eT(1) + ratio * ratio);
     }
   #endif

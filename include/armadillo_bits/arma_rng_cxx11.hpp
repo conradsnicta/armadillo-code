@@ -1,4 +1,4 @@
-// Copyright (C) 2013-2015 National ICT Australia (NICTA)
+// Copyright (C) 2013-2016 National ICT Australia (NICTA)
 // 
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -57,6 +57,10 @@ void
 arma_rng_cxx11::set_seed(const arma_rng_cxx11::seed_type val)
   {
   engine.seed(val);
+  
+  i_distr.reset();
+  u_distr.reset();
+  n_distr.reset();
   }
 
 

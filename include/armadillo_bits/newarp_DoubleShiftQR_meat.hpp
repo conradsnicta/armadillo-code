@@ -18,9 +18,10 @@ void
 DoubleShiftQR<eT>::compute_reflector(const eT& x1, const eT& x2, const eT& x3, uword ind)
   {
   arma_extra_debug_sigprint();
-  
+
   // In general case the reflector affects 3 rows
   ref_nr(ind) = 3;
+  eT x2x3 = eT(0);
   // If x3 is zero, decrease nr by 1
   if(std::abs(x3) < prec)
     {
@@ -34,13 +35,17 @@ DoubleShiftQR<eT>::compute_reflector(const eT& x1, const eT& x2, const eT& x3, u
       {
       ref_nr(ind) = 2;
       }
+    x2x3 = std::abs(x2);
+    }
+  else
+    {
+    x2x3 = arma_hypot(x2, x3);
     }
 
   // x1' = x1 - rho * ||x||
   // rho = -sign(x1), if x1 == 0, we choose rho = 1
-  eT tmp = x2 * x2 + x3 * x3;
-  eT x1_new = x1 - ((x1 <= 0) - (x1 > 0)) * std::sqrt(x1 * x1 + tmp);
-  eT x_norm = std::sqrt(x1_new * x1_new + tmp);
+  eT x1_new = x1 - ((x1 <= 0) - (x1 > 0)) * arma_hypot(x1, x2x3);
+  eT x_norm = arma_hypot(x1_new, x2x3);
   // Double check the norm of new x
   if(x_norm < prec)
     {
@@ -59,7 +64,7 @@ void
 DoubleShiftQR<eT>::compute_reflector(const eT* x, uword ind)
   {
   arma_extra_debug_sigprint();
-  
+
   compute_reflector(x[0], x[1], x[2], ind);
   }
 
@@ -71,7 +76,7 @@ void
 DoubleShiftQR<eT>::update_block(uword il, uword iu)
   {
   arma_extra_debug_sigprint();
-  
+
   // Block size
   uword bsize = iu - il + 1;
 
@@ -142,7 +147,7 @@ void
 DoubleShiftQR<eT>::apply_PX(Mat<eT>& X, uword oi, uword oj, uword nrow, uword ncol, uword u_ind)
   {
   arma_extra_debug_sigprint();
-  
+
   if(ref_nr(u_ind) == 1) { return; }
 
   // Householder reflectors at index u_ind
@@ -183,7 +188,7 @@ void
 DoubleShiftQR<eT>::apply_PX(eT* x, uword u_ind)
   {
   arma_extra_debug_sigprint();
-  
+
   if(ref_nr(u_ind) == 1) { return; }
 
   eT u0 = ref_u(0, u_ind),
@@ -207,7 +212,7 @@ void
 DoubleShiftQR<eT>::apply_XP(Mat<eT>& X, uword oi, uword oj, uword nrow, uword ncol, uword u_ind)
   {
   arma_extra_debug_sigprint();
-  
+
   if(ref_nr(u_ind) == 1) { return; }
 
   // Householder reflectors at index u_ind
@@ -275,7 +280,7 @@ DoubleShiftQR<eT>::DoubleShiftQR(const Mat<eT>& mat_obj, eT s, eT t)
   , computed(false)
   {
   arma_extra_debug_sigprint();
-  
+
   compute(mat_obj, s, t);
   }
 
@@ -286,7 +291,7 @@ void
 DoubleShiftQR<eT>::compute(const Mat<eT>& mat_obj, eT s, eT t)
   {
   arma_extra_debug_sigprint();
-  
+
   arma_debug_check( (mat_obj.is_square() == false), "newarp::DoubleShiftQR::compute(): matrix must be square" );
 
   n = mat_obj.n_rows;
@@ -338,7 +343,7 @@ Mat<eT>
 DoubleShiftQR<eT>::matrix_QtHQ()
   {
   arma_extra_debug_sigprint();
-  
+
   arma_debug_check( (computed == false), "newarp::DoubleShiftQR::matrix_QtHQ(): need to call compute() first" );
 
   return mat_H;
@@ -352,7 +357,7 @@ void
 DoubleShiftQR<eT>::apply_QtY(Col<eT>& y)
   {
   arma_extra_debug_sigprint();
-  
+
   arma_debug_check( (computed == false), "newarp::DoubleShiftQR::apply_QtY(): need to call compute() first" );
 
   eT* y_ptr = y.memptr();
@@ -370,7 +375,7 @@ void
 DoubleShiftQR<eT>::apply_YQ(Mat<eT>& Y)
   {
   arma_extra_debug_sigprint();
-  
+
   arma_debug_check( (computed == false), "newarp::DoubleShiftQR::apply_YQ(): need to call compute() first" );
 
   uword nrow = Y.n_rows;
@@ -378,7 +383,7 @@ DoubleShiftQR<eT>::apply_YQ(Mat<eT>& Y)
     {
     apply_XP(Y, 0, i, nrow, 3, i);
     }
-  
+
   apply_XP(Y, 0, n - 2, nrow, 2, n - 2);
   }
 

@@ -18,7 +18,7 @@ void
 SymEigsSolver<eT, SelectionRule, OpType>::factorise_from(uword from_k, uword to_m, const Col<eT>& fk)
   {
   arma_extra_debug_sigprint();
-  
+
   if(to_m <= from_k) { return; }
 
   fac_f = fk;
@@ -34,7 +34,7 @@ SymEigsSolver<eT, SelectionRule, OpType>::factorise_from(uword from_k, uword to_
     // If beta = 0, then the next V is not full rank
     // We need to generate a new residual vector that is orthogonal
     // to the current V, which we call a restart
-    if(beta < prec)
+    if(beta < eps)
       {
       // Generate new random vector for fac_f
       blas_int idist = 2;
@@ -86,7 +86,7 @@ SymEigsSolver<eT, SelectionRule, OpType>::factorise_from(uword from_k, uword to_
     Col<eT> Vf = Vs.t() * fac_f;
     // If not, iteratively correct the residual
     uword count = 0;
-    while(count < 5 && abs(Vf).max() > prec * beta)
+    while(count < 5 && abs(Vf).max() > approx0 * beta)
       {
       // f <- f - V * Vf
       fac_f -= Vs * Vf;
@@ -111,7 +111,7 @@ void
 SymEigsSolver<eT, SelectionRule, OpType>::restart(uword k)
   {
   arma_extra_debug_sigprint();
-  
+
   if(k >= ncv) { return; }
 
   TridiagQR<eT> decomp;
@@ -161,13 +161,13 @@ uword
 SymEigsSolver<eT, SelectionRule, OpType>::num_converged(eT tol)
   {
   arma_extra_debug_sigprint();
-  
-  // thresh = tol * max(prec, abs(theta)), theta for ritz value
+
+  // thresh = tol * max(approx0, abs(theta)), theta for ritz value
   const eT f_norm = norm(fac_f);
   for(uword i = 0; i < nev; i++)
     {
-    eT thresh = tol * std::max(prec, std::abs(ritz_val(i)));
-    eT resid = std::abs(ritz_vec(ncv - 1, i)) * f_norm;
+    eT thresh = tol * std::max(approx0, std::abs(ritz_val(i)));
+    eT resid = std::abs(ritz_est(i)) * f_norm;
     ritz_conv[i] = (resid < thresh);
     }
 
@@ -182,17 +182,23 @@ uword
 SymEigsSolver<eT, SelectionRule, OpType>::nev_adjusted(uword nconv)
   {
   arma_extra_debug_sigprint();
-  
+
   uword nev_new = nev;
 
+  for(uword i = nev; i < ncv; i++)
+    {
+    if(std::abs(ritz_est(i)) < eps) { nev_new++; }
+    }
+
   // Adjust nev_new, according to dsaup2.f line 677~684 in ARPACK
-  nev_new = nev + std::min(nconv, (ncv - nev) / 2);
-  if(nev == 1 && ncv >= 6)
+  nev_new += std::min(nconv, (ncv - nev_new) / 2);
+  if(nev_new >= ncv) { nev_new = ncv - 1; }
+  if(nev_new == 1 && ncv >= 6)
     {
     nev_new = ncv / 2;
     }
   else
-  if(nev == 1 && ncv > 2)
+  if(nev_new == 1 && ncv > 2)
     {
     nev_new = 2;
     }
@@ -208,7 +214,7 @@ void
 SymEigsSolver<eT, SelectionRule, OpType>::retrieve_ritzpair()
   {
   arma_extra_debug_sigprint();
-  
+
   TridiagEigen<eT> decomp(fac_H);
   Col<eT> evals = decomp.eigenvalues();
   Mat<eT> evecs = decomp.eigenvectors();
@@ -239,6 +245,7 @@ SymEigsSolver<eT, SelectionRule, OpType>::retrieve_ritzpair()
   for(uword i = 0; i < ncv; i++)
     {
     ritz_val(i) = evals(ind[i]);
+    ritz_est(i) = evecs(ncv - 1, ind[i]);
     }
   for(uword i = 0; i < nev; i++)
     {
@@ -254,25 +261,25 @@ void
 SymEigsSolver<eT, SelectionRule, OpType>::sort_ritzpair()
   {
   arma_extra_debug_sigprint();
-  
+
   // SortEigenvalue<eT, EigsSelect::LARGEST_MAGN> sorting(ritz_val.memptr(), nev);
-  
+
   // sort Ritz values in ascending algebraic, to be consistent with ARPACK
   SortEigenvalue<eT, EigsSelect::SMALLEST_ALGE> sorting(ritz_val.memptr(), nev);
-  
+
   std::vector<uword> ind = sorting.index();
-  
+
   Col<eT>           new_ritz_val(ncv);
   Mat<eT>           new_ritz_vec(ncv, nev);
   std::vector<bool> new_ritz_conv(nev);
-  
+
   for(uword i = 0; i < nev; i++)
     {
     new_ritz_val(i) = ritz_val(ind[i]);
     new_ritz_vec.col(i) = ritz_vec.col(ind[i]);
     new_ritz_conv[i] = ritz_conv[ind[i]];
     }
-  
+
   ritz_val.swap(new_ritz_val);
   ritz_vec.swap(new_ritz_vec);
   ritz_conv.swap(new_ritz_conv);
@@ -289,10 +296,11 @@ SymEigsSolver<eT, SelectionRule, OpType>::SymEigsSolver(const OpType& op_, uword
   , ncv(ncv_ > dim_n ? dim_n : ncv_)
   , nmatop(0)
   , niter(0)
-  , prec(std::pow(std::numeric_limits<eT>::epsilon(), eT(2.0) / 3))
+  , eps(std::numeric_limits<eT>::epsilon())
+  , approx0(std::pow(eps, eT(2.0) / 3))
   {
   arma_extra_debug_sigprint();
-  
+
   arma_debug_check( (nev_ < 1 || nev_ > dim_n - 1), "newarp::SymEigsSolver: nev must satisfy 1 <= nev <= n - 1, n is the size of matrix" );
   arma_debug_check( (ncv_ <= nev_ || ncv_ > dim_n), "newarp::SymEigsSolver: ncv must satisfy nev < ncv <= n, n is the size of matrix" );
   }
@@ -305,13 +313,14 @@ void
 SymEigsSolver<eT, SelectionRule, OpType>::init(eT* init_resid)
   {
   arma_extra_debug_sigprint();
-  
+
   // Reset all matrices/vectors to zero
   fac_V.zeros(dim_n, ncv);
   fac_H.zeros(ncv, ncv);
   fac_f.zeros(dim_n);
   ritz_val.zeros(ncv);
   ritz_vec.zeros(ncv, nev);
+  ritz_est.zeros(ncv);
   ritz_conv.assign(nev, false);
 
   nmatop = 0;
@@ -321,7 +330,7 @@ SymEigsSolver<eT, SelectionRule, OpType>::init(eT* init_resid)
   // The first column of fac_V
   Col<eT> v(fac_V.colptr(0), dim_n, false);
   eT rnorm = norm(r);
-  arma_debug_check( (rnorm < prec), "newarp::SymEigsSolver::init(): initial residual vector cannot be zero" );
+  arma_debug_check( (rnorm < eps), "newarp::SymEigsSolver::init(): initial residual vector cannot be zero" );
   v = r / rnorm;
 
   Col<eT> w(dim_n);
@@ -340,7 +349,7 @@ void
 SymEigsSolver<eT, SelectionRule, OpType>::init()
   {
   arma_extra_debug_sigprint();
-  
+
   podarray<eT> init_resid(dim_n);
   blas_int idist = 2;                // Uniform(-1, 1)
   blas_int iseed[4] = {1, 3, 5, 7};  // Fixed random seed
@@ -357,7 +366,7 @@ uword
 SymEigsSolver<eT, SelectionRule, OpType>::compute(uword maxit, eT tol)
   {
   arma_extra_debug_sigprint();
-  
+
   // The m-step Arnoldi factorisation
   factorise_from(1, ncv, fac_f);
   retrieve_ritzpair();
@@ -387,7 +396,7 @@ Col<eT>
 SymEigsSolver<eT, SelectionRule, OpType>::eigenvalues()
   {
   arma_extra_debug_sigprint();
-  
+
   uword nconv = std::count(ritz_conv.begin(), ritz_conv.end(), true);
   Col<eT> res(nconv);
 
@@ -414,7 +423,7 @@ Mat<eT>
 SymEigsSolver<eT, SelectionRule, OpType>::eigenvectors(uword nvec)
   {
   arma_extra_debug_sigprint();
-  
+
   uword nconv = std::count(ritz_conv.begin(), ritz_conv.end(), true);
   nvec = std::min(nvec, nconv);
   Mat<eT> res(dim_n, nvec);

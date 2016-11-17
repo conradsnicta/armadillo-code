@@ -33,7 +33,7 @@ UpperHessenbergQR<eT>::UpperHessenbergQR(const Mat<eT>& mat_obj)
   , computed(false)
   {
   arma_extra_debug_sigprint();
-  
+
   compute(mat_obj);
   }
 
@@ -44,7 +44,7 @@ void
 UpperHessenbergQR<eT>::compute(const Mat<eT>& mat_obj)
   {
   arma_extra_debug_sigprint();
-  
+
   n = mat_obj.n_rows;
   mat_T.set_size(n, n);
   rot_cos.set_size(n - 1);
@@ -63,7 +63,7 @@ UpperHessenbergQR<eT>::compute(const Mat<eT>& mat_obj)
 
     xi = mat_T(i,     i);  // mat_T(i, i)
     xj = mat_T(i + 1, i);  // mat_T(i + 1, i)
-    r = std::sqrt(xi * xi + xj * xj);
+    r = arma_hypot(xi, xj);
     if(r <= eps)
       {
       r = 0;
@@ -104,7 +104,7 @@ Mat<eT>
 UpperHessenbergQR<eT>::matrix_RQ()
   {
   arma_extra_debug_sigprint();
-  
+
   arma_debug_check( (computed == false), "newarp::UpperHessenbergQR::matrix_RQ(): need to call compute() first" );
 
   // Make a copy of the R matrix
@@ -143,7 +143,7 @@ void
 UpperHessenbergQR<eT>::apply_YQ(Mat<eT>& Y)
   {
   arma_extra_debug_sigprint();
-  
+
   arma_debug_check( (computed == false), "newarp::UpperHessenbergQR::apply_YQ(): need to call compute() first" );
 
   eT *Y_col_i, *Y_col_i1;
@@ -181,7 +181,7 @@ TridiagQR<eT>::TridiagQR(const Mat<eT>& mat_obj)
   : UpperHessenbergQR<eT>()
   {
   arma_extra_debug_sigprint();
-  
+
   this->compute(mat_obj);
   }
 
@@ -193,7 +193,7 @@ void
 TridiagQR<eT>::compute(const Mat<eT>& mat_obj)
   {
   arma_extra_debug_sigprint();
-  
+
   this->n = mat_obj.n_rows;
   this->mat_T.set_size(this->n, this->n);
   this->rot_cos.set_size(this->n - 1);
@@ -210,7 +210,7 @@ TridiagQR<eT>::compute(const Mat<eT>& mat_obj)
     {
     xi = this->mat_T(i,     i);  // mat_T(i, i)
     xj = this->mat_T(i + 1, i);  // mat_T(i + 1, i)
-    r = std::sqrt(xi * xi + xj * xj);
+    r = arma_hypot(xi, xj);
     if(r <= eps)
       {
       r = 0;
@@ -263,7 +263,7 @@ Mat<eT>
 TridiagQR<eT>::matrix_RQ()
   {
   arma_extra_debug_sigprint();
-  
+
   arma_debug_check( (this->computed == false), "newarp::TridiagQR::matrix_RQ(): need to call compute() first" );
 
   // Make a copy of the R matrix

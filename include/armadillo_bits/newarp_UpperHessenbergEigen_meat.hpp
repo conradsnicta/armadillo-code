@@ -31,7 +31,7 @@ UpperHessenbergEigen<eT>::UpperHessenbergEigen(const Mat<eT>& mat_obj)
   , computed(false)
   {
   arma_extra_debug_sigprint();
-  
+
   compute(mat_obj);
   }
 
@@ -43,51 +43,51 @@ void
 UpperHessenbergEigen<eT>::compute(const Mat<eT>& mat_obj)
   {
   arma_extra_debug_sigprint();
-  
+
   arma_debug_check( (mat_obj.is_square() == false), "newarp::UpperHessenbergEigen::compute(): matrix must be square" );
-  
+
   n = blas_int(mat_obj.n_rows);
-  
+
   mat_Z.set_size(n, n);
   mat_T.set_size(n, n);
   evals.set_size(n);
-  
+
   mat_Z.eye();
   mat_T = mat_obj;
-  
+
   blas_int want_T = blas_int(1);
   blas_int want_Z = blas_int(1);
-  
+
   blas_int ilo  = blas_int(1);
   blas_int ihi  = blas_int(n);
   blas_int iloz = blas_int(1);
   blas_int ihiz = blas_int(n);
-  
+
   blas_int info = blas_int(0);
-  
+
   podarray<eT> wr(static_cast<uword>(n));
   podarray<eT> wi(static_cast<uword>(n));
-  
-  
+
+
   lapack::lahqr(&want_T, &want_Z, &n, &ilo, &ihi, mat_T.memptr(), &n, wr.memptr(), wi.memptr(), &iloz, &ihiz, mat_Z.memptr(), &n, &info);
-  
+
   for(blas_int i = 0; i < n; i++)
     {
     evals(i) = std::complex<eT>(wr[i], wi[i]);
     }
-  
+
   if(info > 0)  { arma_stop_runtime_error("lapack::lahqr(): failed to compute all eigenvalues"); return; }
-  
+
   char     side   = 'R';
   char     howmny = 'B';
   blas_int m      = blas_int(0);
-  
+
   podarray<eT> work(static_cast<uword>(3 * n));
-  
+
   lapack::trevc(&side, &howmny, (blas_int*) NULL, &n, mat_T.memptr(), &n, (eT*) NULL, &n, mat_Z.memptr(), &n, &n, &m, work.memptr(), &info);
-  
+
   if(info < 0)  { arma_stop_logic_error("lapack::trevc(): illegal value"); return; }
-  
+
   computed = true;
   }
 
@@ -99,7 +99,7 @@ Col< std::complex<eT> >
 UpperHessenbergEigen<eT>::eigenvalues()
   {
   arma_extra_debug_sigprint();
-  
+
   arma_debug_check( (computed == false), "newarp::UpperHessenbergEigen::eigenvalues(): need to call compute() first" );
 
   return evals;
@@ -113,22 +113,24 @@ Mat< std::complex<eT> >
 UpperHessenbergEigen<eT>::eigenvectors()
   {
   arma_extra_debug_sigprint();
-  
+
   arma_debug_check( (computed == false), "newarp::UpperHessenbergEigen::eigenvectors(): need to call compute() first" );
 
-  eT prec = std::pow(std::numeric_limits<eT>::epsilon(), eT(2.0) / 3);
-  
+  // in fact Lapack will set the imaginary parts of real eigenvalues to be exact zero
+  // here we just use a small value
+  eT prec = std::numeric_limits<eT>::epsilon();
+
   Mat< std::complex<eT> > evecs(n, n);
-  
+
   std::complex<eT>* col_ptr = evecs.memptr();
-  
+
   for(blas_int i = 0; i < n; i++)
     {
     if(cx_attrib::is_real(evals(i), prec))
       {
       // for real eigenvector, normalise and copy
       eT z_norm = norm(mat_Z.col(i));
-      
+
       for(blas_int j = 0; j < n; j++)
         {
         col_ptr[j] = std::complex<eT>(mat_Z(j, i) / z_norm, 0);
@@ -141,10 +143,10 @@ UpperHessenbergEigen<eT>::eigenvectors()
       // complex eigenvectors are stored in consecutive columns
       eT r2 = dot(mat_Z.col(i), mat_Z.col(i));
       eT i2 = dot(mat_Z.col(i + 1), mat_Z.col(i + 1));
-      
+
       eT  z_norm = std::sqrt(r2 + i2);
       eT* z_ptr  = mat_Z.colptr(i);
-      
+
       for(blas_int j = 0; j < n; j++)
         {
         col_ptr[j    ] = std::complex<eT>(z_ptr[j] / z_norm, z_ptr[j + n] / z_norm);

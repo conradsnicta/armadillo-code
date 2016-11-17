@@ -37,11 +37,15 @@ class SymEigsSolver
   Mat<eT>           fac_H;     // H matrix in the Arnoldi factorisation
   Col<eT>           fac_f;     // residual in the Arnoldi factorisation
   Mat<eT>           ritz_vec;  // ritz vectors
+  Col<eT>           ritz_est;  // last row of ritz_vec
   std::vector<bool> ritz_conv; // indicator of the convergence of ritz values
-  const eT          prec;      // precision parameter used to test convergence
-                               // prec = epsilon^(2/3)
-                               // epsilon is the machine precision,
-                               // e.g. ~= 1e-16 for the "double" type
+  const eT          eps;       // the machine precision
+                               // e.g. ~= 1e-16 for double type
+  const eT          approx0;   // a number that is approximately zero
+                               // approx0 = eps^(2/3)
+                               // used to test the orthogonality of vectors,
+                               // and in convergence test, tol*approx0 is
+                               // the absolute tolerance
 
   // Arnoldi factorisation starting from step-k
   inline void factorise_from(uword from_k, uword to_m, const Col<eT>& fk);

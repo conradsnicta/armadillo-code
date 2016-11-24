@@ -88,7 +88,7 @@ class GenEigsSolver
 
   //! Returning the eigenvectors associated with the converged eigenvalues.
   inline Mat< std::complex<eT> > eigenvectors(uword nvec);
-
+  
   //! Returning all converged eigenvectors.
   inline Mat< std::complex<eT> > eigenvectors() { return eigenvectors(nev); }
   };

@@ -270,6 +270,11 @@ if(DETECT_HDF5)
   endif()
 endif()
 
+# Install pkgconfig file if pkg-config is found on system
+find_package(PkgConfig)
+if (PKG_CONFIG_FOUND)
+  set(ARMA_INSTALL_PKGCONFIG true)
+endif()
 
 include(ARMA_FindARPACK)
 message(STATUS "ARPACK_FOUND = ${ARPACK_FOUND}")
@@ -403,6 +408,11 @@ if(NOT INSTALL_BIN_DIR)
   set(INSTALL_BIN_DIR "bin")
 endif()
 
+# pkgconfig install dir
+if(ARMA_INSTALL_PKGCONFIG)
+  set(PKGCONFIG_DIR ${INSTALL_LIB_DIR}/pkgconfig)
+endif()
+
 # Make relative paths absolute so we can write them in Config.cmake files
 foreach(p LIB INCLUDE DATA BIN)
   set(var INSTALL_${p}_DIR)
@@ -452,6 +462,11 @@ message(STATUS "Generating '${PROJECT_BINARY_DIR}/ArmadilloConfigVersion.cmake'"
 configure_file(${PROJECT_SOURCE_DIR}/cmake_aux/InstallFiles/ArmadilloConfigVersion.cmake.in
   "${PROJECT_BINARY_DIR}/ArmadilloConfigVersion.cmake" @ONLY)
 
+if(ARMA_INSTALL_PKGCONFIG)
+  message(STATUS "Generating '${PROJECT_BINARY_DIR}/misc/armadillo.pc'")
+  configure_file(${PROJECT_SOURCE_DIR}/misc/armadillo.pc.in
+    "${PROJECT_SOURCE_DIR}/misc/armadillo.pc" @ONLY)
+endif()
 
 # Install the export set for use with the install-tree
 install(EXPORT ArmadilloLibraryDepends DESTINATION
@@ -481,3 +496,9 @@ install(FILES
   "${PROJECT_BINARY_DIR}/InstallFiles/ArmadilloConfig.cmake"
   "${PROJECT_BINARY_DIR}/InstallFiles/ArmadilloConfigVersion.cmake"
   DESTINATION "${ARMADILLO_CMAKE_DIR}" COMPONENT dev)
+
+# Install pkgconfig file if wanted
+if(ARMA_INSTALL_PKGCONFIG)
+  install(FILES "${PROJECT_SOURCE_DIR}/misc/armadillo.pc"
+          DESTINATION "${PKGCONFIG_DIR}")
+endif()

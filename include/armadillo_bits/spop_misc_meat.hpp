@@ -148,7 +148,7 @@ namespace priv
   struct functor_arg
     {
     template<typename eT>
-    arma_inline eT operator()(const eT val) const { return arma::arma_arg(val); }
+    arma_inline eT operator()(const eT val) const { return arma_arg<eT>::eval(val); }
     };
   }
 

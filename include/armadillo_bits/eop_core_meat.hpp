@@ -851,7 +851,7 @@ template<> template<typename eT> arma_hot arma_inline eT
 eop_core<eop_abs              >::process(const eT val, const eT  ) { return eop_aux::arma_abs(val);   }
 
 template<> template<typename eT> arma_hot arma_inline eT
-eop_core<eop_arg              >::process(const eT val, const eT  ) { return    arma::arma_arg(val);   }
+eop_core<eop_arg              >::process(const eT val, const eT  ) { return arma_arg<eT>::eval(val);  }
 
 template<> template<typename eT> arma_hot arma_inline eT
 eop_core<eop_conj             >::process(const eT val, const eT  ) { return eop_aux::conj(val);       }

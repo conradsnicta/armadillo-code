@@ -680,78 +680,102 @@ arma_hypot(const double x, const double y)
 // wrappers for arg()
 
 
+
+
 template<typename eT>
-inline
-eT
-arma_arg(const eT& x)
+struct arma_arg
   {
-  #if defined(ARMA_USE_CXX11)
+  static
+  inline
+  eT
+  eval(const eT x)
     {
-    return eT( std::arg(x) );
+    #if defined(ARMA_USE_CXX11)
+      {
+      return eT( std::arg(x) );
+      }
+    #else
+      {
+      arma_ignore(x);
+      arma_stop_logic_error("arg(): need C++11 compiler");
+      
+      return eT(0);
+      }
+    #endif
     }
-  #else
-    {
-    arma_ignore(x);
-    arma_stop_logic_error("arg(): need C++11 compiler");
-    
-    return eT(0);
-    }
-  #endif
-  }
+  };
 
 
 
 template<>
-arma_inline
-float
-arma_arg(const float& x)
+struct arma_arg<float>
   {
-  #if defined(ARMA_USE_CXX11)
+  static
+  arma_inline
+  float
+  eval(const float x)
     {
-    return std::arg(x);
+    #if defined(ARMA_USE_CXX11)
+      {
+      return std::arg(x);
+      }
+    #else
+      {
+      return std::arg( std::complex<float>( x, float(0) ) );
+      }
+    #endif
     }
-  #else
-    {
-    return std::arg( std::complex<float>( x, float(0) ) );
-    }
-  #endif
-  }
+  };
 
 
 
 template<>
-arma_inline
-double
-arma_arg(const double& x)
+struct arma_arg<double>
   {
-  #if defined(ARMA_USE_CXX11)
+  static
+  arma_inline
+  double
+  eval(const double x)
+    {
+    #if defined(ARMA_USE_CXX11)
+      {
+      return std::arg(x);
+      }
+    #else
+      {
+      return std::arg( std::complex<double>( x, double(0) ) );
+      }
+    #endif
+    }
+  };
+
+
+
+template<>
+struct arma_arg< std::complex<float> >
+  {
+  static
+  arma_inline
+  float
+  eval(const std::complex<float>& x)
     {
     return std::arg(x);
     }
-  #else
+  };
+
+
+
+template<>
+struct arma_arg< std::complex<double> >
+  {
+  static
+  arma_inline
+  double
+  eval(const std::complex<double>& x)
     {
-    return std::arg( std::complex<double>( x, double(0) ) );
+    return std::arg(x);
     }
-  #endif
-  }
-
-
-
-arma_inline
-float
-arma_arg(const std::complex<float>& x)
-  {
-  return std::arg(x);
-  }
-
-
-
-arma_inline
-double
-arma_arg(const std::complex<double>& x)
-  {
-  return std::arg(x);
-  }
+  };
 
 
 

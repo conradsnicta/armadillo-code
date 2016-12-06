@@ -284,7 +284,8 @@ op_arg::apply( Mat<typename T1::pod_type>& out, const mtOp<typename T1::pod_type
   {
   arma_extra_debug_sigprint();
   
-  typedef typename T1::pod_type T;
+  typedef typename T1::elem_type eT;
+  typedef typename T1::pod_type   T;
   
   const Proxy<T1> P(X.m);
   
@@ -304,7 +305,7 @@ op_arg::apply( Mat<typename T1::pod_type>& out, const mtOp<typename T1::pod_type
     
     for(uword i=0; i < n_elem; ++i)
       {
-      out_mem[i] = arma::arma_arg( A[i] );
+      out_mem[i] = arma_arg<eT>::eval( A[i] );
       }
     }
   else
@@ -312,7 +313,7 @@ op_arg::apply( Mat<typename T1::pod_type>& out, const mtOp<typename T1::pod_type
     for(uword col=0; col < n_cols; ++col)
     for(uword row=0; row < n_rows; ++row)
       {
-      *out_mem = arma::arma_arg( P.at(row,col) );
+      *out_mem = arma_arg<eT>::eval( P.at(row,col) );
       out_mem++;
       }
     }
@@ -327,7 +328,8 @@ op_arg::apply( Cube<typename T1::pod_type>& out, const mtOpCube<typename T1::pod
   {
   arma_extra_debug_sigprint();
   
-  typedef typename T1::pod_type T;
+  typedef typename T1::elem_type eT;
+  typedef typename T1::pod_type   T;
   
   const ProxyCube<T1> P(X.m);
   
@@ -348,7 +350,7 @@ op_arg::apply( Cube<typename T1::pod_type>& out, const mtOpCube<typename T1::pod
     
     for(uword i=0; i < n_elem; ++i)
       {
-      out_mem[i] = arma::arma_arg( A[i] );
+      out_mem[i] = arma_arg<eT>::eval( A[i] );
       }
     }
   else
@@ -357,7 +359,7 @@ op_arg::apply( Cube<typename T1::pod_type>& out, const mtOpCube<typename T1::pod
     for(uword col=0;   col   < n_cols;   ++col  )
     for(uword row=0;   row   < n_rows;   ++row  )
       {
-      *out_mem = arma::arma_arg( P.at(row,col,slice) );
+      *out_mem = arma_arg<eT>::eval( P.at(row,col,slice) );
       out_mem++;
       }
     }

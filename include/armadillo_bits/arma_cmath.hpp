@@ -680,8 +680,6 @@ arma_hypot(const double x, const double y)
 // wrappers for arg()
 
 
-
-
 template<typename eT>
 struct arma_arg
   {

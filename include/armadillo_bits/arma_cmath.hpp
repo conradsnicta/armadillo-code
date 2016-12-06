@@ -634,7 +634,7 @@ arma_hypot_generic(const eT x, const eT y)
       ratio  = xabs / yabs;
       }
     
-    return (larger == eT(0)) ? eT(0) : (larger * std:sqrt(eT(1) + ratio * ratio));
+    return (larger == eT(0)) ? eT(0) : (larger * std::sqrt(eT(1) + ratio * ratio));
     }
   #endif
   }
@@ -672,6 +672,85 @@ double
 arma_hypot(const double x, const double y)
   {
   return arma_hypot_generic(x,y);
+  }
+
+
+
+//
+// wrappers for arg()
+
+
+template<typename eT>
+inline
+eT
+arma_arg(const eT& x)
+  {
+  #if defined(ARMA_USE_CXX11)
+    {
+    return eT( std::arg(x) );
+    }
+  #else
+    {
+    arma_ignore(x);
+    arma_stop_logic_error("arg(): need C++11 compiler");
+    
+    return eT(0);
+    }
+  #endif
+  }
+
+
+
+template<>
+arma_inline
+float
+arma_arg(const float& x)
+  {
+  #if defined(ARMA_USE_CXX11)
+    {
+    return std::arg(x);
+    }
+  #else
+    {
+    return std::arg( std::complex<float>( x, float(0) ) );
+    }
+  #endif
+  }
+
+
+
+template<>
+arma_inline
+double
+arma_arg(const double& x)
+  {
+  #if defined(ARMA_USE_CXX11)
+    {
+    return std::arg(x);
+    }
+  #else
+    {
+    return std::arg( std::complex<double>( x, double(0) ) );
+    }
+  #endif
+  }
+
+
+
+arma_inline
+float
+arma_arg(const std::complex<float>& x)
+  {
+  return std::arg(x);
+  }
+
+
+
+arma_inline
+double
+arma_arg(const std::complex<double>& x)
+  {
+  return std::arg(x);
   }
 
 

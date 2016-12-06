@@ -1,4 +1,4 @@
-// Copyright (C) 2012-2015 National ICT Australia (NICTA)
+// Copyright (C) 2012-2016 National ICT Australia (NICTA)
 // 
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -139,6 +139,52 @@ spop_cx_abs::apply(SpMat<typename T1::pod_type>& out, const mtSpOp<typename T1::
   arma_extra_debug_sigprint();
   
   out.init_xform_mt(in.m, priv::functor_cx_abs());
+  }
+
+
+
+namespace priv
+  {
+  struct functor_arg
+    {
+    template<typename eT>
+    arma_inline eT operator()(const eT val) const { return arma::arma_arg(val); }
+    };
+  }
+
+
+
+template<typename T1>
+inline
+void
+spop_arg::apply(SpMat<typename T1::elem_type>& out, const SpOp<T1,spop_arg>& in)
+  {
+  arma_extra_debug_sigprint();
+  
+  out.init_xform(in.m, priv::functor_arg());
+  }
+
+
+
+namespace priv
+  {
+  struct functor_cx_arg
+    {
+    template<typename T>
+    arma_inline T operator()(const std::complex<T>& val) const { return std::arg(val); }
+    };
+  }
+
+
+
+template<typename T1>
+inline
+void
+spop_cx_arg::apply(SpMat<typename T1::pod_type>& out, const mtSpOp<typename T1::pod_type, T1, spop_cx_arg>& in)
+  {
+  arma_extra_debug_sigprint();
+  
+  out.init_xform_mt(in.m, priv::functor_cx_arg());
   }
 
 

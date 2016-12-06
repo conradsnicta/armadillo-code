@@ -1,4 +1,4 @@
-// Copyright (C) 2012-2015 National ICT Australia (NICTA)
+// Copyright (C) 2012-2016 National ICT Australia (NICTA)
 // 
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -58,6 +58,26 @@ class spop_cx_abs
   
   template<typename T1>
   inline static void apply(SpMat<typename T1::pod_type>& out, const mtSpOp<typename T1::pod_type, T1, spop_cx_abs>& in);
+  };
+
+
+
+class spop_arg
+  {
+  public:
+  
+  template<typename T1>
+  inline static void apply(SpMat<typename T1::elem_type>& out, const SpOp<T1, spop_arg>& in);
+  };
+
+
+
+class spop_cx_arg
+  {
+  public:
+  
+  template<typename T1>
+  inline static void apply(SpMat<typename T1::pod_type>& out, const mtSpOp<typename T1::pod_type, T1, spop_cx_arg>& in);
   };
 
 

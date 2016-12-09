@@ -12,10 +12,14 @@
 //! @{
 
 //
-// trigonometric functions:
+// single argument trigonometric functions:
 // cos family: cos, acos, cosh, acosh
 // sin family: sin, asin, sinh, asinh
-// tan family: tan, atan, tanh, atanh, atan2
+// tan family: tan, atan, tanh, atanh
+// 
+// dual argument trigonometric functions:
+// atan2
+// hypot
 
 
 //
@@ -391,6 +395,35 @@ atan2(const BaseCube<typename T1::elem_type,T1>& Y, const BaseCube<typename T1::
   arma_extra_debug_sigprint();
   
   return GlueCube<T1, T2, glue_atan2>(Y.get_ref(), X.get_ref());
+  }
+
+
+
+//
+// hypot
+
+template<typename T1, typename T2>
+arma_warn_unused
+arma_inline
+typename enable_if2< is_real<typename T1::elem_type>::value, const Glue<T1, T2, glue_hypot> >::result
+hypot(const Base<typename T1::elem_type,T1>& X, const Base<typename T1::elem_type,T2>& Y)
+  {
+  arma_extra_debug_sigprint();
+  
+  return Glue<T1, T2, glue_hypot>(X.get_ref(), Y.get_ref());
+  }
+
+
+
+template<typename T1, typename T2>
+arma_warn_unused
+arma_inline
+typename enable_if2< is_real<typename T1::elem_type>::value, const GlueCube<T1, T2, glue_hypot> >::result
+hypot(const BaseCube<typename T1::elem_type,T1>& X, const BaseCube<typename T1::elem_type,T2>& Y)
+  {
+  arma_extra_debug_sigprint();
+  
+  return GlueCube<T1, T2, glue_hypot>(X.get_ref(), Y.get_ref());
   }
 
 

@@ -10150,11 +10150,11 @@ See also:
 <b>trigonometric element-wise functions (cos, sin, tan, ...)</b>
 <ul>
 <li>
-Apply a trigonometric function to each element
+ or each two corresponding elements
 </li>
 <br>
 <li>
-For single argument functions, <i>B = trig_fn(A)</i>, where <i>trig_fn</i> is one of:
+For single argument functions, <i>B = trig_fn(A)</i>, where <i>trig_fn</i> is applied to each element in <i>A</i>, with <i>trig_fn</i> as one of:
 <ul>
 <li>
 <i>cos</i>, <i>acos</i>, <i>cosh</i>, <i>acosh</i>
@@ -10169,7 +10169,11 @@ For single argument functions, <i>B = trig_fn(A)</i>, where <i>trig_fn</i> is on
 </li>
 <br>
 <li>
-For the <i>atan2</i> dual argument function, <i>Z = atan2(Y, X)</i>
+For dual argument functions, apply the function to each tuple of two corresponding elements in <i>X</i> and <i>Y</i>:
+<ul>
+<li><i>Z = atan2(Y, X)</i></li>
+<li><i>Z = hypot(X, Y)</i></li>
+</ul>
 </li>
 <br>
 <li>
@@ -10188,7 +10192,7 @@ See also:
 <li><a href="#stats_fns">statistics functions</a></li>
 <li><a href="https://en.wikipedia.org/wiki/Trigonometric_functions">trigonometric functions in Wikipedia</a></li>
 <li><a href="https://en.wikipedia.org/wiki/Atan2">atan2 function in Wikipedia</a></li>
-<li><a href="https://en.wikipedia.org/wiki/Atan2">atan2 function in Wikipedia</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Hypot">hypot function in Wikipedia</a></li>
 </ul>
 </li>
 <br>
@@ -15956,7 +15960,7 @@ List of additions and changes for each version:
 <li>Version 7.600:
 <ul>
 <li>added <a href="#arg">arg()</a></li>
-<li>added <a href="#trig_fns">atan2()</a></li>
+<li>added <a href="#trig_fns">atan2()</a> and <a href="#trig_fns">hypot()</a></li>
 <li>more accurate <a href="#eigs_sym">eigs_sym()</a> and <a href="#eigs_gen">eigs_gen()</a></li>
 </ul>
 </li>

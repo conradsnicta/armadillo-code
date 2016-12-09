@@ -15,7 +15,7 @@
 // trigonometric functions:
 // cos family: cos, acos, cosh, acosh
 // sin family: sin, asin, sinh, asinh
-// tan family: tan, atan, tanh, atanh, atanh2
+// tan family: tan, atan, tanh, atanh, atan2
 
 
 //

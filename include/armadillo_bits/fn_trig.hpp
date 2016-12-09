@@ -15,7 +15,7 @@
 // trigonometric functions:
 // cos family: cos, acos, cosh, acosh
 // sin family: sin, asin, sinh, asinh
-// tan family: tan, atan, tanh, atanh
+// tan family: tan, atan, tanh, atanh, atanh2
 
 
 //
@@ -362,6 +362,35 @@ atanh(const BaseCube<typename T1::elem_type,T1>& A)
   arma_extra_debug_sigprint();
   
   return eOpCube<T1, eop_atanh>(A.get_ref());
+  }
+
+
+
+//
+// atan2
+
+template<typename T1, typename T2>
+arma_warn_unused
+arma_inline
+typename enable_if2< is_real<typename T1::elem_type>::value, const Glue<T1, T2, glue_atan2> >::result
+atan2(const Base<typename T1::elem_type,T1>& Y, const Base<typename T1::elem_type,T2>& X)
+  {
+  arma_extra_debug_sigprint();
+  
+  return Glue<T1, T2, glue_atan2>(Y.get_ref(), X.get_ref());
+  }
+
+
+
+template<typename T1, typename T2>
+arma_warn_unused
+arma_inline
+typename enable_if2< is_real<typename T1::elem_type>::value, const GlueCube<T1, T2, glue_atan2> >::result
+atan2(const BaseCube<typename T1::elem_type,T1>& Y, const BaseCube<typename T1::elem_type,T2>& X)
+  {
+  arma_extra_debug_sigprint();
+  
+  return GlueCube<T1, T2, glue_atan2>(Y.get_ref(), X.get_ref());
   }
 
 

@@ -284,6 +284,7 @@ namespace arma
   #include "armadillo_bits/glue_max_bones.hpp"
   #include "armadillo_bits/glue_min_bones.hpp"
   #include "armadillo_bits/glue_trapz_bones.hpp"
+  #include "armadillo_bits/glue_atan2_bones.hpp"
   
   #include "armadillo_bits/gmm_misc_bones.hpp"
   #include "armadillo_bits/gmm_diag_bones.hpp"
@@ -649,6 +650,7 @@ namespace arma
   #include "armadillo_bits/glue_max_meat.hpp"
   #include "armadillo_bits/glue_min_meat.hpp"
   #include "armadillo_bits/glue_trapz_meat.hpp"
+  #include "armadillo_bits/glue_atan2_meat.hpp"
   
   #include "armadillo_bits/gmm_misc_meat.hpp"
   #include "armadillo_bits/gmm_diag_meat.hpp"

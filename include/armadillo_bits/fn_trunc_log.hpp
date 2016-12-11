@@ -66,12 +66,12 @@ trunc_log(const std::complex<T>& x)
 template<typename T1>
 arma_warn_unused
 arma_inline
-const eOp<T1, eop_trunc_log>
-trunc_log(const Base<typename T1::elem_type,T1>& A)
+typename enable_if2< is_arma_type<T1>::value, const eOp<T1, eop_trunc_log> >::result
+trunc_log(const T1& A)
   {
   arma_extra_debug_sigprint();
   
-  return eOp<T1, eop_trunc_log>(A.get_ref());
+  return eOp<T1, eop_trunc_log>(A);
   }
 
 

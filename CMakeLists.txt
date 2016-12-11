@@ -494,5 +494,10 @@ if(PKG_CONFIG_FOUND)
 
   message(STATUS "Generating '${PROJECT_BINARY_DIR}/tmp/misc/armadillo.pc'")
   configure_file(${PROJECT_BINARY_DIR}/tmp/misc/armadillo.pc.in "${PROJECT_BINARY_DIR}/tmp/misc/armadillo.pc" @ONLY)
-  install(FILES "${PROJECT_BINARY_DIR}/tmp/misc/armadillo.pc" DESTINATION "${INSTALL_LIB_DIR}/pkgconfig")
+  
+  if(NOT PKG_CONFIG_DIR)
+    set(PKG_CONFIG_DIR "${INSTALL_LIB_DIR}/pkgconfig")
+  endif()
+  
+  install(FILES "${PROJECT_BINARY_DIR}/tmp/misc/armadillo.pc" DESTINATION ${PKG_CONFIG_DIR})
 endif()

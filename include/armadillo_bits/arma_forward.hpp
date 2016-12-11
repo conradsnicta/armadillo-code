@@ -70,6 +70,7 @@ class op_htrans2;
 class op_inv;
 class op_sum;
 class op_abs;
+class op_arg;
 class op_diagmat;
 class op_trimat;
 class op_diagvec;
@@ -106,6 +107,8 @@ class glue_times_diag;
 class glue_conv;
 class glue_join_cols;
 class glue_join_rows;
+class glue_atan2;
+class glue_hypot;
 
 class glue_rel_lt;
 class glue_rel_gt;

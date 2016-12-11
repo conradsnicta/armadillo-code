@@ -36,6 +36,7 @@ class mtOp : public Base<out_eT, mtOp<out_eT, T1, op_type> >
       || is_same_type<op_type, op_real>::value
       || is_same_type<op_type, op_imag>::value
       || is_same_type<op_type, op_abs>::value
+      || is_same_type<op_type, op_arg>::value
       )
     );
   
@@ -59,6 +60,7 @@ class mtOp : public Base<out_eT, mtOp<out_eT, T1, op_type> >
       || is_same_type<op_type, op_real>::value
       || is_same_type<op_type, op_imag>::value
       || is_same_type<op_type, op_abs>::value
+      || is_same_type<op_type, op_arg>::value
       )
     );
   

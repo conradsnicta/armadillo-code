@@ -4,7 +4,7 @@ libdir=@INSTALL_LIB_DIR@
 includedir=@INSTALL_INCLUDE_DIR@
 
 Name: armadillo
-Description: A fast and user-friendly C++ linear algebra library
+Description: Fast C++ matrix library with syntax similar to MATLAB and Octave
 URL: http://arma.sourceforge.net
 Version: @ARMA_VERSION_MAJOR@.@ARMA_VERSION_MINOR@.@ARMA_VERSION_PATCH@
 Cflags: -I${includedir}

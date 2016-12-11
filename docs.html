@@ -6815,22 +6815,19 @@ Obtain the magnitude of each element
 </li>
 <br>
 <li>
-Usage for non-complex matrices and cubes:
+Usage for non-complex X:
 <ul>
-<li><i>matrix_type</i> Y = abs(X)</li>
-<li><i>cube_type</i> Y = abs(X)</li>
-<li>X and Y must have the same matrix_type / cube_type</li>
+<li>Y = abs(X)</li>
+<li>X and Y must have the same matrix type or cube type, such as <i>mat</i> or <i>cube</i></li>
 </ul>
 </li>
 <br>
 <li>
-Usage for complex matrices and cubes:
+Usage for complex X:
 <ul>
-<li><i>non_complex_matrix_type</i> Y = abs(X)</li>
-<li><i>non_complex_cube_type</i> Y = abs(X)</li>
-<li>X must be a have complex matrix / cube type, eg. <i>cx_mat</i> or <i>cx_cube</i></li>
-<li>The type of Y must be related to the type of X,
-eg. if X has the type <i>cx_mat</i>, then the type of Y must be <i>mat</i>
+<li><i>real_object_type</i> Y = abs(X)</li>
+<li>The type of X must be a complex matrix or complex cube, such as <i>cx_mat</i> or <i>cx_cube</i></li>
+<li>The type of Y must be the real counterpart to the type of X; if X has the type <i>cx_mat</i>, then the type of Y must be <i>mat</i>
 </ul>
 </li>
 <br>
@@ -6842,7 +6839,7 @@ mat A = randu&lt;mat&gt;(5,5);
 mat B = abs(A); 
 
 cx_mat X = randu&lt;cx_mat&gt;(5,5);
-mat    Y = abs(X);
+   mat Y = abs(X);
 </pre>
 </ul>
 </li>
@@ -7095,26 +7092,21 @@ Obtain the phase angle (in radians) of each element
 </li>
 <br>
 <li>
-Non-complex elements are treated as complex elements with zero imaginary component
-</li>
-<br>
-<li>
-Usage for complex matrices and cubes:
+Usage for non-complex X:
 <ul>
-<li><i>non_complex_matrix_type</i> Y = arg(X)</li>
-<li><i>non_complex_cube_type</i> Y = arg(X)</li>
-<li>X must be a have complex matrix / cube type, eg. <i>cx_mat</i> or <i>cx_cube</i></li>
-<li>The type of Y must be related to the type of X,
-eg. if X has the type <i>cx_mat</i>, then the type of Y must be <i>mat</i>
+<li>Y = arg(X)</li>
+<li>X and Y must have the same matrix type or cube type, such as <i>mat</i> or <i>cube</i></li>
+<li>non-complex elements are treated as complex elements with zero imaginary component
+</li>
 </ul>
 </li>
 <br>
 <li>
-Usage for non-complex matrices and cubes:
+Usage for complex X:
 <ul>
-<li><i>matrix_type</i> Y = arg(X)</li>
-<li><i>cube_type</i> Y = arg(X)</li>
-<li>X and Y must have the same matrix_type / cube_type</li>
+<li><i>real_object_type</i> Y = arg(X)</li>
+<li>The type of X must be a complex matrix or complex cube, such as <i>cx_mat</i> or <i>cx_cube</i></li>
+<li>The type of Y must be the real counterpart to the type of X; if X has the type <i>cx_mat</i>, then the type of Y must be <i>mat</i>
 </ul>
 </li>
 <br>

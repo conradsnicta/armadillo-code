@@ -163,8 +163,8 @@
   #endif
   
   #if (ARMA_GCC_VERSION < 40600)
-    #pragma message ("WARNING: this compiler is OUTDATED and has INCOMPLETE support for the C++ standard;")
-    #pragma message ("WARNING: if something breaks, you get to keep all the pieces.")
+    #undef  ARMA_PRINT_CXX98_WARNING
+    #define ARMA_PRINT_CXX98_WARNING
   #endif
   
   #if ( (ARMA_GCC_VERSION >= 40700) && (ARMA_GCC_VERSION <= 40701) )
@@ -336,6 +336,11 @@
     #error "*** Need a newer compiler ***"
   #endif
   
+  #if (_MSC_VER < 1800)
+    #undef  ARMA_PRINT_CXX98_WARNING
+    #define ARMA_PRINT_CXX98_WARNING
+  #endif
+  
   #if defined(ARMA_USE_CXX11)
     #if (_MSC_VER < 1900)
       #undef  ARMA_PRINT_CXX11_WARNING
@@ -422,6 +427,12 @@
 #endif
 
 
+#if defined(ARMA_PRINT_CXX98_WARNING) && !defined(ARMA_DONT_PRINT_CXX98_WARNING)
+  #pragma message ("WARNING: this compiler is OUTDATED and has INCOMPLETE support for the C++ standard;")
+  #pragma message ("WARNING: if something breaks, you get to keep all the pieces.")
+#endif
+
+
 #if defined(ARMA_PRINT_CXX11_WARNING) && !defined(ARMA_DONT_PRINT_CXX11_WARNING)
   #pragma message ("WARNING: use of C++11 features has been enabled,")
   #pragma message ("WARNING: but this compiler has INCOMPLETE support for C++11;")
@@ -431,6 +442,7 @@
 #endif
 
 
+#undef ARMA_PRINT_CXX98_WARNING
 #undef ARMA_PRINT_CXX11_WARNING
 
 

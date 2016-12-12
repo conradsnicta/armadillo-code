@@ -1820,7 +1820,7 @@ If <i>check_for_zeros</i> is set to <i>false</i>, the <i>values</i> vector is as
 <li><a href="#submat">submatrix views</a> (contiguous forms only)</li>
 <li><a href="#diag">diagonal views</a></li>
 <li><a href="#save_load_mat">saving and loading</a> (using <i>arma_binary</i> format only)</li>
-<li>element-wise functions: <a href="#abs">abs()</a>, <a href="#imag_real">imag()</a>, <a href="#imag_real">real()</a>, <a href="#conj">conj()</a>, <a href="#misc_fns">sqrt()</a>, <a href="#misc_fns">square()</a></li>
+<li>element-wise functions: <a href="#abs">abs()</a>, <a href="#imag_real">imag()</a>, <a href="#imag_real">real()</a>, <a href="#conj">conj()</a>, <a href="#misc_fns">sqrt()</a>, <a href="#misc_fns">square()</a>, <a href="#misc_fns">sign()</a></li>
 <li>scalar functions of matrices: <a href="#accu">accu()</a>, <a href="#as_scalar">as_scalar()</a>, <a href="#dot">dot()</a>, <a href="#norm">norm()</a>, <a href="#trace">trace()</a></li>
 <li>vector valued functions of matrices: <a href="#min_and_max">min()</a>, <a href="#min_and_max">max()</a>, <a href="#nonzeros">nonzeros()</a>, <a href="#sum">sum()</a>, <a href="#stats_fns">mean()</a>, <a href="#stats_fns">var()</a></li>
 <li>matrix valued functions of matrices: <a href="#diagmat">diagmat()</a>, <a href="#join">join_rows()</a>, <a href="#join">join_cols()</a>, <a href="#repmat">repmat()</a>, <a href="#reshape">reshape()</a>, <a href="#resize">resize()</a>, <a href="#t_st_members">.t()</a>, <a href="#trans">trans()</a></li>
@@ -9864,15 +9864,8 @@ Apply a function to each element
 <li>
 Usage:
 <ul>
-<li>
-<i>matrix_type</i> B = fn(A)
-</li>
-<li>
-<i>cube_type</i> B = fn(A)
-</li>
-<li>
-A and B must have the same <i>matrix_type/cube_type</i>
-</li>
+<li>B = fn(A)</li>
+<li>A and B must have the same matrix type or cube type, such as <i>mat</i> or <i>cube</i></li>
 <li>
 fn(A) is one of:
 <br>
@@ -15947,9 +15940,9 @@ List of additions and changes for each version:
 <a name="version_7600"></a>
 <li>Version 7.600:
 <ul>
-<li>added <a href="#arg">arg()</a></li>
-<li>added <a href="#trig_fns">atan2()</a> and <a href="#trig_fns">hypot()</a></li>
 <li>more accurate <a href="#eigs_sym">eigs_sym()</a> and <a href="#eigs_gen">eigs_gen()</a></li>
+<li>expanded <a href="#misc_fns">sign()</a> to handle sparse matrices</li>
+<li>added <a href="#arg">arg()</a>, <a href="#trig_fns">atan2()</a>, <a href="#trig_fns">hypot()</a></li>
 </ul>
 </li>
 <br>

@@ -898,6 +898,19 @@ sign(const BaseCube<typename T1::elem_type,T1>& A)
 
 
 
+template<typename T1>
+arma_warn_unused
+arma_inline
+const SpOp<T1, spop_sign>
+sign(const SpBase<typename T1::elem_type,T1>& X)
+  {
+  arma_extra_debug_sigprint();
+  
+  return SpOp<T1, spop_sign>(X.get_ref());
+  }
+
+
+
 //
 // erf
 

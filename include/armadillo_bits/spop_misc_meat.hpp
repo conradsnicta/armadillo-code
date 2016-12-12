@@ -346,4 +346,27 @@ spop_resize::apply(SpMat<typename T1::elem_type>& out, const SpOp<T1, spop_resiz
 
 
 
+namespace priv
+  {
+  struct functor_sign
+    {
+    template<typename eT>
+    arma_inline eT operator()(const eT val) const { return eop_aux::sign(val); }
+    };
+  }
+
+
+
+template<typename T1>
+inline
+void
+spop_sign::apply(SpMat<typename T1::elem_type>& out, const SpOp<T1,spop_sign>& in)
+  {
+  arma_extra_debug_sigprint();
+  
+  out.init_xform(in.m, priv::functor_sign());
+  }
+
+
+
 //! @}

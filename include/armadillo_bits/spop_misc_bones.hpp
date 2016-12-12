@@ -142,6 +142,46 @@ class spop_resize
 
 
 
+class spop_floor
+  {
+  public:
+  
+  template<typename T1>
+  inline static void apply(SpMat<typename T1::elem_type>& out, const SpOp<T1, spop_floor>& in);
+  };
+
+
+
+class spop_ceil
+  {
+  public:
+  
+  template<typename T1>
+  inline static void apply(SpMat<typename T1::elem_type>& out, const SpOp<T1, spop_ceil>& in);
+  };
+
+
+
+class spop_round
+  {
+  public:
+  
+  template<typename T1>
+  inline static void apply(SpMat<typename T1::elem_type>& out, const SpOp<T1, spop_round>& in);
+  };
+
+
+
+class spop_trunc
+  {
+  public:
+  
+  template<typename T1>
+  inline static void apply(SpMat<typename T1::elem_type>& out, const SpOp<T1, spop_trunc>& in);
+  };
+
+
+
 class spop_sign
   {
   public:

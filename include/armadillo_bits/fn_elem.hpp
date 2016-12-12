@@ -782,6 +782,19 @@ floor(const BaseCube<typename T1::elem_type,T1>& A)
 
 
 
+template<typename T1>
+arma_warn_unused
+arma_inline
+const SpOp<T1, spop_floor>
+floor(const SpBase<typename T1::elem_type,T1>& X)
+  {
+  arma_extra_debug_sigprint();
+  
+  return SpOp<T1, spop_floor>(X.get_ref());
+  }
+
+
+
 //
 // ceil
 
@@ -807,6 +820,19 @@ ceil(const BaseCube<typename T1::elem_type,T1>& A)
   arma_extra_debug_sigprint();
   
   return eOpCube<T1, eop_ceil>(A.get_ref());
+  }
+
+
+
+template<typename T1>
+arma_warn_unused
+arma_inline
+const SpOp<T1, spop_ceil>
+ceil(const SpBase<typename T1::elem_type,T1>& X)
+  {
+  arma_extra_debug_sigprint();
+  
+  return SpOp<T1, spop_ceil>(X.get_ref());
   }
 
 
@@ -840,6 +866,19 @@ round(const BaseCube<typename T1::elem_type,T1>& A)
 
 
 
+template<typename T1>
+arma_warn_unused
+arma_inline
+const SpOp<T1, spop_round>
+round(const SpBase<typename T1::elem_type,T1>& X)
+  {
+  arma_extra_debug_sigprint();
+  
+  return SpOp<T1, spop_round>(X.get_ref());
+  }
+
+
+
 //
 // trunc
 
@@ -865,6 +904,19 @@ trunc(const BaseCube<typename T1::elem_type,T1>& A)
   arma_extra_debug_sigprint();
   
   return eOpCube<T1, eop_trunc>(A.get_ref());
+  }
+
+
+
+template<typename T1>
+arma_warn_unused
+arma_inline
+const SpOp<T1, spop_trunc>
+trunc(const SpBase<typename T1::elem_type,T1>& X)
+  {
+  arma_extra_debug_sigprint();
+  
+  return SpOp<T1, spop_trunc>(X.get_ref());
   }
 
 

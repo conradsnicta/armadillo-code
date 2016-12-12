@@ -348,6 +348,98 @@ spop_resize::apply(SpMat<typename T1::elem_type>& out, const SpOp<T1, spop_resiz
 
 namespace priv
   {
+  struct functor_floor
+    {
+    template<typename eT>
+    arma_inline eT operator()(const eT val) const { return eop_aux::floor(val); }
+    };
+  }
+
+
+
+template<typename T1>
+inline
+void
+spop_floor::apply(SpMat<typename T1::elem_type>& out, const SpOp<T1,spop_floor>& in)
+  {
+  arma_extra_debug_sigprint();
+  
+  out.init_xform(in.m, priv::functor_floor());
+  }
+
+
+
+namespace priv
+  {
+  struct functor_ceil
+    {
+    template<typename eT>
+    arma_inline eT operator()(const eT val) const { return eop_aux::ceil(val); }
+    };
+  }
+
+
+
+template<typename T1>
+inline
+void
+spop_ceil::apply(SpMat<typename T1::elem_type>& out, const SpOp<T1,spop_ceil>& in)
+  {
+  arma_extra_debug_sigprint();
+  
+  out.init_xform(in.m, priv::functor_ceil());
+  }
+
+
+
+namespace priv
+  {
+  struct functor_round
+    {
+    template<typename eT>
+    arma_inline eT operator()(const eT val) const { return eop_aux::round(val); }
+    };
+  }
+
+
+
+template<typename T1>
+inline
+void
+spop_round::apply(SpMat<typename T1::elem_type>& out, const SpOp<T1,spop_round>& in)
+  {
+  arma_extra_debug_sigprint();
+  
+  out.init_xform(in.m, priv::functor_round());
+  }
+
+
+
+namespace priv
+  {
+  struct functor_trunc
+    {
+    template<typename eT>
+    arma_inline eT operator()(const eT val) const { return eop_aux::trunc(val); }
+    };
+  }
+
+
+
+template<typename T1>
+inline
+void
+spop_trunc::apply(SpMat<typename T1::elem_type>& out, const SpOp<T1,spop_trunc>& in)
+  {
+  arma_extra_debug_sigprint();
+  
+  out.init_xform(in.m, priv::functor_trunc());
+  }
+
+
+
+namespace priv
+  {
   struct functor_sign
     {
     template<typename eT>

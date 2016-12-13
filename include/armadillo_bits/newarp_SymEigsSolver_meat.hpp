@@ -329,7 +329,7 @@ SymEigsSolver<eT, SelectionRule, OpType>::init(eT* init_resid)
   // The first column of fac_V
   Col<eT> v(fac_V.colptr(0), dim_n, false);
   eT rnorm = norm(r);
-  arma_debug_check( (rnorm < eps), "newarp::SymEigsSolver::init(): initial residual vector cannot be zero" );
+  arma_check( (rnorm < eps), "newarp::SymEigsSolver::init(): initial residual vector cannot be zero" );
   v = r / rnorm;
 
   Col<eT> w(dim_n);

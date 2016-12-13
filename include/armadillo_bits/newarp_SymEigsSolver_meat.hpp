@@ -406,7 +406,7 @@ SymEigsSolver<eT, SelectionRule, OpType>::eigenvalues()
     {
     if(ritz_conv[i])
       {
-      res(i) = ritz_val(i);
+      res(j) = ritz_val(i);
       j++;
       }
     }

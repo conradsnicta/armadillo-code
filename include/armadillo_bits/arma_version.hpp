@@ -15,7 +15,7 @@
 
 #define ARMA_VERSION_MAJOR 7
 #define ARMA_VERSION_MINOR 600
-#define ARMA_VERSION_PATCH 1
+#define ARMA_VERSION_PATCH 2
 #define ARMA_VERSION_NAME  "Coup d'Etat Deluxe"
 
 

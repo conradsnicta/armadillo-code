@@ -334,7 +334,7 @@ field<oT>::set_size(const SizeCube& s)
         }
       else
         {
-        arma_check( (uword((*it).size()) != x_n_cols), "Mat::init(): inconsistent number of columns in initialiser list" );
+        arma_check( (uword((*it).size()) != x_n_cols), "field::init(): inconsistent number of columns in initialiser list" );
         }
       }
     
@@ -403,6 +403,8 @@ field<oT>::set_size(const SizeCube& s)
   field<oT>::operator=(field<oT>&& X)
     {
     arma_extra_debug_sigprint(arma_str::format("this = %x   X = %x") % this % &X);
+    
+    reset();
     
     access::rw(n_rows  ) = X.n_rows;
     access::rw(n_cols  ) = X.n_cols;

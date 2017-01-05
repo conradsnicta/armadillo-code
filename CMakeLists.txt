@@ -240,7 +240,7 @@ endif()
 ## cmake -D DETECT_HDF5=true .
 
 if(DETECT_HDF5)
-  find_package(HDF5 QUIET)
+  find_package(HDF5 COMPONENTS CXX QUIET)
 
   if(NOT HDF5_FOUND)
     # On Debian systems, the HDF5 package has been split into multiple packages

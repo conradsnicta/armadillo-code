@@ -190,6 +190,7 @@ template<> struct is_promotable<u8,  u64> : public is_promotable_ok { typedef u6
 
 #if defined(ARMA_USE_U64S64)
 template<> struct is_promotable<u64, s64> : public is_promotable_ok { typedef s64 result; };  // float ?  
+template<> struct is_promotable<s32, s64> : public is_promotable_ok { typedef s64 result; };
 template<> struct is_promotable<u32, s64> : public is_promotable_ok { typedef s64 result; };
 template<> struct is_promotable<s16, s64> : public is_promotable_ok { typedef s64 result; };
 template<> struct is_promotable<u16, s64> : public is_promotable_ok { typedef s64 result; };

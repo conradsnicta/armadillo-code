@@ -46,8 +46,8 @@
 // 
 // * CAVEAT: any function, class, constant or other code _not_ explicitly described
 //   in the public API documentation is considered as part of the underlying internal
-//   implementation details, and may change or be removed between consecutive minor
-//   versions or patch levels. (In other words, don't use internal functionality).
+//   implementation details, and may change or be removed without notice.
+//   (In other words, don't use internal functionality).
 // 
 // * The above statements do not modify the License.
 

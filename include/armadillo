@@ -36,8 +36,7 @@
 // 
 // * An increase in the patch level, while the major and minor versions are retained,
 //   indicates modifications to the code and/or documentation which aim to fix bugs
-//   without altering the public API. In a rare instance the public API may need
-//   to be tweaked if a bug fix absolutely requires it.
+//   without altering the public API.
 // 
 // * We don't like changes to existing public API and strongly prefer not to break
 //   any user software. However, to allow evolution, we reserve the right to

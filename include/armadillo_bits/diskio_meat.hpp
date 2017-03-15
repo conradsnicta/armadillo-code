@@ -797,13 +797,17 @@ diskio::save_raw_ascii(const Mat<eT>& x, std::ostream& f)
   
   uword cell_width;
   
-  // TODO: need sane values for complex numbers
-  
-  if( (is_float<eT>::value) || (is_double<eT>::value) )
+  if(is_real<eT>::value)
     {
     f.setf(ios::scientific);
     f.precision(14);
     cell_width = 22;
+    }
+  
+  if(is_cx<eT>::value)
+    {
+    f.setf(ios::scientific);
+    f.precision(14);
     }
   
   for(uword row=0; row < x.n_rows; ++row)
@@ -812,14 +816,14 @@ diskio::save_raw_ascii(const Mat<eT>& x, std::ostream& f)
       {
       f.put(' ');
       
-      if( (is_float<eT>::value) || (is_double<eT>::value) )
+      if(is_real<eT>::value)
         {
         f.width(std::streamsize(cell_width));
         }
       
       arma_ostream::print_elem(f, x.at(row,col), false);
       }
-      
+    
     f.put('\n');
     }
   
@@ -923,22 +927,26 @@ diskio::save_arma_ascii(const Mat<eT>& x, std::ostream& f)
   
   uword cell_width;
   
-  // TODO: need sane values for complex numbers
-  
-  if( (is_float<eT>::value) || (is_double<eT>::value) )
+  if(is_real<eT>::value)
     {
     f.setf(ios::scientific);
     f.precision(14);
     cell_width = 22;
     }
-    
+  
+  if(is_cx<eT>::value)
+    {
+    f.setf(ios::scientific);
+    f.precision(14);
+    }
+  
   for(uword row=0; row < x.n_rows; ++row)
     {
     for(uword col=0; col < x.n_cols; ++col)
       {
       f.put(' ');
       
-      if( (is_float<eT>::value) || (is_double<eT>::value) )        
+      if(is_real<eT>::value)
         {
         f.width(std::streamsize(cell_width));
         }
@@ -1000,7 +1008,7 @@ diskio::save_csv_ascii(const Mat<eT>& x, std::ostream& f)
   
   const ios::fmtflags orig_flags = f.flags();
   
-  // TODO: need sane values for complex numbers
+  // TODO: need to write each complex elements as "a+ib" instead of the default "(a,b)"
   
   if( (is_float<eT>::value) || (is_double<eT>::value) )
     {
@@ -3138,13 +3146,17 @@ diskio::save_raw_ascii(const Cube<eT>& x, std::ostream& f)
   
   uword cell_width;
   
-  // TODO: need sane values for complex numbers
-  
-  if( (is_float<eT>::value) || (is_double<eT>::value) )
+  if(is_real<eT>::value)
     {
     f.setf(ios::scientific);
     f.precision(14);
     cell_width = 22;
+    }
+  
+  if(is_cx<eT>::value)
+    {
+    f.setf(ios::scientific);
+    f.precision(14);
     }
   
   for(uword slice=0; slice < x.n_slices; ++slice)
@@ -3155,7 +3167,7 @@ diskio::save_raw_ascii(const Cube<eT>& x, std::ostream& f)
         {
         f.put(' ');
         
-        if( (is_float<eT>::value) || (is_double<eT>::value) )
+        if(is_real<eT>::value)
           {
           f.width(std::streamsize(cell_width));
           }
@@ -3267,15 +3279,19 @@ diskio::save_arma_ascii(const Cube<eT>& x, std::ostream& f)
   
   uword cell_width;
   
-  // TODO: need sane values for complex numbers
-  
-  if( (is_float<eT>::value) || (is_double<eT>::value) )
+  if(is_real<eT>::value)
     {
     f.setf(ios::scientific);
     f.precision(14);
     cell_width = 22;
     }
-    
+  
+  if(is_cx<eT>::value)
+    {
+    f.setf(ios::scientific);
+    f.precision(14);
+    }
+  
   for(uword slice=0; slice < x.n_slices; ++slice)
     {
     for(uword row=0; row < x.n_rows; ++row)
@@ -3284,7 +3300,7 @@ diskio::save_arma_ascii(const Cube<eT>& x, std::ostream& f)
         {
         f.put(' ');
         
-        if( (is_float<eT>::value) || (is_double<eT>::value) )        
+        if(is_real<eT>::value)
           {
           f.width(std::streamsize(cell_width));
           }

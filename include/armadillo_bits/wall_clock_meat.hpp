@@ -83,8 +83,8 @@ wall_clock::toc()
       {
       gettimeofday(&posix_time2, 0);
       
-      const double tmp_time1 = posix_time1.tv_sec + posix_time1.tv_usec * 1.0e-6;
-      const double tmp_time2 = posix_time2.tv_sec + posix_time2.tv_usec * 1.0e-6;
+      const double tmp_time1 = double(posix_time1.tv_sec) + double(posix_time1.tv_usec) * 1.0e-6;
+      const double tmp_time2 = double(posix_time2.tv_sec) + double(posix_time2.tv_usec) * 1.0e-6;
       
       return tmp_time2 - tmp_time1;
       }

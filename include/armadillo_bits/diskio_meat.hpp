@@ -1624,6 +1624,8 @@ diskio::load_csv_ascii(Mat<eT>& x, std::istream& f, std::string&)
   {
   arma_extra_debug_sigprint();
   
+  // TODO: add handling of complex numbers, with each element stored in "a+ib" format
+  
   bool load_okay = f.good();
   
   f.clear();

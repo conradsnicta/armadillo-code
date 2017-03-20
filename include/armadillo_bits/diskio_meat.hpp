@@ -1008,7 +1008,7 @@ diskio::save_csv_ascii(const Mat<eT>& x, std::ostream& f)
   
   const ios::fmtflags orig_flags = f.flags();
   
-  // TODO: need to write each complex elements as "a+ib" instead of the default "(a,b)"
+  // TODO: need to write each complex element as "a+ib" instead of the default "(a,b)"
   
   if( (is_float<eT>::value) || (is_double<eT>::value) )
     {

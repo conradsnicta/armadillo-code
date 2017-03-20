@@ -318,6 +318,10 @@
 
 #if defined(__INTEL_COMPILER)
   
+  #if (__INTEL_COMPILER == 9999)
+    #error "*** Need a newer compiler ***"
+  #endif
+  
   #if (__INTEL_COMPILER < 1300)
     #error "*** Need a newer compiler ***"
   #endif

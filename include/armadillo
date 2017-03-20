@@ -26,7 +26,7 @@
 //   where A is a major version number, B is a minor version number,
 //   and C is a patch level (indicating bug fixes).
 // 
-// * Within a major version (eg. 7), minor versions have public API that
+// * Within a major version (eg. 7), each minor version has a public API that
 //   strongly strives to be backwards compatible (at the source level) with the
 //   public API of preceding minor versions. For example, user code written for
 //   version 7.100 should work with version 7.200, 7.300, 7.400, etc. However,

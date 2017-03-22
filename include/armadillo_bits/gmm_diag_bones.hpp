@@ -86,8 +86,8 @@ class gmm_diag
   inline ~gmm_diag();
   inline  gmm_diag();
   
-  inline            gmm_diag(const gmm_diag& x);
-  inline gmm_diag& operator=(const gmm_diag& x);
+  inline                  gmm_diag(const gmm_diag& x);
+  inline const gmm_diag& operator=(const gmm_diag& x);
   
   inline      gmm_diag(const uword in_n_dims, const uword in_n_gaus);
   inline void    reset(const uword in_n_dims, const uword in_n_gaus);

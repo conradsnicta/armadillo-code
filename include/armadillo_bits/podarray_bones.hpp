@@ -46,8 +46,8 @@ class podarray
   inline ~podarray();
   inline  podarray();
   
-  inline           podarray (const podarray& x);
-  inline podarray& operator=(const podarray& x);
+  inline                 podarray (const podarray& x);
+  inline const podarray& operator=(const podarray& x);
   
   arma_inline explicit podarray(const uword new_N);
   

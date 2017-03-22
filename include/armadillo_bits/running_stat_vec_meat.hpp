@@ -58,7 +58,7 @@ running_stat_vec<obj_type>::running_stat_vec(const running_stat_vec<obj_type>& i
 
 template<typename obj_type>
 inline
-const running_stat_vec<obj_type>&
+running_stat_vec<obj_type>&
 running_stat_vec<obj_type>::operator=(const running_stat_vec<obj_type>& in_rsv)
   {
   arma_extra_debug_sigprint();

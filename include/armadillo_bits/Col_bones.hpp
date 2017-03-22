@@ -40,30 +40,30 @@ class Col : public Mat<eT>
   template<typename fill_type> inline Col(const uword in_rows, const uword in_cols, const fill::fill_class<fill_type>& f);
   template<typename fill_type> inline Col(const SizeMat& s,                         const fill::fill_class<fill_type>& f);
   
-  inline                  Col(const char*        text);
-  inline const Col& operator=(const char*        text);
+  inline            Col(const char*        text);
+  inline Col& operator=(const char*        text);
   
-  inline                  Col(const std::string& text);
-  inline const Col& operator=(const std::string& text);
+  inline            Col(const std::string& text);
+  inline Col& operator=(const std::string& text);
   
-  inline                  Col(const std::vector<eT>& x);
-  inline const Col& operator=(const std::vector<eT>& x);
+  inline            Col(const std::vector<eT>& x);
+  inline Col& operator=(const std::vector<eT>& x);
   
   #if defined(ARMA_USE_CXX11)
-  inline                  Col(const std::initializer_list<eT>& list);
-  inline const Col& operator=(const std::initializer_list<eT>& list);
+  inline            Col(const std::initializer_list<eT>& list);
+  inline Col& operator=(const std::initializer_list<eT>& list);
   
-  inline                  Col(Col&& m);
-  inline const Col& operator=(Col&& m);
+  inline            Col(Col&& m);
+  inline Col& operator=(Col&& m);
   #endif
   
   inline explicit Col(const SpCol<eT>& X);
   
-  inline const Col& operator=(const eT val);
-  inline const Col& operator=(const Col& m);
+  inline Col& operator=(const eT val);
+  inline Col& operator=(const Col& m);
   
-  template<typename T1> inline                   Col(const Base<eT,T1>& X);
-  template<typename T1> inline const Col&  operator=(const Base<eT,T1>& X);
+  template<typename T1> inline             Col(const Base<eT,T1>& X);
+  template<typename T1> inline Col&  operator=(const Base<eT,T1>& X);
   
   inline Col(      eT* aux_mem, const uword aux_length, const bool copy_aux_mem = true, const bool strict = false);
   inline Col(const eT* aux_mem, const uword aux_length);
@@ -71,11 +71,11 @@ class Col : public Mat<eT>
   template<typename T1, typename T2>
   inline explicit Col(const Base<pod_type,T1>& A, const Base<pod_type,T2>& B);
   
-  template<typename T1> inline                  Col(const BaseCube<eT,T1>& X);
-  template<typename T1> inline const Col& operator=(const BaseCube<eT,T1>& X);
+  template<typename T1> inline            Col(const BaseCube<eT,T1>& X);
+  template<typename T1> inline Col& operator=(const BaseCube<eT,T1>& X);
   
-  inline                  Col(const subview_cube<eT>& X);
-  inline const Col& operator=(const subview_cube<eT>& X);
+  inline            Col(const subview_cube<eT>& X);
+  inline Col& operator=(const subview_cube<eT>& X);
   
   inline mat_injector<Col> operator<<(const eT val);
   
@@ -201,25 +201,25 @@ class Col<eT>::fixed : public Col<eT>
   inline fixed(const char*        text);
   inline fixed(const std::string& text);
   
-  template<typename T1> inline const Col& operator=(const Base<eT,T1>& A);
+  template<typename T1> inline Col& operator=(const Base<eT,T1>& A);
   
-  inline const Col& operator=(const eT val);
-  inline const Col& operator=(const char*        text);
-  inline const Col& operator=(const std::string& text);
-  inline const Col& operator=(const subview_cube<eT>& X);
+  inline Col& operator=(const eT val);
+  inline Col& operator=(const char*        text);
+  inline Col& operator=(const std::string& text);
+  inline Col& operator=(const subview_cube<eT>& X);
   
   using Col<eT>::operator();
   
   #if defined(ARMA_USE_CXX11)
-    inline                fixed(const std::initializer_list<eT>& list);
-    inline const Col& operator=(const std::initializer_list<eT>& list);
+    inline          fixed(const std::initializer_list<eT>& list);
+    inline Col& operator=(const std::initializer_list<eT>& list);
   #endif
   
-  arma_inline const Col& operator=(const fixed<fixed_n_elem>& X);
+  arma_inline Col& operator=(const fixed<fixed_n_elem>& X);
   
   #if defined(ARMA_GOOD_COMPILER)
-    template<typename T1,              typename   eop_type> inline const Col& operator=(const   eOp<T1,       eop_type>& X);
-    template<typename T1, typename T2, typename eglue_type> inline const Col& operator=(const eGlue<T1, T2, eglue_type>& X);
+    template<typename T1,              typename   eop_type> inline Col& operator=(const   eOp<T1,       eop_type>& X);
+    template<typename T1, typename T2, typename eglue_type> inline Col& operator=(const eGlue<T1, T2, eglue_type>& X);
   #endif
   
   arma_inline const Op< Col_fixed_type, op_htrans >  t() const;

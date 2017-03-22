@@ -35,19 +35,19 @@ class SpCol : public SpMat<eT>
   inline explicit SpCol(const uword n_elem);
   inline          SpCol(const uword in_rows, const uword in_cols);
   
-  inline                  SpCol(const char*        text);
-  inline const SpCol& operator=(const char*        text);
+  inline            SpCol(const char*        text);
+  inline SpCol& operator=(const char*        text);
   
-  inline                  SpCol(const std::string& text);
-  inline const SpCol& operator=(const std::string& text);
+  inline            SpCol(const std::string& text);
+  inline SpCol& operator=(const std::string& text);
   
-  inline const SpCol& operator=(const eT val);
+  inline SpCol& operator=(const eT val);
   
-  template<typename T1> inline                  SpCol(const Base<eT,T1>& X);
-  template<typename T1> inline const SpCol& operator=(const Base<eT,T1>& X);
+  template<typename T1> inline            SpCol(const Base<eT,T1>& X);
+  template<typename T1> inline SpCol& operator=(const Base<eT,T1>& X);
   
-  template<typename T1> inline                  SpCol(const SpBase<eT,T1>& X);
-  template<typename T1> inline const SpCol& operator=(const SpBase<eT,T1>& X);
+  template<typename T1> inline            SpCol(const SpBase<eT,T1>& X);
+  template<typename T1> inline SpCol& operator=(const SpBase<eT,T1>& X);
   
   template<typename T1, typename T2>
   inline explicit SpCol(const SpBase<pod_type,T1>& A, const SpBase<pod_type,T2>& B);

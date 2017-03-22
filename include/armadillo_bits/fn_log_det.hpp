@@ -121,7 +121,7 @@ log_det
   
   log_det(out_val, out_sign, X.get_ref());
   
-  return (is_cx<eT>::yes) ? std::complex<T>(out_val) : ( (out_sign >= T(1)) ? std::complex<T>(access::tmp_real(out_val),T(0)) : std::complex<T>(access::tmp_real(out_val),Datum<T>::pi) );
+  return (out_sign >= T(1)) ? std::complex<T>(out_val) : (out_val + std::complex<T>(T(0),Datum<T>::pi));
   }
 
 

@@ -140,7 +140,7 @@ Col<eT>::Col(const char* text)
 //! construct a column vector from specified text
 template<typename eT>
 inline
-const Col<eT>&
+Col<eT>&
 Col<eT>::operator=(const char* text)
   {
   arma_extra_debug_sigprint();
@@ -179,7 +179,7 @@ Col<eT>::Col(const std::string& text)
 //! construct a column vector from specified text
 template<typename eT>
 inline
-const Col<eT>&
+Col<eT>&
 Col<eT>::operator=(const std::string& text)
   {
   arma_extra_debug_sigprint();
@@ -216,7 +216,7 @@ Col<eT>::Col(const std::vector<eT>& x)
 //! create a column vector from std::vector
 template<typename eT>
 inline
-const Col<eT>&
+Col<eT>&
 Col<eT>::operator=(const std::vector<eT>& x)
   {
   arma_extra_debug_sigprint();
@@ -254,7 +254,7 @@ Col<eT>::operator=(const std::vector<eT>& x)
   
   template<typename eT>
   inline
-  const Col<eT>&
+  Col<eT>&
   Col<eT>::operator=(const std::initializer_list<eT>& list)
     {
     arma_extra_debug_sigprint();
@@ -314,7 +314,7 @@ Col<eT>::operator=(const std::vector<eT>& x)
   
   template<typename eT>
   inline
-  const Col<eT>&
+  Col<eT>&
   Col<eT>::operator=(Col<eT>&& X)
     {
     arma_extra_debug_sigprint(arma_str::format("this = %x   X = %x") % this % &X);
@@ -355,7 +355,7 @@ Col<eT>::Col(const SpCol<eT>& X)
 
 template<typename eT>
 inline
-const Col<eT>&
+Col<eT>&
 Col<eT>::operator=(const eT val)
   {
   arma_extra_debug_sigprint();
@@ -369,7 +369,7 @@ Col<eT>::operator=(const eT val)
 
 template<typename eT>
 inline
-const Col<eT>&
+Col<eT>&
 Col<eT>::operator=(const Col<eT>& X)
   {
   arma_extra_debug_sigprint();
@@ -397,7 +397,7 @@ Col<eT>::Col(const Base<eT,T1>& X)
 template<typename eT>
 template<typename T1>
 inline
-const Col<eT>&
+Col<eT>&
 Col<eT>::operator=(const Base<eT,T1>& X)
   {
   arma_extra_debug_sigprint();
@@ -470,7 +470,7 @@ Col<eT>::Col(const BaseCube<eT,T1>& X)
 template<typename eT>
 template<typename T1>
 inline
-const Col<eT>&
+Col<eT>&
 Col<eT>::operator=(const BaseCube<eT,T1>& X)
   {
   arma_extra_debug_sigprint();
@@ -497,7 +497,7 @@ Col<eT>::Col(const subview_cube<eT>& X)
 
 template<typename eT>
 inline
-const Col<eT>&
+Col<eT>&
 Col<eT>::operator=(const subview_cube<eT>& X)
   {
   arma_extra_debug_sigprint();
@@ -1239,7 +1239,7 @@ Col<eT>::fixed<fixed_n_elem>::fixed(const std::string& text)
 template<typename eT>
 template<uword fixed_n_elem>
 template<typename T1>
-const Col<eT>&
+Col<eT>&
 Col<eT>::fixed<fixed_n_elem>::operator=(const Base<eT,T1>& A)
   {
   arma_extra_debug_sigprint();
@@ -1253,7 +1253,7 @@ Col<eT>::fixed<fixed_n_elem>::operator=(const Base<eT,T1>& A)
 
 template<typename eT>
 template<uword fixed_n_elem>
-const Col<eT>&
+Col<eT>&
 Col<eT>::fixed<fixed_n_elem>::operator=(const eT val)
   {
   arma_extra_debug_sigprint();
@@ -1267,7 +1267,7 @@ Col<eT>::fixed<fixed_n_elem>::operator=(const eT val)
 
 template<typename eT>
 template<uword fixed_n_elem>
-const Col<eT>&
+Col<eT>&
 Col<eT>::fixed<fixed_n_elem>::operator=(const char* text)
   {
   arma_extra_debug_sigprint();
@@ -1283,7 +1283,7 @@ Col<eT>::fixed<fixed_n_elem>::operator=(const char* text)
 
 template<typename eT>
 template<uword fixed_n_elem>
-const Col<eT>&
+Col<eT>&
 Col<eT>::fixed<fixed_n_elem>::operator=(const std::string& text)
   {
   arma_extra_debug_sigprint();
@@ -1299,7 +1299,7 @@ Col<eT>::fixed<fixed_n_elem>::operator=(const std::string& text)
 
 template<typename eT>
 template<uword fixed_n_elem>
-const Col<eT>&
+Col<eT>&
 Col<eT>::fixed<fixed_n_elem>::operator=(const subview_cube<eT>& X)
   {
   arma_extra_debug_sigprint();
@@ -1329,7 +1329,7 @@ Col<eT>::fixed<fixed_n_elem>::operator=(const subview_cube<eT>& X)
   template<typename eT>
   template<uword fixed_n_elem>
   inline
-  const Col<eT>&
+  Col<eT>&
   Col<eT>::fixed<fixed_n_elem>::operator=(const std::initializer_list<eT>& list)
     {
     arma_extra_debug_sigprint();
@@ -1354,7 +1354,7 @@ Col<eT>::fixed<fixed_n_elem>::operator=(const subview_cube<eT>& X)
 template<typename eT>
 template<uword fixed_n_elem>
 arma_inline
-const Col<eT>&
+Col<eT>&
 Col<eT>::fixed<fixed_n_elem>::operator=(const fixed<fixed_n_elem>& X)
   {
   arma_extra_debug_sigprint();
@@ -1378,7 +1378,7 @@ Col<eT>::fixed<fixed_n_elem>::operator=(const fixed<fixed_n_elem>& X)
   template<uword fixed_n_elem>
   template<typename T1, typename eop_type>
   inline
-  const Col<eT>&
+  Col<eT>&
   Col<eT>::fixed<fixed_n_elem>::operator=(const eOp<T1, eop_type>& X)
     {
     arma_extra_debug_sigprint();
@@ -1411,7 +1411,7 @@ Col<eT>::fixed<fixed_n_elem>::operator=(const fixed<fixed_n_elem>& X)
   template<uword fixed_n_elem>
   template<typename T1, typename T2, typename eglue_type>
   inline
-  const Col<eT>&
+  Col<eT>&
   Col<eT>::fixed<fixed_n_elem>::operator=(const eGlue<T1, T2, eglue_type>& X)
     {
     arma_extra_debug_sigprint();

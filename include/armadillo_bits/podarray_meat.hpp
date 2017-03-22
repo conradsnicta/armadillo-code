@@ -62,7 +62,7 @@ podarray<eT>::podarray(const podarray& x)
 
 template<typename eT>
 inline
-const podarray<eT>&
+podarray<eT>&
 podarray<eT>::operator=(const podarray& x)
   {
   arma_extra_debug_sigprint();

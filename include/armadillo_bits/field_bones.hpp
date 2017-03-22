@@ -53,11 +53,11 @@ class field
   inline ~field();
   inline  field();
   
-  inline                  field(const field& x);
-  inline const field& operator=(const field& x);
+  inline            field(const field& x);
+  inline field& operator=(const field& x);
   
-  inline                  field(const subview_field<oT>& x);
-  inline const field& operator=(const subview_field<oT>& x);
+  inline            field(const subview_field<oT>& x);
+  inline field& operator=(const subview_field<oT>& x);
   
   inline explicit field(const uword n_elem_in);
   inline explicit field(const uword n_rows_in, const uword n_cols_in);
@@ -72,14 +72,14 @@ class field
   inline void  set_size(const SizeCube& s);
   
   #if defined(ARMA_USE_CXX11)
-  inline                  field(const std::initializer_list<oT>& list);
-  inline const field& operator=(const std::initializer_list<oT>& list);
+  inline            field(const std::initializer_list<oT>& list);
+  inline field& operator=(const std::initializer_list<oT>& list);
   
-  inline                  field(const std::initializer_list< std::initializer_list<oT> >& list);
-  inline const field& operator=(const std::initializer_list< std::initializer_list<oT> >& list);
+  inline            field(const std::initializer_list< std::initializer_list<oT> >& list);
+  inline field& operator=(const std::initializer_list< std::initializer_list<oT> >& list);
   
-  inline                  field(field&& X);
-  inline const field& operator=(field&& X);
+  inline            field(field&& X);
+  inline field& operator=(field&& X);
   #endif
   
   template<typename oT2>

@@ -74,7 +74,7 @@ field<oT>::field(const field& x)
 //! construct a field from a given field
 template<typename oT>
 inline
-const field<oT>&
+field<oT>&
 field<oT>::operator=(const field& x)
   {
   arma_extra_debug_sigprint();
@@ -105,7 +105,7 @@ field<oT>::field(const subview_field<oT>& X)
 //! construct a field from subview_field (e.g. construct a field from a delayed subfield operation)
 template<typename oT>
 inline
-const field<oT>&
+field<oT>&
 field<oT>::operator=(const subview_field<oT>& X)
   {
   arma_extra_debug_sigprint();
@@ -279,7 +279,7 @@ field<oT>::set_size(const SizeCube& s)
   
   template<typename oT>
   inline
-  const field<oT>&
+  field<oT>&
   field<oT>::operator=(const std::initializer_list<oT>& list)
     {
     arma_extra_debug_sigprint();
@@ -317,7 +317,7 @@ field<oT>::set_size(const SizeCube& s)
   
   template<typename oT>
   inline
-  const field<oT>&
+  field<oT>&
   field<oT>::operator=(const std::initializer_list< std::initializer_list<oT> >& list)
     {
     arma_extra_debug_sigprint();
@@ -404,7 +404,7 @@ field<oT>::set_size(const SizeCube& s)
   
   template<typename oT>
   inline
-  const field<oT>&
+  field<oT>&
   field<oT>::operator=(field<oT>&& X)
     {
     arma_extra_debug_sigprint(arma_str::format("this = %x   X = %x") % this % &X);

@@ -35,19 +35,19 @@ class SpRow : public SpMat<eT>
   inline explicit SpRow(const uword N);
   inline          SpRow(const uword in_rows, const uword in_cols);
   
-  inline                  SpRow(const char*        text);
-  inline const SpRow& operator=(const char*        text);
+  inline            SpRow(const char*        text);
+  inline SpRow& operator=(const char*        text);
   
-  inline                  SpRow(const std::string& text);
-  inline const SpRow& operator=(const std::string& text);
+  inline            SpRow(const std::string& text);
+  inline SpRow& operator=(const std::string& text);
   
-  inline const SpRow& operator=(const eT val);
+  inline SpRow& operator=(const eT val);
   
-  template<typename T1> inline                  SpRow(const Base<eT,T1>& X);
-  template<typename T1> inline const SpRow& operator=(const Base<eT,T1>& X);
+  template<typename T1> inline            SpRow(const Base<eT,T1>& X);
+  template<typename T1> inline SpRow& operator=(const Base<eT,T1>& X);
   
-  template<typename T1> inline                  SpRow(const SpBase<eT,T1>& X);
-  template<typename T1> inline const SpRow& operator=(const SpBase<eT,T1>& X);
+  template<typename T1> inline            SpRow(const SpBase<eT,T1>& X);
+  template<typename T1> inline SpRow& operator=(const SpBase<eT,T1>& X);
   
   template<typename T1, typename T2>
   inline explicit SpRow(const SpBase<pod_type,T1>& A, const SpBase<pod_type,T2>& B);

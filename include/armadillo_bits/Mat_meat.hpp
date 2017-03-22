@@ -8200,7 +8200,7 @@ Mat<eT>::fixed<fixed_n_rows, fixed_n_cols>::fixed(const std::string& text)
   template<typename eT>
   template<uword fixed_n_rows, uword fixed_n_cols>
   inline
-  Mat<eT>&
+  Mat<eT>::fixed<fixed_n_rows, fixed_n_cols>&
   Mat<eT>::fixed<fixed_n_rows, fixed_n_cols>::operator=(const std::initializer_list<eT>& list)
     {
     arma_extra_debug_sigprint();
@@ -8236,7 +8236,7 @@ Mat<eT>::fixed<fixed_n_rows, fixed_n_cols>::fixed(const std::string& text)
   template<typename eT>
   template<uword fixed_n_rows, uword fixed_n_cols>
   inline
-  Mat<eT>&
+  Mat<eT>::fixed<fixed_n_rows, fixed_n_cols>&
   Mat<eT>::fixed<fixed_n_rows, fixed_n_cols>::operator=(const std::initializer_list< std::initializer_list<eT> >& list)
     {
     arma_extra_debug_sigprint();
@@ -8253,7 +8253,7 @@ Mat<eT>::fixed<fixed_n_rows, fixed_n_cols>::fixed(const std::string& text)
 template<typename eT>
 template<uword fixed_n_rows, uword fixed_n_cols>
 arma_inline
-Mat<eT>&
+Mat<eT>::fixed<fixed_n_rows, fixed_n_cols>&
 Mat<eT>::fixed<fixed_n_rows, fixed_n_cols>::operator=(const fixed<fixed_n_rows, fixed_n_cols>& X)
   {
   arma_extra_debug_sigprint();
@@ -8277,7 +8277,7 @@ Mat<eT>::fixed<fixed_n_rows, fixed_n_cols>::operator=(const fixed<fixed_n_rows, 
   template<uword fixed_n_rows, uword fixed_n_cols>
   template<typename T1, typename eop_type>
   inline
-  Mat<eT>&
+  Mat<eT>::fixed<fixed_n_rows, fixed_n_cols>&
   Mat<eT>::fixed<fixed_n_rows, fixed_n_cols>::operator=(const eOp<T1, eop_type>& X)
     {
     arma_extra_debug_sigprint();
@@ -8310,7 +8310,7 @@ Mat<eT>::fixed<fixed_n_rows, fixed_n_cols>::operator=(const fixed<fixed_n_rows, 
   template<uword fixed_n_rows, uword fixed_n_cols>
   template<typename T1, typename T2, typename eglue_type>
   inline
-  Mat<eT>&
+  Mat<eT>::fixed<fixed_n_rows, fixed_n_cols>&
   Mat<eT>::fixed<fixed_n_rows, fixed_n_cols>::operator=(const eGlue<T1, T2, eglue_type>& X)
     {
     arma_extra_debug_sigprint();

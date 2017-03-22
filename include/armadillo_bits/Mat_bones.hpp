@@ -767,18 +767,18 @@ class Mat<eT>::fixed : public Mat<eT>
   using Mat<eT>::operator();
   
   #if defined(ARMA_USE_CXX11)
-    inline          fixed(const std::initializer_list<eT>& list);
-    inline Mat& operator=(const std::initializer_list<eT>& list);
+    inline            fixed(const std::initializer_list<eT>& list);
+    inline fixed& operator=(const std::initializer_list<eT>& list);
     
-    inline          fixed(const std::initializer_list< std::initializer_list<eT> >& list);
-    inline Mat& operator=(const std::initializer_list< std::initializer_list<eT> >& list);
+    inline            fixed(const std::initializer_list< std::initializer_list<eT> >& list);
+    inline fixed& operator=(const std::initializer_list< std::initializer_list<eT> >& list);
   #endif
   
-  arma_inline Mat& operator=(const fixed<fixed_n_rows, fixed_n_cols>& X);
+  arma_inline fixed& operator=(const fixed<fixed_n_rows, fixed_n_cols>& X);
   
   #if defined(ARMA_GOOD_COMPILER)
-    template<typename T1,              typename   eop_type> inline Mat& operator=(const   eOp<T1,       eop_type>& X);
-    template<typename T1, typename T2, typename eglue_type> inline Mat& operator=(const eGlue<T1, T2, eglue_type>& X);
+    template<typename T1,              typename   eop_type> inline fixed& operator=(const   eOp<T1,       eop_type>& X);
+    template<typename T1, typename T2, typename eglue_type> inline fixed& operator=(const eGlue<T1, T2, eglue_type>& X);
   #endif
   
   arma_inline const Op< Mat_fixed_type, op_htrans >  t() const;

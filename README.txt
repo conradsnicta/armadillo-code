@@ -26,10 +26,11 @@ Contents
 11: Support for C++11/C++14 Features
 
 12: API Documentation
-13: Bug Reports and Frequently Asked Questions
+13: API Stability and Versioning
+14: Bug Reports and Frequently Asked Questions
 
-14: MEX Interface to Octave/Matlab
-15: Related Software
+15: MEX Interface to Octave/Matlab
+16: Related Software
 
 
 
@@ -391,7 +392,43 @@ which can be viewed with a web browser.
 
 
 
-13: Bug Reports and Frequently Asked Questions
+13: API Stability and Versioning
+================================
+
+Each release of Armadillo has its public API (functions, classes, constants)
+described in the accompanying API documentation (docs.html) specific
+to that release.
+
+Each release of Armadillo has its full version specified as A.B.C,
+where A is a major version number, B is a minor version number,
+and C is a patch level (indicating bug fixes).
+
+Within a major version (eg. 7), each minor version has a public API that
+strongly strives to be backwards compatible (at the source level) with the
+public API of preceding minor versions. For example, user code written for
+version 7.100 should work with version 7.200, 7.300, 7.400, etc. However,
+as later minor versions may have more features (API extensions) than
+preceding minor versions, user code specifically written for version 7.400
+may not work with 7.300.
+
+An increase in the patch level, while the major and minor versions are retained,
+indicates modifications to the code and/or documentation which aim to fix bugs
+without altering the public API.
+
+We don't like changes to existing public API and strongly prefer not to break
+any user software. However, to allow evolution, we reserve the right to
+alter the public API in future major versions of Armadillo while remaining
+backwards compatible in as many cases as possible (eg. major version 8 may
+have slightly different public API than major version 7).
+
+CAVEAT: any function, class, constant or other code _not_ explicitly described
+in the public API documentation is considered as part of the underlying internal
+implementation details, and may change or be removed without notice.
+(In other words, don't use internal functionality).
+
+
+
+14: Bug Reports and Frequently Asked Questions
 ==============================================
 
 Armadillo has gone through extensive testing and
@@ -414,7 +451,7 @@ answers to frequently asked questions are at:
 
 
 
-14: MEX Interface to Octave/Matlab
+15: MEX Interface to Octave/Matlab
 ==================================
 
 The "mex_interface" folder contains examples of how to interface
@@ -422,7 +459,7 @@ Octave/Matlab with C++ code that uses Armadillo matrices.
 
 
 
-15: Related Software
+16: Related Software
 ====================
 
 * MLPACK: C++ library for machine learning and pattern recognition, built on top of Armadillo.

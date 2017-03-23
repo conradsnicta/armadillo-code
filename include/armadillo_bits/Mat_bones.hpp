@@ -85,11 +85,11 @@ class Mat : public Base< eT, Mat<eT> >
   inline Mat(      eT* aux_mem, const uword aux_n_rows, const uword aux_n_cols, const bool copy_aux_mem = true, const bool strict = false);
   inline Mat(const eT* aux_mem, const uword aux_n_rows, const uword aux_n_cols);
   
-  arma_inline Mat&  operator=(const eT val);
-  arma_inline Mat& operator+=(const eT val);
-  arma_inline Mat& operator-=(const eT val);
-  arma_inline Mat& operator*=(const eT val);
-  arma_inline Mat& operator/=(const eT val);
+  inline Mat&  operator=(const eT val);
+  inline Mat& operator+=(const eT val);
+  inline Mat& operator-=(const eT val);
+  inline Mat& operator*=(const eT val);
+  inline Mat& operator/=(const eT val);
   
   inline             Mat(const Mat& m);
   inline Mat&  operator=(const Mat& m);
@@ -818,17 +818,17 @@ class Mat_aux
   {
   public:
 
-  template<typename eT> arma_inline static void prefix_pp(Mat<eT>& x);
-  template<typename T>  arma_inline static void prefix_pp(Mat< std::complex<T> >& x);
+  template<typename eT> inline static void prefix_pp(Mat<eT>& x);
+  template<typename T>  inline static void prefix_pp(Mat< std::complex<T> >& x);
   
-  template<typename eT> arma_inline static void postfix_pp(Mat<eT>& x);
-  template<typename T>  arma_inline static void postfix_pp(Mat< std::complex<T> >& x);
+  template<typename eT> inline static void postfix_pp(Mat<eT>& x);
+  template<typename T>  inline static void postfix_pp(Mat< std::complex<T> >& x);
   
-  template<typename eT> arma_inline static void prefix_mm(Mat<eT>& x);
-  template<typename T>  arma_inline static void prefix_mm(Mat< std::complex<T> >& x);
+  template<typename eT> inline static void prefix_mm(Mat<eT>& x);
+  template<typename T>  inline static void prefix_mm(Mat< std::complex<T> >& x);
   
-  template<typename eT> arma_inline static void postfix_mm(Mat<eT>& x);
-  template<typename T>  arma_inline static void postfix_mm(Mat< std::complex<T> >& x);
+  template<typename eT> inline static void postfix_mm(Mat<eT>& x);
+  template<typename T>  inline static void postfix_mm(Mat< std::complex<T> >& x);
   
   template<typename eT, typename T1> inline static void set_real(Mat<eT>&                out, const Base<eT,T1>& X);
   template<typename T,  typename T1> inline static void set_real(Mat< std::complex<T> >& out, const Base< T,T1>& X);

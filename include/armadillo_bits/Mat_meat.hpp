@@ -700,7 +700,7 @@ Mat<eT>::operator=(const std::vector<eT>& x)
 //! Set the matrix to be equal to the specified scalar.
 //! NOTE: the size of the matrix will be 1x1
 template<typename eT>
-arma_inline
+inline
 Mat<eT>&
 Mat<eT>::operator=(const eT val)
   {
@@ -715,7 +715,7 @@ Mat<eT>::operator=(const eT val)
 
 //! In-place addition of a scalar to all elements of the matrix
 template<typename eT>
-arma_inline
+inline
 Mat<eT>&
 Mat<eT>::operator+=(const eT val)
   {
@@ -730,7 +730,7 @@ Mat<eT>::operator+=(const eT val)
 
 //! In-place subtraction of a scalar from all elements of the matrix
 template<typename eT>
-arma_inline
+inline
 Mat<eT>&
 Mat<eT>::operator-=(const eT val)
   {
@@ -745,7 +745,7 @@ Mat<eT>::operator-=(const eT val)
 
 //! In-place multiplication of all elements of the matrix with a scalar
 template<typename eT>
-arma_inline
+inline
 Mat<eT>&
 Mat<eT>::operator*=(const eT val)
   {
@@ -760,7 +760,7 @@ Mat<eT>::operator*=(const eT val)
 
 //! In-place division of all elements of the matrix with a scalar
 template<typename eT>
-arma_inline
+inline
 Mat<eT>&
 Mat<eT>::operator/=(const eT val)
   {
@@ -8658,7 +8658,7 @@ Mat<eT>::fixed<fixed_n_rows, fixed_n_cols>::ones()
 
 //! prefix ++
 template<typename eT>
-arma_inline
+inline
 void
 Mat_aux::prefix_pp(Mat<eT>& x)
   {
@@ -8683,7 +8683,7 @@ Mat_aux::prefix_pp(Mat<eT>& x)
 
 //! prefix ++ for complex numbers (work around for limitations of the std::complex class)
 template<typename T>
-arma_inline
+inline
 void
 Mat_aux::prefix_pp(Mat< std::complex<T> >& x)
   {
@@ -8694,7 +8694,7 @@ Mat_aux::prefix_pp(Mat< std::complex<T> >& x)
 
 //! postfix ++
 template<typename eT>
-arma_inline
+inline
 void
 Mat_aux::postfix_pp(Mat<eT>& x)
   {
@@ -8719,7 +8719,7 @@ Mat_aux::postfix_pp(Mat<eT>& x)
 
 //! postfix ++ for complex numbers (work around for limitations of the std::complex class)
 template<typename T>
-arma_inline
+inline
 void
 Mat_aux::postfix_pp(Mat< std::complex<T> >& x)
   {
@@ -8730,7 +8730,7 @@ Mat_aux::postfix_pp(Mat< std::complex<T> >& x)
 
 //! prefix --
 template<typename eT>
-arma_inline
+inline
 void
 Mat_aux::prefix_mm(Mat<eT>& x)
   {
@@ -8755,7 +8755,7 @@ Mat_aux::prefix_mm(Mat<eT>& x)
 
 //! prefix -- for complex numbers (work around for limitations of the std::complex class)
 template<typename T>
-arma_inline
+inline
 void
 Mat_aux::prefix_mm(Mat< std::complex<T> >& x)
   {
@@ -8766,7 +8766,7 @@ Mat_aux::prefix_mm(Mat< std::complex<T> >& x)
 
 //! postfix --
 template<typename eT>
-arma_inline
+inline
 void
 Mat_aux::postfix_mm(Mat<eT>& x)
   {
@@ -8791,7 +8791,7 @@ Mat_aux::postfix_mm(Mat<eT>& x)
 
 //! postfix ++ for complex numbers (work around for limitations of the std::complex class)
 template<typename T>
-arma_inline
+inline
 void
 Mat_aux::postfix_mm(Mat< std::complex<T> >& x)
   {

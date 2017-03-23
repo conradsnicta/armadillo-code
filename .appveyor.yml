@@ -8,3 +8,5 @@ build_script:
     cmake -G "Visual Studio 14 2015 Win64" -DBLAS_LIBRARY:FILEPATH="%APPVEYOR_BUILD_FOLDER%/OpenBLAS.0.2.14.1/lib/native/lib/x64/libopenblas.dll.a" -DLAPACK_LIBRARY:FILEPATH="%APPVEYOR_BUILD_FOLDER%/OpenBLAS.0.2.14.1/lib/native/lib/x64/libopenblas.dll.a" -DCMAKE_PREFIX:FILEPATH="%APPVEYOR_BUILD_FOLDER%/armadillo" -DBUILD_SHARED_LIBS=OFF ..
 
     "C:\Program Files (x86)\MSBuild\14.0\Bin\MSBuild.exe" "C:\projects\armadillo-code\build\armadillo.sln" /m /verbosity:quiet /p:Configuration=Release;Platform=x64
+
+    nuget pack .arma.nuspec

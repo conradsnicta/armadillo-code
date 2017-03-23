@@ -1,6 +1,9 @@
 version: 7.900.{build}
 install:
 - ps: nuget install OpenBLAS -o "${env:APPVEYOR_BUILD_FOLDER}"
+artifacts:
+  - path: '**\*.zip'
+  - path: '**\*.nupkg'
 build_script:
 - cmd: >-
     mkdir build && cd build
@@ -9,4 +12,4 @@ build_script:
 
     "C:\Program Files (x86)\MSBuild\14.0\Bin\MSBuild.exe" "C:\projects\armadillo-code\build\armadillo.sln" /m /verbosity:quiet /p:Configuration=Release;Platform=x64
 
-    nuget pack .arma.nuspec
+    cd .. && nuget pack .arma.nuspec

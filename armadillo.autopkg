@@ -1,0 +1,10 @@
+nuget{
+    nuspec{
+        id=armadillo;
+        version:1.0.0;
+    }
+    files{
+        include:{"include\**\*"}
+        lib:{"build/Release/armadillo.lib"}
+    }
+}

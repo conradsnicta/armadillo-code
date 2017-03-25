@@ -1,0 +1,24 @@
+version: 7.900.{build}
+install:
+- ps: >-
+    nuget install OpenBLAS -o "${env:APPVEYOR_BUILD_FOLDER}"
+
+    Set-ExecutionPolicy Bypass -Force
+
+    Invoke-WebRequest -OutFile CoApp.Tools.Powershell.msi http://coapp.org/files/CoApp.Tools.Powershell.msi
+
+    Start-Process -FilePath ".\CoApp.Tools.Powershell.msi" -ArgumentList "/passive" -PassThru |Wait-Process
+
+    $env:psmodulepath = "C:\Program Files (x86)\Outercurve Foundation\Modules\CoApp;$env:psmodulepath"
+build_script:
+- cmd: >-
+    mkdir build && cd build
+
+    cmake -G "Visual Studio 14 2015 Win64" -DBLAS_LIBRARY:FILEPATH="%APPVEYOR_BUILD_FOLDER%/OpenBLAS.0.2.14.1/lib/native/lib/x64/libopenblas.dll.a" -DLAPACK_LIBRARY:FILEPATH="%APPVEYOR_BUILD_FOLDER%/OpenBLAS.0.2.14.1/lib/native/lib/x64/libopenblas.dll.a" -DCMAKE_PREFIX:FILEPATH="%APPVEYOR_BUILD_FOLDER%/armadillo" -DBUILD_SHARED_LIBS=OFF ..
+
+    "C:\Program Files (x86)\MSBuild\14.0\Bin\MSBuild.exe" "C:\projects\armadillo-code\build\armadillo.sln" /m /p:Configuration=Release;Platform=x64
+test_script:
+- ps: Write-NuGetPackage ..\armadillo.autopkg
+artifacts:
+- path: '**\*.nupkg'
+- path: '**\*.lib'

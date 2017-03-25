@@ -4,7 +4,7 @@ nuget{
         version:1.0.0;
     }
     files{
-        include:{"include\**\*"}
-        lib:{"build/Release/armadillo.lib"}
+        include:{"include\**\*"};
+        lib:"build/Release/armadillo.lib"
     }
 }

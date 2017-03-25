@@ -1,7 +1,7 @@
 nuget{
     nuspec{
-        id=armadillo;
-        version:1.0.0;
+        id=armadillo-code;
+        version: 7.900.1;
     }
     files{
         include:{"include\**\*"};

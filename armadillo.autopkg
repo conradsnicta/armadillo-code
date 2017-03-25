@@ -5,6 +5,7 @@ nuget{
     }
     files{
         include:{"include\**\*"};
-        lib:"build/Release/armadillo.lib";
+        [x64]
+            lib:"build/Release/armadillo.lib";
     }
 }

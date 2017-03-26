@@ -20,7 +20,7 @@
 
 
 #define ARMA_VERSION_MAJOR 7
-#define ARMA_VERSION_MINOR 900
+#define ARMA_VERSION_MINOR 899
 #define ARMA_VERSION_PATCH 0
 #define ARMA_VERSION_NAME  "unstable development version"
 

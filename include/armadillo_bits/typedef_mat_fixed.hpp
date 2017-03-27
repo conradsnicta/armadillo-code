@@ -46,6 +46,15 @@ typedef fmat::fixed<7,7> fmat77;
 typedef fmat::fixed<8,8> fmat88;
 typedef fmat::fixed<9,9> fmat99;
 
+typedef dmat::fixed<2,2> dmat22;
+typedef dmat::fixed<3,3> dmat33;
+typedef dmat::fixed<4,4> dmat44;
+typedef dmat::fixed<5,5> dmat55;
+typedef dmat::fixed<6,6> dmat66;
+typedef dmat::fixed<7,7> dmat77;
+typedef dmat::fixed<8,8> dmat88;
+typedef dmat::fixed<9,9> dmat99;
+
 typedef mat::fixed<2,2> mat22;
 typedef mat::fixed<3,3> mat33;
 typedef mat::fixed<4,4> mat44;
@@ -63,6 +72,15 @@ typedef cx_fmat::fixed<6,6> cx_fmat66;
 typedef cx_fmat::fixed<7,7> cx_fmat77;
 typedef cx_fmat::fixed<8,8> cx_fmat88;
 typedef cx_fmat::fixed<9,9> cx_fmat99;
+
+typedef cx_dmat::fixed<2,2> cx_dmat22;
+typedef cx_dmat::fixed<3,3> cx_dmat33;
+typedef cx_dmat::fixed<4,4> cx_dmat44;
+typedef cx_dmat::fixed<5,5> cx_dmat55;
+typedef cx_dmat::fixed<6,6> cx_dmat66;
+typedef cx_dmat::fixed<7,7> cx_dmat77;
+typedef cx_dmat::fixed<8,8> cx_dmat88;
+typedef cx_dmat::fixed<9,9> cx_dmat99;
 
 typedef cx_mat::fixed<2,2> cx_mat22;
 typedef cx_mat::fixed<3,3> cx_mat33;
@@ -104,6 +122,15 @@ typedef fvec::fixed<7> fvec7;
 typedef fvec::fixed<8> fvec8;
 typedef fvec::fixed<9> fvec9;
 
+typedef dvec::fixed<2> dvec2;
+typedef dvec::fixed<3> dvec3;
+typedef dvec::fixed<4> dvec4;
+typedef dvec::fixed<5> dvec5;
+typedef dvec::fixed<6> dvec6;
+typedef dvec::fixed<7> dvec7;
+typedef dvec::fixed<8> dvec8;
+typedef dvec::fixed<9> dvec9;
+
 typedef vec::fixed<2> vec2;
 typedef vec::fixed<3> vec3;
 typedef vec::fixed<4> vec4;
@@ -121,6 +148,15 @@ typedef cx_fvec::fixed<6> cx_fvec6;
 typedef cx_fvec::fixed<7> cx_fvec7;
 typedef cx_fvec::fixed<8> cx_fvec8;
 typedef cx_fvec::fixed<9> cx_fvec9;
+
+typedef cx_dvec::fixed<2> cx_dvec2;
+typedef cx_dvec::fixed<3> cx_dvec3;
+typedef cx_dvec::fixed<4> cx_dvec4;
+typedef cx_dvec::fixed<5> cx_dvec5;
+typedef cx_dvec::fixed<6> cx_dvec6;
+typedef cx_dvec::fixed<7> cx_dvec7;
+typedef cx_dvec::fixed<8> cx_dvec8;
+typedef cx_dvec::fixed<9> cx_dvec9;
 
 typedef cx_vec::fixed<2> cx_vec2;
 typedef cx_vec::fixed<3> cx_vec3;
@@ -162,6 +198,15 @@ typedef fcolvec::fixed<7> fcolvec7;
 typedef fcolvec::fixed<8> fcolvec8;
 typedef fcolvec::fixed<9> fcolvec9;
 
+typedef dcolvec::fixed<2> dcolvec2;
+typedef dcolvec::fixed<3> dcolvec3;
+typedef dcolvec::fixed<4> dcolvec4;
+typedef dcolvec::fixed<5> dcolvec5;
+typedef dcolvec::fixed<6> dcolvec6;
+typedef dcolvec::fixed<7> dcolvec7;
+typedef dcolvec::fixed<8> dcolvec8;
+typedef dcolvec::fixed<9> dcolvec9;
+
 typedef colvec::fixed<2> colvec2;
 typedef colvec::fixed<3> colvec3;
 typedef colvec::fixed<4> colvec4;
@@ -179,6 +224,15 @@ typedef cx_fcolvec::fixed<6> cx_fcolvec6;
 typedef cx_fcolvec::fixed<7> cx_fcolvec7;
 typedef cx_fcolvec::fixed<8> cx_fcolvec8;
 typedef cx_fcolvec::fixed<9> cx_fcolvec9;
+
+typedef cx_dcolvec::fixed<2> cx_dcolvec2;
+typedef cx_dcolvec::fixed<3> cx_dcolvec3;
+typedef cx_dcolvec::fixed<4> cx_dcolvec4;
+typedef cx_dcolvec::fixed<5> cx_dcolvec5;
+typedef cx_dcolvec::fixed<6> cx_dcolvec6;
+typedef cx_dcolvec::fixed<7> cx_dcolvec7;
+typedef cx_dcolvec::fixed<8> cx_dcolvec8;
+typedef cx_dcolvec::fixed<9> cx_dcolvec9;
 
 typedef cx_colvec::fixed<2> cx_colvec2;
 typedef cx_colvec::fixed<3> cx_colvec3;
@@ -220,6 +274,15 @@ typedef frowvec::fixed<7> frowvec7;
 typedef frowvec::fixed<8> frowvec8;
 typedef frowvec::fixed<9> frowvec9;
 
+typedef drowvec::fixed<2> drowvec2;
+typedef drowvec::fixed<3> drowvec3;
+typedef drowvec::fixed<4> drowvec4;
+typedef drowvec::fixed<5> drowvec5;
+typedef drowvec::fixed<6> drowvec6;
+typedef drowvec::fixed<7> drowvec7;
+typedef drowvec::fixed<8> drowvec8;
+typedef drowvec::fixed<9> drowvec9;
+
 typedef rowvec::fixed<2> rowvec2;
 typedef rowvec::fixed<3> rowvec3;
 typedef rowvec::fixed<4> rowvec4;
@@ -237,6 +300,15 @@ typedef cx_frowvec::fixed<6> cx_frowvec6;
 typedef cx_frowvec::fixed<7> cx_frowvec7;
 typedef cx_frowvec::fixed<8> cx_frowvec8;
 typedef cx_frowvec::fixed<9> cx_frowvec9;
+
+typedef cx_drowvec::fixed<2> cx_drowvec2;
+typedef cx_drowvec::fixed<3> cx_drowvec3;
+typedef cx_drowvec::fixed<4> cx_drowvec4;
+typedef cx_drowvec::fixed<5> cx_drowvec5;
+typedef cx_drowvec::fixed<6> cx_drowvec6;
+typedef cx_drowvec::fixed<7> cx_drowvec7;
+typedef cx_drowvec::fixed<8> cx_drowvec8;
+typedef cx_drowvec::fixed<9> cx_drowvec9;
 
 typedef cx_rowvec::fixed<2> cx_rowvec2;
 typedef cx_rowvec::fixed<3> cx_rowvec3;

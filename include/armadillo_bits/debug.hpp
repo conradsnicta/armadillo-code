@@ -335,7 +335,7 @@ inline
 void
 arma_check(const bool state, const T1& x)
   {
-  if(state == true)  { arma_stop_logic_error(arma_str::str_wrapper(x)); }
+  if(state)  { arma_stop_logic_error(arma_str::str_wrapper(x)); }
   }
 
 
@@ -345,7 +345,7 @@ inline
 void
 arma_check(const bool state, const T1& x, const T2& y)
   {
-  if(state == true)  { arma_stop_logic_error( std::string(x) + std::string(y) ); }
+  if(state)  { arma_stop_logic_error( std::string(x) + std::string(y) ); }
   }
 
 
@@ -355,7 +355,7 @@ inline
 void
 arma_check_bad_alloc(const bool state, const T1& x)
   {
-  if(state == true)  { arma_stop_bad_alloc(x); }
+  if(state)  { arma_stop_bad_alloc(x); }
   }
 
 

@@ -23,7 +23,6 @@ using namespace arma;
 
 TEST_CASE("fn_spsolve_sparse_test")
   {
-  arma_rng::set_seed_random();
   // We want to spsolve a system of equations, AX = B, where we want to recover
   // X and we have A and B, and A is sparse.
   for (size_t t = 0; t < 10; ++t)
@@ -67,7 +66,6 @@ TEST_CASE("fn_spsolve_sparse_test")
 
 TEST_CASE("fn_spsolve_sparse_nonsymmetric_test")
   {
-  arma_rng::set_seed_random();
   for (size_t t = 0; t < 10; ++t)
     {
     const uword r_size = 5 * (t + 1);
@@ -110,7 +108,6 @@ TEST_CASE("fn_spsolve_sparse_nonsymmetric_test")
 
 TEST_CASE("fn_spsolve_sparse_float_test")
   {
-  arma_rng::set_seed_random();
   // We want to spsolve a system of equations, AX = B, where we want to recover
   // X and we have A and B, and A is sparse.
   for (size_t t = 0; t < 10; ++t)
@@ -154,7 +151,6 @@ TEST_CASE("fn_spsolve_sparse_float_test")
 
 TEST_CASE("fn_spsolve_sparse_nonsymmetric_float_test")
   {
-  arma_rng::set_seed_random();
   for (size_t t = 0; t < 10; ++t)
     {
     const uword r_size = 5 * (t + 1);
@@ -197,7 +193,6 @@ TEST_CASE("fn_spsolve_sparse_nonsymmetric_float_test")
 
 TEST_CASE("fn_spsolve_sparse_complex_float_test")
   {
-  arma_rng::set_seed_random();
   // We want to spsolve a system of equations, AX = B, where we want to recover
   // X and we have A and B, and A is sparse.
   for (size_t t = 0; t < 10; ++t)
@@ -242,7 +237,6 @@ TEST_CASE("fn_spsolve_sparse_complex_float_test")
 
 TEST_CASE("fn_spsolve_sparse_nonsymmetric_complex_float_test")
   {
-  arma_rng::set_seed_random();
   for (size_t t = 0; t < 10; ++t)
     {
     const uword r_size = 5 * (t + 1);
@@ -286,7 +280,6 @@ TEST_CASE("fn_spsolve_sparse_nonsymmetric_complex_float_test")
 
 TEST_CASE("fn_spsolve_sparse_complex_test")
   {
-  arma_rng::set_seed_random();
   // We want to spsolve a system of equations, AX = B, where we want to recover
   // X and we have A and B, and A is sparse.
   for (size_t t = 0; t < 10; ++t)
@@ -331,7 +324,6 @@ TEST_CASE("fn_spsolve_sparse_complex_test")
 
 TEST_CASE("fn_spsolve_sparse_nonsymmetric_complex_test")
   {
-  arma_rng::set_seed_random();
   for (size_t t = 0; t < 10; ++t)
     {
     const uword r_size = 5 * (t + 1);
@@ -375,7 +367,6 @@ TEST_CASE("fn_spsolve_sparse_nonsymmetric_complex_test")
 
 TEST_CASE("fn_spsolve_delayed_sparse_test")
   {
-  arma_rng::set_seed_random();
   const uword size = 10;
 
   mat rX;
@@ -412,7 +403,6 @@ TEST_CASE("fn_spsolve_delayed_sparse_test")
 
 TEST_CASE("fn_spsolve_superlu_solve_test")
   {
-  arma_rng::set_seed_random();
   // Solve this matrix, as in the examples:
   // [[19  0  21 21  0]
   //  [12 21   0  0  0]
@@ -457,7 +447,6 @@ TEST_CASE("fn_spsolve_superlu_solve_test")
 
 TEST_CASE("fn_spsolve_random_superlu_solve_test")
   {
-  arma_rng::set_seed_random();
   // Try to solve some random systems.
   const size_t iterations = 10;
   for (size_t it = 0; it < iterations; ++it)
@@ -490,7 +479,6 @@ TEST_CASE("fn_spsolve_random_superlu_solve_test")
 
 TEST_CASE("fn_spsolve_float_superlu_solve_test")
   {
-  arma_rng::set_seed_random();
   // Solve this matrix, as in the examples:
   // [[19  0  21 21  0]
   //  [12 21   0  0  0]
@@ -535,7 +523,6 @@ TEST_CASE("fn_spsolve_float_superlu_solve_test")
 
 TEST_CASE("fn_spsolve_float_random_superlu_solve_test")
   {
-  arma_rng::set_seed_random();
   // Try to solve some random systems.
   const size_t iterations = 10;
   for (size_t it = 0; it < iterations; ++it)
@@ -571,7 +558,6 @@ TEST_CASE("fn_spsolve_float_random_superlu_solve_test")
 
 TEST_CASE("fn_spsolve_cx_float_superlu_solve_test")
   {
-  arma_rng::set_seed_random();
   // Solve this matrix, as in the examples:
   // [[19  0  21 21  0]
   //  [12 21   0  0  0]
@@ -626,7 +612,6 @@ TEST_CASE("fn_spsolve_cx_float_superlu_solve_test")
 
 TEST_CASE("fn_spsolve_cx_float_random_superlu_solve_test")
   {
-  arma_rng::set_seed_random();
   // Try to solve some random systems.
   const size_t iterations = 10;
   for (size_t it = 0; it < iterations; ++it)
@@ -669,7 +654,6 @@ TEST_CASE("fn_spsolve_cx_float_random_superlu_solve_test")
 
 TEST_CASE("fn_spsolve_cx_superlu_solve_test")
   {
-  arma_rng::set_seed_random();
   // Solve this matrix, as in the examples:
   // [[19  0  21 21  0]
   //  [12 21   0  0  0]
@@ -724,7 +708,6 @@ TEST_CASE("fn_spsolve_cx_superlu_solve_test")
 
 TEST_CASE("fn_spsolve_cx_random_superlu_solve_test")
   {
-  arma_rng::set_seed_random();
   // Try to solve some random systems.
   const size_t iterations = 10;
   for (size_t it = 0; it < iterations; ++it)
@@ -767,7 +750,6 @@ TEST_CASE("fn_spsolve_cx_random_superlu_solve_test")
 
 TEST_CASE("fn_spsolve_function_test")
   {
-  arma_rng::set_seed_random();
   sp_mat a;
   a.sprandu(50, 50, 0.3);
   sp_mat trueX;
@@ -799,7 +781,6 @@ TEST_CASE("fn_spsolve_function_test")
 
 TEST_CASE("fn_spsolve_float_function_test")
   {
-  arma_rng::set_seed_random();
   sp_fmat a;
   a.sprandu(50, 50, 0.3);
   sp_fmat trueX;
@@ -838,7 +819,6 @@ TEST_CASE("fn_spsolve_float_function_test")
 
 TEST_CASE("fn_spsolve_cx_function_test")
   {
-  arma_rng::set_seed_random();
   sp_cx_mat a;
   a.sprandu(50, 50, 0.3);
   sp_cx_mat trueX;
@@ -880,7 +860,6 @@ TEST_CASE("fn_spsolve_cx_function_test")
 
 TEST_CASE("fn_spsolve_cx_float_function_test")
   {
-  arma_rng::set_seed_random();
   sp_cx_fmat a;
   a.sprandu(50, 50, 0.3);
   sp_cx_fmat trueX;

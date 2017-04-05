@@ -21,21 +21,9 @@ using namespace arma;
 
 #if defined(ARMA_USE_SUPERLU)
 
-TEST_CASE("fn_spsolve_create_supermatrix")
-  {
-  sp_mat a;
-  a.sprandu(10, 10, 0.3);
-
-  superlu::SuperMatrix out;
-  superlu::convert_to_supermatrix(out, a);
-
-  superlu::destroy_supermatrix(out);
-  }
-
-
-
 TEST_CASE("fn_spsolve_sparse_test")
   {
+  arma_rng::set_seed_random();
   // We want to spsolve a system of equations, AX = B, where we want to recover
   // X and we have A and B, and A is sparse.
   for (size_t t = 0; t < 10; ++t)
@@ -79,6 +67,7 @@ TEST_CASE("fn_spsolve_sparse_test")
 
 TEST_CASE("fn_spsolve_sparse_nonsymmetric_test")
   {
+  arma_rng::set_seed_random();
   for (size_t t = 0; t < 10; ++t)
     {
     const uword r_size = 5 * (t + 1);
@@ -121,6 +110,7 @@ TEST_CASE("fn_spsolve_sparse_nonsymmetric_test")
 
 TEST_CASE("fn_spsolve_sparse_float_test")
   {
+  arma_rng::set_seed_random();
   // We want to spsolve a system of equations, AX = B, where we want to recover
   // X and we have A and B, and A is sparse.
   for (size_t t = 0; t < 10; ++t)
@@ -164,6 +154,7 @@ TEST_CASE("fn_spsolve_sparse_float_test")
 
 TEST_CASE("fn_spsolve_sparse_nonsymmetric_float_test")
   {
+  arma_rng::set_seed_random();
   for (size_t t = 0; t < 10; ++t)
     {
     const uword r_size = 5 * (t + 1);
@@ -206,6 +197,7 @@ TEST_CASE("fn_spsolve_sparse_nonsymmetric_float_test")
 
 TEST_CASE("fn_spsolve_sparse_complex_float_test")
   {
+  arma_rng::set_seed_random();
   // We want to spsolve a system of equations, AX = B, where we want to recover
   // X and we have A and B, and A is sparse.
   for (size_t t = 0; t < 10; ++t)
@@ -250,6 +242,7 @@ TEST_CASE("fn_spsolve_sparse_complex_float_test")
 
 TEST_CASE("fn_spsolve_sparse_nonsymmetric_complex_float_test")
   {
+  arma_rng::set_seed_random();
   for (size_t t = 0; t < 10; ++t)
     {
     const uword r_size = 5 * (t + 1);
@@ -293,6 +286,7 @@ TEST_CASE("fn_spsolve_sparse_nonsymmetric_complex_float_test")
 
 TEST_CASE("fn_spsolve_sparse_complex_test")
   {
+  arma_rng::set_seed_random();
   // We want to spsolve a system of equations, AX = B, where we want to recover
   // X and we have A and B, and A is sparse.
   for (size_t t = 0; t < 10; ++t)
@@ -337,6 +331,7 @@ TEST_CASE("fn_spsolve_sparse_complex_test")
 
 TEST_CASE("fn_spsolve_sparse_nonsymmetric_complex_test")
   {
+  arma_rng::set_seed_random();
   for (size_t t = 0; t < 10; ++t)
     {
     const uword r_size = 5 * (t + 1);
@@ -380,6 +375,7 @@ TEST_CASE("fn_spsolve_sparse_nonsymmetric_complex_test")
 
 TEST_CASE("fn_spsolve_delayed_sparse_test")
   {
+  arma_rng::set_seed_random();
   const uword size = 10;
 
   mat rX;
@@ -416,6 +412,7 @@ TEST_CASE("fn_spsolve_delayed_sparse_test")
 
 TEST_CASE("fn_spsolve_superlu_solve_test")
   {
+  arma_rng::set_seed_random();
   // Solve this matrix, as in the examples:
   // [[19  0  21 21  0]
   //  [12 21   0  0  0]
@@ -443,7 +440,7 @@ TEST_CASE("fn_spsolve_superlu_solve_test")
   mat da(a);
 
   mat x;
-  sp_auxlib::solve(x, a, db);
+  spsolve(x, a, db);
 
   mat dx = solve(da, db);
 
@@ -460,9 +457,10 @@ TEST_CASE("fn_spsolve_superlu_solve_test")
 
 TEST_CASE("fn_spsolve_random_superlu_solve_test")
   {
+  arma_rng::set_seed_random();
   // Try to solve some random systems.
   const size_t iterations = 10;
-  for (size_t i = 0; i < iterations; ++i)
+  for (size_t it = 0; it < iterations; ++it)
     {
     sp_mat a;
     a.sprandu(50, 50, 0.3);
@@ -476,13 +474,13 @@ TEST_CASE("fn_spsolve_random_superlu_solve_test")
 
     mat x;
 
-    sp_auxlib::solve(x, a, db);
+    spsolve(x, a, db);
 
     for (uword i = 0; i < x.n_cols; ++i)
       {
       for (uword j = 0; j < x.n_rows; ++j)
         {
-        REQUIRE( x(j, i), Approx((double) trueX(j, i)) );
+        REQUIRE( x(j, i) == Approx((double) trueX(j, i)) );
         }
       }
     }
@@ -492,6 +490,7 @@ TEST_CASE("fn_spsolve_random_superlu_solve_test")
 
 TEST_CASE("fn_spsolve_float_superlu_solve_test")
   {
+  arma_rng::set_seed_random();
   // Solve this matrix, as in the examples:
   // [[19  0  21 21  0]
   //  [12 21   0  0  0]
@@ -519,7 +518,7 @@ TEST_CASE("fn_spsolve_float_superlu_solve_test")
   fmat da(a);
 
   fmat x;
-  sp_auxlib::solve(x, a, db);
+  spsolve(x, a, db);
 
   fmat dx = solve(da, db);
 
@@ -536,9 +535,10 @@ TEST_CASE("fn_spsolve_float_superlu_solve_test")
 
 TEST_CASE("fn_spsolve_float_random_superlu_solve_test")
   {
+  arma_rng::set_seed_random();
   // Try to solve some random systems.
   const size_t iterations = 10;
-  for (size_t i = 0; i < iterations; ++i)
+  for (size_t it = 0; it < iterations; ++it)
     {
     sp_fmat a;
     a.sprandu(50, 50, 0.3);
@@ -552,13 +552,16 @@ TEST_CASE("fn_spsolve_float_random_superlu_solve_test")
 
     fmat x;
 
-    sp_auxlib::solve(x, a, db);
+    spsolve(x, a, db);
 
     for (uword i = 0; i < x.n_cols; ++i)
       {
       for (uword j = 0; j < x.n_rows; ++j)
         {
-        REQUIRE( x(j, i) == Approx((float) trueX(j, i)) );
+        if (std::abs(trueX(j, i)) < 0.001)
+          REQUIRE( std::abs(x(j, i)) < 0.005 );
+        else
+          REQUIRE( trueX(j, i) == Approx((float) x(j, i)).epsilon(0.01) );
         }
       }
     }
@@ -568,6 +571,7 @@ TEST_CASE("fn_spsolve_float_random_superlu_solve_test")
 
 TEST_CASE("fn_spsolve_cx_float_superlu_solve_test")
   {
+  arma_rng::set_seed_random();
   // Solve this matrix, as in the examples:
   // [[19  0  21 21  0]
   //  [12 21   0  0  0]
@@ -595,7 +599,7 @@ TEST_CASE("fn_spsolve_cx_float_superlu_solve_test")
   Mat<std::complex<float> > da(a);
 
   Mat<std::complex<float> > x;
-  sp_auxlib::solve(x, a, db);
+  spsolve(x, a, db);
 
   Mat<std::complex<float> > dx = solve(da, db);
 
@@ -603,16 +607,16 @@ TEST_CASE("fn_spsolve_cx_float_superlu_solve_test")
     {
     for (uword j = 0; j < x.n_rows; ++j)
       {
-      if (std::abs(x(j, i)) == 0.0)
+      if (std::abs(x(j, i)) < 0.001 )
         {
-        REQUIRE( std::abs(dx(j, i)) == Approx(0.0f) );
+        REQUIRE( std::abs(dx(j, i)) < 0.005 );
         }
       else
         {
-        REQUIRE( ((std:;complex<float>) x(j, i)).real() ==
-                 Approx(dx(j, i).real()) );
-        REQUIRE( ((std:;complex<float>) x(j, i)).imag() ==
-                 Approx(dx(j, i).imag()) );
+        REQUIRE( ((std::complex<float>) x(j, i)).real() ==
+                 Approx(dx(j, i).real()).epsilon(0.01) );
+        REQUIRE( ((std::complex<float>) x(j, i)).imag() ==
+                 Approx(dx(j, i).imag()).epsilon(0.01) );
         }
       }
     }
@@ -622,9 +626,10 @@ TEST_CASE("fn_spsolve_cx_float_superlu_solve_test")
 
 TEST_CASE("fn_spsolve_cx_float_random_superlu_solve_test")
   {
+  arma_rng::set_seed_random();
   // Try to solve some random systems.
   const size_t iterations = 10;
-  for (size_t i = 0; i < iterations; ++i)
+  for (size_t it = 0; it < iterations; ++it)
     {
     SpMat<std::complex<float> > a;
     a.sprandu(50, 50, 0.3);
@@ -638,22 +643,22 @@ TEST_CASE("fn_spsolve_cx_float_random_superlu_solve_test")
 
     Mat<std::complex<float> > x;
 
-    sp_auxlib::solve(x, a, db);
+    spsolve(x, a, db);
 
     for (uword i = 0; i < x.n_cols; ++i)
       {
       for (uword j = 0; j < x.n_rows; ++j)
         {
-        if (std::abs((std::complex<float>) trueX(j, i)) == 0.0)
+        if (std::abs((std::complex<float>) trueX(j, i)) < 0.001 )
           {
-          REQUIRE( std::abs(x(j, i)) == Approx(0.0) );
+          REQUIRE( std::abs(x(j, i)) < 0.001 );
           }
         else
           {
           REQUIRE( ((std::complex<float>) trueX(j, i)).real() ==
-                   Approx(x(j, i).real()) );
+                   Approx(x(j, i).real()).epsilon(0.01) );
           REQUIRE( ((std::complex<float>) trueX(j, i)).imag() ==
-                   Approx(x(j, i).imag()) );
+                   Approx(x(j, i).imag()).epsilon(0.01) );
           }
         }
       }
@@ -664,6 +669,7 @@ TEST_CASE("fn_spsolve_cx_float_random_superlu_solve_test")
 
 TEST_CASE("fn_spsolve_cx_superlu_solve_test")
   {
+  arma_rng::set_seed_random();
   // Solve this matrix, as in the examples:
   // [[19  0  21 21  0]
   //  [12 21   0  0  0]
@@ -691,7 +697,7 @@ TEST_CASE("fn_spsolve_cx_superlu_solve_test")
   cx_mat da(a);
 
   cx_mat x;
-  sp_auxlib::solve(x, a, db);
+  spsolve(x, a, db);
 
   cx_mat dx = solve(da, db);
 
@@ -699,16 +705,16 @@ TEST_CASE("fn_spsolve_cx_superlu_solve_test")
     {
     for (uword j = 0; j < x.n_rows; ++j)
       {
-      if (std::abs(x(j, i)) == 0.0)
+      if (std::abs(x(j, i)) < 0.001)
         {
-        REQUIRE( std::abs(dx(j, i)) == Approx(0.0) );
+        REQUIRE( std::abs(dx(j, i)) < 0.005 );
         }
       else
         {
         REQUIRE( ((std::complex<double>) x(j, i)).real() ==
-                 Approx(dx(j, i).real()) );
+                 Approx(dx(j, i).real()).epsilon(0.01) );
         REQUIRE( ((std::complex<double>) x(j, i)).imag() ==
-                 Approx(dx(j, i).imag()) );
+                 Approx(dx(j, i).imag()).epsilon(0.01) );
         }
       }
     }
@@ -718,9 +724,10 @@ TEST_CASE("fn_spsolve_cx_superlu_solve_test")
 
 TEST_CASE("fn_spsolve_cx_random_superlu_solve_test")
   {
+  arma_rng::set_seed_random();
   // Try to solve some random systems.
   const size_t iterations = 10;
-  for (size_t i = 0; i < iterations; ++i)
+  for (size_t it = 0; it < iterations; ++it)
     {
     sp_cx_mat a;
     a.sprandu(50, 50, 0.3);
@@ -734,22 +741,22 @@ TEST_CASE("fn_spsolve_cx_random_superlu_solve_test")
 
     cx_mat x;
 
-    sp_auxlib::solve(x, a, db);
+    spsolve(x, a, db);
 
     for (uword i = 0; i < x.n_cols; ++i)
       {
       for (uword j = 0; j < x.n_rows; ++j)
         {
-        if (std::abs((std::complex<double>) trueX(j, i)) == 0.0)
+        if (std::abs((std::complex<double>) trueX(j, i)) < 0.001)
           {
-          REQUIRE( std::abs(x(j, i)) == Approx(0.0) );
+          REQUIRE( std::abs(x(j, i)) < 0.005 );
           }
         else
           {
           REQUIRE( ((std::complex<double>) trueX(j, i)).real() ==
-                   Approx(x(j, i).real()) );
+                   Approx(x(j, i).real()).epsilon(0.01) );
           REQUIRE( ((std::complex<double>) trueX(j, i)).imag() ==
-                   Approx(x(j, i).imag()) );
+                   Approx(x(j, i).imag()).epsilon(0.01) );
           }
         }
       }
@@ -760,6 +767,7 @@ TEST_CASE("fn_spsolve_cx_random_superlu_solve_test")
 
 TEST_CASE("fn_spsolve_function_test")
   {
+  arma_rng::set_seed_random();
   sp_mat a;
   a.sprandu(50, 50, 0.3);
   sp_mat trueX;
@@ -791,6 +799,7 @@ TEST_CASE("fn_spsolve_function_test")
 
 TEST_CASE("fn_spsolve_float_function_test")
   {
+  arma_rng::set_seed_random();
   sp_fmat a;
   a.sprandu(50, 50, 0.3);
   sp_fmat trueX;
@@ -813,7 +822,14 @@ TEST_CASE("fn_spsolve_float_function_test")
     {
     for (uword j = 0; j < x.n_rows; ++j)
       {
-      REQUIRE( (float) trueX(j, i) == Approx(x(j, i)) );
+      if (std::abs(trueX(j, i)) < 0.001)
+        {
+        REQUIRE( std::abs(x(j, i)) < 0.001 );
+        }
+      else
+        {
+        REQUIRE( (float) trueX(j, i) == Approx(x(j, i)).epsilon(0.01) );
+        }
       }
     }
   }
@@ -822,6 +838,7 @@ TEST_CASE("fn_spsolve_float_function_test")
 
 TEST_CASE("fn_spsolve_cx_function_test")
   {
+  arma_rng::set_seed_random();
   sp_cx_mat a;
   a.sprandu(50, 50, 0.3);
   sp_cx_mat trueX;
@@ -844,16 +861,16 @@ TEST_CASE("fn_spsolve_cx_function_test")
     {
     for (uword j = 0; j < x.n_rows; ++j)
       {
-      if (std::abs((std::complex<double>) trueX(j, i)) == 0.0)
+      if (std::abs((std::complex<double>) trueX(j, i)) < 0.001)
         {
-        REQUIRE( std::abs(x(j, i)) == Approx(0.0) );
+        REQUIRE( std::abs(x(j, i)) < 0.005 );
         }
       else
         {
         REQUIRE( ((std::complex<double>) trueX(j, i)).real() ==
-                 Approx(x(j, i).real()) );
+                 Approx(x(j, i).real()).epsilon(0.01) );
         REQUIRE( ((std::complex<double>) trueX(j, i)).imag() ==
-                 Approx(x(j, i).imag()) );
+                 Approx(x(j, i).imag()).epsilon(0.01) );
         }
       }
     }
@@ -863,6 +880,7 @@ TEST_CASE("fn_spsolve_cx_function_test")
 
 TEST_CASE("fn_spsolve_cx_float_function_test")
   {
+  arma_rng::set_seed_random();
   sp_cx_fmat a;
   a.sprandu(50, 50, 0.3);
   sp_cx_fmat trueX;
@@ -885,16 +903,16 @@ TEST_CASE("fn_spsolve_cx_float_function_test")
     {
     for (uword j = 0; j < x.n_rows; ++j)
       {
-      if (std::abs((std::complex<float>) trueX(j, i)) == 0.0)
+      if (std::abs((std::complex<float>) trueX(j, i)) < 0.001 )
         {
-        REQUIRE( std::abs(x(j, i)) == Approx(0.0) );
+        REQUIRE( std::abs(x(j, i)) < 0.005 );
         }
       else
         {
         REQUIRE( ((std::complex<float>) trueX(j, i)).real() ==
-                 Approx(x(j, i).real()) );
+                 Approx(x(j, i).real()).epsilon(0.01) );
         REQUIRE( ((std::complex<float>) trueX(j, i)).imag() ==
-                 Approx(x(j, i).imag()) );
+                 Approx(x(j, i).imag()).epsilon(0.01) );
         }
       }
     }

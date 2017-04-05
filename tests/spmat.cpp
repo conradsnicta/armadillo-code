@@ -211,7 +211,7 @@ TEST_CASE("division_test")
 
   REQUIRE( std::isnan((double) a(0, 0)) );
   REQUIRE( (double) a(0, 1) == Approx(0.5) );
-  REQUIRE( (double) a(1, 0) == Approx(0.0) );
+  REQUIRE( (double) a(1, 0) == Approx(1e-5) );
   REQUIRE( std::isnan((double) a(1, 1)) );
   }
 
@@ -996,7 +996,7 @@ TEST_CASE("sp_mat_eye_test")
       if (i == j)
         REQUIRE( (double) e(i, j) == Approx(1.0) );
       else
-        REQUIRE( (double) e(i, j) == Approx(0.0) );
+        REQUIRE( (double) e(i, j) == Approx(1e-5) );
       }
     }
 
@@ -1260,7 +1260,7 @@ TEST_CASE("min_test")
   a(2) = 1.0;
 
   double res = min(a);
-  REQUIRE( res == Approx(0.0) );
+  REQUIRE( res == Approx(1e-5) );
 
   a(0) = -3.0;
   a(2) = -1.0;
@@ -1283,7 +1283,7 @@ TEST_CASE("min_test")
   b(2) = 1.0;
 
   res = min(b);
-  REQUIRE( res == Approx(0.0) );
+  REQUIRE( res == Approx(1e-5) );
 
   b(0) = -3.0;
   b(2) = -1.0;
@@ -1318,18 +1318,18 @@ TEST_CASE("min_test")
   REQUIRE( r.n_rows == 1 );
   REQUIRE( r.n_cols == 5 );
   REQUIRE( (double) r(0, 0) == Approx(0.6) );
-  REQUIRE( (double) r(0, 1) == Approx(0.0) );
+  REQUIRE( (double) r(0, 1) == Approx(1e-5) );
   REQUIRE( (double) r(0, 2) == Approx(-3.4) );
   REQUIRE( (double) r(0, 3) == Approx(-4.1) );
-  REQUIRE( (double) r(0, 4) == Approx(0.0) );
+  REQUIRE( (double) r(0, 4) == Approx(1e-5) );
 
   r = min(c, 1);
   REQUIRE( r.n_rows == 6 );
   REQUIRE( r.n_cols == 1 );
-  REQUIRE( (double) r(0, 0) == Approx(0.0) );
-  REQUIRE( (double) r(1, 0) == Approx(0.0) );
+  REQUIRE( (double) r(0, 0) == Approx(1e-5) );
+  REQUIRE( (double) r(1, 0) == Approx(1e-5) );
   REQUIRE( (double) r(2, 0) == Approx(-4.0) );
-  REQUIRE( (double) r(3, 0) == Approx(0.0) );
+  REQUIRE( (double) r(3, 0) == Approx(1e-5) );
   REQUIRE( (double) r(4, 0) == Approx(-1.4) );
   REQUIRE( (double) r(5, 0) == Approx(-4.1) );
   }
@@ -1343,7 +1343,7 @@ TEST_CASE("max_test")
   a(2) = -1.0;
 
   double resa = max(a);
-  REQUIRE( resa == Approx(0.0) );
+  REQUIRE( resa == Approx(1e-5) );
 
   a(0) = 3.0;
   a(2) = 1.0;
@@ -1366,7 +1366,7 @@ TEST_CASE("max_test")
   b(2) = -1.0;
 
   resa = max(b);
-  REQUIRE( resa == Approx(0.0) );
+  REQUIRE( resa == Approx(1e-5) );
 
   b(0) = 3.0;
   b(2) = 1.0;
@@ -1401,10 +1401,10 @@ TEST_CASE("max_test")
   REQUIRE( res.n_rows == 1 );
   REQUIRE( res.n_cols == 5 );
   REQUIRE( (double) res(0, 0) == Approx(4.0) );
-  REQUIRE( (double) res(0, 1) == Approx(0.0) );
+  REQUIRE( (double) res(0, 1) == Approx(1e-5) );
   REQUIRE( (double) res(0, 2) == Approx(1.3) );
-  REQUIRE( (double) res(0, 3) == Approx(0.0) );
-  REQUIRE( (double) res(0, 4) == Approx(0.0) );
+  REQUIRE( (double) res(0, 3) == Approx(1e-5) );
+  REQUIRE( (double) res(0, 4) == Approx(1e-5) );
 
   res = max(c, 1);
   REQUIRE( res.n_rows == 6 );
@@ -1413,7 +1413,7 @@ TEST_CASE("max_test")
   REQUIRE( (double) res(1, 0) == Approx(3.0) );
   REQUIRE( (double) res(2, 0) == Approx(4.0) );
   REQUIRE( (double) res(3, 0) == Approx(1.3) );
-  REQUIRE( (double) res(4, 0) == Approx(0.0) );
+  REQUIRE( (double) res(4, 0) == Approx(1e-5) );
   REQUIRE( (double) res(5, 0) == Approx(1.2) );
   }
 
@@ -1426,15 +1426,15 @@ TEST_CASE("spmat_min_cx_test")
   a(2) = std::complex<double>(1.0, 1.0);
 
   std::complex<double> res = min(a);
-  REQUIRE( res.real() == Approx(0.0) );
-  REQUIRE( res.imag() == Approx(0.0) );
+  REQUIRE( res.real() == Approx(1e-5) );
+  REQUIRE( res.imag() == Approx(1e-5) );
 
   a(0) = std::complex<double>(-3.0, -2.0);
   a(2) = std::complex<double>(-1.0, -1.0);
 
   res = min(a);
-  REQUIRE( res.real() == Approx(0.0) );
-  REQUIRE( res.imag() == Approx(0.0) );
+  REQUIRE( res.real() == Approx(1e-5) );
+  REQUIRE( res.imag() == Approx(1e-5) );
 
   a(0) = std::complex<double>(1.0, 0.5);
   a(1) = std::complex<double>(2.4, 1.4);
@@ -1452,15 +1452,15 @@ TEST_CASE("spmat_min_cx_test")
   b(2) = std::complex<double>(1.0, 1.0);
 
   res = min(b);
-  REQUIRE( res.real() == Approx(0.0) );
-  REQUIRE( res.imag() == Approx(0.0) );
+  REQUIRE( res.real() == Approx(1e-5) );
+  REQUIRE( res.imag() == Approx(1e-5) );
 
   b(0) = std::complex<double>(-3.0, -2.0);
   b(2) = std::complex<double>(-1.0, -1.0);
 
   res = min(b);
-  REQUIRE( res.real() == Approx(0.0) );
-  REQUIRE( res.imag() == Approx(0.0) );
+  REQUIRE( res.real() == Approx(1e-5) );
+  REQUIRE( res.imag() == Approx(1e-5) );
 
   b(0) = std::complex<double>(1.0, 0.5);
   b(1) = std::complex<double>(2.4, 1.4);
@@ -1484,24 +1484,24 @@ TEST_CASE("spmat_min_cx_test")
   SpMat<std::complex<double> > r = min(c, 0);
   REQUIRE( r.n_rows == 1 );
   REQUIRE( r.n_cols == 3 );
-  REQUIRE( ((std::complex<double>) r(0, 0)).real() == Approx(0.0) );
-  REQUIRE( ((std::complex<double>) r(0, 0)).imag() == Approx(0.0) );
+  REQUIRE( ((std::complex<double>) r(0, 0)).real() == Approx(1e-5) );
+  REQUIRE( ((std::complex<double>) r(0, 0)).imag() == Approx(1e-5) );
   REQUIRE( ((std::complex<double>) r(0, 1)).real() == Approx(0.25) );
   REQUIRE( ((std::complex<double>) r(0, 1)).imag() == Approx(0.25) );
-  REQUIRE( ((std::complex<double>) r(0, 2)).real() == Approx(0.0) );
-  REQUIRE( ((std::complex<double>) r(0, 2)).imag() == Approx(0.0) );
+  REQUIRE( ((std::complex<double>) r(0, 2)).real() == Approx(1e-5) );
+  REQUIRE( ((std::complex<double>) r(0, 2)).imag() == Approx(1e-5) );
 
   r = min(c, 1);
   REQUIRE( r.n_rows == 4 );
   REQUIRE( r.n_cols == 1 );
   REQUIRE( ((std::complex<double>) r(0, 0)).real() == Approx(0.5) );
   REQUIRE( ((std::complex<double>) r(0, 0)).imag() == Approx(0.5) );
-  REQUIRE( ((std::complex<double>) r(1, 0)).real() == Approx(0.0) );
-  REQUIRE( ((std::complex<double>) r(1, 0)).imag() == Approx(0.0) );
-  REQUIRE( ((std::complex<double>) r(2, 0)).real() == Approx(0.0) );
-  REQUIRE( ((std::complex<double>) r(2, 0)).imag() == Approx(0.0) );
-  REQUIRE( ((std::complex<double>) r(3, 0)).real() == Approx(0.0) );
-  REQUIRE( ((std::complex<double>) r(3, 0)).imag() == Approx(0.0) );
+  REQUIRE( ((std::complex<double>) r(1, 0)).real() == Approx(1e-5) );
+  REQUIRE( ((std::complex<double>) r(1, 0)).imag() == Approx(1e-5) );
+  REQUIRE( ((std::complex<double>) r(2, 0)).real() == Approx(1e-5) );
+  REQUIRE( ((std::complex<double>) r(2, 0)).imag() == Approx(1e-5) );
+  REQUIRE( ((std::complex<double>) r(3, 0)).real() == Approx(1e-5) );
+  REQUIRE( ((std::complex<double>) r(3, 0)).imag() == Approx(1e-5) );
 }
 
 
@@ -1521,8 +1521,8 @@ TEST_CASE("spmat_max_cx_test")
   a(2) = std::complex<double>(0);
 
   res = max(a);
-  REQUIRE( res.real() == Approx(0.0) );
-  REQUIRE( res.imag() == Approx(0.0) );
+  REQUIRE( res.real() == Approx(1e-5) );
+  REQUIRE( res.imag() == Approx(1e-5) );
 
   a(0) = std::complex<double>(1.0, 0.5);
   a(1) = std::complex<double>(2.4, 1.4);
@@ -1547,8 +1547,8 @@ TEST_CASE("spmat_max_cx_test")
   b(2) = std::complex<double>(0);
 
   res = max(b);
-  REQUIRE( res.real() == Approx(0.0) );
-  REQUIRE( res.imag() == Approx(0.0) );
+  REQUIRE( res.real() == Approx(1e-5) );
+  REQUIRE( res.imag() == Approx(1e-5) );
 
   b(0) = std::complex<double>(1.0, 0.5);
   b(1) = std::complex<double>(2.4, 1.4);
@@ -1575,8 +1575,8 @@ TEST_CASE("spmat_max_cx_test")
   REQUIRE( ((std::complex<double>) r(0, 0)).imag() == Approx(2.0) );
   REQUIRE( ((std::complex<double>) r(0, 1)).real() == Approx(-3.0) );
   REQUIRE( ((std::complex<double>) r(0, 1)).imag() == Approx(-3.0) );
-  REQUIRE( ((std::complex<double>) r(0, 2)).real() == Approx(0.0) );
-  REQUIRE( ((std::complex<double>) r(0, 2)).imag() == Approx(0.0) );
+  REQUIRE( ((std::complex<double>) r(0, 2)).real() == Approx(1e-5) );
+  REQUIRE( ((std::complex<double>) r(0, 2)).imag() == Approx(1e-5) );
 
   r = max(c, 1);
   REQUIRE( r.n_rows == 4 );
@@ -1733,16 +1733,16 @@ TEST_CASE("spmat_unary_val_operators_test")
 
   REQUIRE( b.n_nonzero == 2 );
   REQUIRE( (double) b(0, 0) == Approx(6.0) );
-  REQUIRE( (double) b(0, 1) == Approx(0.0) );
-  REQUIRE( (double) b(1, 0) == Approx(0.0) );
+  REQUIRE( (double) b(0, 1) == Approx(1e-5) );
+  REQUIRE( (double) b(1, 0) == Approx(1e-5) );
   REQUIRE( (double) b(1, 1) == Approx(-9.0) );
 
   b = a / 3.0;
 
   REQUIRE( b.n_nonzero == 2 );
   REQUIRE( (double) b(0, 0) == Approx(2.0 / 3.0) );
-  REQUIRE( (double) b(0, 1) == Approx(0.0) );
-  REQUIRE( (double) b(1, 0) == Approx(0.0) );
+  REQUIRE( (double) b(0, 1) == Approx(1e-5) );
+  REQUIRE( (double) b(1, 0) == Approx(1e-5) );
   REQUIRE( (double) b(1, 1) == Approx(-1.0) );
   }
 
@@ -1835,7 +1835,7 @@ TEST_CASE("spmat_unary_operator_test_2")
   REQUIRE( c(2, 1) == Approx(3.0) );
   REQUIRE( c(0, 2) == Approx(6.5) );
   REQUIRE( c(1, 2) == Approx(7.0) );
-  REQUIRE( c(2, 2) == Approx(0.0) );
+  REQUIRE( c(2, 2) == Approx(1e-5) );
 
   c = a - b;
 
@@ -1853,11 +1853,11 @@ TEST_CASE("spmat_unary_operator_test_2")
 
   REQUIRE( d.n_nonzero == 4 );
   REQUIRE( (double) d(0, 0) == Approx(3.0) );
-  REQUIRE( (double) d(1, 0) == Approx(0.0) );
-  REQUIRE( (double) d(2, 0) == Approx(0.0) );
-  REQUIRE( (double) d(0, 1) == Approx(0.0) );
-  REQUIRE( (double) d(1, 1) == Approx(0.0) );
-  REQUIRE( (double) d(2, 1) == Approx(0.0) );
+  REQUIRE( (double) d(1, 0) == Approx(1e-5) );
+  REQUIRE( (double) d(2, 0) == Approx(1e-5) );
+  REQUIRE( (double) d(0, 1) == Approx(1e-5) );
+  REQUIRE( (double) d(1, 1) == Approx(1e-5) );
+  REQUIRE( (double) d(2, 1) == Approx(1e-5) );
   REQUIRE( (double) d(0, 2) == Approx(10.5) );
   REQUIRE( (double) d(1, 2) == Approx(12.0) );
   REQUIRE( (double) d(2, 2) == Approx(-9.0) );
@@ -1866,11 +1866,11 @@ TEST_CASE("spmat_unary_operator_test_2")
 
   REQUIRE( d.n_nonzero == 4 );
   REQUIRE( (double) d(0, 0) == Approx((1.0 / 3.0)) );
-  REQUIRE( (double) d(1, 0) == Approx(0.0) );
-  REQUIRE( (double) d(2, 0) == Approx(0.0) );
-  REQUIRE( (double) d(0, 1) == Approx(0.0) );
-  REQUIRE( (double) d(1, 1) == Approx(0.0) );
-  REQUIRE( (double) d(2, 1) == Approx(0.0) );
+  REQUIRE( (double) d(1, 0) == Approx(1e-5) );
+  REQUIRE( (double) d(2, 0) == Approx(1e-5) );
+  REQUIRE( (double) d(0, 1) == Approx(1e-5) );
+  REQUIRE( (double) d(1, 1) == Approx(1e-5) );
+  REQUIRE( (double) d(2, 1) == Approx(1e-5) );
   REQUIRE( (double) d(0, 2) == Approx((3.5 / 3.0)) );
   REQUIRE( (double) d(1, 2) == Approx((4.0 / 3.0)) );
   REQUIRE( (double) d(2, 2) == Approx(-1.0) );
@@ -1892,9 +1892,9 @@ TEST_CASE("spmat_unary_operator_test_2")
   REQUIRE( (double) c(0, 0) == Approx(3.0) );
   REQUIRE( (double) c(1, 0) == Approx(3.0) );
   REQUIRE( (double) c(2, 0) == Approx(3.0) );
-  REQUIRE( (double) c(0, 1) == Approx(0.0) );
-  REQUIRE( (double) c(1, 1) == Approx(0.0) );
-  REQUIRE( (double) c(2, 1) == Approx(0.0) );
+  REQUIRE( (double) c(0, 1) == Approx(1e-5) );
+  REQUIRE( (double) c(1, 1) == Approx(1e-5) );
+  REQUIRE( (double) c(2, 1) == Approx(1e-5) );
   REQUIRE( (double) c(0, 2) == Approx(13.5) );
   REQUIRE( (double) c(1, 2) == Approx(13.5) );
   REQUIRE( (double) c(2, 2) == Approx(13.5) );
@@ -1922,7 +1922,7 @@ TEST_CASE("spmat_mat_operator_tests")
   REQUIRE( (double) c(2, 0) == Approx(2.0) );
   REQUIRE( (double) c(0, 1) == Approx(2.0) );
   REQUIRE( (double) c(1, 1) == Approx(2.0) );
-  REQUIRE( (double) c(2, 1) == Approx(0.0) );
+  REQUIRE( (double) c(2, 1) == Approx(1e-5) );
   REQUIRE( (double) c(0, 2) == Approx(2.0) );
   REQUIRE( (double) c(1, 2) == Approx(5.5) );
   REQUIRE( (double) c(2, 2) == Approx(6.5) );
@@ -1934,7 +1934,7 @@ TEST_CASE("spmat_mat_operator_tests")
   REQUIRE( (double) c(2, 0) == Approx(2.0) );
   REQUIRE( (double) c(0, 1) == Approx(2.0) );
   REQUIRE( (double) c(1, 1) == Approx(2.0) );
-  REQUIRE( (double) c(2, 1) == Approx(0.0) );
+  REQUIRE( (double) c(2, 1) == Approx(1e-5) );
   REQUIRE( (double) c(0, 2) == Approx(2.0) );
   REQUIRE( (double) c(1, 2) == Approx(5.5) );
   REQUIRE( (double) c(2, 2) == Approx(6.5) );
@@ -1942,7 +1942,7 @@ TEST_CASE("spmat_mat_operator_tests")
   c = b;
   c -= a;
 
-  REQUIRE( (double) c(0, 0) == Approx(0.0) );
+  REQUIRE( (double) c(0, 0) == Approx(1e-5) );
   REQUIRE( (double) c(1, 0) == Approx(2.0) );
   REQUIRE( (double) c(2, 0) == Approx(2.0) );
   REQUIRE( (double) c(0, 1) == Approx(2.0) );
@@ -1954,7 +1954,7 @@ TEST_CASE("spmat_mat_operator_tests")
 
   c = b - a;
 
-  REQUIRE( (double) c(0, 0) == Approx(0.0) );
+  REQUIRE( (double) c(0, 0) == Approx(1e-5) );
   REQUIRE( (double) c(1, 0) == Approx(2.0) );
   REQUIRE( (double) c(2, 0) == Approx(2.0) );
   REQUIRE( (double) c(0, 1) == Approx(2.0) );
@@ -1993,12 +1993,12 @@ TEST_CASE("spmat_mat_operator_tests")
   c %= a;
 
   REQUIRE( (double) c(0, 0) == Approx(4.0) );
-  REQUIRE( (double) c(1, 0) == Approx(0.0) );
-  REQUIRE( (double) c(2, 0) == Approx(0.0) );
-  REQUIRE( (double) c(0, 1) == Approx(0.0) );
-  REQUIRE( (double) c(1, 1) == Approx(0.0) );
+  REQUIRE( (double) c(1, 0) == Approx(1e-5) );
+  REQUIRE( (double) c(2, 0) == Approx(1e-5) );
+  REQUIRE( (double) c(0, 1) == Approx(1e-5) );
+  REQUIRE( (double) c(1, 1) == Approx(1e-5) );
   REQUIRE( (double) c(2, 1) == Approx(-4.0) );
-  REQUIRE( (double) c(0, 2) == Approx(0.0) );
+  REQUIRE( (double) c(0, 2) == Approx(1e-5) );
   REQUIRE( (double) c(1, 2) == Approx(7.0) );
   REQUIRE( (double) c(2, 2) == Approx(9.0) );
 
@@ -2053,7 +2053,7 @@ TEST_CASE("spmat_sparse_dense_in_place")
       if ((double) a(r, c) != 0)
         REQUIRE( (double) a(r, c) == Approx(d(r, c)) );
       else
-        REQUIRE( d(r, c) == Approx(0.0) );
+        REQUIRE( d(r, c) == Approx(1e-5) );
       }
     }
 
@@ -2073,7 +2073,7 @@ TEST_CASE("spmat_sparse_dense_in_place")
       if ((double) a(r, c) != 0)
         REQUIRE( (double) a(r, c) == Approx(d(r, c)) );
       else
-        REQUIRE( d(r, c) == Approx(0.0) );
+        REQUIRE( d(r, c) == Approx(1e-5) );
       }
     }
 
@@ -2090,7 +2090,7 @@ TEST_CASE("spmat_sparse_dense_in_place")
       if ((double) a(r, c) != 0)
         REQUIRE( (double) a(r, c) == Approx(d(r, c)) );
       else
-        REQUIRE( d(r, c) == Approx(0.0) );
+        REQUIRE( d(r, c) == Approx(1e-5) );
       }
     }
 
@@ -2107,7 +2107,7 @@ TEST_CASE("spmat_sparse_dense_in_place")
       if ((double) a(r, c) != 0)
         REQUIRE( (double) a(r, c) == Approx(d(r, c)) );
       else
-        REQUIRE(d(r, c) == Approx(0.0) );
+        REQUIRE(d(r, c) == Approx(1e-5) );
       }
     }
   }
@@ -2136,7 +2136,7 @@ TEST_CASE("spmat_sparse_dense_not_in_place")
       if ((double) y(r, c) != 0)
         REQUIRE( (double) y(r, c) == Approx(z(r, c)) );
       else
-        REQUIRE( z(r, c) == Approx(0.0) );
+        REQUIRE( z(r, c) == Approx(1e-5) );
       }
     }
 
@@ -2150,7 +2150,7 @@ TEST_CASE("spmat_sparse_dense_not_in_place")
       if ((double) y(r, c) != 0)
         REQUIRE( (double) y(r, c) == Approx(z(r, c)) );
       else
-        REQUIRE( z(r, c) == Approx(0.0) );
+        REQUIRE( z(r, c) == Approx(1e-5) );
       }
     }
 
@@ -2164,7 +2164,7 @@ TEST_CASE("spmat_sparse_dense_not_in_place")
       if ((double) y(r, c) != 0)
         REQUIRE( (double) y(r, c) == Approx(z(r, c)) );
       else
-        REQUIRE( z(r, c) == Approx(0.0) );
+        REQUIRE( z(r, c) == Approx(1e-5) );
       }
     }
 
@@ -2178,7 +2178,7 @@ TEST_CASE("spmat_sparse_dense_not_in_place")
       if ((double) y(r, c) != 0)
         REQUIRE( (double) y(r, c) == Approx(z(r, c)) );
       else
-        REQUIRE( z(r, c) == Approx(0.0) );
+        REQUIRE( z(r, c) == Approx(1e-5) );
       }
     }
 
@@ -2192,7 +2192,7 @@ TEST_CASE("spmat_sparse_dense_not_in_place")
       if ((double) y(r, c) != 0)
         REQUIRE( (double) y(r, c) == Approx(z(r, c)) );
       else
-        REQUIRE( z(r, c) == Approx(0.0) );
+        REQUIRE( z(r, c) == Approx(1e-5) );
       }
     }
 
@@ -2206,7 +2206,7 @@ TEST_CASE("spmat_sparse_dense_not_in_place")
       if ((double) y(r, c) != 0)
         REQUIRE( (double) y(r, c) == Approx(z(r, c)) );
       else
-        REQUIRE( z(r, c) == Approx(0.0) );
+        REQUIRE( z(r, c) == Approx(1e-5) );
     }
   }
 
@@ -2220,7 +2220,7 @@ TEST_CASE("spmat_sparse_dense_not_in_place")
       if ((double) y(r, c) != 0)
         REQUIRE( (double) y(r, c) == Approx(z(r, c)) );
       else
-        REQUIRE( z(r, c) == Approx(0.0) );
+        REQUIRE( z(r, c) == Approx(1e-5) );
       }
     }
 
@@ -2234,7 +2234,7 @@ TEST_CASE("spmat_sparse_dense_not_in_place")
       if ((double) y(r, c) != 0)
         REQUIRE( (double) y(r, c) == Approx(z(r, c)) );
       else
-        REQUIRE( z(r, c) == Approx(0.0) );
+        REQUIRE( z(r, c) == Approx(1e-5) );
       }
     }
 
@@ -2248,7 +2248,7 @@ TEST_CASE("spmat_sparse_dense_not_in_place")
       if ((double) y(r, c) != 0)
         REQUIRE( (double) y(r, c) == Approx(z(r, c)) );
       else
-        REQUIRE( z(r, c) == Approx(0.0) );
+        REQUIRE( z(r, c) == Approx(1e-5) );
       }
     }
   }
@@ -2485,7 +2485,7 @@ TEST_CASE("spmat_batch_insert_zeroes_test")
   REQUIRE( (double) m(2, 1) == Approx(1.5) );
   REQUIRE( (double) m(7, 1) == Approx(-15.15) );
   REQUIRE( (double) m(0, 4) == Approx(2.2) );
-  REQUIRE( (double) m(9, 4) == Approx(0.0) );
+  REQUIRE( (double) m(9, 4) == Approx(1e-5) );
   REQUIRE( (double) m(0, 5) == Approx(5.0) );
 
   // Auto size detection.
@@ -2497,7 +2497,7 @@ TEST_CASE("spmat_batch_insert_zeroes_test")
   REQUIRE( (double) n(2, 1) == Approx(1.5) );
   REQUIRE( (double) n(7, 1) == Approx(-15.15) );
   REQUIRE( (double) n(0, 4) == Approx(2.2) );
-  REQUIRE( (double) n(9, 4) == Approx(0.0) );
+  REQUIRE( (double) n(9, 4) == Approx(1e-5) );
   REQUIRE( (double) n(0, 5) == Approx(5.0) );
   }
 
@@ -2532,7 +2532,7 @@ TEST_CASE("spmat_batch_insert_unsorted_case_zeroes")
   REQUIRE( (double) m(2, 1) == Approx(1.5) );
   REQUIRE( (double) m(7, 1) == Approx(-15.15) );
   REQUIRE( (double) m(0, 4) == Approx(2.2) );
-  REQUIRE( (double) m(9, 4) == Approx(0.0) );
+  REQUIRE( (double) m(9, 4) == Approx(1e-5) );
   REQUIRE( (double) m(0, 5) == Approx(5.0) );
   REQUIRE( m.col_ptrs[11] == std::numeric_limits<uword>::max() );
 
@@ -2545,7 +2545,7 @@ TEST_CASE("spmat_batch_insert_unsorted_case_zeroes")
   REQUIRE( (double) n(2, 1) == Approx(1.5) );
   REQUIRE( (double) n(7, 1) == Approx(-15.15) );
   REQUIRE( (double) n(0, 4) == Approx(2.2) );
-  REQUIRE( (double) n(9, 4) == Approx(0.0) );
+  REQUIRE( (double) n(9, 4) == Approx(1e-5) );
   REQUIRE( (double) n(0, 5) == Approx(5.0) );
   REQUIRE( n.col_ptrs[7] == std::numeric_limits<uword>::max() );
   }

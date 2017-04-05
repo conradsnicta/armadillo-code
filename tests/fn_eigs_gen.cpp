@@ -49,8 +49,8 @@ TEST_CASE("fn_eigs_gen_odd_test")
       uword dense_eval = n_rows + 1;
       for (uword k = 0; k < n_rows; ++k)
         {
-        if ((std::abs(std::complex<double>(sp_eigval[i]).real() - eigval[k].real()) < 1e-10) &&
-            (std::abs(std::complex<double>(sp_eigval[i]).imag() - eigval[k].imag()) < 1e-10) &&
+        if ((std::abs(std::complex<double>(sp_eigval[i]).real() - eigval[k].real()) < 1e-4) &&
+            (std::abs(std::complex<double>(sp_eigval[i]).imag() - eigval[k].imag()) < 1e-4) &&
             (used[k] == 0))
           {
           dense_eval = k;
@@ -105,8 +105,8 @@ TEST_CASE("fn_eigs_gen_even_test")
       uword dense_eval = n_rows + 1;
       for (uword k = 0; k < n_rows; ++k)
         {
-        if ((std::abs(std::complex<double>(sp_eigval[i]).real() - eigval[k].real()) < 1e-10) &&
-            (std::abs(std::complex<double>(sp_eigval[i]).imag() - eigval[k].imag()) < 1e-10) &&
+        if ((std::abs(std::complex<double>(sp_eigval[i]).real() - eigval[k].real()) < 1e-4) &&
+            (std::abs(std::complex<double>(sp_eigval[i]).imag() - eigval[k].imag()) < 1e-4) &&
             (used[k] == 0))
           {
           dense_eval = k;
@@ -177,7 +177,7 @@ TEST_CASE("fn_eigs_gen_odd_float_test")
       REQUIRE( std::abs(sp_eigval[i]) == Approx(std::abs(eigval[dense_eval])).epsilon(0.001) );
       for (uword j = 0; j < n_rows; ++j)
         {
-        REQUIRE( std::abs(sp_eigvec(j, i)) == Approx(std::abs(eigvec(j, dense_eval))).epsilon(0.001) );
+        REQUIRE( std::abs(sp_eigvec(j, i)) == Approx(std::abs(eigvec(j, dense_eval))).epsilon(0.01) );
         }
       }
     }

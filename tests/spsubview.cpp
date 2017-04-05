@@ -123,30 +123,30 @@ TEST_CASE("sp_subview_multiplication_test")
   REQUIRE( b.n_nonzero == 5 );
 
   REQUIRE( (double) b(0, 0) == Approx(1.2) );
-  REQUIRE( (double) b(0, 1) == Approx(0.0) );
-  REQUIRE( (double) b(0, 2) == Approx(0.0) );
-  REQUIRE( (double) b(0, 3) == Approx(0.0) );
-  REQUIRE( (double) b(0, 4) == Approx(0.0) );
+  REQUIRE( (double) b(0, 1) == Approx(1e-5) );
+  REQUIRE( (double) b(0, 2) == Approx(1e-5) );
+  REQUIRE( (double) b(0, 3) == Approx(1e-5) );
+  REQUIRE( (double) b(0, 4) == Approx(1e-5) );
   REQUIRE( (double) b(1, 0) == Approx(2.0) );
-  REQUIRE( (double) b(1, 1) == Approx(0.0) );
-  REQUIRE( (double) b(1, 2) == Approx(0.0) );
-  REQUIRE( (double) b(1, 3) == Approx(0.0) );
-  REQUIRE( (double) b(1, 4) == Approx(0.0) );
-  REQUIRE( (double) b(2, 0) == Approx(0.0) );
-  REQUIRE( (double) b(2, 1) == Approx(0.0) );
-  REQUIRE( (double) b(2, 2) == Approx(0.0) );
-  REQUIRE( (double) b(2, 3) == Approx(0.0) );
-  REQUIRE( (double) b(2, 4) == Approx(0.0) );
+  REQUIRE( (double) b(1, 1) == Approx(1e-5) );
+  REQUIRE( (double) b(1, 2) == Approx(1e-5) );
+  REQUIRE( (double) b(1, 3) == Approx(1e-5) );
+  REQUIRE( (double) b(1, 4) == Approx(1e-5) );
+  REQUIRE( (double) b(2, 0) == Approx(1e-5) );
+  REQUIRE( (double) b(2, 1) == Approx(1e-5) );
+  REQUIRE( (double) b(2, 2) == Approx(1e-5) );
+  REQUIRE( (double) b(2, 3) == Approx(1e-5) );
+  REQUIRE( (double) b(2, 4) == Approx(1e-5) );
   REQUIRE( (double) b(3, 0) == Approx(4.0) );
-  REQUIRE( (double) b(3, 1) == Approx(0.0) );
-  REQUIRE( (double) b(3, 2) == Approx(0.0) );
-  REQUIRE( (double) b(3, 3) == Approx(0.0) );
-  REQUIRE( (double) b(3, 4) == Approx(0.0) );
-  REQUIRE( (double) b(4, 0) == Approx(0.0) );
-  REQUIRE( (double) b(4, 1) == Approx(0.0) );
+  REQUIRE( (double) b(3, 1) == Approx(1e-5) );
+  REQUIRE( (double) b(3, 2) == Approx(1e-5) );
+  REQUIRE( (double) b(3, 3) == Approx(1e-5) );
+  REQUIRE( (double) b(3, 4) == Approx(1e-5) );
+  REQUIRE( (double) b(4, 0) == Approx(1e-5) );
+  REQUIRE( (double) b(4, 1) == Approx(1e-5) );
   REQUIRE( (double) b(4, 2) == Approx(4.5) );
   REQUIRE( (double) b(4, 3) == Approx(3.0) );
-  REQUIRE( (double) b(4, 4) == Approx(0.0) );
+  REQUIRE( (double) b(4, 4) == Approx(1e-5) );
   }
 
 
@@ -176,30 +176,30 @@ TEST_CASE("sp_subview_multiplication_test_2")
   REQUIRE( b.n_nonzero == 5 );
 
   REQUIRE( (double) b(0, 0) == Approx(1.2) );
-  REQUIRE( (double) b(0, 1) == Approx(0.0) );
-  REQUIRE( (double) b(0, 2) == Approx(0.0) );
-  REQUIRE( (double) b(0, 3) == Approx(0.0) );
-  REQUIRE( (double) b(0, 4) == Approx(0.0) );
+  REQUIRE( (double) b(0, 1) == Approx(1e-5) );
+  REQUIRE( (double) b(0, 2) == Approx(1e-5) );
+  REQUIRE( (double) b(0, 3) == Approx(1e-5) );
+  REQUIRE( (double) b(0, 4) == Approx(1e-5) );
   REQUIRE( (double) b(1, 0) == Approx(2.0) );
-  REQUIRE( (double) b(1, 1) == Approx(0.0) );
-  REQUIRE( (double) b(1, 2) == Approx(0.0) );
-  REQUIRE( (double) b(1, 3) == Approx(0.0) );
-  REQUIRE( (double) b(1, 4) == Approx(0.0) );
-  REQUIRE( (double) b(2, 0) == Approx(0.0) );
-  REQUIRE( (double) b(2, 1) == Approx(0.0) );
-  REQUIRE( (double) b(2, 2) == Approx(0.0) );
-  REQUIRE( (double) b(2, 3) == Approx(0.0) );
-  REQUIRE( (double) b(2, 4) == Approx(0.0) );
+  REQUIRE( (double) b(1, 1) == Approx(1e-5) );
+  REQUIRE( (double) b(1, 2) == Approx(1e-5) );
+  REQUIRE( (double) b(1, 3) == Approx(1e-5) );
+  REQUIRE( (double) b(1, 4) == Approx(1e-5) );
+  REQUIRE( (double) b(2, 0) == Approx(1e-5) );
+  REQUIRE( (double) b(2, 1) == Approx(1e-5) );
+  REQUIRE( (double) b(2, 2) == Approx(1e-5) );
+  REQUIRE( (double) b(2, 3) == Approx(1e-5) );
+  REQUIRE( (double) b(2, 4) == Approx(1e-5) );
   REQUIRE( (double) b(3, 0) == Approx(4.0) );
-  REQUIRE( (double) b(3, 1) == Approx(0.0) );
-  REQUIRE( (double) b(3, 2) == Approx(0.0) );
-  REQUIRE( (double) b(3, 3) == Approx(0.0) );
-  REQUIRE( (double) b(3, 4) == Approx(0.0) );
-  REQUIRE( (double) b(4, 0) == Approx(0.0) );
-  REQUIRE( (double) b(4, 1) == Approx(0.0) );
+  REQUIRE( (double) b(3, 1) == Approx(1e-5) );
+  REQUIRE( (double) b(3, 2) == Approx(1e-5) );
+  REQUIRE( (double) b(3, 3) == Approx(1e-5) );
+  REQUIRE( (double) b(3, 4) == Approx(1e-5) );
+  REQUIRE( (double) b(4, 0) == Approx(1e-5) );
+  REQUIRE( (double) b(4, 1) == Approx(1e-5) );
   REQUIRE( (double) b(4, 2) == Approx(4.5) );
   REQUIRE( (double) b(4, 3) == Approx(3.0) );
-  REQUIRE( (double) b(4, 4) == Approx(0.0) );
+  REQUIRE( (double) b(4, 4) == Approx(1e-5) );
   }
 
 
@@ -304,7 +304,7 @@ TEST_CASE("sp_subview_mat_operator_tests")
   REQUIRE( (double) c(2, 0) == Approx(2.0) );
   REQUIRE( (double) c(0, 1) == Approx(2.0) );
   REQUIRE( (double) c(1, 1) == Approx(2.0) );
-  REQUIRE( (double) c(2, 1) == Approx(0.0) );
+  REQUIRE( (double) c(2, 1) == Approx(1e-5) );
   REQUIRE( (double) c(0, 2) == Approx(2.0) );
   REQUIRE( (double) c(1, 2) == Approx(5.5) );
   REQUIRE( (double) c(2, 2) == Approx(6.5) );
@@ -316,7 +316,7 @@ TEST_CASE("sp_subview_mat_operator_tests")
   REQUIRE( (double) c(2, 0) == Approx(2.0) );
   REQUIRE( (double) c(0, 1) == Approx(2.0) );
   REQUIRE( (double) c(1, 1) == Approx(2.0) );
-  REQUIRE( (double) c(2, 1) == Approx(0.0) );
+  REQUIRE( (double) c(2, 1) == Approx(1e-5) );
   REQUIRE( (double) c(0, 2) == Approx(2.0) );
   REQUIRE( (double) c(1, 2) == Approx(5.5) );
   REQUIRE( (double) c(2, 2) == Approx(6.5) );
@@ -324,7 +324,7 @@ TEST_CASE("sp_subview_mat_operator_tests")
   c = b;
   c -= a.submat(2, 2, 4, 4);
 
-  REQUIRE( (double) c(0, 0) == Approx(0.0) );
+  REQUIRE( (double) c(0, 0) == Approx(1e-5) );
   REQUIRE( (double) c(1, 0) == Approx(2.0) );
   REQUIRE( (double) c(2, 0) == Approx(2.0) );
   REQUIRE( (double) c(0, 1) == Approx(2.0) );
@@ -336,7 +336,7 @@ TEST_CASE("sp_subview_mat_operator_tests")
 
   c = b - a.submat(2, 2, 4, 4);
 
-  REQUIRE( (double) c(0, 0) == Approx(0.0) );
+  REQUIRE( (double) c(0, 0) == Approx(1e-5) );
   REQUIRE( (double) c(1, 0) == Approx(2.0) );
   REQUIRE( (double) c(2, 0) == Approx(2.0) );
   REQUIRE( (double) c(0, 1) == Approx(2.0) );
@@ -375,12 +375,12 @@ TEST_CASE("sp_subview_mat_operator_tests")
   c %= a.submat(2, 2, 4, 4);
 
   REQUIRE( (double) c(0, 0) == Approx(4.0) );
-  REQUIRE( (double) c(1, 0) == Approx(0.0) );
-  REQUIRE( (double) c(2, 0) == Approx(0.0) );
-  REQUIRE( (double) c(0, 1) == Approx(0.0) );
-  REQUIRE( (double) c(1, 1) == Approx(0.0) );
+  REQUIRE( (double) c(1, 0) == Approx(1e-5) );
+  REQUIRE( (double) c(2, 0) == Approx(1e-5) );
+  REQUIRE( (double) c(0, 1) == Approx(1e-5) );
+  REQUIRE( (double) c(1, 1) == Approx(1e-5) );
   REQUIRE( (double) c(2, 1) == Approx(-4.0) );
-  REQUIRE( (double) c(0, 2) == Approx(0.0) );
+  REQUIRE( (double) c(0, 2) == Approx(1e-5) );
   REQUIRE( (double) c(1, 2) == Approx(7.0) );
   REQUIRE( (double) c(2, 2) == Approx(9.0) );
 
@@ -446,7 +446,7 @@ TEST_CASE("sp_subview_base_test")
   REQUIRE( (double) c(4, 2) == Approx(2.0) );
   REQUIRE( (double) c(2, 3) == Approx(2.0) );
   REQUIRE( (double) c(3, 3) == Approx(2.0) );
-  REQUIRE( (double) c(4, 3) == Approx(0.0) );
+  REQUIRE( (double) c(4, 3) == Approx(1e-5) );
   REQUIRE( (double) c(2, 4) == Approx(2.0) );
   REQUIRE( (double) c(3, 4) == Approx(5.5) );
   REQUIRE( (double) c(4, 4) == Approx(6.5) );
@@ -460,7 +460,7 @@ TEST_CASE("sp_subview_base_test")
   REQUIRE( (double) c(2, 0) == Approx(2.0) );
   REQUIRE( (double) c(0, 1) == Approx(2.0) );
   REQUIRE( (double) c(1, 1) == Approx(2.0) );
-  REQUIRE( (double) c(2, 1) == Approx(0.0) );
+  REQUIRE( (double) c(2, 1) == Approx(1e-5) );
   REQUIRE( (double) c(0, 2) == Approx(2.0) );
   REQUIRE( (double) c(1, 2) == Approx(5.5) );
   REQUIRE( (double) c(2, 2) == Approx(6.5) );
@@ -469,7 +469,7 @@ TEST_CASE("sp_subview_base_test")
   c.submat(2, 2, 4, 4) -= b;
 
   REQUIRE( c.n_nonzero == 12 );
-  REQUIRE( (double) c(2, 2) == Approx(0.0) );
+  REQUIRE( (double) c(2, 2) == Approx(1e-5) );
   REQUIRE( (double) c(3, 2) == Approx(-2.0) );
   REQUIRE( (double) c(4, 2) == Approx(-2.0) );
   REQUIRE( (double) c(2, 3) == Approx(-2.0) );
@@ -482,7 +482,7 @@ TEST_CASE("sp_subview_base_test")
   c = a.submat(2, 2, 4, 4) - b;
 
   REQUIRE( c.n_nonzero == 8 );
-  REQUIRE( (double) c(0, 0) == Approx(0.0) );
+  REQUIRE( (double) c(0, 0) == Approx(1e-5) );
   REQUIRE( (double) c(1, 0) == Approx(-2.0) );
   REQUIRE( (double) c(2, 0) == Approx(-2.0) );
   REQUIRE( (double) c(0, 1) == Approx(-2.0) );
@@ -600,13 +600,13 @@ TEST_CASE("sp_subview_sp_mat_test")
   c.submat(2, 2, 4, 4) -= b;
 
   REQUIRE( c.n_nonzero == 7 );
-  REQUIRE( (double) c(2, 2) == Approx(0.0) );
-  REQUIRE( (double) c(3, 2) == Approx(0.0) );
-  REQUIRE( (double) c(4, 2) == Approx(0.0) );
-  REQUIRE( (double) c(2, 3) == Approx(0.0) );
-  REQUIRE( (double) c(3, 3) == Approx(0.0) );
+  REQUIRE( (double) c(2, 2) == Approx(1e-5) );
+  REQUIRE( (double) c(3, 2) == Approx(1e-5) );
+  REQUIRE( (double) c(4, 2) == Approx(1e-5) );
+  REQUIRE( (double) c(2, 3) == Approx(1e-5) );
+  REQUIRE( (double) c(3, 3) == Approx(1e-5) );
   REQUIRE( (double) c(4, 3) == Approx(-4.0) );
-  REQUIRE( (double) c(2, 4) == Approx(0.0) );
+  REQUIRE( (double) c(2, 4) == Approx(1e-5) );
   REQUIRE( (double) c(3, 4) == Approx(2.0) );
   REQUIRE( (double) c(4, 4) == Approx(4.5) );
 
@@ -639,7 +639,7 @@ TEST_CASE("sp_subview_sp_mat_test")
   REQUIRE( (double) c(0, 0) == Approx(4.0) );
   REQUIRE( (double) c(2, 1) == Approx(-4.0) );
   REQUIRE( (double) c(1, 2) == Approx(5.25) );
-  REQUIRE( (double) c(2, 2) == Approx(0.0) );
+  REQUIRE( (double) c(2, 2) == Approx(1e-5) );
 
   c = a;
   c.submat(2, 2, 4, 4) %= b;
@@ -648,7 +648,7 @@ TEST_CASE("sp_subview_sp_mat_test")
   REQUIRE( (double) c(2, 2) == Approx(4.0) );
   REQUIRE( (double) c(4, 3) == Approx(-4.0) );
   REQUIRE( (double) c(3, 4) == Approx(5.25) );
-  REQUIRE( (double) c(4, 4) == Approx(0.0) );
+  REQUIRE( (double) c(4, 4) == Approx(1e-5) );
 
 //  c = a.submat(2, 2, 4, 4) / b;
 
@@ -740,13 +740,13 @@ TEST_CASE("sp_subview_sp_subview_tests")
   c.submat(2, 2, 4, 4) -= b.submat(1, 1, 3, 3);
 
   REQUIRE( c.n_nonzero == 7 );
-  REQUIRE( (double) c(2, 2) == Approx(0.0) );
-  REQUIRE( (double) c(3, 2) == Approx(0.0) );
-  REQUIRE( (double) c(4, 2) == Approx(0.0) );
-  REQUIRE( (double) c(2, 3) == Approx(0.0) );
-  REQUIRE( (double) c(3, 3) == Approx(0.0) );
+  REQUIRE( (double) c(2, 2) == Approx(1e-5) );
+  REQUIRE( (double) c(3, 2) == Approx(1e-5) );
+  REQUIRE( (double) c(4, 2) == Approx(1e-5) );
+  REQUIRE( (double) c(2, 3) == Approx(1e-5) );
+  REQUIRE( (double) c(3, 3) == Approx(1e-5) );
   REQUIRE( (double) c(4, 3) == Approx(-4.0) );
-  REQUIRE( (double) c(2, 4) == Approx(0.0) );
+  REQUIRE( (double) c(2, 4) == Approx(1e-5) );
   REQUIRE( (double) c(3, 4) == Approx(2.0) );
   REQUIRE( (double) c(4, 4) == Approx(4.5) );
 
@@ -779,7 +779,7 @@ TEST_CASE("sp_subview_sp_subview_tests")
   REQUIRE( (double) c(0, 0) == Approx(4.0) );
   REQUIRE( (double) c(2, 1) == Approx(-4.0) );
   REQUIRE( (double) c(1, 2) == Approx(5.25) );
-  REQUIRE( (double) c(2, 2) == Approx(0.0) );
+  REQUIRE( (double) c(2, 2) == Approx(1e-5) );
 
   c = a;
   c.submat(2, 2, 4, 4) %= b.submat(1, 1, 3, 3);
@@ -788,7 +788,7 @@ TEST_CASE("sp_subview_sp_subview_tests")
   REQUIRE( (double) c(2, 2) == Approx(4.0) );
   REQUIRE( (double) c(4, 3) == Approx(-4.0) );
   REQUIRE( (double) c(3, 4) == Approx(5.25) );
-  REQUIRE( (double) c(4, 4) == Approx(0.0) );
+  REQUIRE( (double) c(4, 4) == Approx(1e-5) );
 
 //  c = a.submat(2, 2, 4, 4) / b.submat(1, 1, 3, 3);
 

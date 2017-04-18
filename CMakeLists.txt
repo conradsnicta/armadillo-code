@@ -21,6 +21,8 @@ cmake_minimum_required(VERSION 2.8.12 FATAL_ERROR)
 project(armadillo CXX C)
 include(CheckIncludeFileCXX)
 include(CheckLibraryExists)
+# Adhere to GNU filesystem layout conventions
+include(GNUInstallDirs)
 
 ## Set ARMA_USE_WRAPPER to false if you're getting linking errors when compiling your programs,
 ## or if you prefer to directly link with BLAS and/or LAPACK.
@@ -66,8 +68,6 @@ else()
   option(BUILD_SHARED_LIBS "build shared library" ON)
 endif()
 
-option(DETECT_PKG_CONFIG "Detect pkg-config and install pkg-config data, if found" ON)
-
 option(DETECT_HDF5 "Detect HDF5 and include HDF5 support, if found" OFF)
 
 
@@ -92,7 +92,6 @@ message(STATUS "CMAKE_CXX_COMPILER_ID      = ${CMAKE_CXX_COMPILER_ID}"     )
 message(STATUS "CMAKE_CXX_COMPILER_VERSION = ${CMAKE_CXX_COMPILER_VERSION}")
 message(STATUS "CMAKE_COMPILER_IS_GNUCXX   = ${CMAKE_COMPILER_IS_GNUCXX}"  )
 message(STATUS "BUILD_SHARED_LIBS          = ${BUILD_SHARED_LIBS}"         )
-message(STATUS "DETECT_PKG_CONFIG          = ${DETECT_PKG_CONFIG}"         )
 message(STATUS "DETECT_HDF5                = ${DETECT_HDF5}"               )
 
 
@@ -232,9 +231,7 @@ else()
 endif()
 
 
-if(DETECT_PKG_CONFIG)
-  find_package(PkgConfig)
-endif()
+find_package(PkgConfig)
 
 
 # set(DETECT_HDF5 true)
@@ -379,59 +376,16 @@ if(NOT APPLE)
   endif()
 endif()
 
-# Allow for the "lib" directory to be specified on the command line
-if(NOT INSTALL_LIB_DIR)
-  set(INSTALL_LIB_DIR "lib")
-  if(UNIX AND NOT APPLE)   # I don't know how Mac OS handles 64 bit systems
-    if(CMAKE_SIZEOF_VOID_P EQUAL 8)
-      message(STATUS "*** Detected 64 bit system")
-      # use "lib64" only on systems that have it (eg. Fedora, Red Hat).
-      # if installing in /usr/local/, the use of lib64 might be unreliable on systems which have /usr/local/lib64 but don't use it
-      if(IS_DIRECTORY "${CMAKE_INSTALL_PREFIX}/lib64")
-        unset(INSTALL_LIB_DIR)
-        set(INSTALL_LIB_DIR "lib64")
-        message(STATUS "*** ${CMAKE_INSTALL_PREFIX}/lib64/ exists, so destination directory for the run-time library changed to ${CMAKE_INSTALL_PREFIX}/lib64/")
-        message(STATUS "*** Your system and/or compiler must search ${CMAKE_INSTALL_PREFIX}/lib64/ during linking")
-      endif()
-    endif()
-  endif()
-endif()
-
-# Allow for the "include" directory to be specified on the command line
-
-if(NOT INSTALL_INCLUDE_DIR)
-  set(INSTALL_INCLUDE_DIR "include")
-endif()
-
-# We use data dir to store files shared with other programs 
-# like the ArmadilloConfig.cmake file.
-if(NOT INSTALL_DATA_DIR)
-  set(INSTALL_DATA_DIR "share")
-endif()
-
-# executables destination
-if(NOT INSTALL_BIN_DIR)
-  set(INSTALL_BIN_DIR "bin")
-endif()
-
-# Make relative paths absolute so we can write them in Config.cmake files
-foreach(p LIB INCLUDE DATA BIN)
-  set(var INSTALL_${p}_DIR)
-  if(NOT IS_ABSOLUTE "${${var}}")
-    set(${var} "${CMAKE_INSTALL_PREFIX}/${${var}}")
-  endif()
-endforeach()
-
-message(STATUS "CMAKE_INSTALL_PREFIX = ${CMAKE_INSTALL_PREFIX}")
-message(STATUS "INSTALL_LIB_DIR      = ${INSTALL_LIB_DIR}"     )
-message(STATUS "INSTALL_INCLUDE_DIR  = ${INSTALL_INCLUDE_DIR}" )
-message(STATUS "INSTALL_DATA_DIR     = ${INSTALL_DATA_DIR}"    )
-message(STATUS "INSTALL_BIN_DIR      = ${INSTALL_BIN_DIR}"    )
+message(STATUS "CMAKE_INSTALL_PREFIX     = ${CMAKE_INSTALL_PREFIX}"    )
+message(STATUS "CMAKE_INSTALL_LIBDIR     = ${CMAKE_INSTALL_LIBDIR}"    )
+message(STATUS "CMAKE_INSTALL_INCLUDEDIR = ${CMAKE_INSTALL_INCLUDEDIR}")
+message(STATUS "CMAKE_INSTALL_DATADIR    = ${CMAKE_INSTALL_DATADIR}"   )
+message(STATUS "CMAKE_INSTALL_BINDIR     = ${CMAKE_INSTALL_BINDIR}"    )
 
 
 # Note that the trailing / character in "include/" is critical
 
-install(DIRECTORY ${PROJECT_BINARY_DIR}/tmp/include/ DESTINATION ${INSTALL_INCLUDE_DIR}
+install(DIRECTORY ${PROJECT_BINARY_DIR}/tmp/include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 PATTERN ".svn" EXCLUDE
 PATTERN "*.cmake" EXCLUDE
 PATTERN "*~" EXCLUDE
@@ -439,9 +393,9 @@ PATTERN "*orig" EXCLUDE
 )
 
 install(TARGETS armadillo EXPORT ArmadilloLibraryDepends
-  ARCHIVE DESTINATION ${INSTALL_LIB_DIR}
-  LIBRARY DESTINATION ${INSTALL_LIB_DIR}
-  RUNTIME DESTINATION ${INSTALL_BIN_DIR})
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
   
 # Export the package for use from the build-tree
 # (this registers the build-tree with a global CMake-registry)
@@ -465,16 +419,16 @@ configure_file(${PROJECT_SOURCE_DIR}/cmake_aux/InstallFiles/ArmadilloConfigVersi
 
 # Install the export set for use with the install-tree
 install(EXPORT ArmadilloLibraryDepends DESTINATION
-  "${INSTALL_DATA_DIR}/Armadillo/CMake"
+  "${CMAKE_INSTALL_DATADIR}/Armadillo/CMake"
   COMPONENT dev)
 
 
 ## GLOBAL INSTALL FILES
 # Create ArmadilloConfig.cmake file for the use from the install tree
 # and install it
-set(ARMADILLO_INCLUDE_DIRS "${INSTALL_INCLUDE_DIR}")
-set(ARMADILLO_LIB_DIR      "${INSTALL_LIB_DIR}")
-set(ARMADILLO_CMAKE_DIR    "${INSTALL_DATA_DIR}/Armadillo/CMake")
+set(ARMADILLO_INCLUDE_DIRS "${CMAKE_INSTALL_INCLUDEDIR}")
+set(ARMADILLO_LIB_DIR      "${CMAKE_INSTALL_LIBDIR}")
+set(ARMADILLO_CMAKE_DIR    "${CMAKE_INSTALL_DATADIR}/Armadillo/CMake")
 
 
 message(STATUS "Generating '${PROJECT_BINARY_DIR}/InstallFiles/ArmadilloConfig.cmake'")
@@ -492,17 +446,7 @@ install(FILES
   "${PROJECT_BINARY_DIR}/InstallFiles/ArmadilloConfigVersion.cmake"
   DESTINATION "${ARMADILLO_CMAKE_DIR}" COMPONENT dev)
 
-
-if(PKG_CONFIG_FOUND)
-  message(STATUS "Copying ${PROJECT_SOURCE_DIR}/misc/ to ${PROJECT_BINARY_DIR}/tmp/misc/")
-  file(COPY ${PROJECT_SOURCE_DIR}/misc/ DESTINATION ${PROJECT_BINARY_DIR}/tmp/misc/)
-
-  message(STATUS "Generating '${PROJECT_BINARY_DIR}/tmp/misc/armadillo.pc'")
-  configure_file(${PROJECT_BINARY_DIR}/tmp/misc/armadillo.pc.in "${PROJECT_BINARY_DIR}/tmp/misc/armadillo.pc" @ONLY)
+message(STATUS "Generating '${PROJECT_BINARY_DIR}/armadillo.pc'")
+configure_file(misc/armadillo.pc.in armadillo.pc @ONLY)
   
-  if(NOT PKG_CONFIG_DIR)
-    set(PKG_CONFIG_DIR "${INSTALL_LIB_DIR}/pkgconfig")
-  endif()
-  
-  install(FILES "${PROJECT_BINARY_DIR}/tmp/misc/armadillo.pc" DESTINATION ${PKG_CONFIG_DIR})
-endif()
+install(FILES ${PROJECT_BINARY_DIR}/armadillo.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)

@@ -3701,6 +3701,7 @@ SpMat<eT>::save(const std::string name, const file_type type, const bool print_s
       break;
     
     case coord_ascii:
+      arma_debug_warn("SpMat::save(): support for coord format is experimental");
       save_okay = diskio::save_coord_ascii(*this, name);
       break;
     
@@ -3741,6 +3742,7 @@ SpMat<eT>::save(std::ostream& os, const file_type type, const bool print_status)
       break;
     
     case coord_ascii:
+      arma_debug_warn("SpMat::save(): support for coord format is experimental");
       save_okay = diskio::save_coord_ascii(*this, os);
       break;
     
@@ -3786,6 +3788,7 @@ SpMat<eT>::load(const std::string name, const file_type type, const bool print_s
       break;
     
     case coord_ascii:
+      arma_debug_warn("SpMat::load(): support for coord format is experimental");
       load_okay = diskio::load_coord_ascii(*this, name, err_msg);
       break;
     
@@ -3846,6 +3849,7 @@ SpMat<eT>::load(std::istream& is, const file_type type, const bool print_status)
       break;
     
     case coord_ascii:
+      arma_debug_warn("SpMat::load(): support for coord format is experimental");
       load_okay = diskio::load_coord_ascii(*this, is, err_msg);
       break;
     

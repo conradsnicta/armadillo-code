@@ -46,7 +46,7 @@ running_mean_scalar<eT>::running_mean_scalar(const running_mean_scalar<eT>& in)
 
 template<typename eT>
 inline
-running_mean_scalar<eT>&
+const running_mean_scalar<eT>&
 running_mean_scalar<eT>::operator=(const running_mean_scalar<eT>& in)
   {
   arma_extra_debug_sigprint();
@@ -147,7 +147,7 @@ running_mean_vec<eT>::running_mean_vec(const running_mean_vec<eT>& in)
 
 template<typename eT>
 inline
-running_mean_vec<eT>&
+const running_mean_vec<eT>&
 running_mean_vec<eT>::operator=(const running_mean_vec<eT>& in)
   {
   arma_extra_debug_sigprint();

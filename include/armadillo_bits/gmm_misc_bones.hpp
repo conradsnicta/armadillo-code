@@ -32,7 +32,7 @@ class running_mean_scalar
   inline running_mean_scalar();
   inline running_mean_scalar(const running_mean_scalar& in_rms);
   
-  inline running_mean_scalar& operator=(const running_mean_scalar& in_rms);
+  inline const running_mean_scalar& operator=(const running_mean_scalar& in_rms);
   
   arma_hot inline void operator() (const eT X);
   
@@ -60,7 +60,7 @@ class running_mean_vec
   inline running_mean_vec();
   inline running_mean_vec(const running_mean_vec& in_rmv);
   
-  inline running_mean_vec& operator=(const running_mean_vec& in_rmv);
+  inline const running_mean_vec& operator=(const running_mean_vec& in_rmv);
   
   arma_hot inline void operator() (const Col<eT>& X, const uword index);
   

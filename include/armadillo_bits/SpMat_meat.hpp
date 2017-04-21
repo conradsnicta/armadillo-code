@@ -125,7 +125,7 @@ SpMat<eT>::SpMat(const char* text)
 
 template<typename eT>
 inline
-const SpMat<eT>&
+SpMat<eT>&
 SpMat<eT>::operator=(const char* text)
   {
   arma_extra_debug_sigprint();
@@ -158,7 +158,7 @@ SpMat<eT>::SpMat(const std::string& text)
 
 template<typename eT>
 inline
-const SpMat<eT>&
+SpMat<eT>&
 SpMat<eT>::operator=(const std::string& text)
   {
   arma_extra_debug_sigprint();
@@ -213,7 +213,7 @@ SpMat<eT>::SpMat(const SpMat<eT>& x)
   
   template<typename eT>
   inline
-  const SpMat<eT>&
+  SpMat<eT>&
   SpMat<eT>::operator=(SpMat<eT>&& in_mat)
     {
     arma_extra_debug_sigprint(arma_str::format("this = %x   in_mat = %x") % this % &in_mat);
@@ -514,7 +514,7 @@ SpMat<eT>::SpMat
 
 template<typename eT>
 inline
-const SpMat<eT>&
+SpMat<eT>&
 SpMat<eT>::operator=(const eT val)
   {
   arma_extra_debug_sigprint();
@@ -542,7 +542,7 @@ SpMat<eT>::operator=(const eT val)
 
 template<typename eT>
 inline
-const SpMat<eT>&
+SpMat<eT>&
 SpMat<eT>::operator*=(const eT val)
   {
   arma_extra_debug_sigprint();
@@ -566,7 +566,7 @@ SpMat<eT>::operator*=(const eT val)
 
 template<typename eT>
 inline
-const SpMat<eT>&
+SpMat<eT>&
 SpMat<eT>::operator/=(const eT val)
   {
   arma_extra_debug_sigprint();
@@ -584,7 +584,7 @@ SpMat<eT>::operator/=(const eT val)
 
 template<typename eT>
 inline
-const SpMat<eT>&
+SpMat<eT>&
 SpMat<eT>::operator=(const SpMat<eT>& x)
   {
   arma_extra_debug_sigprint();
@@ -598,7 +598,7 @@ SpMat<eT>::operator=(const SpMat<eT>& x)
 
 template<typename eT>
 inline
-const SpMat<eT>&
+SpMat<eT>&
 SpMat<eT>::operator+=(const SpMat<eT>& x)
   {
   arma_extra_debug_sigprint();
@@ -614,7 +614,7 @@ SpMat<eT>::operator+=(const SpMat<eT>& x)
 
 template<typename eT>
 inline
-const SpMat<eT>&
+SpMat<eT>&
 SpMat<eT>::operator-=(const SpMat<eT>& x)
   {
   arma_extra_debug_sigprint();
@@ -630,7 +630,7 @@ SpMat<eT>::operator-=(const SpMat<eT>& x)
 
 template<typename eT>
 inline
-const SpMat<eT>&
+SpMat<eT>&
 SpMat<eT>::operator*=(const SpMat<eT>& y)
   {
   arma_extra_debug_sigprint();
@@ -647,7 +647,7 @@ SpMat<eT>::operator*=(const SpMat<eT>& y)
 // This is in-place element-wise matrix multiplication.
 template<typename eT>
 inline
-const SpMat<eT>&
+SpMat<eT>&
 SpMat<eT>::operator%=(const SpMat<eT>& y)
   {
   arma_extra_debug_sigprint();
@@ -760,7 +760,7 @@ SpMat<eT>::SpMat
 
 template<typename eT>
 inline
-const SpMat<eT>&
+SpMat<eT>&
 SpMat<eT>::operator/=(const SpMat<eT>& x)
   {
   arma_extra_debug_sigprint();
@@ -805,7 +805,7 @@ SpMat<eT>::SpMat(const Base<eT, T1>& x)
 template<typename eT>
 template<typename T1>
 inline
-const SpMat<eT>&
+SpMat<eT>&
 SpMat<eT>::operator=(const Base<eT, T1>& expr)
   {
   arma_extra_debug_sigprint();
@@ -861,7 +861,7 @@ SpMat<eT>::operator=(const Base<eT, T1>& expr)
 template<typename eT>
 template<typename T1>
 inline
-const SpMat<eT>&
+SpMat<eT>&
 SpMat<eT>::operator+=(const Base<eT, T1>& x)
   {
   arma_extra_debug_sigprint();
@@ -874,7 +874,7 @@ SpMat<eT>::operator+=(const Base<eT, T1>& x)
 template<typename eT>
 template<typename T1>
 inline
-const SpMat<eT>&
+SpMat<eT>&
 SpMat<eT>::operator-=(const Base<eT, T1>& x)
   {
   arma_extra_debug_sigprint();
@@ -887,7 +887,7 @@ SpMat<eT>::operator-=(const Base<eT, T1>& x)
 template<typename eT>
 template<typename T1>
 inline
-const SpMat<eT>&
+SpMat<eT>&
 SpMat<eT>::operator*=(const Base<eT, T1>& y)
   {
   arma_extra_debug_sigprint();
@@ -985,7 +985,7 @@ SpMat<eT>::operator*=(const Base<eT, T1>& y)
 template<typename eT>
 template<typename T1>
 inline
-const SpMat<eT>&
+SpMat<eT>&
 SpMat<eT>::operator/=(const Base<eT, T1>& x)
   {
   arma_extra_debug_sigprint();
@@ -1002,7 +1002,7 @@ SpMat<eT>::operator/=(const Base<eT, T1>& x)
 template<typename eT>
 template<typename T1>
 inline
-const SpMat<eT>&
+SpMat<eT>&
 SpMat<eT>::operator%=(const Base<eT, T1>& x)
   {
   arma_extra_debug_sigprint();
@@ -1083,7 +1083,7 @@ SpMat<eT>::SpMat(const SpSubview<eT>& X)
 
 template<typename eT>
 inline
-const SpMat<eT>&
+SpMat<eT>&
 SpMat<eT>::operator=(const SpSubview<eT>& X)
   {
   arma_extra_debug_sigprint();
@@ -1133,7 +1133,7 @@ SpMat<eT>::operator=(const SpSubview<eT>& X)
 
 template<typename eT>
 inline
-const SpMat<eT>&
+SpMat<eT>&
 SpMat<eT>::operator+=(const SpSubview<eT>& X)
   {
   arma_extra_debug_sigprint();
@@ -1149,7 +1149,7 @@ SpMat<eT>::operator+=(const SpSubview<eT>& X)
 
 template<typename eT>
 inline
-const SpMat<eT>&
+SpMat<eT>&
 SpMat<eT>::operator-=(const SpSubview<eT>& X)
   {
   arma_extra_debug_sigprint();
@@ -1165,7 +1165,7 @@ SpMat<eT>::operator-=(const SpSubview<eT>& X)
 
 template<typename eT>
 inline
-const SpMat<eT>&
+SpMat<eT>&
 SpMat<eT>::operator*=(const SpSubview<eT>& y)
   {
   arma_extra_debug_sigprint();
@@ -1181,7 +1181,7 @@ SpMat<eT>::operator*=(const SpSubview<eT>& y)
 
 template<typename eT>
 inline
-const SpMat<eT>&
+SpMat<eT>&
 SpMat<eT>::operator%=(const SpSubview<eT>& x)
   {
   arma_extra_debug_sigprint();
@@ -1197,7 +1197,7 @@ SpMat<eT>::operator%=(const SpSubview<eT>& x)
 
 template<typename eT>
 inline
-const SpMat<eT>&
+SpMat<eT>&
 SpMat<eT>::operator/=(const SpSubview<eT>& x)
   {
   arma_extra_debug_sigprint();
@@ -1240,7 +1240,7 @@ SpMat<eT>::SpMat(const SpOp<T1, spop_type>& X)
 template<typename eT>
 template<typename T1, typename spop_type>
 inline
-const SpMat<eT>&
+SpMat<eT>&
 SpMat<eT>::operator=(const SpOp<T1, spop_type>& X)
   {
   arma_extra_debug_sigprint();
@@ -1257,7 +1257,7 @@ SpMat<eT>::operator=(const SpOp<T1, spop_type>& X)
 template<typename eT>
 template<typename T1, typename spop_type>
 inline
-const SpMat<eT>&
+SpMat<eT>&
 SpMat<eT>::operator+=(const SpOp<T1, spop_type>& X)
   {
   arma_extra_debug_sigprint();
@@ -1274,7 +1274,7 @@ SpMat<eT>::operator+=(const SpOp<T1, spop_type>& X)
 template<typename eT>
 template<typename T1, typename spop_type>
 inline
-const SpMat<eT>&
+SpMat<eT>&
 SpMat<eT>::operator-=(const SpOp<T1, spop_type>& X)
   {
   arma_extra_debug_sigprint();
@@ -1291,7 +1291,7 @@ SpMat<eT>::operator-=(const SpOp<T1, spop_type>& X)
 template<typename eT>
 template<typename T1, typename spop_type>
 inline
-const SpMat<eT>&
+SpMat<eT>&
 SpMat<eT>::operator*=(const SpOp<T1, spop_type>& X)
   {
   arma_extra_debug_sigprint();
@@ -1308,7 +1308,7 @@ SpMat<eT>::operator*=(const SpOp<T1, spop_type>& X)
 template<typename eT>
 template<typename T1, typename spop_type>
 inline
-const SpMat<eT>&
+SpMat<eT>&
 SpMat<eT>::operator%=(const SpOp<T1, spop_type>& X)
   {
   arma_extra_debug_sigprint();
@@ -1325,7 +1325,7 @@ SpMat<eT>::operator%=(const SpOp<T1, spop_type>& X)
 template<typename eT>
 template<typename T1, typename spop_type>
 inline
-const SpMat<eT>&
+SpMat<eT>&
 SpMat<eT>::operator/=(const SpOp<T1, spop_type>& X)
   {
   arma_extra_debug_sigprint();
@@ -1384,7 +1384,7 @@ SpMat<eT>::SpMat(const mtSpOp<eT, T1, spop_type>& X)
 template<typename eT>
 template<typename T1, typename spop_type>
 inline
-const SpMat<eT>&
+SpMat<eT>&
 SpMat<eT>::operator=(const mtSpOp<eT, T1, spop_type>& X)
   {
   arma_extra_debug_sigprint();
@@ -1399,7 +1399,7 @@ SpMat<eT>::operator=(const mtSpOp<eT, T1, spop_type>& X)
 template<typename eT>
 template<typename T1, typename spop_type>
 inline
-const SpMat<eT>&
+SpMat<eT>&
 SpMat<eT>::operator+=(const mtSpOp<eT, T1, spop_type>& X)
   {
   arma_extra_debug_sigprint();
@@ -1414,7 +1414,7 @@ SpMat<eT>::operator+=(const mtSpOp<eT, T1, spop_type>& X)
 template<typename eT>
 template<typename T1, typename spop_type>
 inline
-const SpMat<eT>&
+SpMat<eT>&
 SpMat<eT>::operator-=(const mtSpOp<eT, T1, spop_type>& X)
   {
   arma_extra_debug_sigprint();
@@ -1429,7 +1429,7 @@ SpMat<eT>::operator-=(const mtSpOp<eT, T1, spop_type>& X)
 template<typename eT>
 template<typename T1, typename spop_type>
 inline
-const SpMat<eT>&
+SpMat<eT>&
 SpMat<eT>::operator*=(const mtSpOp<eT, T1, spop_type>& X)
   {
   arma_extra_debug_sigprint();
@@ -1444,7 +1444,7 @@ SpMat<eT>::operator*=(const mtSpOp<eT, T1, spop_type>& X)
 template<typename eT>
 template<typename T1, typename spop_type>
 inline
-const SpMat<eT>&
+SpMat<eT>&
 SpMat<eT>::operator%=(const mtSpOp<eT, T1, spop_type>& X)
   {
   arma_extra_debug_sigprint();
@@ -1459,7 +1459,7 @@ SpMat<eT>::operator%=(const mtSpOp<eT, T1, spop_type>& X)
 template<typename eT>
 template<typename T1, typename spop_type>
 inline
-const SpMat<eT>&
+SpMat<eT>&
 SpMat<eT>::operator/=(const mtSpOp<eT, T1, spop_type>& X)
   {
   arma_extra_debug_sigprint();
@@ -1474,7 +1474,7 @@ SpMat<eT>::operator/=(const mtSpOp<eT, T1, spop_type>& X)
 template<typename eT>
 template<typename T1, typename T2, typename spglue_type>
 inline
-const SpMat<eT>&
+SpMat<eT>&
 SpMat<eT>::operator=(const SpGlue<T1, T2, spglue_type>& X)
   {
   arma_extra_debug_sigprint();
@@ -1491,7 +1491,7 @@ SpMat<eT>::operator=(const SpGlue<T1, T2, spglue_type>& X)
 template<typename eT>
 template<typename T1, typename T2, typename spglue_type>
 inline
-const SpMat<eT>&
+SpMat<eT>&
 SpMat<eT>::operator+=(const SpGlue<T1, T2, spglue_type>& X)
   {
   arma_extra_debug_sigprint();
@@ -1508,7 +1508,7 @@ SpMat<eT>::operator+=(const SpGlue<T1, T2, spglue_type>& X)
 template<typename eT>
 template<typename T1, typename T2, typename spglue_type>
 inline
-const SpMat<eT>&
+SpMat<eT>&
 SpMat<eT>::operator-=(const SpGlue<T1, T2, spglue_type>& X)
   {
   arma_extra_debug_sigprint();
@@ -1525,7 +1525,7 @@ SpMat<eT>::operator-=(const SpGlue<T1, T2, spglue_type>& X)
 template<typename eT>
 template<typename T1, typename T2, typename spglue_type>
 inline
-const SpMat<eT>&
+SpMat<eT>&
 SpMat<eT>::operator*=(const SpGlue<T1, T2, spglue_type>& X)
   {
   arma_extra_debug_sigprint();
@@ -1542,7 +1542,7 @@ SpMat<eT>::operator*=(const SpGlue<T1, T2, spglue_type>& X)
 template<typename eT>
 template<typename T1, typename T2, typename spglue_type>
 inline
-const SpMat<eT>&
+SpMat<eT>&
 SpMat<eT>::operator%=(const SpGlue<T1, T2, spglue_type>& X)
   {
   arma_extra_debug_sigprint();
@@ -1559,7 +1559,7 @@ SpMat<eT>::operator%=(const SpGlue<T1, T2, spglue_type>& X)
 template<typename eT>
 template<typename T1, typename T2, typename spglue_type>
 inline
-const SpMat<eT>&
+SpMat<eT>&
 SpMat<eT>::operator/=(const SpGlue<T1, T2, spglue_type>& X)
   {
   arma_extra_debug_sigprint();
@@ -3701,6 +3701,7 @@ SpMat<eT>::save(const std::string name, const file_type type, const bool print_s
       break;
     
     case coord_ascii:
+      arma_debug_warn("SpMat::save(): support for coord format is experimental");
       save_okay = diskio::save_coord_ascii(*this, name);
       break;
     
@@ -3741,6 +3742,7 @@ SpMat<eT>::save(std::ostream& os, const file_type type, const bool print_status)
       break;
     
     case coord_ascii:
+      arma_debug_warn("SpMat::save(): support for coord format is experimental");
       save_okay = diskio::save_coord_ascii(*this, os);
       break;
     
@@ -3786,6 +3788,7 @@ SpMat<eT>::load(const std::string name, const file_type type, const bool print_s
       break;
     
     case coord_ascii:
+      arma_debug_warn("SpMat::load(): support for coord format is experimental");
       load_okay = diskio::load_coord_ascii(*this, name, err_msg);
       break;
     
@@ -3846,6 +3849,7 @@ SpMat<eT>::load(std::istream& is, const file_type type, const bool print_status)
       break;
     
     case coord_ascii:
+      arma_debug_warn("SpMat::load(): support for coord format is experimental");
       load_okay = diskio::load_coord_ascii(*this, is, err_msg);
       break;
     

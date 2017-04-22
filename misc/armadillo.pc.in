@@ -1,7 +1,5 @@
-prefix=@CMAKE_INSTALL_PREFIX@
-exec_prefix=${prefix}
-libdir=@INSTALL_LIB_DIR@
-includedir=@INSTALL_INCLUDE_DIR@
+libdir=@CMAKE_INSTALL_FULL_LIBDIR@
+includedir=@CMAKE_INSTALL_FULL_INCLUDEDIR@
 
 Name: armadillo
 Description: Fast C++ matrix library with syntax similar to MATLAB and Octave

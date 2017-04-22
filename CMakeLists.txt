@@ -22,6 +22,42 @@ project(armadillo CXX C)
 include(CheckIncludeFileCXX)
 include(CheckLibraryExists)
 
+# As Red Hat Enterprise Linux (and related systems such as Fedora)
+# does not search /usr/local/lib by default, we need to place the
+# library in either /usr/lib or /usr/lib64
+
+if(NOT APPLE)
+  if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+    message(STATUS "*** CMAKE_INSTALL_PREFIX was initalised by cmake to the default value of ${CMAKE_INSTALL_PREFIX}")
+    message(STATUS "*** CMAKE_INSTALL_PREFIX changed to /usr")
+    set(CMAKE_INSTALL_PREFIX "/usr" CACHE PATH "Standard install prefix" FORCE)
+  endif()
+endif()
+
+# Adhere to GNU filesystem layout conventions
+include(GNUInstallDirs)
+
+# deprecated options
+set(INSTALL_LIB_DIR "" CACHE STRING "Deprecated old-style libdir path (retained for backwards compatibility, use CMAKE_INSTALL_LIBDIR instead)")
+set(INSTALL_INCLUDE_DIR "" CACHE STRING "Deprecated old-style includedir path (retained for backwards compatibility, use CMAKE_INSTALL_INCLUDEDIR instead)")
+set(INSTALL_DATA_DIR "" CACHE STRING "Deprecated old-style datadir path (retained for backwards compatibility, use CMAKE_INSTALL_DATADIR instead)")
+set(INSTALL_BIN_DIR "" CACHE STRING "Deprecated old-style bindir path (retained for backwards compatibility, use CMAKE_INSTALL_BINDIR instead)")
+
+if(INSTALL_LIB_DIR)
+  set(CMAKE_INSTALL_LIBDIR "${INSTALL_LIB_DIR}")
+  GNUInstallDirs_get_absolute_install_dir(CMAKE_INSTALL_FULL_LIBDIR CMAKE_INSTALL_LIBDIR)
+endif()
+if(INSTALL_INCLUDE_DIR)
+  set(CMAKE_INSTALL_INCLUDEDIR "${INSTALL_INCLUDE_DIR}")
+  GNUInstallDirs_get_absolute_install_dir(CMAKE_INSTALL_FULL_INCLUDEDIR CMAKE_INSTALL_INCLUDEDIR)
+endif()
+if(INSTALL_DATA_DIR)
+  set(CMAKE_INSTALL_DATADIR "${INSTALL_DATA_DIR}")
+endif()
+if(INSTALL_BIN_DIR)
+  set(CMAKE_INSTALL_BINDIR "${INSTALL_BIN_DIR}")
+endif()
+
 ## Set ARMA_USE_WRAPPER to false if you're getting linking errors when compiling your programs,
 ## or if you prefer to directly link with BLAS and/or LAPACK.
 ## You will then need to link your programs with -lblas -llapack instead of -larmadillo

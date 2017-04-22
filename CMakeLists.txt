@@ -29,6 +29,7 @@ include(CheckLibraryExists)
 
 set(ARMA_USE_WRAPPER true)
 
+
 # the settings below will be automatically configured by the rest of this script
 
 set(ARMA_USE_LAPACK           false)
@@ -38,6 +39,22 @@ set(ARMA_USE_HDF5_ALT         false)
 set(ARMA_USE_ARPACK           false)
 set(ARMA_USE_EXTERN_CXX11_RNG false)
 set(ARMA_USE_SUPERLU          false)  # Caveat: only SuperLU version 5.x can be used!
+
+
+## extract version from sources
+
+set(ARMA_VERSION_FILE_NAME "${PROJECT_SOURCE_DIR}/include/armadillo_bits/arma_version.hpp")
+
+if(NOT EXISTS ${ARMA_VERSION_FILE_NAME})
+  message(FATAL_ERROR "Can't read ${ARMA_VERSION_FILE_NAME}")
+endif()
+
+file(READ ${ARMA_VERSION_FILE_NAME} ARMA_VERSION_FILE_CONTENTS)
+string(REGEX REPLACE ".*#define ARMA_VERSION_MAJOR ([0-9]+).*" "\\1" ARMA_VERSION_MAJOR "${ARMA_VERSION_FILE_CONTENTS}")
+string(REGEX REPLACE ".*#define ARMA_VERSION_MINOR ([0-9]+).*" "\\1" ARMA_VERSION_MINOR "${ARMA_VERSION_FILE_CONTENTS}")
+string(REGEX REPLACE ".*#define ARMA_VERSION_PATCH ([0-9]+).*" "\\1" ARMA_VERSION_PATCH "${ARMA_VERSION_FILE_CONTENTS}")
+
+message(STATUS "Configuring Armadillo ${ARMA_VERSION_MAJOR}.${ARMA_VERSION_MINOR}.${ARMA_VERSION_PATCH}")
 
 
 # As Red Hat Enterprise Linux (and related systems such as Fedora)
@@ -57,44 +74,32 @@ endif()
 include(GNUInstallDirs)
 
 # deprecated options
-set(INSTALL_LIB_DIR "" CACHE STRING "Deprecated old-style libdir path (retained for backwards compatibility, use CMAKE_INSTALL_LIBDIR instead)")
-set(INSTALL_INCLUDE_DIR "" CACHE STRING "Deprecated old-style includedir path (retained for backwards compatibility, use CMAKE_INSTALL_INCLUDEDIR instead)")
-set(INSTALL_DATA_DIR "" CACHE STRING "Deprecated old-style datadir path (retained for backwards compatibility, use CMAKE_INSTALL_DATADIR instead)")
-set(INSTALL_BIN_DIR "" CACHE STRING "Deprecated old-style bindir path (retained for backwards compatibility, use CMAKE_INSTALL_BINDIR instead)")
+set(INSTALL_LIB_DIR     "" CACHE STRING "deprecated; use CMAKE_INSTALL_LIBDIR instead")
+set(INSTALL_INCLUDE_DIR "" CACHE STRING "deprecated; use CMAKE_INSTALL_INCLUDEDIR instead")
+set(INSTALL_DATA_DIR    "" CACHE STRING "deprecated; use CMAKE_INSTALL_DATADIR instead")
+set(INSTALL_BIN_DIR     "" CACHE STRING "deprecated; use CMAKE_INSTALL_BINDIR instead")
 
 if(INSTALL_LIB_DIR)
+  message(STATUS "*** INSTALL_LIB_DIR is deprecated; use CMAKE_INSTALL_LIBDIR instead")
   set(CMAKE_INSTALL_LIBDIR "${INSTALL_LIB_DIR}")
   GNUInstallDirs_get_absolute_install_dir(CMAKE_INSTALL_FULL_LIBDIR CMAKE_INSTALL_LIBDIR)
 endif()
+
 if(INSTALL_INCLUDE_DIR)
+  message(STATUS "*** INSTALL_INCLUDE_DIR is deprecated; use CMAKE_INSTALL_INCLUDEDIR instead")
   set(CMAKE_INSTALL_INCLUDEDIR "${INSTALL_INCLUDE_DIR}")
   GNUInstallDirs_get_absolute_install_dir(CMAKE_INSTALL_FULL_INCLUDEDIR CMAKE_INSTALL_INCLUDEDIR)
 endif()
+
 if(INSTALL_DATA_DIR)
+  message(STATUS "*** INSTALL_DATA_DIR is deprecated; use CMAKE_INSTALL_DATADIR instead")
   set(CMAKE_INSTALL_DATADIR "${INSTALL_DATA_DIR}")
 endif()
+
 if(INSTALL_BIN_DIR)
+  message(STATUS "*** INSTALL_BIN_DIR is deprecated; use CMAKE_INSTALL_BINDIR instead")
   set(CMAKE_INSTALL_BINDIR "${INSTALL_BIN_DIR}")
 endif()
-
-
-## extract version from sources
-
-set(ARMA_VERSION_FILE_NAME "${PROJECT_SOURCE_DIR}/include/armadillo_bits/arma_version.hpp")
-
-if(NOT EXISTS ${ARMA_VERSION_FILE_NAME})
-  message(FATAL_ERROR "Can't read ${ARMA_VERSION_FILE_NAME}")
-endif()
-
-file(READ ${ARMA_VERSION_FILE_NAME} ARMA_VERSION_FILE_CONTENTS)
-string(REGEX REPLACE ".*#define ARMA_VERSION_MAJOR ([0-9]+).*" "\\1" ARMA_VERSION_MAJOR "${ARMA_VERSION_FILE_CONTENTS}")
-string(REGEX REPLACE ".*#define ARMA_VERSION_MINOR ([0-9]+).*" "\\1" ARMA_VERSION_MINOR "${ARMA_VERSION_FILE_CONTENTS}")
-string(REGEX REPLACE ".*#define ARMA_VERSION_PATCH ([0-9]+).*" "\\1" ARMA_VERSION_PATCH "${ARMA_VERSION_FILE_CONTENTS}")
-
-message(STATUS "Configuring Armadillo ${ARMA_VERSION_MAJOR}.${ARMA_VERSION_MINOR}.${ARMA_VERSION_PATCH}")
-
-
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake_aux/Modules/")
 
 
 if(MSVC)
@@ -133,6 +138,8 @@ message(STATUS "DETECT_HDF5                = ${DETECT_HDF5}"               )
 ##
 ## Find LAPACK and BLAS libraries, or their optimised versions
 ##
+
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake_aux/Modules/")
 
 if(APPLE)
   
@@ -396,6 +403,8 @@ set_target_properties(armadillo PROPERTIES VERSION ${ARMA_VERSION_MAJOR}.${ARMA_
 ################################################################################
 # INSTALL CONFIGURATION
 
+
+message(STATUS ""                                                      )
 message(STATUS "CMAKE_INSTALL_PREFIX     = ${CMAKE_INSTALL_PREFIX}"    )
 message(STATUS "CMAKE_INSTALL_LIBDIR     = ${CMAKE_INSTALL_LIBDIR}"    )
 message(STATUS "CMAKE_INSTALL_INCLUDEDIR = ${CMAKE_INSTALL_INCLUDEDIR}")
@@ -423,7 +432,7 @@ export(PACKAGE armadillo)
 
 ## LOCAL FILES
 # Create ArmadilloConfig.cmake file for the use from the build tree
-set(ARMADILLO_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}" "${PROJECT_BINARY_DIR}")
+set(ARMADILLO_INCLUDE_DIRS "${PROJECT_BINARY_DIR}/tmp/include")
 set(ARMADILLO_LIB_DIR      "${PROJECT_BINARY_DIR}")
 set(ARMADILLO_CMAKE_DIR    "${PROJECT_BINARY_DIR}")
 
@@ -446,9 +455,9 @@ install(EXPORT ArmadilloLibraryDepends DESTINATION
 ## GLOBAL INSTALL FILES
 # Create ArmadilloConfig.cmake file for the use from the install tree
 # and install it
-set(ARMADILLO_INCLUDE_DIRS "${CMAKE_INSTALL_INCLUDEDIR}")
-set(ARMADILLO_LIB_DIR      "${CMAKE_INSTALL_LIBDIR}")
-set(ARMADILLO_CMAKE_DIR    "${CMAKE_INSTALL_DATADIR}/Armadillo/CMake")
+set(ARMADILLO_INCLUDE_DIRS "${CMAKE_INSTALL_FULL_INCLUDEDIR}")
+set(ARMADILLO_LIB_DIR      "${CMAKE_INSTALL_FULL_LIBDIR}")
+set(ARMADILLO_CMAKE_DIR    "${CMAKE_INSTALL_FULL_DATADIR}/Armadillo/CMake")
 
 
 message(STATUS "Generating '${PROJECT_BINARY_DIR}/InstallFiles/ArmadilloConfig.cmake'")
@@ -466,7 +475,13 @@ install(FILES
   "${PROJECT_BINARY_DIR}/InstallFiles/ArmadilloConfigVersion.cmake"
   DESTINATION "${ARMADILLO_CMAKE_DIR}" COMPONENT dev)
 
-message(STATUS "Generating '${PROJECT_BINARY_DIR}/armadillo.pc'")
-configure_file(misc/armadillo.pc.in armadillo.pc @ONLY)
-  
-install(FILES ${PROJECT_BINARY_DIR}/armadillo.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
+
+# pkgconfig related
+
+message(STATUS "Copying ${PROJECT_SOURCE_DIR}/misc/ to ${PROJECT_BINARY_DIR}/tmp/misc/")
+file(COPY ${PROJECT_SOURCE_DIR}/misc/ DESTINATION ${PROJECT_BINARY_DIR}/tmp/misc/)
+
+message(STATUS "Generating '${PROJECT_BINARY_DIR}/tmp/misc/armadillo.pc'")
+configure_file(${PROJECT_BINARY_DIR}/tmp/misc/armadillo.pc.in "${PROJECT_BINARY_DIR}/tmp/misc/armadillo.pc" @ONLY)
+
+install(FILES "${PROJECT_BINARY_DIR}/tmp/misc/armadillo.pc" DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)

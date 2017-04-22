@@ -22,6 +22,24 @@ project(armadillo CXX C)
 include(CheckIncludeFileCXX)
 include(CheckLibraryExists)
 
+## Set ARMA_USE_WRAPPER to false if you're getting linking errors when compiling your programs,
+## or if you prefer to directly link with BLAS and/or LAPACK.
+## You will then need to link your programs with -lblas -llapack instead of -larmadillo
+## If you're using OpenBLAS, link your programs with -lopenblas -llapack instead of -larmadillo
+
+set(ARMA_USE_WRAPPER true)
+
+# the settings below will be automatically configured by the rest of this script
+
+set(ARMA_USE_LAPACK           false)
+set(ARMA_USE_BLAS             false)
+set(ARMA_USE_ATLAS            false)
+set(ARMA_USE_HDF5_ALT         false)
+set(ARMA_USE_ARPACK           false)
+set(ARMA_USE_EXTERN_CXX11_RNG false)
+set(ARMA_USE_SUPERLU          false)  # Caveat: only SuperLU version 5.x can be used!
+
+
 # As Red Hat Enterprise Linux (and related systems such as Fedora)
 # does not search /usr/local/lib by default, we need to place the
 # library in either /usr/lib or /usr/lib64
@@ -33,6 +51,7 @@ if(NOT APPLE)
     set(CMAKE_INSTALL_PREFIX "/usr" CACHE PATH "Standard install prefix" FORCE)
   endif()
 endif()
+
 
 # Adhere to GNU filesystem layout conventions
 include(GNUInstallDirs)
@@ -57,24 +76,6 @@ endif()
 if(INSTALL_BIN_DIR)
   set(CMAKE_INSTALL_BINDIR "${INSTALL_BIN_DIR}")
 endif()
-
-## Set ARMA_USE_WRAPPER to false if you're getting linking errors when compiling your programs,
-## or if you prefer to directly link with BLAS and/or LAPACK.
-## You will then need to link your programs with -lblas -llapack instead of -larmadillo
-## If you're using OpenBLAS, link your programs with -lopenblas -llapack instead of -larmadillo
-
-set(ARMA_USE_WRAPPER true)
-
-
-# the settings below will be automatically configured by the rest of this script
-
-set(ARMA_USE_LAPACK           false)
-set(ARMA_USE_BLAS             false)
-set(ARMA_USE_ATLAS            false)
-set(ARMA_USE_HDF5_ALT         false)
-set(ARMA_USE_ARPACK           false)
-set(ARMA_USE_EXTERN_CXX11_RNG false)
-set(ARMA_USE_SUPERLU          false)  # Caveat: only SuperLU version 5.x can be used!
 
 
 ## extract version from sources

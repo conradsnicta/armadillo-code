@@ -29,6 +29,7 @@ class eGlue : public Base<typename T1::elem_type, eGlue<T1, T2, eglue_type> >
   typedef          Proxy<T2>                       proxy2_type;
   
   static const bool use_at      = (Proxy<T1>::use_at      || Proxy<T2>::use_at     );
+  static const bool use_mp      = (Proxy<T1>::use_mp      || Proxy<T2>::use_mp     );
   static const bool has_subview = (Proxy<T1>::has_subview || Proxy<T2>::has_subview);
   static const bool fake_mat    = (Proxy<T1>::fake_mat    || Proxy<T2>::fake_mat   );
   

@@ -64,7 +64,7 @@ class eop_scalar_times      : public eop_core<eop_scalar_times>      , public eo
 class eop_scalar_div_pre    : public eop_core<eop_scalar_div_pre>    , public eop_use_mp_false {};
 class eop_scalar_div_post   : public eop_core<eop_scalar_div_post>   , public eop_use_mp_false {};
 class eop_square            : public eop_core<eop_square>            , public eop_use_mp_false {};
-class eop_sqrt              : public eop_core<eop_sqrt>              , public eop_use_mp_false  {};
+class eop_sqrt              : public eop_core<eop_sqrt>              , public eop_use_mp_false {};
 class eop_pow               : public eop_core<eop_pow>               , public eop_use_mp_true  {};
 class eop_log               : public eop_core<eop_log>               , public eop_use_mp_true  {};
 class eop_log2              : public eop_core<eop_log2>              , public eop_use_mp_true  {};
@@ -95,8 +95,8 @@ class eop_ceil              : public eop_core<eop_ceil>              , public eo
 class eop_round             : public eop_core<eop_round>             , public eop_use_mp_false {};
 class eop_trunc             : public eop_core<eop_trunc>             , public eop_use_mp_false {};
 class eop_sign              : public eop_core<eop_sign>              , public eop_use_mp_false {};
-class eop_erf               : public eop_core<eop_erf>               , public eop_use_mp_true  {};
-class eop_erfc              : public eop_core<eop_erfc>              , public eop_use_mp_true  {};
+class eop_erf               : public eop_core<eop_erf>               , public eop_use_mp_false {};
+class eop_erfc              : public eop_core<eop_erfc>              , public eop_use_mp_false {};
 class eop_lgamma            : public eop_core<eop_lgamma>            , public eop_use_mp_true  {};
 
 

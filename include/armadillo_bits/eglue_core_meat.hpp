@@ -254,8 +254,8 @@ eglue_core<eglue_type>::apply(outT& out, const eGlue<T1, T2, eglue_type>& x)
     
     if(eglue_core_mp_avail::value && use_mp && (n_elem >= 256))
       {
-      typename Proxy<T1>::aligned_ea_type P1 = x.P1.get_aligned_ea();
-      typename Proxy<T2>::aligned_ea_type P2 = x.P2.get_aligned_ea();
+      typename Proxy<T1>::ea_type P1 = x.P1.get_ea();
+      typename Proxy<T2>::ea_type P2 = x.P2.get_ea();
       
            if(is_same_type<eglue_type, eglue_plus >::yes) { arma_applier_1_mp(=, +); }
       else if(is_same_type<eglue_type, eglue_minus>::yes) { arma_applier_1_mp(=, -); }

@@ -86,7 +86,7 @@ class eop_tanh              : public eop_core<eop_tanh>              , public eo
 class eop_acosh             : public eop_core<eop_acosh>             , public eop_use_mp_true  {};
 class eop_asinh             : public eop_core<eop_asinh>             , public eop_use_mp_true  {};
 class eop_atanh             : public eop_core<eop_atanh>             , public eop_use_mp_true  {};
-class eop_eps               : public eop_core<eop_eps>               , public eop_use_mp_false {};
+class eop_eps               : public eop_core<eop_eps>               , public eop_use_mp_true  {};
 class eop_abs               : public eop_core<eop_abs>               , public eop_use_mp_false {};
 class eop_arg               : public eop_core<eop_arg>               , public eop_use_mp_false {};
 class eop_conj              : public eop_core<eop_conj>              , public eop_use_mp_false {};
@@ -95,8 +95,8 @@ class eop_ceil              : public eop_core<eop_ceil>              , public eo
 class eop_round             : public eop_core<eop_round>             , public eop_use_mp_false {};
 class eop_trunc             : public eop_core<eop_trunc>             , public eop_use_mp_false {};
 class eop_sign              : public eop_core<eop_sign>              , public eop_use_mp_false {};
-class eop_erf               : public eop_core<eop_erf>               , public eop_use_mp_false {};
-class eop_erfc              : public eop_core<eop_erfc>              , public eop_use_mp_false {};
+class eop_erf               : public eop_core<eop_erf>               , public eop_use_mp_true  {};
+class eop_erfc              : public eop_core<eop_erfc>              , public eop_use_mp_true  {};
 class eop_lgamma            : public eop_core<eop_lgamma>            , public eop_use_mp_true  {};
 
 

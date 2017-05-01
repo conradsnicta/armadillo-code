@@ -26,6 +26,9 @@
 #undef operatorA
 #undef operatorB
 
+#undef arma_applier_1_mp
+#undef arma_applier_2_mp
+
 
 #if defined(ARMA_SIMPLE_LOOPS)
   #define arma_applier_1u(operatorA, operatorB) \
@@ -173,6 +176,53 @@
 
 
 
+#if (defined(_OPENMP) && defined(ARMA_USE_CXX11))
+  
+  struct eglue_core_mp_avail { static const bool value = true; };
+  
+  #define arma_applier_1_mp(operatorA, operatorB) \
+    {\
+    _Pragma("omp parallel for")\
+    for(uword i=0; i<n_elem; ++i)\
+      {\
+      out_mem[i] operatorA P1[i] operatorB P2[i];\
+      }\
+    }
+  
+  #define arma_applier_2_mp(operatorA, operatorB) \
+    {\
+    if(n_rows != 1)\
+      {\
+      _Pragma("omp parallel for")\
+      for(uword col=0; col<n_cols; ++col)\
+        {\
+        for(uword row=0; row<n_rows; ++row)\
+          {\
+          out.at(row,col) operatorA P1.at(row,col) operatorB P2.at(row,col);\
+          }\
+        }\
+      }\
+    else\
+      {\
+      _Pragma("omp parallel for")\
+      for(uword count=0; count < n_cols; ++count)\
+        {\
+        out_mem[count] operatorA P1.at(0,count) operatorB P2.at(0,count);\
+        }\
+      }\
+    }
+
+#else
+  
+  struct eglue_core_mp_avail { static const bool value = false; };
+  
+  #define arma_applier_1_mp(operatorA, operatorB)  arma_applier_1u(operatorA, operatorB)
+  #define arma_applier_2_mp(operatorA, operatorB)  arma_applier_2(operatorA, operatorB)
+
+#endif
+
+
+
 //
 // matrices
 
@@ -190,6 +240,7 @@ eglue_core<eglue_type>::apply(outT& out, const eGlue<T1, T2, eglue_type>& x)
   typedef typename T1::elem_type eT;
   
   const bool use_at = (Proxy<T1>::use_at || Proxy<T2>::use_at);
+  const bool use_mp = (Proxy<T1>::use_mp || Proxy<T2>::use_mp);
   
   // NOTE: we're assuming that the matrix has already been set to the correct size and there is no aliasing;
   // size setting and alias checking is done by either the Mat contructor or operator=()
@@ -201,40 +252,53 @@ eglue_core<eglue_type>::apply(outT& out, const eGlue<T1, T2, eglue_type>& x)
     {
     const uword n_elem = x.get_n_elem();
     
-    if(memory::is_aligned(out_mem))
+    if(eglue_core_mp_avail::value && use_mp && (n_elem >= 256))
       {
-      memory::mark_as_aligned(out_mem);
+      typename Proxy<T1>::aligned_ea_type P1 = x.P1.get_aligned_ea();
+      typename Proxy<T2>::aligned_ea_type P2 = x.P2.get_aligned_ea();
       
-      if(x.P1.is_aligned() && x.P2.is_aligned())
+           if(is_same_type<eglue_type, eglue_plus >::yes) { arma_applier_1_mp(=, +); }
+      else if(is_same_type<eglue_type, eglue_minus>::yes) { arma_applier_1_mp(=, -); }
+      else if(is_same_type<eglue_type, eglue_div  >::yes) { arma_applier_1_mp(=, /); }
+      else if(is_same_type<eglue_type, eglue_schur>::yes) { arma_applier_1_mp(=, *); }
+      }
+    else
+      {
+      if(memory::is_aligned(out_mem))
         {
-        typename Proxy<T1>::aligned_ea_type P1 = x.P1.get_aligned_ea();
-        typename Proxy<T2>::aligned_ea_type P2 = x.P2.get_aligned_ea();
+        memory::mark_as_aligned(out_mem);
         
-             if(is_same_type<eglue_type, eglue_plus >::yes) { arma_applier_1a(=, +); }
-        else if(is_same_type<eglue_type, eglue_minus>::yes) { arma_applier_1a(=, -); }
-        else if(is_same_type<eglue_type, eglue_div  >::yes) { arma_applier_1a(=, /); }
-        else if(is_same_type<eglue_type, eglue_schur>::yes) { arma_applier_1a(=, *); }
+        if(x.P1.is_aligned() && x.P2.is_aligned())
+          {
+          typename Proxy<T1>::aligned_ea_type P1 = x.P1.get_aligned_ea();
+          typename Proxy<T2>::aligned_ea_type P2 = x.P2.get_aligned_ea();
+          
+               if(is_same_type<eglue_type, eglue_plus >::yes) { arma_applier_1a(=, +); }
+          else if(is_same_type<eglue_type, eglue_minus>::yes) { arma_applier_1a(=, -); }
+          else if(is_same_type<eglue_type, eglue_div  >::yes) { arma_applier_1a(=, /); }
+          else if(is_same_type<eglue_type, eglue_schur>::yes) { arma_applier_1a(=, *); }
+          }
+        else
+          {
+          typename Proxy<T1>::ea_type P1 = x.P1.get_ea();
+          typename Proxy<T2>::ea_type P2 = x.P2.get_ea();
+          
+               if(is_same_type<eglue_type, eglue_plus >::yes) { arma_applier_1u(=, +); }
+          else if(is_same_type<eglue_type, eglue_minus>::yes) { arma_applier_1u(=, -); }
+          else if(is_same_type<eglue_type, eglue_div  >::yes) { arma_applier_1u(=, /); }
+          else if(is_same_type<eglue_type, eglue_schur>::yes) { arma_applier_1u(=, *); }
+          }
         }
       else
         {
         typename Proxy<T1>::ea_type P1 = x.P1.get_ea();
         typename Proxy<T2>::ea_type P2 = x.P2.get_ea();
-        
+      
              if(is_same_type<eglue_type, eglue_plus >::yes) { arma_applier_1u(=, +); }
         else if(is_same_type<eglue_type, eglue_minus>::yes) { arma_applier_1u(=, -); }
         else if(is_same_type<eglue_type, eglue_div  >::yes) { arma_applier_1u(=, /); }
         else if(is_same_type<eglue_type, eglue_schur>::yes) { arma_applier_1u(=, *); }
         }
-      }
-    else
-      {
-      typename Proxy<T1>::ea_type P1 = x.P1.get_ea();
-      typename Proxy<T2>::ea_type P2 = x.P2.get_ea();
-    
-           if(is_same_type<eglue_type, eglue_plus >::yes) { arma_applier_1u(=, +); }
-      else if(is_same_type<eglue_type, eglue_minus>::yes) { arma_applier_1u(=, -); }
-      else if(is_same_type<eglue_type, eglue_div  >::yes) { arma_applier_1u(=, /); }
-      else if(is_same_type<eglue_type, eglue_schur>::yes) { arma_applier_1u(=, *); }
       }
     }
   else
@@ -245,10 +309,20 @@ eglue_core<eglue_type>::apply(outT& out, const eGlue<T1, T2, eglue_type>& x)
     const Proxy<T1>& P1 = x.P1;
     const Proxy<T2>& P2 = x.P2;
     
-         if(is_same_type<eglue_type, eglue_plus >::yes) { arma_applier_2(=, +); }
-    else if(is_same_type<eglue_type, eglue_minus>::yes) { arma_applier_2(=, -); }
-    else if(is_same_type<eglue_type, eglue_div  >::yes) { arma_applier_2(=, /); }
-    else if(is_same_type<eglue_type, eglue_schur>::yes) { arma_applier_2(=, *); }
+    if(eglue_core_mp_avail::value && use_mp && (x.get_n_elem() >= 256))
+      {
+           if(is_same_type<eglue_type, eglue_plus >::yes) { arma_applier_2_mp(=, +); }
+      else if(is_same_type<eglue_type, eglue_minus>::yes) { arma_applier_2_mp(=, -); }
+      else if(is_same_type<eglue_type, eglue_div  >::yes) { arma_applier_2_mp(=, /); }
+      else if(is_same_type<eglue_type, eglue_schur>::yes) { arma_applier_2_mp(=, *); }
+      }
+    else
+      {
+           if(is_same_type<eglue_type, eglue_plus >::yes) { arma_applier_2(=, +); }
+      else if(is_same_type<eglue_type, eglue_minus>::yes) { arma_applier_2(=, -); }
+      else if(is_same_type<eglue_type, eglue_div  >::yes) { arma_applier_2(=, /); }
+      else if(is_same_type<eglue_type, eglue_schur>::yes) { arma_applier_2(=, *); }
+      }
     }
   }
 
@@ -937,6 +1011,8 @@ eglue_core<eglue_type>::apply_inplace_div(Cube<typename T1::elem_type>& out, con
 #undef arma_applier_2
 #undef arma_applier_3
 
+#undef arma_applier_1_mp
+#undef arma_applier_2_mp
 
 
 //! @}

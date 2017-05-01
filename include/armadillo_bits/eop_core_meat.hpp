@@ -190,6 +190,7 @@
       }\
     else\
       {\
+      _Pragma("omp parallel for")\
       for(uword count=0; count < n_cols; ++count)\
         {\
         out_mem[count] operatorA eop_core<eop_type>::process(P.at(0,count), k);\

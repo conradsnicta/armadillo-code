@@ -54,8 +54,6 @@ struct eop_use_mp_true  { static const bool use_mp = true;  };
 struct eop_use_mp_false { static const bool use_mp = false; };
 
 
-// use of eop_use_mp annotators is currently a work-in-progress
-
 class eop_neg               : public eop_core<eop_neg>               , public eop_use_mp_false {};
 class eop_scalar_plus       : public eop_core<eop_scalar_plus>       , public eop_use_mp_false {};
 class eop_scalar_minus_pre  : public eop_core<eop_scalar_minus_pre>  , public eop_use_mp_false {};
@@ -65,7 +63,7 @@ class eop_scalar_div_pre    : public eop_core<eop_scalar_div_pre>    , public eo
 class eop_scalar_div_post   : public eop_core<eop_scalar_div_post>   , public eop_use_mp_false {};
 class eop_square            : public eop_core<eop_square>            , public eop_use_mp_false {};
 class eop_sqrt              : public eop_core<eop_sqrt>              , public eop_use_mp_false {};
-class eop_pow               : public eop_core<eop_pow>               , public eop_use_mp_false {};
+class eop_pow               : public eop_core<eop_pow>               , public eop_use_mp_false {};  // for pow(), use_mp is selectively enabled in eop_core_meat.hpp
 class eop_log               : public eop_core<eop_log>               , public eop_use_mp_true  {};
 class eop_log2              : public eop_core<eop_log2>              , public eop_use_mp_true  {};
 class eop_log10             : public eop_core<eop_log10>             , public eop_use_mp_true  {};

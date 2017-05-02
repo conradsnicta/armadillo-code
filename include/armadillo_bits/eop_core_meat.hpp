@@ -231,11 +231,13 @@ eop_core<eop_type>::apply(outT& out, const eOp<T1, eop_type>& x)
   const eT  k       = x.aux;
         eT* out_mem = out.memptr();
   
+  const bool use_mp = eop_core_mp_avail::value && (eOp<T1, eop_type>::use_mp || (is_same_type<eop_type, eop_pow>::value && (is_cx<eT>::yes || x.aux != eT(2))));
+  
   if(Proxy<T1>::use_at == false)
     {
     const uword n_elem = x.get_n_elem();
     
-    if(eop_core_mp_avail::value && eOp<T1, eop_type>::use_mp && (n_elem >= 256))
+    if(use_mp && (n_elem >= 256))
       {
       typename Proxy<T1>::ea_type P = x.P.get_ea();
       
@@ -275,7 +277,7 @@ eop_core<eop_type>::apply(outT& out, const eOp<T1, eop_type>& x)
     
     const Proxy<T1>& P = x.P;
     
-    if(eop_core_mp_avail::value && eOp<T1, eop_type>::use_mp && (x.get_n_elem() >= 256))
+    if(use_mp && (x.get_n_elem() >= 256))
       {
       arma_applier_2_mp(=);
       }

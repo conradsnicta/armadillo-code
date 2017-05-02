@@ -240,7 +240,7 @@ eglue_core<eglue_type>::apply(outT& out, const eGlue<T1, T2, eglue_type>& x)
   typedef typename T1::elem_type eT;
   
   const bool use_at = (Proxy<T1>::use_at || Proxy<T2>::use_at);
-  const bool use_mp = (Proxy<T1>::use_mp || Proxy<T2>::use_mp);
+  const bool use_mp = (Proxy<T1>::use_mp || Proxy<T2>::use_mp) && eglue_core_mp_avail::value;
   
   // NOTE: we're assuming that the matrix has already been set to the correct size and there is no aliasing;
   // size setting and alias checking is done by either the Mat contructor or operator=()
@@ -252,7 +252,7 @@ eglue_core<eglue_type>::apply(outT& out, const eGlue<T1, T2, eglue_type>& x)
     {
     const uword n_elem = x.get_n_elem();
     
-    if(eglue_core_mp_avail::value && use_mp && (n_elem >= 256))
+    if(use_mp && (n_elem >= 256))
       {
       typename Proxy<T1>::ea_type P1 = x.P1.get_ea();
       typename Proxy<T2>::ea_type P2 = x.P2.get_ea();
@@ -309,7 +309,7 @@ eglue_core<eglue_type>::apply(outT& out, const eGlue<T1, T2, eglue_type>& x)
     const Proxy<T1>& P1 = x.P1;
     const Proxy<T2>& P2 = x.P2;
     
-    if(eglue_core_mp_avail::value && use_mp && (x.get_n_elem() >= 256))
+    if(use_mp && (x.get_n_elem() >= 256))
       {
            if(is_same_type<eglue_type, eglue_plus >::yes) { arma_applier_2_mp(=, +); }
       else if(is_same_type<eglue_type, eglue_minus>::yes) { arma_applier_2_mp(=, -); }

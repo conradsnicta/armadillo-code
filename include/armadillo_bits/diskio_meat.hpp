@@ -1671,6 +1671,8 @@ diskio::load_csv_ascii(Mat<eT>& x, std::istream& f, std::string&)
   {
   arma_extra_debug_sigprint();
   
+  // TODO: replace with a more efficient implementation
+  
   bool load_okay = f.good();
   
   f.clear();
@@ -1783,7 +1785,7 @@ diskio::load_csv_ascii(Mat< std::complex<T> >& x, std::istream& f, std::string&)
   {
   arma_extra_debug_sigprint();
   
-  // typedef typename std::complex<T> eT;
+  // TODO: replace with a more efficient implementation
   
   bool load_okay = f.good();
   
@@ -1858,30 +1860,14 @@ diskio::load_csv_ascii(Mat< std::complex<T> >& x, std::istream& f, std::string&)
       {
       std::getline(line_stream, token, ',');
       
-      if(token.length() == 0)  { break; }
+      if(token.length() == 0)  { col++; continue; }
       
       std::string::size_type len = token.length();
       
-      
-      // 123+456i
-      // 123e+01+456e+02i
-      // +123e+01+456e+02i
-      // -123e-01-456e-02i
-      // 123
-      // 123e+01
-      // +123
-      // +123e+01
-      // -123e+01
-      // 456i
-      // +456i
-      // 456e-02i
-      // -456e-02i
-      // +456e-02i
-      
       bool found_x = false;
-      std::string::size_type loc_x = 0;
+      std::string::size_type loc_x = 0;  // location of the separator (+ or -) between the real and imaginary part
       
-      std::string::size_type loc_i = token.find_last_of('i');
+      std::string::size_type loc_i = token.find_last_of('i');  // location of the imaginary part indicator
       
       if(loc_i == std::string::npos)
         {
@@ -1901,18 +1887,17 @@ diskio::load_csv_ascii(Mat< std::complex<T> >& x, std::istream& f, std::string&)
             {
             const char prev_char = token.at(loc_plus-1);
             
+            // make sure we're not looking at the sign of the exponent
             if( (prev_char != 'e') && (prev_char != 'E') )
               {
               found_plus = true;
               }
             else
               {
+              // search again, omitting the exponent
               loc_plus = token.find_last_of('+', loc_plus-1);
               
-              if(loc_plus != std::string::npos)
-                {
-                found_plus = true;
-                }
+              if(loc_plus != std::string::npos)  { found_plus = true; }
               }
             }
           else
@@ -1930,18 +1915,17 @@ diskio::load_csv_ascii(Mat< std::complex<T> >& x, std::istream& f, std::string&)
             {
             const char prev_char = token.at(loc_minus-1);
             
+            // make sure we're not looking at the sign of the exponent
             if( (prev_char != 'e') && (prev_char != 'E') )
               {
               found_minus = true;
               }
             else
               {
-              loc_minus = token.find_last_of('+', loc_minus-1);
+              // search again, omitting the exponent
+              loc_minus = token.find_last_of('-', loc_minus-1);
               
-              if(loc_minus != std::string::npos)
-                {
-                found_minus = true;
-                }
+              if(loc_minus != std::string::npos)  { found_minus = true; }
               }
             }
           else
@@ -1955,6 +1939,7 @@ diskio::load_csv_ascii(Mat< std::complex<T> >& x, std::istream& f, std::string&)
           {
           if( (loc_i > loc_plus) && (loc_i > loc_minus) )
             {
+            // choose the sign closest to the "i" to be the separator between the real and imaginary part
             loc_x = ( (loc_i - loc_plus) < (loc_i - loc_minus) ) ? loc_plus : loc_minus;
             found_x = true;
             }
@@ -1964,8 +1949,8 @@ diskio::load_csv_ascii(Mat< std::complex<T> >& x, std::istream& f, std::string&)
         
         if(found_x)
           {
-          if(loc_x > 0)                 { str_real = token.substr(0,loc_x); } else { str_real.clear(); }
-          if((loc_x+1) <= token.size()) { str_imag = token.substr(loc_x);   } else { str_imag.clear(); }
+          if(loc_x > 0)                { str_real = token.substr(0,loc_x);                     } else { str_real.clear(); }
+          if((loc_x+1) < token.size()) { str_imag = token.substr(loc_x, token.size()-loc_x-1); } else { str_imag.clear(); }
           }
         }
       

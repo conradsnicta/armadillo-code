@@ -1008,8 +1008,6 @@ diskio::save_csv_ascii(const Mat<eT>& x, std::ostream& f)
   
   const ios::fmtflags orig_flags = f.flags();
   
-  // TODO: need to write each complex element as "a+ib" instead of the default "(a,b)"
-  
   if( (is_float<eT>::value) || (is_double<eT>::value) )
     {
     f.setf(ios::scientific);
@@ -1025,10 +1023,59 @@ diskio::save_csv_ascii(const Mat<eT>& x, std::ostream& f)
       {
       arma_ostream::print_elem(f, x.at(row,col), false);
       
-      if( col < (x_n_cols-1) )
-        {
-        f.put(',');
-        }
+      if( col < (x_n_cols-1) )  { f.put(','); }
+      }
+    
+    f.put('\n');
+    }
+  
+  const bool save_okay = f.good();
+  
+  f.flags(orig_flags);
+  
+  return save_okay;
+  }
+
+
+
+//! Save a matrix in CSV text format (human readable); complex numbers stored in "a+ib" format
+template<typename T>
+inline
+bool
+diskio::save_csv_ascii(const Mat< std::complex<T> >& x, std::ostream& f)
+  {
+  arma_extra_debug_sigprint();
+  
+  typedef typename std::complex<T> eT;
+  
+  const ios::fmtflags orig_flags = f.flags();
+  
+  if( (is_float<T>::value) || (is_double<T>::value) )
+    {
+    f.setf(ios::scientific);
+    f.precision(14);
+    }
+  
+  uword x_n_rows = x.n_rows;
+  uword x_n_cols = x.n_cols;
+  
+  for(uword row=0; row < x_n_rows; ++row)
+    {
+    for(uword col=0; col < x_n_cols; ++col)
+      {
+      const eT& val = x.at(row,col);
+      
+      const T    tmp_r     = std::real(val);
+      const T    tmp_i     = std::imag(val);
+      const T    tmp_i_abs = (tmp_i < T(0)) ? T(-tmp_i) : T(tmp_i);
+      const char tmp_sign  = (tmp_i < T(0)) ? char('-') : char('+');
+      
+      arma_ostream::print_elem(f, tmp_r,     false);
+      f.put(tmp_sign);
+      f.put('i');
+      arma_ostream::print_elem(f, tmp_i_abs, false);
+      
+      if( col < (x_n_cols-1) )  { f.put(','); }
       }
     
     f.put('\n');
@@ -1624,8 +1671,6 @@ diskio::load_csv_ascii(Mat<eT>& x, std::istream& f, std::string&)
   {
   arma_extra_debug_sigprint();
   
-  // TODO: add handling of complex numbers, with each element stored in "a+ib" format
-  
   bool load_okay = f.good();
   
   f.clear();
@@ -1719,6 +1764,177 @@ diskio::load_csv_ascii(Mat<eT>& x, std::istream& f, std::string&)
           }
         }
       
+      ++col;
+      }
+    
+    ++row;
+    }
+  
+  return load_okay;
+  }
+
+
+
+//! Load a matrix in CSV text format (human readable); complex numbers stored in "a+ib" format
+template<typename T>
+inline
+bool
+diskio::load_csv_ascii(Mat< std::complex<T> >& x, std::istream& f, std::string&)
+  {
+  arma_extra_debug_sigprint();
+  
+  // typedef typename std::complex<T> eT;
+  
+  bool load_okay = f.good();
+  
+  f.clear();
+  const std::fstream::pos_type pos1 = f.tellg();
+  
+  //
+  // work out the size
+  
+  uword f_n_rows = 0;
+  uword f_n_cols = 0;
+  
+  std::string line_string;
+  std::string token;
+  
+  std::stringstream line_stream;
+  
+  while( (f.good() == true) && (load_okay == true) )
+    {
+    std::getline(f, line_string);
+    
+    if(line_string.size() == 0)
+      {
+      break;
+      }
+    
+    line_stream.clear();
+    line_stream.str(line_string);
+    
+    uword line_n_cols = 0;
+    
+    while(line_stream.good() == true)
+      {
+      std::getline(line_stream, token, ',');
+      ++line_n_cols;
+      }
+    
+    if(f_n_cols < line_n_cols)
+      {
+      f_n_cols = line_n_cols;
+      }
+    
+    ++f_n_rows;
+    }
+  
+  f.clear();
+  f.seekg(pos1);
+  
+  x.zeros(f_n_rows, f_n_cols);
+  
+  uword row = 0;
+  
+  std::stringstream ss;
+  std::string       str_real;
+  std::string       str_imag;
+  
+  const std::string str_pi = "+i";
+  const std::string str_mi = "-i";
+  
+  while(f.good() == true)
+    {
+    std::getline(f, line_string);
+    
+    if(line_string.size() == 0)
+      {
+      break;
+      }
+    
+    line_stream.clear();
+    line_stream.str(line_string);
+    
+    uword col = 0;
+    
+    while(line_stream.good() == true)
+      {
+      std::getline(line_stream, token, ',');
+      
+      typename std::string::size_type loc_pi = token.find(str_pi);
+      typename std::string::size_type loc_mi = token.find(str_mi);
+      
+      if((loc_pi != std::string::npos) || (loc_mi != std::string::npos))
+        {
+        typename std::string::size_type loc_xi = (loc_pi != std::string::npos) ? loc_pi : loc_mi;
+        
+        if(loc_xi > 0)                    { str_real = token.substr(0, loc_xi); } else { str_real.clear(); };
+        if( (loc_xi+2) <= token.size() )  { str_imag = token.substr(loc_xi+2);  } else { str_imag.clear(); };
+        
+        T val_real_1 = T(0);
+        T val_real_2 = T(0);
+        
+        T val_imag_1 = T(0);
+        T val_imag_2 = T(0);
+        
+        ss.clear();
+        ss.str(str_real);
+        ss >> val_real_1;
+        
+        if(ss.fail() == false)
+          {
+          val_real_2 = val_real_1;
+          }
+        else
+          {
+          T val_tmp = T(0);
+          diskio::convert_naninf(val_tmp, str_real);
+          val_real_2 = val_tmp;
+          }
+        
+        
+        ss.clear();
+        ss.str(str_imag);
+        ss >> val_imag_1;
+        
+        if(ss.fail() == false)
+          {
+          val_imag_2 = val_imag_1;
+          }
+        else
+          {
+          T val_tmp = T(0);
+          diskio::convert_naninf(val_tmp, str_real);
+          val_imag_2 = val_tmp;
+          }
+        
+        const bool val_imag_pos = (loc_pi != std::string::npos);
+        
+        x.at(row,col) = (val_imag_pos) ? std::complex<T>(val_real_2, val_imag_2) : std::complex<T>(val_real_2, -val_imag_2);
+        }
+      else
+        {
+        // didn't find the +i or -i separator; assume that we only have the real part
+        ss.clear();
+        ss.str(token);
+        
+        T val = T(0);
+        ss >> val;
+        
+        if(ss.fail() == false)
+          {
+          x.at(row,col) = val;
+          }
+        else
+          {
+          T val_tmp = T(0);
+          
+          diskio::convert_naninf(val_tmp, token);
+          
+          x.at(row,col) = val_tmp;
+          }
+        }
+        
       ++col;
       }
     

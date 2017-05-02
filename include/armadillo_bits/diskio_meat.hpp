@@ -1038,7 +1038,7 @@ diskio::save_csv_ascii(const Mat<eT>& x, std::ostream& f)
 
 
 
-//! Save a matrix in CSV text format (human readable); complex numbers stored in "a+ib" format
+//! Save a matrix in CSV text format (human readable); complex numbers stored in "a+bi" format
 template<typename T>
 inline
 bool
@@ -1072,8 +1072,8 @@ diskio::save_csv_ascii(const Mat< std::complex<T> >& x, std::ostream& f)
       
       arma_ostream::print_elem(f, tmp_r,     false);
       f.put(tmp_sign);
-      f.put('i');
       arma_ostream::print_elem(f, tmp_i_abs, false);
+      f.put('i');
       
       if( col < (x_n_cols-1) )  { f.put(','); }
       }
@@ -1775,7 +1775,7 @@ diskio::load_csv_ascii(Mat<eT>& x, std::istream& f, std::string&)
 
 
 
-//! Load a matrix in CSV text format (human readable); complex numbers stored in "a+ib" format
+//! Load a matrix in CSV text format (human readable); complex numbers stored in "a+bi" format
 template<typename T>
 inline
 bool
@@ -1840,9 +1840,6 @@ diskio::load_csv_ascii(Mat< std::complex<T> >& x, std::istream& f, std::string&)
   std::string       str_real;
   std::string       str_imag;
   
-  const std::string str_pi = "+i";
-  const std::string str_mi = "-i";
-  
   while(f.good() == true)
     {
     std::getline(f, line_string);
@@ -1861,80 +1858,156 @@ diskio::load_csv_ascii(Mat< std::complex<T> >& x, std::istream& f, std::string&)
       {
       std::getline(line_stream, token, ',');
       
-      typename std::string::size_type loc_pi = token.find(str_pi);
-      typename std::string::size_type loc_mi = token.find(str_mi);
+      if(token.length() == 0)  { break; }
       
-      if((loc_pi != std::string::npos) || (loc_mi != std::string::npos))
+      std::string::size_type len = token.length();
+      
+      
+      // 123+456i
+      // 123e+01+456e+02i
+      // +123e+01+456e+02i
+      // -123e-01-456e-02i
+      // 123
+      // 123e+01
+      // +123
+      // +123e+01
+      // -123e+01
+      // 456i
+      // +456i
+      // 456e-02i
+      // -456e-02i
+      // +456e-02i
+      
+      bool found_x = false;
+      std::string::size_type loc_x = 0;
+      
+      std::string::size_type loc_i = token.find_last_of('i');
+      
+      if(loc_i == std::string::npos)
         {
-        typename std::string::size_type loc_xi = (loc_pi != std::string::npos) ? loc_pi : loc_mi;
-        
-        if(loc_xi > 0)                    { str_real = token.substr(0, loc_xi); } else { str_real.clear(); };
-        if( (loc_xi+2) <= token.size() )  { str_imag = token.substr(loc_xi+2);  } else { str_imag.clear(); };
-        
-        T val_real_1 = T(0);
-        T val_real_2 = T(0);
-        
-        T val_imag_1 = T(0);
-        T val_imag_2 = T(0);
-        
-        ss.clear();
-        ss.str(str_real);
-        ss >> val_real_1;
-        
-        if(ss.fail() == false)
-          {
-          val_real_2 = val_real_1;
-          }
-        else
-          {
-          T val_tmp = T(0);
-          diskio::convert_naninf(val_tmp, str_real);
-          val_real_2 = val_tmp;
-          }
-        
-        
-        ss.clear();
-        ss.str(str_imag);
-        ss >> val_imag_1;
-        
-        if(ss.fail() == false)
-          {
-          val_imag_2 = val_imag_1;
-          }
-        else
-          {
-          T val_tmp = T(0);
-          diskio::convert_naninf(val_tmp, str_real);
-          val_imag_2 = val_tmp;
-          }
-        
-        const bool val_imag_pos = (loc_pi != std::string::npos);
-        
-        x.at(row,col) = (val_imag_pos) ? std::complex<T>(val_real_2, val_imag_2) : std::complex<T>(val_real_2, -val_imag_2);
+        str_real = token;
+        str_imag.clear();
         }
       else
         {
-        // didn't find the +i or -i separator; assume that we only have the real part
-        ss.clear();
-        ss.str(token);
+        bool found_plus  = false;
+        bool found_minus = false;
         
-        T val = T(0);
-        ss >> val;
+        std::string::size_type loc_plus = token.find_last_of('+');
         
-        if(ss.fail() == false)
+        if(loc_plus != std::string::npos)
           {
-          x.at(row,col) = val;
+          if(loc_plus >= 1)
+            {
+            const char prev_char = token.at(loc_plus-1);
+            
+            if( (prev_char != 'e') && (prev_char != 'E') )
+              {
+              found_plus = true;
+              }
+            else
+              {
+              loc_plus = token.find_last_of('+', loc_plus-1);
+              
+              if(loc_plus != std::string::npos)
+                {
+                found_plus = true;
+                }
+              }
+            }
+          else
+            {
+            // loc_plus == 0, meaning we're at the start of the string
+            found_plus = true;
+            }
           }
-        else
+        
+        std::string::size_type loc_minus = token.find_last_of('-');
+        
+        if(loc_minus != std::string::npos)
           {
-          T val_tmp = T(0);
-          
-          diskio::convert_naninf(val_tmp, token);
-          
-          x.at(row,col) = val_tmp;
+          if(loc_minus >= 1)
+            {
+            const char prev_char = token.at(loc_minus-1);
+            
+            if( (prev_char != 'e') && (prev_char != 'E') )
+              {
+              found_minus = true;
+              }
+            else
+              {
+              loc_minus = token.find_last_of('+', loc_minus-1);
+              
+              if(loc_minus != std::string::npos)
+                {
+                found_minus = true;
+                }
+              }
+            }
+          else
+            {
+            // loc_minus == 0, meaning we're at the start of the string
+            found_minus = true;
+            }
+          }
+        
+        if(found_plus && found_minus)
+          {
+          if( (loc_i > loc_plus) && (loc_i > loc_minus) )
+            {
+            loc_x = ( (loc_i - loc_plus) < (loc_i - loc_minus) ) ? loc_plus : loc_minus;
+            found_x = true;
+            }
+          }
+        else if(found_plus )  { loc_x = loc_plus;  found_x = true; }
+        else if(found_minus)  { loc_x = loc_minus; found_x = true; }
+        
+        if(found_x)
+          {
+          if(loc_x > 0)                 { str_real = token.substr(0,loc_x); } else { str_real.clear(); }
+          if((loc_x+1) <= token.size()) { str_imag = token.substr(loc_x);   } else { str_imag.clear(); }
           }
         }
-        
+      
+      T val_real_1 = T(0);
+      T val_real_2 = T(0);
+      
+      T val_imag_1 = T(0);
+      T val_imag_2 = T(0);
+      
+      ss.clear();
+      ss.str(str_real);
+      ss >> val_real_1;
+      
+      if(ss.fail() == false)
+        {
+        val_real_2 = val_real_1;
+        }
+      else
+        {
+        T val_tmp = T(0);
+        diskio::convert_naninf(val_tmp, str_real);
+        val_real_2 = val_tmp;
+        }
+      
+      
+      ss.clear();
+      ss.str(str_imag);
+      ss >> val_imag_1;
+      
+      if(ss.fail() == false)
+        {
+        val_imag_2 = val_imag_1;
+        }
+      else
+        {
+        T val_tmp = T(0);
+        diskio::convert_naninf(val_tmp, str_real);
+        val_imag_2 = val_tmp;
+        }
+      
+      x.at(row,col) = std::complex<T>(val_real_2, val_imag_2);
+      
       ++col;
       }
     

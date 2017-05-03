@@ -15743,7 +15743,7 @@ Disable use of C++11 features. Overrides <i>ARMA_USE_CXX11</i>
       &nbsp;
     </td>
     <td style="vertical-align: top;">
-Disable use of OpenMP for parallelisation of element-wise operations.</i>
+Disable use of OpenMP for parallelisation of element-wise operations.
     </td>
   </tr>
   <tr>
@@ -16204,8 +16204,8 @@ List of additions and changes for each version:
 <li>
 computationally expensive element-wise functions (such as <a href="#misc_fns">exp()</a>, <a href="#misc_fns">log()</a>, <a href="#trig_fns">cos()</a>, etc)
 can now be automatically sped up via <a href="https://en.wikipedia.org/wiki/OpenMP">OpenMP</a>;
-this requires a C++11/C++14 compiler and OpenMP 3.0+ to be explicitly enabled;
-for GCC and clang compilers use the following options: <code>-std=c++11 -fopenmp</code>
+this requires a C++11/C++14 compiler with OpenMP 3.0+ support;
+for GCC and clang compilers use the following options to enable OpenMP: <code>-std=c++11 -fopenmp</code>
 </li>
 </ul>
 </li>

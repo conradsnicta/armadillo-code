@@ -373,7 +373,7 @@ to make use C++11 features by defining ARMA_USE_CXX11 before
 #include <armadillo> in your code.
 
 You may need to explicitly enable C++11 mode in your compiler.
-For example, use the -std=c++11 option in gcc & clang.
+For example, use the -std=c++11 or -std=c++14 options in gcc & clang.
 
 Caveat: use of the C++11 "auto" keyword is not recommended with Armadillo
 objects and expressions. Armadillo has a template meta-programming framework
@@ -384,12 +384,12 @@ which creates lots of short lived temporaries that are not handled by auto.
 12: Support for OpenMP
 ======================
 
-Armadillo can use OpenMP 3.0 to automatically speed up computationally
+Armadillo can use OpenMP to automatically speed up computationally
 expensive element-wise functions such as exp(), log(), cos(), etc.
+This requires a C++11/C++14 compiler with OpenMP 3.0+ support.
 
-You will need to use a C++11/C++14 compiler and explicitly enable OpenMP.
-For example, when using gcc or clang, use the following options:
--std=c++11 -fopenmp
+When using gcc or clang, use the following options to enable both
+C++11 and OpenMP:  -std=c++11 -fopenmp
 
 
 

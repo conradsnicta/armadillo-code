@@ -478,11 +478,11 @@ Octave/Matlab with C++ code that uses Armadillo matrices.
 * MLPACK: C++ library for machine learning and pattern recognition, built on top of Armadillo.
   http://mlpack.org
   
+* SigPack: C++ signal processing library using Armadillo
+  https://sourceforge.net/projects/sigpack/
+
 * libpca: C++ library for principal component analysis
-  http://sourceforge.net/projects/libpca/
-  
-* ArmaNpy: interfaces Armadillo matrices with Python
-  http://sourceforge.net/projects/armanpy/
+  https://sourceforge.net/projects/libpca/
   
 * matlab2cpp: conversion of Matlab code to Armadillo based C++ code
   https://github.com/jonathf/matlab2cpp

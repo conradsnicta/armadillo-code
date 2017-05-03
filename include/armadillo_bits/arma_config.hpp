@@ -135,7 +135,7 @@ struct arma_config
   #endif
   
   
-  #if defined(_OPENMP)
+  #if (defined(_OPENMP) && (_OPENMP >= 200805))
     static const bool openmp = true;
   #else
     static const bool openmp = false;

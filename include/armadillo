@@ -89,7 +89,7 @@
 #include "armadillo_bits/include_superlu.hpp"
 
 
-#if defined(_OPENMP)
+#if (defined(_OPENMP) && (_OPENMP >= 200805))
   #include <omp.h>
 #endif
 

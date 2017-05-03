@@ -241,6 +241,10 @@ template<typename eT>
 struct is_Cube< Cube<eT> >
   { static const bool value = true; };
 
+template<typename eT>
+struct is_Cube< const Cube<eT> >
+  { static const bool value = true; };
+
 template<typename T>
 struct is_subview_cube
   { static const bool value = false; };
@@ -249,6 +253,9 @@ template<typename eT>
 struct is_subview_cube< subview_cube<eT> >
   { static const bool value = true; };
 
+template<typename eT>
+struct is_subview_cube< const subview_cube<eT> >
+  { static const bool value = true; };
 
 
 //

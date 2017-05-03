@@ -19,6 +19,9 @@
 
 
 
+struct mtOpCube_dual_aux_indicator {};
+
+
 template<typename out_eT, typename T1, typename op_type>
 class mtOpCube : public BaseCube<out_eT, mtOpCube<out_eT, T1, op_type> >
   {
@@ -36,8 +39,10 @@ class mtOpCube : public BaseCube<out_eT, mtOpCube<out_eT, T1, op_type> >
   
   inline          mtOpCube(const char junk, const T1& in_m, const out_eT in_aux);
   
+  inline          mtOpCube(const mtOpCube_dual_aux_indicator&, const T1& in_m, const in_eT in_aux_a, const out_eT in_aux_b);
+  
   inline         ~mtOpCube();
-    
+  
   
   arma_aligned const T1&    m;            //!< storage of reference to the operand (eg. a matrix)
   arma_aligned       in_eT  aux;          //!< storage of auxiliary data, using the element type as used by T1

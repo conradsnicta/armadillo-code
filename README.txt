@@ -24,13 +24,14 @@ Contents
  9: Support for OpenBLAS and Intel MKL
 10: Support for ATLAS
 11: Support for C++11/C++14 Features
+12: Support for OpenMP
 
-12: API Documentation
-13: API Stability and Versioning
-14: Bug Reports and Frequently Asked Questions
+13: API Documentation
+14: API Stability and Versioning
+15: Bug Reports and Frequently Asked Questions
 
-15: MEX Interface to Octave/Matlab
-16: Related Software
+16: MEX Interface to Octave/Matlab
+17: Related Software
 
 
 
@@ -380,7 +381,19 @@ which creates lots of short lived temporaries that are not handled by auto.
 
 
 
-12: API Documentation
+12: Support for OpenMP
+======================
+
+Armadillo can use OpenMP to automatically speed up computationally
+expensive element-wise functions such as exp(), log(), cos(), etc.
+
+You will need to use a C++11/C++14 compiler and explicitly enable OpenMP.
+For example, when using gcc or clang, use the following options:
+-std=c++11 -fopenmp
+
+
+
+13: API Documentation
 =====================
 
 Documentation of functions, classes and options is available at:
@@ -392,7 +405,7 @@ which can be viewed with a web browser.
 
 
 
-13: API Stability and Versioning
+14: API Stability and Versioning
 ================================
 
 Each release of Armadillo has its public API (functions, classes, constants)
@@ -428,7 +441,7 @@ implementation details, and may change or be removed without notice.
 
 
 
-14: Bug Reports and Frequently Asked Questions
+15: Bug Reports and Frequently Asked Questions
 ==============================================
 
 Armadillo has gone through extensive testing and
@@ -451,7 +464,7 @@ answers to frequently asked questions are at:
 
 
 
-15: MEX Interface to Octave/Matlab
+16: MEX Interface to Octave/Matlab
 ==================================
 
 The "mex_interface" folder contains examples of how to interface
@@ -459,7 +472,7 @@ Octave/Matlab with C++ code that uses Armadillo matrices.
 
 
 
-16: Related Software
+17: Related Software
 ====================
 
 * MLPACK: C++ library for machine learning and pattern recognition, built on top of Armadillo.

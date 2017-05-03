@@ -149,7 +149,7 @@ hr.greyline
 <!--  -->
 <a class="noprint" style="display:scroll; position:fixed; bottom:5px; right:5px;" href="#top"><font size=-1>[top]</font></a>
 
-<big><b>API Documentation for Armadillo 7.800</b></big>
+<big><b>API Documentation for Armadillo 7.900</b></big>
 <br>
 <br>
 <br>
@@ -16175,6 +16175,19 @@ List of additions and changes for each version:
 
 
 
+<a name="version_7900"></a>
+<li>Version 7.900:
+<ul>
+<li>expanded <a href="#clamp">clamp()</a> to handle cubes</li>
+<li>
+computationally expensive element-wise functions (such as <a href="#misc_fns">exp()</a>, <a href="#misc_fns">log()</a>, <a href="#trig_fns">cos()</a>, etc)
+can now be automatically sped up via <a href="https://en.wikipedia.org/wiki/OpenMP">OpenMP</a>;
+this requires a C++11/C++14 compiler and OpenMP to be explicitly enabled;
+for GCC and clang compilers use the following options: <code>-std=c++11 -fopenmp</code>
+</li>
+</ul>
+</li>
+<br>
 <a name="version_7800"></a>
 <li>Version 7.800:
 <ul>

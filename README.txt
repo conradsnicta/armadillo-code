@@ -391,6 +391,9 @@ This requires a C++11/C++14 compiler with OpenMP 3.0+ support.
 When using gcc or clang, use the following options to enable both
 C++11 and OpenMP:  -std=c++11 -fopenmp
 
+Caveat: use of the -march=native option with gcc 6.x is not recommended,
+as it can lead to speed regressions when OpenMP is enabled.
+
 
 
 13: API Documentation

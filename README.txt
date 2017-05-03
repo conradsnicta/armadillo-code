@@ -384,7 +384,7 @@ which creates lots of short lived temporaries that are not handled by auto.
 12: Support for OpenMP
 ======================
 
-Armadillo can use OpenMP to automatically speed up computationally
+Armadillo can use OpenMP 3.0 to automatically speed up computationally
 expensive element-wise functions such as exp(), log(), cos(), etc.
 
 You will need to use a C++11/C++14 compiler and explicitly enable OpenMP.

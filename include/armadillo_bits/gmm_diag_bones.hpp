@@ -57,7 +57,7 @@ namespace gmm_priv
 struct gmm_empty_arg {};
 
 
-#if defined(_OPENMP)
+#if defined(ARMA_USE_OPENMP)
   struct arma_omp_state
     {
     const int orig_dynamic_state;

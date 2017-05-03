@@ -92,6 +92,12 @@
 //// Note that ARMA_USE_CXX11 is automatically enabled when a C++11 compiler is detected
 #endif
 
+#if !defined(ARMA_USE_OPENMP)
+// #define ARMA_USE_OPENMP
+//// Uncomment the above line to forcefully enable use of OpenMP for parallelisation.
+//// Note that ARMA_USE_OPENMP is automatically enabled when a compiler supporting OpenMP 3.0 is detected.
+#endif
+
 #if !defined(ARMA_64BIT_WORD)
 // #define ARMA_64BIT_WORD
 //// Uncomment the above line if you require matrices/vectors capable of holding more than 4 billion elements.
@@ -188,6 +194,10 @@
 #if defined(ARMA_DONT_USE_CXX11)
   #undef ARMA_USE_CXX11
   #undef ARMA_USE_EXTERN_CXX11_RNG
+#endif
+
+#if defined(ARMA_DONT_USE_OPENMP)
+  #undef ARMA_USE_OPENMP
 #endif
 
 #if defined(ARMA_USE_WRAPPER)

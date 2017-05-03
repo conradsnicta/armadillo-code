@@ -177,7 +177,7 @@
 
 
 
-#if (defined(_OPENMP) && defined(ARMA_USE_CXX11))
+#if (defined(ARMA_USE_OPENMP) && defined(ARMA_USE_CXX11))
   
   struct eglue_core_mp_avail { static const bool value = true; };
   

@@ -135,7 +135,7 @@ struct arma_config
   #endif
   
   
-  #if defined(_OPENMP)
+  #if defined(ARMA_USE_OPENMP)
     static const bool openmp = true;
   #else
     static const bool openmp = false;

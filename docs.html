@@ -16207,7 +16207,7 @@ can now be automatically sped up via <a href="https://en.wikipedia.org/wiki/Open
 this requires a C++11/C++14 compiler with OpenMP 3.0+ support
 <ul>
 <li>for GCC and clang compilers use the following options to enable both C++11 and OpenMP: <code>-std=c++11 -fopenmp</code></li>
-<li>Caveat: use of the <code>-march=native</code> option with GCC 6.x is not recommended, as it can lead to speed regressions when OpenMP is enabled</li>
+<li>Caveat: use of <code>-march=native</code> in conjunction with <code>-fopenmp</code> can lead to speed regressions when using GCC</li>
 </ul>
 </li>
 </ul>

@@ -93,7 +93,7 @@ SpSubview<eT>::~SpSubview()
 
 template<typename eT>
 inline
-SpSubview<eT>&
+const SpSubview<eT>&
 SpSubview<eT>::operator+=(const eT val)
   {
   arma_extra_debug_sigprint();
@@ -114,7 +114,7 @@ SpSubview<eT>::operator+=(const eT val)
 
 template<typename eT>
 inline
-SpSubview<eT>&
+const SpSubview<eT>&
 SpSubview<eT>::operator-=(const eT val)
   {
   arma_extra_debug_sigprint();
@@ -135,7 +135,7 @@ SpSubview<eT>::operator-=(const eT val)
 
 template<typename eT>
 inline
-SpSubview<eT>&
+const SpSubview<eT>&
 SpSubview<eT>::operator*=(const eT val)
   {
   arma_extra_debug_sigprint();
@@ -181,7 +181,7 @@ SpSubview<eT>::operator*=(const eT val)
 
 template<typename eT>
 inline
-SpSubview<eT>&
+const SpSubview<eT>&
 SpSubview<eT>::operator/=(const eT val)
   {
   arma_extra_debug_sigprint();
@@ -230,7 +230,7 @@ SpSubview<eT>::operator/=(const eT val)
 template<typename eT>
 template<typename T1>
 inline
-SpSubview<eT>&
+const SpSubview<eT>&
 SpSubview<eT>::operator=(const Base<eT, T1>& in)
   {
   arma_extra_debug_sigprint();
@@ -431,7 +431,7 @@ SpSubview<eT>::operator=(const Base<eT, T1>& in)
 template<typename eT>
 template<typename T1>
 inline
-SpSubview<eT>&
+const SpSubview<eT>&
 SpSubview<eT>::operator+=(const Base<eT, T1>& x)
   {
   arma_extra_debug_sigprint();
@@ -444,7 +444,7 @@ SpSubview<eT>::operator+=(const Base<eT, T1>& x)
 template<typename eT>
 template<typename T1>
 inline
-SpSubview<eT>&
+const SpSubview<eT>&
 SpSubview<eT>::operator-=(const Base<eT, T1>& x)
   {
   arma_extra_debug_sigprint();
@@ -457,7 +457,7 @@ SpSubview<eT>::operator-=(const Base<eT, T1>& x)
 template<typename eT>
 template<typename T1>
 inline
-SpSubview<eT>&
+const SpSubview<eT>&
 SpSubview<eT>::operator*=(const Base<eT, T1>& x)
   {
   arma_extra_debug_sigprint();
@@ -474,7 +474,7 @@ SpSubview<eT>::operator*=(const Base<eT, T1>& x)
 template<typename eT>
 template<typename T1>
 inline
-SpSubview<eT>&
+const SpSubview<eT>&
 SpSubview<eT>::operator%=(const Base<eT, T1>& x)
   {
   arma_extra_debug_sigprint();
@@ -487,7 +487,7 @@ SpSubview<eT>::operator%=(const Base<eT, T1>& x)
 template<typename eT>
 template<typename T1>
 inline
-SpSubview<eT>&
+const SpSubview<eT>&
 SpSubview<eT>::operator/=(const Base<eT, T1>& x)
   {
   arma_extra_debug_sigprint();
@@ -499,7 +499,7 @@ SpSubview<eT>::operator/=(const Base<eT, T1>& x)
 
 template<typename eT>
 inline
-SpSubview<eT>&
+const SpSubview<eT>&
 SpSubview<eT>::operator=(const SpSubview<eT>& x)
   {
   arma_extra_debug_sigprint();
@@ -512,7 +512,7 @@ SpSubview<eT>::operator=(const SpSubview<eT>& x)
 template<typename eT>
 template<typename T1>
 inline
-SpSubview<eT>&
+const SpSubview<eT>&
 SpSubview<eT>::operator=(const SpBase<eT, T1>& x)
   {
   arma_extra_debug_sigprint();
@@ -525,7 +525,7 @@ SpSubview<eT>::operator=(const SpBase<eT, T1>& x)
 template<typename eT>
 template<typename T1>
 inline
-SpSubview<eT>&
+const SpSubview<eT>&
 SpSubview<eT>::operator_equ_common(const SpBase<eT, T1>& in)
   {
   arma_extra_debug_sigprint();
@@ -721,7 +721,7 @@ SpSubview<eT>::operator_equ_common(const SpBase<eT, T1>& in)
 template<typename eT>
 template<typename T1>
 inline
-SpSubview<eT>&
+const SpSubview<eT>&
 SpSubview<eT>::operator+=(const SpBase<eT, T1>& x)
   {
   arma_extra_debug_sigprint();
@@ -735,7 +735,7 @@ SpSubview<eT>::operator+=(const SpBase<eT, T1>& x)
 template<typename eT>
 template<typename T1>
 inline
-SpSubview<eT>&
+const SpSubview<eT>&
 SpSubview<eT>::operator-=(const SpBase<eT, T1>& x)
   {
   arma_extra_debug_sigprint();
@@ -749,7 +749,7 @@ SpSubview<eT>::operator-=(const SpBase<eT, T1>& x)
 template<typename eT>
 template<typename T1>
 inline
-SpSubview<eT>&
+const SpSubview<eT>&
 SpSubview<eT>::operator*=(const SpBase<eT, T1>& x)
   {
   arma_extra_debug_sigprint();
@@ -762,7 +762,7 @@ SpSubview<eT>::operator*=(const SpBase<eT, T1>& x)
 template<typename eT>
 template<typename T1>
 inline
-SpSubview<eT>&
+const SpSubview<eT>&
 SpSubview<eT>::operator%=(const SpBase<eT, T1>& x)
   {
   arma_extra_debug_sigprint();
@@ -777,7 +777,7 @@ SpSubview<eT>::operator%=(const SpBase<eT, T1>& x)
 template<typename eT>
 template<typename T1>
 inline
-SpSubview<eT>&
+const SpSubview<eT>&
 SpSubview<eT>::operator/=(const SpBase<eT, T1>& x)
   {
   arma_extra_debug_sigprint();

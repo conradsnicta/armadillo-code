@@ -1862,8 +1862,6 @@ diskio::load_csv_ascii(Mat< std::complex<T> >& x, std::istream& f, std::string&)
       
       if(token.length() == 0)  { col++; continue; }
       
-      std::string::size_type len = token.length();
-      
       bool found_x = false;
       std::string::size_type loc_x = 0;  // location of the separator (+ or -) between the real and imaginary part
       

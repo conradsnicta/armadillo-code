@@ -55,7 +55,7 @@ gmm_diag<eT>::gmm_diag(const gmm_diag<eT>& x)
 
 template<typename eT>
 inline
-const gmm_diag<eT>&
+gmm_diag<eT>&
 gmm_diag<eT>::operator=(const gmm_diag<eT>& x)
   {
   arma_extra_debug_sigprint();

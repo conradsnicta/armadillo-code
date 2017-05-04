@@ -26,3 +26,9 @@
   #undef  ARMA_USE_CXX11
   #define ARMA_USE_CXX11
 #endif
+
+
+#if (defined(_OPENMP) && (_OPENMP >= 200805))
+  #undef  ARMA_USE_OPENMP
+  #define ARMA_USE_OPENMP
+#endif

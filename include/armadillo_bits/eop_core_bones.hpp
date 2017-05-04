@@ -99,4 +99,12 @@ class eop_lgamma            : public eop_core<eop_lgamma>            , public eo
 
 
 
+// the classes below are currently not used; reserved for potential future use
+class eop_log_approx {};
+class eop_exp_approx {};
+class eop_approx_log {};
+class eop_approx_exp {};
+
+
+
 //! @}

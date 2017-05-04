@@ -28,6 +28,13 @@ struct arma_config
   #endif
   
   
+  #if defined(ARMA_OPENMP_THRESHOLD)
+    static const uword mp_threshold = (sword(ARMA_OPENMP_THRESHOLD) > 0) ? uword(ARMA_OPENMP_THRESHOLD) : 256;
+  #else
+    static const uword mp_threshold = 256;
+  #endif
+  
+  
   #if defined(ARMA_SPMAT_CHUNKSIZE)
     static const uword spmat_chunksize = (sword(ARMA_SPMAT_CHUNKSIZE) > 0) ? uword(ARMA_SPMAT_CHUNKSIZE) : 256;
   #else

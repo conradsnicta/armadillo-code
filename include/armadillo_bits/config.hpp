@@ -128,6 +128,12 @@
 //// If you mainly use lots of very small vectors (eg. <= 4 elements),
 //// change the number to the size of your vectors.
 
+#if !defined(ARMA_OPENMP_THRESHOLD)
+  #define ARMA_OPENMP_THRESHOLD 256
+#endif
+//// The minimum number of elements in a matrix to allow the use of OpenMP for parallelisation;
+//// it must be an integer that is at least 1.
+
 #if !defined(ARMA_SPMAT_CHUNKSIZE)
   #define ARMA_SPMAT_CHUNKSIZE 256
 #endif

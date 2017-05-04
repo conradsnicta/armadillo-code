@@ -89,7 +89,7 @@
 #if !defined(ARMA_USE_CXX11)
 // #define ARMA_USE_CXX11
 //// Uncomment the above line to forcefully enable use of C++11 features (eg. initialiser lists).
-//// Note that ARMA_USE_CXX11 is automatically enabled when a C++11 compiler is detected
+//// Note that ARMA_USE_CXX11 is automatically enabled when a C++11 compiler is detected.
 #endif
 
 #if !defined(ARMA_USE_OPENMP)
@@ -101,8 +101,8 @@
 #if !defined(ARMA_64BIT_WORD)
 // #define ARMA_64BIT_WORD
 //// Uncomment the above line if you require matrices/vectors capable of holding more than 4 billion elements.
-//// Your machine and compiler must have support for 64 bit integers (eg. via "long" or "long long")
-//// Note that ARMA_64BIT_WORD is automatically enabled when a C++11 compiler is detected
+//// Your machine and compiler must have support for 64 bit integers (eg. via "long" or "long long").
+//// Note that ARMA_64BIT_WORD is automatically enabled when a C++11 compiler is detected.
 #endif
 
 #if !defined(ARMA_USE_HDF5)
@@ -127,6 +127,12 @@
 //// it must be an integer that is at least 1.
 //// If you mainly use lots of very small vectors (eg. <= 4 elements),
 //// change the number to the size of your vectors.
+
+#if !defined(ARMA_OPENMP_THRESHOLD)
+  #define ARMA_OPENMP_THRESHOLD 256
+#endif
+//// The minimum number of elements in a matrix to allow the use of OpenMP for parallelisation;
+//// it must be an integer that is at least 1.
 
 #if !defined(ARMA_SPMAT_CHUNKSIZE)
   #define ARMA_SPMAT_CHUNKSIZE 256

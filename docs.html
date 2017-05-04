@@ -15699,7 +15699,7 @@ Disable the use of the HDF5 library. Overrides <i>ARMA_USE_HDF5</i>
     </td>
     <td style="vertical-align: top;">
 Use C++11 features, such as <a href="#element_initialisation">initialiser lists</a>;
-automatically enabled when using a compiler in C++11 or C++14 mode, for example: g++&nbsp;-std=c++11
+automatically enabled when using a compiler in C++11 or C++14 mode, for example: <code>g++&nbsp;-std=c++11</code>
     </td>
   </tr>
   <tr>
@@ -15737,6 +15737,31 @@ Disable use of C++11 features. Overrides <i>ARMA_USE_CXX11</i>
   </tr>
   <tr>
     <td style="vertical-align: top;">
+<code>ARMA_USE_OPENMP</code>
+    </td>
+    <td style="vertical-align: top;">
+      &nbsp;
+    </td>
+    <td style="vertical-align: top;">
+Use OpenMP for parallelisation of computationally expensive element-wise operations
+(such as <a href="#misc_fns">exp()</a>, <a href="#misc_fns">log()</a>, <a href="#trig_fns">cos()</a>, etc).
+Automatically enabled when using a C++11/C++14 compiler which has OpenMP 3.0+ active (eg. the <code>-fopenmp</code> option for gcc and clang).
+<b>Caveat:</b> use of <code>-march=native</code> in conjunction with <code>-fopenmp</code> can lead to speed regressions when using gcc.
+    </td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">
+      &nbsp;
+    </td>
+    <td style="vertical-align: top;">
+      &nbsp;
+    </td>
+    <td style="vertical-align: top;">
+      &nbsp;
+    </td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">
 <code>ARMA_DONT_USE_OPENMP</code>
     </td>
     <td style="vertical-align: top;">
@@ -15744,6 +15769,28 @@ Disable use of C++11 features. Overrides <i>ARMA_USE_CXX11</i>
     </td>
     <td style="vertical-align: top;">
 Disable use of OpenMP for parallelisation of element-wise operations.
+    </td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">
+      &nbsp;
+    </td>
+    <td style="vertical-align: top;">
+      &nbsp;
+    </td>
+    <td style="vertical-align: top;">
+      &nbsp;
+    </td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">
+<code>ARMA_OPENMP_THRESHOLD</code>
+    </td>
+    <td style="vertical-align: top;">
+      &nbsp;
+    </td>
+    <td style="vertical-align: top;">
+The minimum number of elements in a matrix to allow the use of OpenMP for parallelisation; has the default value of 256
     </td>
   </tr>
   <tr>

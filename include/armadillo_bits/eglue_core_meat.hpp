@@ -269,7 +269,7 @@ eglue_core<eglue_type>::apply(outT& out, const eGlue<T1, T2, eglue_type>& x)
     {
     const uword n_elem = x.get_n_elem();
     
-    if(use_mp && (n_elem >= 256))
+    if(use_mp && (n_elem >= arma_config::mp_threshold))
       {
       typename Proxy<T1>::ea_type P1 = x.P1.get_ea();
       typename Proxy<T2>::ea_type P2 = x.P2.get_ea();
@@ -326,7 +326,7 @@ eglue_core<eglue_type>::apply(outT& out, const eGlue<T1, T2, eglue_type>& x)
     const Proxy<T1>& P1 = x.P1;
     const Proxy<T2>& P2 = x.P2;
     
-    if(use_mp && (x.get_n_elem() >= 256))
+    if(use_mp && (x.get_n_elem() >= arma_config::mp_threshold))
       {
            if(is_same_type<eglue_type, eglue_plus >::yes) { arma_applier_2_mp(=, +); }
       else if(is_same_type<eglue_type, eglue_minus>::yes) { arma_applier_2_mp(=, -); }
@@ -370,7 +370,7 @@ eglue_core<eglue_type>::apply_inplace_plus(Mat<typename T1::elem_type>& out, con
     {
     const uword n_elem = x.get_n_elem();
     
-    if(use_mp && (n_elem >= 256))
+    if(use_mp && (n_elem >= arma_config::mp_threshold))
       {
       typename Proxy<T1>::ea_type P1 = x.P1.get_ea();
       typename Proxy<T2>::ea_type P2 = x.P2.get_ea();
@@ -424,7 +424,7 @@ eglue_core<eglue_type>::apply_inplace_plus(Mat<typename T1::elem_type>& out, con
     const Proxy<T1>& P1 = x.P1;
     const Proxy<T2>& P2 = x.P2;
     
-    if(use_mp && (x.get_n_elem() >= 256))
+    if(use_mp && (x.get_n_elem() >= arma_config::mp_threshold))
       {
            if(is_same_type<eglue_type, eglue_plus >::yes) { arma_applier_2_mp(+=, +); }
       else if(is_same_type<eglue_type, eglue_minus>::yes) { arma_applier_2_mp(+=, -); }
@@ -468,7 +468,7 @@ eglue_core<eglue_type>::apply_inplace_minus(Mat<typename T1::elem_type>& out, co
     {
     const uword n_elem = x.get_n_elem();
     
-    if(use_mp && (n_elem >= 256))
+    if(use_mp && (n_elem >= arma_config::mp_threshold))
       {
       typename Proxy<T1>::ea_type P1 = x.P1.get_ea();
       typename Proxy<T2>::ea_type P2 = x.P2.get_ea();
@@ -522,7 +522,7 @@ eglue_core<eglue_type>::apply_inplace_minus(Mat<typename T1::elem_type>& out, co
     const Proxy<T1>& P1 = x.P1;
     const Proxy<T2>& P2 = x.P2;
     
-    if(use_mp && (x.get_n_elem() >= 256))
+    if(use_mp && (x.get_n_elem() >= arma_config::mp_threshold))
       {
            if(is_same_type<eglue_type, eglue_plus >::yes) { arma_applier_2_mp(-=, +); }
       else if(is_same_type<eglue_type, eglue_minus>::yes) { arma_applier_2_mp(-=, -); }
@@ -566,7 +566,7 @@ eglue_core<eglue_type>::apply_inplace_schur(Mat<typename T1::elem_type>& out, co
     {
     const uword n_elem = x.get_n_elem();
     
-    if(use_mp && (n_elem >= 256))
+    if(use_mp && (n_elem >= arma_config::mp_threshold))
       {
       typename Proxy<T1>::ea_type P1 = x.P1.get_ea();
       typename Proxy<T2>::ea_type P2 = x.P2.get_ea();
@@ -620,7 +620,7 @@ eglue_core<eglue_type>::apply_inplace_schur(Mat<typename T1::elem_type>& out, co
     const Proxy<T1>& P1 = x.P1;
     const Proxy<T2>& P2 = x.P2;
     
-    if(use_mp && (x.get_n_elem() >= 256))
+    if(use_mp && (x.get_n_elem() >= arma_config::mp_threshold))
       {
            if(is_same_type<eglue_type, eglue_plus >::yes) { arma_applier_2_mp(*=, +); }
       else if(is_same_type<eglue_type, eglue_minus>::yes) { arma_applier_2_mp(*=, -); }
@@ -664,7 +664,7 @@ eglue_core<eglue_type>::apply_inplace_div(Mat<typename T1::elem_type>& out, cons
     {
     const uword n_elem = x.get_n_elem();
     
-    if(use_mp && (n_elem >= 256))
+    if(use_mp && (n_elem >= arma_config::mp_threshold))
       {
       typename Proxy<T1>::ea_type P1 = x.P1.get_ea();
       typename Proxy<T2>::ea_type P2 = x.P2.get_ea();
@@ -718,7 +718,7 @@ eglue_core<eglue_type>::apply_inplace_div(Mat<typename T1::elem_type>& out, cons
     const Proxy<T1>& P1 = x.P1;
     const Proxy<T2>& P2 = x.P2;
     
-    if(use_mp && (x.get_n_elem() >= 256))
+    if(use_mp && (x.get_n_elem() >= arma_config::mp_threshold))
       {
            if(is_same_type<eglue_type, eglue_plus >::yes) { arma_applier_2_mp(/=, +); }
       else if(is_same_type<eglue_type, eglue_minus>::yes) { arma_applier_2_mp(/=, -); }
@@ -766,7 +766,7 @@ eglue_core<eglue_type>::apply(Cube<typename T1::elem_type>& out, const eGlueCube
     {
     const uword n_elem = out.n_elem;
     
-    if(use_mp && (n_elem >= 256))
+    if(use_mp && (n_elem >= arma_config::mp_threshold))
       {
       typename ProxyCube<T1>::ea_type P1 = x.P1.get_ea();
       typename ProxyCube<T2>::ea_type P2 = x.P2.get_ea();
@@ -824,7 +824,7 @@ eglue_core<eglue_type>::apply(Cube<typename T1::elem_type>& out, const eGlueCube
     const ProxyCube<T1>& P1 = x.P1;
     const ProxyCube<T2>& P2 = x.P2;
     
-    if(use_mp && (x.get_n_elem_slice() >= 256))
+    if(use_mp && (x.get_n_elem_slice() >= arma_config::mp_threshold))
       {
            if(is_same_type<eglue_type, eglue_plus >::yes) { arma_applier_3_mp(=, +); }
       else if(is_same_type<eglue_type, eglue_minus>::yes) { arma_applier_3_mp(=, -); }
@@ -869,7 +869,7 @@ eglue_core<eglue_type>::apply_inplace_plus(Cube<typename T1::elem_type>& out, co
     {
     const uword n_elem = out.n_elem;
     
-    if(use_mp && (n_elem >= 256))
+    if(use_mp && (n_elem >= arma_config::mp_threshold))
       {
       typename ProxyCube<T1>::ea_type P1 = x.P1.get_ea();
       typename ProxyCube<T2>::ea_type P2 = x.P2.get_ea();
@@ -923,7 +923,7 @@ eglue_core<eglue_type>::apply_inplace_plus(Cube<typename T1::elem_type>& out, co
     const ProxyCube<T1>& P1 = x.P1;
     const ProxyCube<T2>& P2 = x.P2;
     
-    if(use_mp && (x.get_n_elem_slice() >= 256))
+    if(use_mp && (x.get_n_elem_slice() >= arma_config::mp_threshold))
       {
            if(is_same_type<eglue_type, eglue_plus >::yes) { arma_applier_3_mp(+=, +); }
       else if(is_same_type<eglue_type, eglue_minus>::yes) { arma_applier_3_mp(+=, -); }
@@ -968,7 +968,7 @@ eglue_core<eglue_type>::apply_inplace_minus(Cube<typename T1::elem_type>& out, c
     {
     const uword n_elem = out.n_elem;
     
-    if(use_mp && (n_elem >= 256))
+    if(use_mp && (n_elem >= arma_config::mp_threshold))
       {
       typename ProxyCube<T1>::ea_type P1 = x.P1.get_ea();
       typename ProxyCube<T2>::ea_type P2 = x.P2.get_ea();
@@ -1022,7 +1022,7 @@ eglue_core<eglue_type>::apply_inplace_minus(Cube<typename T1::elem_type>& out, c
     const ProxyCube<T1>& P1 = x.P1;
     const ProxyCube<T2>& P2 = x.P2;
     
-    if(use_mp && (x.get_n_elem_slice() >= 256))
+    if(use_mp && (x.get_n_elem_slice() >= arma_config::mp_threshold))
       {
            if(is_same_type<eglue_type, eglue_plus >::yes) { arma_applier_3_mp(-=, +); }
       else if(is_same_type<eglue_type, eglue_minus>::yes) { arma_applier_3_mp(-=, -); }
@@ -1067,7 +1067,7 @@ eglue_core<eglue_type>::apply_inplace_schur(Cube<typename T1::elem_type>& out, c
     {
     const uword n_elem = out.n_elem;
     
-    if(use_mp && (n_elem >= 256))
+    if(use_mp && (n_elem >= arma_config::mp_threshold))
       {
       typename ProxyCube<T1>::ea_type P1 = x.P1.get_ea();
       typename ProxyCube<T2>::ea_type P2 = x.P2.get_ea();
@@ -1121,7 +1121,7 @@ eglue_core<eglue_type>::apply_inplace_schur(Cube<typename T1::elem_type>& out, c
     const ProxyCube<T1>& P1 = x.P1;
     const ProxyCube<T2>& P2 = x.P2;
     
-    if(use_mp && (x.get_n_elem_slice() >= 256))
+    if(use_mp && (x.get_n_elem_slice() >= arma_config::mp_threshold))
       {
            if(is_same_type<eglue_type, eglue_plus >::yes) { arma_applier_3_mp(*=, +); }
       else if(is_same_type<eglue_type, eglue_minus>::yes) { arma_applier_3_mp(*=, -); }
@@ -1166,7 +1166,7 @@ eglue_core<eglue_type>::apply_inplace_div(Cube<typename T1::elem_type>& out, con
     {
     const uword n_elem = out.n_elem;
     
-    if(use_mp && (n_elem >= 256))
+    if(use_mp && (n_elem >= arma_config::mp_threshold))
       {
       typename ProxyCube<T1>::ea_type P1 = x.P1.get_ea();
       typename ProxyCube<T2>::ea_type P2 = x.P2.get_ea();
@@ -1220,7 +1220,7 @@ eglue_core<eglue_type>::apply_inplace_div(Cube<typename T1::elem_type>& out, con
     const ProxyCube<T1>& P1 = x.P1;
     const ProxyCube<T2>& P2 = x.P2;
     
-    if(use_mp && (x.get_n_elem_slice() >= 256))
+    if(use_mp && (x.get_n_elem_slice() >= arma_config::mp_threshold))
       {
            if(is_same_type<eglue_type, eglue_plus >::yes) { arma_applier_3_mp(/=, +); }
       else if(is_same_type<eglue_type, eglue_minus>::yes) { arma_applier_3_mp(/=, -); }

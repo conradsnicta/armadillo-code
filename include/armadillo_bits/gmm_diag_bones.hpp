@@ -57,7 +57,7 @@ namespace gmm_priv
 struct gmm_empty_arg {};
 
 
-#if (defined(_OPENMP) && (_OPENMP >= 200805))
+#if defined(ARMA_USE_OPENMP)
   struct arma_omp_state
     {
     const int orig_dynamic_state;
@@ -86,8 +86,8 @@ class gmm_diag
   inline ~gmm_diag();
   inline  gmm_diag();
   
-  inline                  gmm_diag(const gmm_diag& x);
-  inline const gmm_diag& operator=(const gmm_diag& x);
+  inline            gmm_diag(const gmm_diag& x);
+  inline gmm_diag& operator=(const gmm_diag& x);
   
   inline      gmm_diag(const uword in_n_dims, const uword in_n_gaus);
   inline void    reset(const uword in_n_dims, const uword in_n_gaus);

@@ -81,6 +81,18 @@ mtOpCube<out_eT, T1, op_type>::mtOpCube(const char junk, const T1& in_m, const o
 
 template<typename out_eT, typename T1, typename op_type>
 inline
+mtOpCube<out_eT, T1, op_type>::mtOpCube(const mtOpCube_dual_aux_indicator&, const T1& in_m, const typename T1::elem_type in_aux_a, const out_eT in_aux_b)
+  : m         (in_m    )
+  , aux       (in_aux_a)
+  , aux_out_eT(in_aux_b)
+  {
+  arma_extra_debug_sigprint();
+  }
+
+
+
+template<typename out_eT, typename T1, typename op_type>
+inline
 mtOpCube<out_eT, T1, op_type>::~mtOpCube()
   {
   arma_extra_debug_sigprint();

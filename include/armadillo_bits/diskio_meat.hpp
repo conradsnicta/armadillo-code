@@ -1008,8 +1008,6 @@ diskio::save_csv_ascii(const Mat<eT>& x, std::ostream& f)
   
   const ios::fmtflags orig_flags = f.flags();
   
-  // TODO: need to write each complex element as "a+ib" instead of the default "(a,b)"
-  
   if( (is_float<eT>::value) || (is_double<eT>::value) )
     {
     f.setf(ios::scientific);
@@ -1025,10 +1023,59 @@ diskio::save_csv_ascii(const Mat<eT>& x, std::ostream& f)
       {
       arma_ostream::print_elem(f, x.at(row,col), false);
       
-      if( col < (x_n_cols-1) )
-        {
-        f.put(',');
-        }
+      if( col < (x_n_cols-1) )  { f.put(','); }
+      }
+    
+    f.put('\n');
+    }
+  
+  const bool save_okay = f.good();
+  
+  f.flags(orig_flags);
+  
+  return save_okay;
+  }
+
+
+
+//! Save a matrix in CSV text format (human readable); complex numbers stored in "a+bi" format
+template<typename T>
+inline
+bool
+diskio::save_csv_ascii(const Mat< std::complex<T> >& x, std::ostream& f)
+  {
+  arma_extra_debug_sigprint();
+  
+  typedef typename std::complex<T> eT;
+  
+  const ios::fmtflags orig_flags = f.flags();
+  
+  if( (is_float<T>::value) || (is_double<T>::value) )
+    {
+    f.setf(ios::scientific);
+    f.precision(14);
+    }
+  
+  uword x_n_rows = x.n_rows;
+  uword x_n_cols = x.n_cols;
+  
+  for(uword row=0; row < x_n_rows; ++row)
+    {
+    for(uword col=0; col < x_n_cols; ++col)
+      {
+      const eT& val = x.at(row,col);
+      
+      const T    tmp_r     = std::real(val);
+      const T    tmp_i     = std::imag(val);
+      const T    tmp_i_abs = (tmp_i < T(0)) ? T(-tmp_i) : T(tmp_i);
+      const char tmp_sign  = (tmp_i < T(0)) ? char('-') : char('+');
+      
+      arma_ostream::print_elem(f, tmp_r,     false);
+      f.put(tmp_sign);
+      arma_ostream::print_elem(f, tmp_i_abs, false);
+      f.put('i');
+      
+      if( col < (x_n_cols-1) )  { f.put(','); }
       }
     
     f.put('\n');
@@ -1624,7 +1671,7 @@ diskio::load_csv_ascii(Mat<eT>& x, std::istream& f, std::string&)
   {
   arma_extra_debug_sigprint();
   
-  // TODO: add handling of complex numbers, with each element stored in "a+ib" format
+  // TODO: replace with more efficient implementation
   
   bool load_okay = f.good();
   
@@ -1718,6 +1765,231 @@ diskio::load_csv_ascii(Mat<eT>& x, std::istream& f, std::string&)
           diskio::convert_naninf( x.at(row,col), token );
           }
         }
+      
+      ++col;
+      }
+    
+    ++row;
+    }
+  
+  return load_okay;
+  }
+
+
+
+//! Load a matrix in CSV text format (human readable); complex numbers stored in "a+bi" format
+template<typename T>
+inline
+bool
+diskio::load_csv_ascii(Mat< std::complex<T> >& x, std::istream& f, std::string&)
+  {
+  arma_extra_debug_sigprint();
+  
+  // TODO: replace with more efficient implementation
+  
+  bool load_okay = f.good();
+  
+  f.clear();
+  const std::fstream::pos_type pos1 = f.tellg();
+  
+  //
+  // work out the size
+  
+  uword f_n_rows = 0;
+  uword f_n_cols = 0;
+  
+  std::string line_string;
+  std::string token;
+  
+  std::stringstream line_stream;
+  
+  while( (f.good() == true) && (load_okay == true) )
+    {
+    std::getline(f, line_string);
+    
+    if(line_string.size() == 0)
+      {
+      break;
+      }
+    
+    line_stream.clear();
+    line_stream.str(line_string);
+    
+    uword line_n_cols = 0;
+    
+    while(line_stream.good() == true)
+      {
+      std::getline(line_stream, token, ',');
+      ++line_n_cols;
+      }
+    
+    if(f_n_cols < line_n_cols)
+      {
+      f_n_cols = line_n_cols;
+      }
+    
+    ++f_n_rows;
+    }
+  
+  f.clear();
+  f.seekg(pos1);
+  
+  x.zeros(f_n_rows, f_n_cols);
+  
+  uword row = 0;
+  
+  std::stringstream ss;
+  std::string       str_real;
+  std::string       str_imag;
+  
+  while(f.good() == true)
+    {
+    std::getline(f, line_string);
+    
+    if(line_string.size() == 0)
+      {
+      break;
+      }
+    
+    line_stream.clear();
+    line_stream.str(line_string);
+    
+    uword col = 0;
+    
+    while(line_stream.good() == true)
+      {
+      std::getline(line_stream, token, ',');
+      
+      if(token.length() == 0)  { col++; continue; }
+      
+      bool found_x = false;
+      std::string::size_type loc_x = 0;  // location of the separator (+ or -) between the real and imaginary part
+      
+      std::string::size_type loc_i = token.find_last_of('i');  // location of the imaginary part indicator
+      
+      if(loc_i == std::string::npos)
+        {
+        str_real = token;
+        str_imag.clear();
+        }
+      else
+        {
+        bool found_plus  = false;
+        bool found_minus = false;
+        
+        std::string::size_type loc_plus = token.find_last_of('+');
+        
+        if(loc_plus != std::string::npos)
+          {
+          if(loc_plus >= 1)
+            {
+            const char prev_char = token.at(loc_plus-1);
+            
+            // make sure we're not looking at the sign of the exponent
+            if( (prev_char != 'e') && (prev_char != 'E') )
+              {
+              found_plus = true;
+              }
+            else
+              {
+              // search again, omitting the exponent
+              loc_plus = token.find_last_of('+', loc_plus-1);
+              
+              if(loc_plus != std::string::npos)  { found_plus = true; }
+              }
+            }
+          else
+            {
+            // loc_plus == 0, meaning we're at the start of the string
+            found_plus = true;
+            }
+          }
+        
+        std::string::size_type loc_minus = token.find_last_of('-');
+        
+        if(loc_minus != std::string::npos)
+          {
+          if(loc_minus >= 1)
+            {
+            const char prev_char = token.at(loc_minus-1);
+            
+            // make sure we're not looking at the sign of the exponent
+            if( (prev_char != 'e') && (prev_char != 'E') )
+              {
+              found_minus = true;
+              }
+            else
+              {
+              // search again, omitting the exponent
+              loc_minus = token.find_last_of('-', loc_minus-1);
+              
+              if(loc_minus != std::string::npos)  { found_minus = true; }
+              }
+            }
+          else
+            {
+            // loc_minus == 0, meaning we're at the start of the string
+            found_minus = true;
+            }
+          }
+        
+        if(found_plus && found_minus)
+          {
+          if( (loc_i > loc_plus) && (loc_i > loc_minus) )
+            {
+            // choose the sign closest to the "i" to be the separator between the real and imaginary part
+            loc_x = ( (loc_i - loc_plus) < (loc_i - loc_minus) ) ? loc_plus : loc_minus;
+            found_x = true;
+            }
+          }
+        else if(found_plus )  { loc_x = loc_plus;  found_x = true; }
+        else if(found_minus)  { loc_x = loc_minus; found_x = true; }
+        
+        if(found_x)
+          {
+          if(loc_x > 0)                { str_real = token.substr(0,loc_x);                     } else { str_real.clear(); }
+          if((loc_x+1) < token.size()) { str_imag = token.substr(loc_x, token.size()-loc_x-1); } else { str_imag.clear(); }
+          }
+        }
+      
+      T val_real_1 = T(0);
+      T val_real_2 = T(0);
+      
+      T val_imag_1 = T(0);
+      T val_imag_2 = T(0);
+      
+      ss.clear();
+      ss.str(str_real);
+      ss >> val_real_1;
+      
+      if(ss.fail() == false)
+        {
+        val_real_2 = val_real_1;
+        }
+      else
+        {
+        T val_tmp = T(0);
+        diskio::convert_naninf(val_tmp, str_real);
+        val_real_2 = val_tmp;
+        }
+      
+      
+      ss.clear();
+      ss.str(str_imag);
+      ss >> val_imag_1;
+      
+      if(ss.fail() == false)
+        {
+        val_imag_2 = val_imag_1;
+        }
+      else
+        {
+        T val_tmp = T(0);
+        diskio::convert_naninf(val_tmp, str_real);
+        val_imag_2 = val_tmp;
+        }
+      
+      x.at(row,col) = std::complex<T>(val_real_2, val_imag_2);
       
       ++col;
       }
@@ -2471,6 +2743,8 @@ diskio::load_coord_ascii(SpMat<eT>& x, std::istream& f, std::string& err_msg)
   arma_extra_debug_sigprint();
   arma_ignore(err_msg);
   
+  // TODO: replace with more efficient implementation
+  
   bool load_okay = f.good();
   
   f.clear();
@@ -2695,6 +2969,8 @@ diskio::load_coord_ascii(SpMat< std::complex<T> >& x, std::istream& f, std::stri
   {
   arma_extra_debug_sigprint();
   arma_ignore(err_msg);
+  
+  // TODO: replace with more efficient implementation
   
   bool load_okay = f.good();
   

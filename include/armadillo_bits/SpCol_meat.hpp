@@ -76,7 +76,7 @@ SpCol<eT>::SpCol(const char* text)
 //! construct a column vector from specified text
 template<typename eT>
 inline
-const SpCol<eT>&
+SpCol<eT>&
 SpCol<eT>::operator=(const char* text)
   {
   arma_extra_debug_sigprint();
@@ -108,7 +108,7 @@ SpCol<eT>::SpCol(const std::string& text)
 //! construct a column vector from specified text
 template<typename eT>
 inline
-const SpCol<eT>&
+SpCol<eT>&
 SpCol<eT>::operator=(const std::string& text)
   {
   arma_extra_debug_sigprint();
@@ -122,7 +122,7 @@ SpCol<eT>::operator=(const std::string& text)
 
 template<typename eT>
 inline
-const SpCol<eT>&
+SpCol<eT>&
 SpCol<eT>::operator=(const eT val)
   {
   arma_extra_debug_sigprint();
@@ -151,7 +151,7 @@ SpCol<eT>::SpCol(const Base<eT,T1>& X)
 template<typename eT>
 template<typename T1>
 inline
-const SpCol<eT>&
+SpCol<eT>&
 SpCol<eT>::operator=(const Base<eT,T1>& X)
   {
   arma_extra_debug_sigprint();
@@ -182,7 +182,7 @@ SpCol<eT>::SpCol(const SpBase<eT,T1>& X)
 template<typename eT>
 template<typename T1>
 inline
-const SpCol<eT>&
+SpCol<eT>&
 SpCol<eT>::operator=(const SpBase<eT,T1>& X)
   {
   arma_extra_debug_sigprint();

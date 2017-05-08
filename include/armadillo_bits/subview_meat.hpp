@@ -133,7 +133,7 @@ subview<eT>::inplace_op(const Base<eT,T1>& in, const char* identifier)
   
   if(is_alias)  { arma_extra_debug_print("aliasing detected"); }
   
-  if( (is_Mat<typename Proxy<T1>::stored_type>::value) || (is_alias) )
+  if( (is_Mat<typename Proxy<T1>::stored_type>::value) || (Proxy<T1>::use_mp && (s.n_elem >= arma_config::mp_threshold)) || (is_alias) )
     {
     const unwrap_check<typename Proxy<T1>::stored_type> tmp(P.Q, is_alias);
     const Mat<eT>& B = tmp.M;

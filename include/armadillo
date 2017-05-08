@@ -47,12 +47,7 @@
 #endif
 
 
-#if (__cplusplus >= 201103L)
-  #undef  ARMA_USE_CXX11
-  #define ARMA_USE_CXX11
-#endif
-
-
+#include "armadillo_bits/compiler_extra.hpp"
 #include "armadillo_bits/config.hpp"
 #include "armadillo_bits/compiler_setup.hpp"
 
@@ -89,7 +84,7 @@
 #include "armadillo_bits/include_superlu.hpp"
 
 
-#if (defined(_OPENMP) && (_OPENMP >= 200805))
+#if defined(ARMA_USE_OPENMP)
   #include <omp.h>
 #endif
 

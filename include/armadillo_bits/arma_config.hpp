@@ -28,6 +28,13 @@ struct arma_config
   #endif
   
   
+  #if defined(ARMA_OPENMP_THRESHOLD)
+    static const uword mp_threshold = (sword(ARMA_OPENMP_THRESHOLD) > 0) ? uword(ARMA_OPENMP_THRESHOLD) : 384;
+  #else
+    static const uword mp_threshold = 384;
+  #endif
+  
+  
   #if defined(ARMA_SPMAT_CHUNKSIZE)
     static const uword spmat_chunksize = (sword(ARMA_SPMAT_CHUNKSIZE) > 0) ? uword(ARMA_SPMAT_CHUNKSIZE) : 256;
   #else
@@ -122,20 +129,20 @@ struct arma_config
   
   
   #if defined(ARMA_USE_CXX11)
-    static const bool use_cxx11 = true;
+    static const bool cxx11 = true;
   #else
-    static const bool use_cxx11 = false;
+    static const bool cxx11 = false;
   #endif
   
   
   #if defined(ARMA_USE_WRAPPER)
-    static const bool use_wrapper = true;
+    static const bool wrapper = true;
   #else
-    static const bool use_wrapper = false;
+    static const bool wrapper = false;
   #endif
   
   
-  #if (defined(_OPENMP) && (_OPENMP >= 200805))
+  #if defined(ARMA_USE_OPENMP)
     static const bool openmp = true;
   #else
     static const bool openmp = false;

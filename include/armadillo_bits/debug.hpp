@@ -335,7 +335,7 @@ inline
 void
 arma_check(const bool state, const T1& x)
   {
-  if(state == true)  { arma_stop_logic_error(arma_str::str_wrapper(x)); }
+  if(state)  { arma_stop_logic_error(arma_str::str_wrapper(x)); }
   }
 
 
@@ -345,7 +345,7 @@ inline
 void
 arma_check(const bool state, const T1& x, const T2& y)
   {
-  if(state == true)  { arma_stop_logic_error( std::string(x) + std::string(y) ); }
+  if(state)  { arma_stop_logic_error( std::string(x) + std::string(y) ); }
   }
 
 
@@ -355,7 +355,7 @@ inline
 void
 arma_check_bad_alloc(const bool state, const T1& x)
   {
-  if(state == true)  { arma_stop_bad_alloc(x); }
+  if(state)  { arma_stop_bad_alloc(x); }
   }
 
 
@@ -1272,8 +1272,8 @@ arma_assert_atlas_size(const T1& A, const T2& B)
             << arma_version::major << '.' << arma_version::minor << '.' << arma_version::patch
             << " (" << nickname << ")\n";
         
-        out << "@ arma_config::use_wrapper  = " << arma_config::use_wrapper  << '\n';
-        out << "@ arma_config::use_cxx11    = " << arma_config::use_cxx11    << '\n';
+        out << "@ arma_config::wrapper      = " << arma_config::wrapper      << '\n';
+        out << "@ arma_config::cxx11        = " << arma_config::cxx11        << '\n';
         out << "@ arma_config::openmp       = " << arma_config::openmp       << '\n';
         out << "@ arma_config::lapack       = " << arma_config::lapack       << '\n';
         out << "@ arma_config::blas         = " << arma_config::blas         << '\n';
@@ -1285,6 +1285,7 @@ arma_assert_atlas_size(const T1& A, const T2& B)
         out << "@ arma_config::good_comp    = " << arma_config::good_comp    << '\n';
         out << "@ arma_config::extra_code   = " << arma_config::extra_code   << '\n';
         out << "@ arma_config::mat_prealloc = " << arma_config::mat_prealloc << '\n';
+        out << "@ arma_config::mp_threshold = " << arma_config::mp_threshold << '\n';
         out << "@ sizeof(void*)    = " << sizeof(void*)    << '\n';
         out << "@ sizeof(int)      = " << sizeof(int)      << '\n';
         out << "@ sizeof(long)     = " << sizeof(long)     << '\n';

@@ -178,7 +178,7 @@ Cube<eT>::Cube(const SizeCube& s, const fill::fill_class<fill_type>&)
   
   template<typename eT>
   inline
-  const Cube<eT>&
+  Cube<eT>&
   Cube<eT>::operator=(Cube<eT>&& in_cube)
     {
     arma_extra_debug_sigprint(arma_str::format("this = %x   in_cube = %x") % this % &in_cube);
@@ -482,8 +482,8 @@ Cube<eT>::create_mat()
 //! Set the cube to be equal to the specified scalar.
 //! NOTE: the size of the cube will be 1x1x1
 template<typename eT>
-arma_inline
-const Cube<eT>&
+inline
+Cube<eT>&
 Cube<eT>::operator=(const eT val)
   {
   arma_extra_debug_sigprint();
@@ -497,8 +497,8 @@ Cube<eT>::operator=(const eT val)
 
 //! In-place addition of a scalar to all elements of the cube
 template<typename eT>
-arma_inline
-const Cube<eT>&
+inline
+Cube<eT>&
 Cube<eT>::operator+=(const eT val)
   {
   arma_extra_debug_sigprint();
@@ -512,8 +512,8 @@ Cube<eT>::operator+=(const eT val)
 
 //! In-place subtraction of a scalar from all elements of the cube
 template<typename eT>
-arma_inline
-const Cube<eT>&
+inline
+Cube<eT>&
 Cube<eT>::operator-=(const eT val)
   {
   arma_extra_debug_sigprint();
@@ -527,8 +527,8 @@ Cube<eT>::operator-=(const eT val)
 
 //! In-place multiplication of all elements of the cube with a scalar
 template<typename eT>
-arma_inline
-const Cube<eT>&
+inline
+Cube<eT>&
 Cube<eT>::operator*=(const eT val)
   {
   arma_extra_debug_sigprint();
@@ -542,8 +542,8 @@ Cube<eT>::operator*=(const eT val)
 
 //! In-place division of all elements of the cube with a scalar
 template<typename eT>
-arma_inline
-const Cube<eT>&
+inline
+Cube<eT>&
 Cube<eT>::operator/=(const eT val)
   {
   arma_extra_debug_sigprint();
@@ -581,7 +581,7 @@ Cube<eT>::Cube(const Cube<eT>& x)
 //! construct a cube from a given cube
 template<typename eT>
 inline
-const Cube<eT>&
+Cube<eT>&
 Cube<eT>::operator=(const Cube<eT>& x)
   {
   arma_extra_debug_sigprint(arma_str::format("this = %x   in_cube = %x") % this % &x);
@@ -657,7 +657,7 @@ Cube<eT>::Cube(const eT* aux_mem, const uword aux_n_rows, const uword aux_n_cols
 //! in-place cube addition
 template<typename eT>
 inline
-const Cube<eT>&
+Cube<eT>&
 Cube<eT>::operator+=(const Cube<eT>& m)
   {
   arma_extra_debug_sigprint();
@@ -674,7 +674,7 @@ Cube<eT>::operator+=(const Cube<eT>& m)
 //! in-place cube subtraction
 template<typename eT>
 inline
-const Cube<eT>&
+Cube<eT>&
 Cube<eT>::operator-=(const Cube<eT>& m)
   {
   arma_extra_debug_sigprint();
@@ -691,7 +691,7 @@ Cube<eT>::operator-=(const Cube<eT>& m)
 //! in-place element-wise cube multiplication
 template<typename eT>
 inline
-const Cube<eT>&
+Cube<eT>&
 Cube<eT>::operator%=(const Cube<eT>& m)
   {
   arma_extra_debug_sigprint();
@@ -708,7 +708,7 @@ Cube<eT>::operator%=(const Cube<eT>& m)
 //! in-place element-wise cube division
 template<typename eT>
 inline
-const Cube<eT>&
+Cube<eT>&
 Cube<eT>::operator/=(const Cube<eT>& m)
   {
   arma_extra_debug_sigprint();
@@ -772,7 +772,7 @@ Cube<eT>::Cube(const subview_cube<eT>& X)
 //! construct a cube from a subview_cube instance (e.g. construct a cube from a delayed subcube operation)
 template<typename eT>
 inline
-const Cube<eT>&
+Cube<eT>&
 Cube<eT>::operator=(const subview_cube<eT>& X)
   {
   arma_extra_debug_sigprint();
@@ -800,7 +800,7 @@ Cube<eT>::operator=(const subview_cube<eT>& X)
 //! in-place cube addition (using a subcube on the right-hand-side)
 template<typename eT>
 inline
-const Cube<eT>&
+Cube<eT>&
 Cube<eT>::operator+=(const subview_cube<eT>& X)
   {
   arma_extra_debug_sigprint();
@@ -815,7 +815,7 @@ Cube<eT>::operator+=(const subview_cube<eT>& X)
 //! in-place cube subtraction (using a subcube on the right-hand-side)
 template<typename eT>
 inline
-const Cube<eT>&
+Cube<eT>&
 Cube<eT>::operator-=(const subview_cube<eT>& X)
   {
   arma_extra_debug_sigprint();
@@ -830,7 +830,7 @@ Cube<eT>::operator-=(const subview_cube<eT>& X)
 //! in-place element-wise cube mutiplication (using a subcube on the right-hand-side)
 template<typename eT>
 inline
-const Cube<eT>&
+Cube<eT>&
 Cube<eT>::operator%=(const subview_cube<eT>& X)
   {
   arma_extra_debug_sigprint();
@@ -845,7 +845,7 @@ Cube<eT>::operator%=(const subview_cube<eT>& X)
 //! in-place element-wise cube division (using a subcube on the right-hand-side)
 template<typename eT>
 inline
-const Cube<eT>&
+Cube<eT>&
 Cube<eT>::operator/=(const subview_cube<eT>& X)
   {
   arma_extra_debug_sigprint();
@@ -1759,7 +1759,7 @@ Cube<eT>::Cube(const GenCube<eT, gen_type>& X)
 template<typename eT>
 template<typename gen_type>
 inline
-const Cube<eT>&
+Cube<eT>&
 Cube<eT>::operator=(const GenCube<eT, gen_type>& X)
   {
   arma_extra_debug_sigprint();
@@ -1776,7 +1776,7 @@ Cube<eT>::operator=(const GenCube<eT, gen_type>& X)
 template<typename eT>
 template<typename gen_type>
 inline
-const Cube<eT>&
+Cube<eT>&
 Cube<eT>::operator+=(const GenCube<eT, gen_type>& X)
   {
   arma_extra_debug_sigprint();
@@ -1791,7 +1791,7 @@ Cube<eT>::operator+=(const GenCube<eT, gen_type>& X)
 template<typename eT>
 template<typename gen_type>
 inline
-const Cube<eT>&
+Cube<eT>&
 Cube<eT>::operator-=(const GenCube<eT, gen_type>& X)
   {
   arma_extra_debug_sigprint();
@@ -1806,7 +1806,7 @@ Cube<eT>::operator-=(const GenCube<eT, gen_type>& X)
 template<typename eT>
 template<typename gen_type>
 inline
-const Cube<eT>&
+Cube<eT>&
 Cube<eT>::operator%=(const GenCube<eT, gen_type>& X)
   {
   arma_extra_debug_sigprint();
@@ -1821,7 +1821,7 @@ Cube<eT>::operator%=(const GenCube<eT, gen_type>& X)
 template<typename eT>
 template<typename gen_type>
 inline
-const Cube<eT>&
+Cube<eT>&
 Cube<eT>::operator/=(const GenCube<eT, gen_type>& X)
   {
   arma_extra_debug_sigprint();
@@ -1860,7 +1860,7 @@ Cube<eT>::Cube(const OpCube<T1, op_type>& X)
 template<typename eT>
 template<typename T1, typename op_type>
 inline
-const Cube<eT>&
+Cube<eT>&
 Cube<eT>::operator=(const OpCube<T1, op_type>& X)
   {
   arma_extra_debug_sigprint();
@@ -1878,7 +1878,7 @@ Cube<eT>::operator=(const OpCube<T1, op_type>& X)
 template<typename eT>
 template<typename T1, typename op_type>
 inline
-const Cube<eT>&
+Cube<eT>&
 Cube<eT>::operator+=(const OpCube<T1, op_type>& X)
   {
   arma_extra_debug_sigprint();
@@ -1896,7 +1896,7 @@ Cube<eT>::operator+=(const OpCube<T1, op_type>& X)
 template<typename eT>
 template<typename T1, typename op_type>
 inline
-const Cube<eT>&
+Cube<eT>&
 Cube<eT>::operator-=(const OpCube<T1, op_type>& X)
   {
   arma_extra_debug_sigprint();
@@ -1914,7 +1914,7 @@ Cube<eT>::operator-=(const OpCube<T1, op_type>& X)
 template<typename eT>
 template<typename T1, typename op_type>
 inline
-const Cube<eT>&
+Cube<eT>&
 Cube<eT>::operator%=(const OpCube<T1, op_type>& X)
   {
   arma_extra_debug_sigprint();
@@ -1932,7 +1932,7 @@ Cube<eT>::operator%=(const OpCube<T1, op_type>& X)
 template<typename eT>
 template<typename T1, typename op_type>
 inline
-const Cube<eT>&
+Cube<eT>&
 Cube<eT>::operator/=(const OpCube<T1, op_type>& X)
   {
   arma_extra_debug_sigprint();
@@ -1975,7 +1975,7 @@ Cube<eT>::Cube(const eOpCube<T1, eop_type>& X)
 template<typename eT>
 template<typename T1, typename eop_type>
 inline
-const Cube<eT>&
+Cube<eT>&
 Cube<eT>::operator=(const eOpCube<T1, eop_type>& X)
   {
   arma_extra_debug_sigprint();
@@ -2006,7 +2006,7 @@ Cube<eT>::operator=(const eOpCube<T1, eop_type>& X)
 template<typename eT>
 template<typename T1, typename eop_type>
 inline
-const Cube<eT>&
+Cube<eT>&
 Cube<eT>::operator+=(const eOpCube<T1, eop_type>& X)
   {
   arma_extra_debug_sigprint();
@@ -2024,7 +2024,7 @@ Cube<eT>::operator+=(const eOpCube<T1, eop_type>& X)
 template<typename eT>
 template<typename T1, typename eop_type>
 inline
-const Cube<eT>&
+Cube<eT>&
 Cube<eT>::operator-=(const eOpCube<T1, eop_type>& X)
   {
   arma_extra_debug_sigprint();
@@ -2042,7 +2042,7 @@ Cube<eT>::operator-=(const eOpCube<T1, eop_type>& X)
 template<typename eT>
 template<typename T1, typename eop_type>
 inline
-const Cube<eT>&
+Cube<eT>&
 Cube<eT>::operator%=(const eOpCube<T1, eop_type>& X)
   {
   arma_extra_debug_sigprint();
@@ -2060,7 +2060,7 @@ Cube<eT>::operator%=(const eOpCube<T1, eop_type>& X)
 template<typename eT>
 template<typename T1, typename eop_type>
 inline
-const Cube<eT>&
+Cube<eT>&
 Cube<eT>::operator/=(const eOpCube<T1, eop_type>& X)
   {
   arma_extra_debug_sigprint();
@@ -2074,7 +2074,6 @@ Cube<eT>::operator/=(const eOpCube<T1, eop_type>& X)
 
 
 
-//! EXPERIMENTAL
 template<typename eT>
 template<typename T1, typename op_type>
 inline
@@ -2095,11 +2094,10 @@ Cube<eT>::Cube(const mtOpCube<eT, T1, op_type>& X)
 
 
 
-//! EXPERIMENTAL
 template<typename eT>
 template<typename T1, typename op_type>
 inline
-const Cube<eT>&
+Cube<eT>&
 Cube<eT>::operator=(const mtOpCube<eT, T1, op_type>& X)
   {
   arma_extra_debug_sigprint();
@@ -2111,11 +2109,10 @@ Cube<eT>::operator=(const mtOpCube<eT, T1, op_type>& X)
 
 
 
-//! EXPERIMENTAL
 template<typename eT>
 template<typename T1, typename op_type>
 inline
-const Cube<eT>&
+Cube<eT>&
 Cube<eT>::operator+=(const mtOpCube<eT, T1, op_type>& X)
   {
   arma_extra_debug_sigprint();
@@ -2127,11 +2124,10 @@ Cube<eT>::operator+=(const mtOpCube<eT, T1, op_type>& X)
 
 
 
-//! EXPERIMENTAL
 template<typename eT>
 template<typename T1, typename op_type>
 inline
-const Cube<eT>&
+Cube<eT>&
 Cube<eT>::operator-=(const mtOpCube<eT, T1, op_type>& X)
   {
   arma_extra_debug_sigprint();
@@ -2143,11 +2139,10 @@ Cube<eT>::operator-=(const mtOpCube<eT, T1, op_type>& X)
 
 
 
-//! EXPERIMENTAL
 template<typename eT>
 template<typename T1, typename op_type>
 inline
-const Cube<eT>&
+Cube<eT>&
 Cube<eT>::operator%=(const mtOpCube<eT, T1, op_type>& X)
   {
   arma_extra_debug_sigprint();
@@ -2159,11 +2154,10 @@ Cube<eT>::operator%=(const mtOpCube<eT, T1, op_type>& X)
 
 
 
-//! EXPERIMENTAL
 template<typename eT>
 template<typename T1, typename op_type>
 inline
-const Cube<eT>&
+Cube<eT>&
 Cube<eT>::operator/=(const mtOpCube<eT, T1, op_type>& X)
   {
   arma_extra_debug_sigprint();
@@ -2199,7 +2193,7 @@ Cube<eT>::Cube(const GlueCube<T1, T2, glue_type>& X)
 template<typename eT>
 template<typename T1, typename T2, typename glue_type>
 inline
-const Cube<eT>&
+Cube<eT>&
 Cube<eT>::operator=(const GlueCube<T1, T2, glue_type>& X)
   {
   arma_extra_debug_sigprint();
@@ -2217,7 +2211,7 @@ Cube<eT>::operator=(const GlueCube<T1, T2, glue_type>& X)
 template<typename eT>
 template<typename T1, typename T2, typename glue_type>
 inline
-const Cube<eT>&
+Cube<eT>&
 Cube<eT>::operator+=(const GlueCube<T1, T2, glue_type>& X)
   {
   arma_extra_debug_sigprint();
@@ -2236,7 +2230,7 @@ Cube<eT>::operator+=(const GlueCube<T1, T2, glue_type>& X)
 template<typename eT>
 template<typename T1, typename T2, typename glue_type>
 inline
-const Cube<eT>&
+Cube<eT>&
 Cube<eT>::operator-=(const GlueCube<T1, T2, glue_type>& X)
   {
   arma_extra_debug_sigprint();
@@ -2255,7 +2249,7 @@ Cube<eT>::operator-=(const GlueCube<T1, T2, glue_type>& X)
 template<typename eT>
 template<typename T1, typename T2, typename glue_type>
 inline
-const Cube<eT>&
+Cube<eT>&
 Cube<eT>::operator%=(const GlueCube<T1, T2, glue_type>& X)
   {
   arma_extra_debug_sigprint();
@@ -2274,7 +2268,7 @@ Cube<eT>::operator%=(const GlueCube<T1, T2, glue_type>& X)
 template<typename eT>
 template<typename T1, typename T2, typename glue_type>
 inline
-const Cube<eT>&
+Cube<eT>&
 Cube<eT>::operator/=(const GlueCube<T1, T2, glue_type>& X)
   {
   arma_extra_debug_sigprint();
@@ -2319,7 +2313,7 @@ Cube<eT>::Cube(const eGlueCube<T1, T2, eglue_type>& X)
 template<typename eT>
 template<typename T1, typename T2, typename eglue_type>
 inline
-const Cube<eT>&
+Cube<eT>&
 Cube<eT>::operator=(const eGlueCube<T1, T2, eglue_type>& X)
   {
   arma_extra_debug_sigprint();
@@ -2351,7 +2345,7 @@ Cube<eT>::operator=(const eGlueCube<T1, T2, eglue_type>& X)
 template<typename eT>
 template<typename T1, typename T2, typename eglue_type>
 inline
-const Cube<eT>&
+Cube<eT>&
 Cube<eT>::operator+=(const eGlueCube<T1, T2, eglue_type>& X)
   {
   arma_extra_debug_sigprint();
@@ -2370,7 +2364,7 @@ Cube<eT>::operator+=(const eGlueCube<T1, T2, eglue_type>& X)
 template<typename eT>
 template<typename T1, typename T2, typename eglue_type>
 inline
-const Cube<eT>&
+Cube<eT>&
 Cube<eT>::operator-=(const eGlueCube<T1, T2, eglue_type>& X)
   {
   arma_extra_debug_sigprint();
@@ -2389,7 +2383,7 @@ Cube<eT>::operator-=(const eGlueCube<T1, T2, eglue_type>& X)
 template<typename eT>
 template<typename T1, typename T2, typename eglue_type>
 inline
-const Cube<eT>&
+Cube<eT>&
 Cube<eT>::operator%=(const eGlueCube<T1, T2, eglue_type>& X)
   {
   arma_extra_debug_sigprint();
@@ -2408,7 +2402,7 @@ Cube<eT>::operator%=(const eGlueCube<T1, T2, eglue_type>& X)
 template<typename eT>
 template<typename T1, typename T2, typename eglue_type>
 inline
-const Cube<eT>&
+Cube<eT>&
 Cube<eT>::operator/=(const eGlueCube<T1, T2, eglue_type>& X)
   {
   arma_extra_debug_sigprint();
@@ -2423,7 +2417,6 @@ Cube<eT>::operator/=(const eGlueCube<T1, T2, eglue_type>& X)
 
 
 
-//! EXPERIMENTAL
 template<typename eT>
 template<typename T1, typename T2, typename glue_type>
 inline
@@ -2444,11 +2437,10 @@ Cube<eT>::Cube(const mtGlueCube<eT, T1, T2, glue_type>& X)
 
 
 
-//! EXPERIMENTAL
 template<typename eT>
 template<typename T1, typename T2, typename glue_type>
 inline
-const Cube<eT>&
+Cube<eT>&
 Cube<eT>::operator=(const mtGlueCube<eT, T1, T2, glue_type>& X)
   {
   arma_extra_debug_sigprint();
@@ -2460,11 +2452,10 @@ Cube<eT>::operator=(const mtGlueCube<eT, T1, T2, glue_type>& X)
 
 
 
-//! EXPERIMENTAL
 template<typename eT>
 template<typename T1, typename T2, typename glue_type>
 inline
-const Cube<eT>&
+Cube<eT>&
 Cube<eT>::operator+=(const mtGlueCube<eT, T1, T2, glue_type>& X)
   {
   arma_extra_debug_sigprint();
@@ -2476,11 +2467,10 @@ Cube<eT>::operator+=(const mtGlueCube<eT, T1, T2, glue_type>& X)
 
 
 
-//! EXPERIMENTAL
 template<typename eT>
 template<typename T1, typename T2, typename glue_type>
 inline
-const Cube<eT>&
+Cube<eT>&
 Cube<eT>::operator-=(const mtGlueCube<eT, T1, T2, glue_type>& X)
   {
   arma_extra_debug_sigprint();
@@ -2492,11 +2482,10 @@ Cube<eT>::operator-=(const mtGlueCube<eT, T1, T2, glue_type>& X)
 
 
 
-//! EXPERIMENTAL
 template<typename eT>
 template<typename T1, typename T2, typename glue_type>
 inline
-const Cube<eT>&
+Cube<eT>&
 Cube<eT>::operator%=(const mtGlueCube<eT, T1, T2, glue_type>& X)
   {
   arma_extra_debug_sigprint();
@@ -2508,11 +2497,10 @@ Cube<eT>::operator%=(const mtGlueCube<eT, T1, T2, glue_type>& X)
 
 
 
-//! EXPERIMENTAL
 template<typename eT>
 template<typename T1, typename T2, typename glue_type>
 inline
-const Cube<eT>&
+Cube<eT>&
 Cube<eT>::operator/=(const mtGlueCube<eT, T1, T2, glue_type>& X)
   {
   arma_extra_debug_sigprint();
@@ -4336,7 +4324,7 @@ Cube<eT>::fixed<fixed_n_rows, fixed_n_cols, fixed_n_slices>::fixed(const BaseCub
 template<typename eT>
 template<uword fixed_n_rows, uword fixed_n_cols, uword fixed_n_slices>
 inline
-const Cube<eT>&
+Cube<eT>&
 Cube<eT>::fixed<fixed_n_rows, fixed_n_cols, fixed_n_slices>::operator=(const fixed<fixed_n_rows, fixed_n_cols, fixed_n_slices>& X)
   {
   arma_extra_debug_sigprint();

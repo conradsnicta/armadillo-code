@@ -149,7 +149,7 @@ hr.greyline
 <!--  -->
 <a class="noprint" style="display:scroll; position:fixed; bottom:5px; right:5px;" href="#top"><font size=-1>[top]</font></a>
 
-<big><b>API Documentation for Armadillo 7.800</b></big>
+<big><b>API Documentation for Armadillo 7.900</b></big>
 <br>
 <br>
 <br>
@@ -15699,7 +15699,7 @@ Disable the use of the HDF5 library. Overrides <i>ARMA_USE_HDF5</i>
     </td>
     <td style="vertical-align: top;">
 Use C++11 features, such as <a href="#element_initialisation">initialiser lists</a>;
-automatically enabled when using a compiler in C++11 or C++14 mode, for example: g++&nbsp;-std=c++11
+automatically enabled when using a compiler in C++11 or C++14 mode, for example: <code>g++&nbsp;-std=c++11</code>
     </td>
   </tr>
   <tr>
@@ -15722,6 +15722,75 @@ automatically enabled when using a compiler in C++11 or C++14 mode, for example:
     </td>
     <td style="vertical-align: top;">
 Disable use of C++11 features. Overrides <i>ARMA_USE_CXX11</i>
+    </td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">
+      &nbsp;
+    </td>
+    <td style="vertical-align: top;">
+      &nbsp;
+    </td>
+    <td style="vertical-align: top;">
+      &nbsp;
+    </td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">
+<code>ARMA_USE_OPENMP</code>
+    </td>
+    <td style="vertical-align: top;">
+      &nbsp;
+    </td>
+    <td style="vertical-align: top;">
+Use OpenMP for parallelisation of computationally expensive element-wise operations
+(such as <a href="#misc_fns">exp()</a>, <a href="#misc_fns">log()</a>, <a href="#trig_fns">cos()</a>, etc).
+Automatically enabled when using a C++11/C++14 compiler which has OpenMP 3.0+ active (eg. the <code>-fopenmp</code> option for gcc and clang).
+<b>Caveat:</b> when using gcc, use of <code>-march=native</code> in conjunction with <code>-fopenmp</code> may lead to speed regressions on recent processors.
+    </td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">
+      &nbsp;
+    </td>
+    <td style="vertical-align: top;">
+      &nbsp;
+    </td>
+    <td style="vertical-align: top;">
+      &nbsp;
+    </td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">
+<code>ARMA_DONT_USE_OPENMP</code>
+    </td>
+    <td style="vertical-align: top;">
+      &nbsp;
+    </td>
+    <td style="vertical-align: top;">
+Disable use of OpenMP for parallelisation of element-wise operations. Overrides <i>ARMA_USE_OPENMP</i>
+    </td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">
+      &nbsp;
+    </td>
+    <td style="vertical-align: top;">
+      &nbsp;
+    </td>
+    <td style="vertical-align: top;">
+      &nbsp;
+    </td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">
+<code>ARMA_OPENMP_THRESHOLD</code>
+    </td>
+    <td style="vertical-align: top;">
+      &nbsp;
+    </td>
+    <td style="vertical-align: top;">
+The minimum number of elements in a matrix to allow the use of OpenMP for parallelisation; default value is 384
     </td>
   </tr>
   <tr>
@@ -16175,6 +16244,22 @@ List of additions and changes for each version:
 
 
 
+<a name="version_7900"></a>
+<li>Version 7.900:
+<ul>
+<li>expanded <a href="#clamp">clamp()</a> to handle cubes</li>
+<li>
+computationally expensive element-wise functions (such as <a href="#misc_fns">exp()</a>, <a href="#misc_fns">log()</a>, <a href="#trig_fns">cos()</a>, etc)
+can now be automatically sped up via <a href="https://en.wikipedia.org/wiki/OpenMP">OpenMP</a>;
+this requires a C++11/C++14 compiler with OpenMP 3.0+ support
+<ul>
+<li>for GCC and clang compilers use the following options to enable both C++11 and OpenMP: <code>-std=c++11 -fopenmp</code></li>
+<li><b>Caveat:</b> when using GCC, use of <code>-march=native</code> in conjunction with <code>-fopenmp</code> may lead to speed regressions on recent processors</li>
+</ul>
+</li>
+</ul>
+</li>
+<br>
 <a name="version_7800"></a>
 <li>Version 7.800:
 <ul>

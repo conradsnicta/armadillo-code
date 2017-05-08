@@ -46,6 +46,7 @@ class ProxyCube< Cube<eT> >
   typedef const Cube<eT>&                          aligned_ea_type;
   
   static const bool use_at      = false;
+  static const bool use_mp      = false;
   static const bool has_subview = false;
   
   arma_aligned const Cube<eT>& Q;
@@ -78,7 +79,7 @@ class ProxyCube< Cube<eT> >
 
 
 template<typename eT, typename gen_type>
-class ProxyCube< GenCube<eT, gen_type > >
+class ProxyCube< GenCube<eT, gen_type> >
   {
   public:
   
@@ -89,6 +90,7 @@ class ProxyCube< GenCube<eT, gen_type > >
   typedef const GenCube<eT, gen_type>&             aligned_ea_type;
   
   static const bool use_at      = false;
+  static const bool use_mp      = false;
   static const bool has_subview = false;
   
   arma_aligned const GenCube<eT, gen_type>& Q;
@@ -120,6 +122,50 @@ class ProxyCube< GenCube<eT, gen_type > >
 
 
 
+template<typename eT>
+class ProxyCube< GenCube<eT, gen_randn> >
+  {
+  public:
+  
+  typedef eT                                       elem_type;
+  typedef typename get_pod_type<elem_type>::result pod_type;
+  typedef Cube<eT>                                 stored_type;
+  typedef const eT*                                ea_type;
+  typedef const Cube<eT>&                          aligned_ea_type;
+  
+  static const bool use_at      = false;
+  static const bool use_mp      = false;
+  static const bool has_subview = false;
+  
+  arma_aligned const Cube<eT> Q;
+  
+  inline explicit ProxyCube(const GenCube<eT, gen_randn>& A)
+    : Q(A)
+    {
+    arma_extra_debug_sigprint();
+    }
+  
+  arma_inline uword get_n_rows()       const { return Q.n_rows;       }
+  arma_inline uword get_n_cols()       const { return Q.n_cols;       }
+  arma_inline uword get_n_elem_slice() const { return Q.n_elem_slice; }
+  arma_inline uword get_n_slices()     const { return Q.n_slices;     }
+  arma_inline uword get_n_elem()       const { return Q.n_elem;       }
+  
+  arma_inline elem_type operator[] (const uword i)                                       const { return Q[i];                  }
+  arma_inline elem_type at         (const uword row, const uword col, const uword slice) const { return Q.at(row, col, slice); }
+  arma_inline elem_type at_alt     (const uword i)                                       const { return Q.at_alt(i);           }
+  
+  arma_inline         ea_type         get_ea() const { return Q.memptr(); }
+  arma_inline aligned_ea_type get_aligned_ea() const { return Q;          }
+  
+  template<typename eT2>
+  arma_inline bool is_alias(const Cube<eT2>&) const { return false; }
+  
+  arma_inline bool is_aligned() const { return memory::is_aligned(Q.memptr()); }
+  };
+
+
+
 template<typename T1, typename op_type>
 class ProxyCube< OpCube<T1, op_type> >
   {
@@ -132,6 +178,7 @@ class ProxyCube< OpCube<T1, op_type> >
   typedef const Cube<elem_type>&                   aligned_ea_type;
   
   static const bool use_at      = false;
+  static const bool use_mp      = false;
   static const bool has_subview = false;
   
   arma_aligned const Cube<elem_type> Q;
@@ -175,6 +222,7 @@ class ProxyCube< GlueCube<T1, T2, glue_type> >
   typedef const Cube<elem_type>&                   aligned_ea_type;
   
   static const bool use_at      = false;
+  static const bool use_mp      = false;
   static const bool has_subview = false;
   
   arma_aligned const Cube<elem_type> Q;
@@ -218,6 +266,7 @@ class ProxyCube< subview_cube<eT> >
   typedef const subview_cube<eT>&                  aligned_ea_type;
   
   static const bool use_at      = true;
+  static const bool use_mp      = false;
   static const bool has_subview = true;
   
   arma_aligned const subview_cube<eT>& Q;
@@ -261,6 +310,7 @@ class ProxyCube< eOpCube<T1, eop_type > >
   typedef const eOpCube<T1, eop_type>&             aligned_ea_type;
   
   static const bool use_at      = eOpCube<T1, eop_type>::use_at;
+  static const bool use_mp      = eOpCube<T1, eop_type>::use_mp;
   static const bool has_subview = eOpCube<T1, eop_type>::has_subview;
   
   arma_aligned const eOpCube<T1, eop_type>& Q;
@@ -304,6 +354,7 @@ class ProxyCube< eGlueCube<T1, T2, eglue_type > >
   typedef const eGlueCube<T1, T2, eglue_type>&     aligned_ea_type;
   
   static const bool use_at      = eGlueCube<T1, T2, eglue_type>::use_at;
+  static const bool use_mp      = eGlueCube<T1, T2, eglue_type>::use_mp;
   static const bool has_subview = eGlueCube<T1, T2, eglue_type>::has_subview;
   
   arma_aligned const eGlueCube<T1, T2, eglue_type>& Q;
@@ -347,6 +398,7 @@ class ProxyCube< mtOpCube<out_eT, T1, op_type> >
   typedef          const Cube<out_eT>&          aligned_ea_type;
   
   static const bool use_at      = false;
+  static const bool use_mp      = false;
   static const bool has_subview = false;
   
   arma_aligned const Cube<out_eT> Q;
@@ -390,6 +442,7 @@ class ProxyCube< mtGlueCube<out_eT, T1, T2, glue_type > >
   typedef          const Cube<out_eT>&          aligned_ea_type;
   
   static const bool use_at      = false;
+  static const bool use_mp      = false;
   static const bool has_subview = false;
   
   arma_aligned const Cube<out_eT> Q;

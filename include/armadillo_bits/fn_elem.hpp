@@ -1056,4 +1056,11 @@ lgamma(const BaseCube<typename T1::elem_type,T1>& A)
 
 
 
+// the functions below are currently unused; reserved for potential future use
+
+template<typename T1> void exp_approx(const T1&) { arma_stop_logic_error("unimplemented"); }
+template<typename T1> void log_approx(const T1&) { arma_stop_logic_error("unimplemented"); }
+template<typename T1> void approx_exp(const T1&) { arma_stop_logic_error("unimplemented"); }
+template<typename T1> void approx_log(const T1&) { arma_stop_logic_error("unimplemented"); }
+
 //! @}

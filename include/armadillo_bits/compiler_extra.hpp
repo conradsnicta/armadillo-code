@@ -14,45 +14,21 @@
 // ------------------------------------------------------------------------
 
 
-//! \addtogroup arma_version
-//! @{
+
+#if (__cplusplus >= 201103L)
+  #undef  ARMA_USE_CXX11
+  #define ARMA_USE_CXX11
+#endif
 
 
-
-#define ARMA_VERSION_MAJOR 7
-#define ARMA_VERSION_MINOR 900
-#define ARMA_VERSION_PATCH 0
-#define ARMA_VERSION_NAME  "Evil Banana Republic"
-
-
-
-struct arma_version
-  {
-  static const unsigned int major = ARMA_VERSION_MAJOR;
-  static const unsigned int minor = ARMA_VERSION_MINOR;
-  static const unsigned int patch = ARMA_VERSION_PATCH;
-  
-  static
-  inline
-  std::string
-  as_string()
-    {
-    const char* nickname = ARMA_VERSION_NAME;
-    
-    std::stringstream ss;
-    ss << arma_version::major
-       << '.'
-       << arma_version::minor
-       << '.'
-       << arma_version::patch
-       << " ("
-       << nickname
-       << ')';
-    
-    return ss.str();
-    }
-  };
+// MS really can't get its proverbial shit together
+#if (defined(_MSVC_LANG) && (_MSVC_LANG >= 201402L))
+  #undef  ARMA_USE_CXX11
+  #define ARMA_USE_CXX11
+#endif
 
 
-
-//! @}
+#if (defined(_OPENMP) && (_OPENMP >= 200805))
+  #undef  ARMA_USE_OPENMP
+  #define ARMA_USE_OPENMP
+#endif

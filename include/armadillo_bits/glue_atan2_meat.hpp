@@ -58,6 +58,8 @@ glue_atan2::apply_noalias(Mat<typename T1::elem_type>& out, const Proxy<T1>& P1,
   {
   arma_extra_debug_sigprint();
   
+  // TODO: expand to optionally use OpenMP
+  
   typedef typename T1::elem_type eT;
   
   const uword n_rows = P1.get_n_rows();
@@ -130,6 +132,8 @@ void
 glue_atan2::apply_noalias(Cube<typename T1::elem_type>& out, const ProxyCube<T1>& P1, const ProxyCube<T2>& P2)
   {
   arma_extra_debug_sigprint();
+  
+  // TODO: expand to optionally use OpenMP
   
   typedef typename T1::elem_type eT;
   

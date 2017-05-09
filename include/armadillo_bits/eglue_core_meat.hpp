@@ -179,8 +179,6 @@
 
 #if (defined(ARMA_USE_OPENMP) && defined(ARMA_USE_CXX11))
   
-  struct eglue_core_mp_avail { static const bool value = true; };
-  
   #define arma_applier_1_mp(operatorA, operatorB) \
     {\
     _Pragma("omp parallel for schedule(static)")\
@@ -229,8 +227,6 @@
     }
   
 #else
-  
-  struct eglue_core_mp_avail { static const bool value = false; };
   
   #define arma_applier_1_mp(operatorA, operatorB)  arma_applier_1u(operatorA, operatorB)
   #define arma_applier_2_mp(operatorA, operatorB)  arma_applier_2(operatorA, operatorB)

@@ -165,8 +165,6 @@
 
 #if (defined(ARMA_USE_OPENMP) && defined(ARMA_USE_CXX11))
   
-  struct eop_core_mp_avail { static const bool value = true; };
-  
   #define arma_applier_1_mp(operatorA) \
     {\
     _Pragma("omp parallel for schedule(static)")\
@@ -216,8 +214,6 @@
 
 #else
   
-  struct eop_core_mp_avail { static const bool value = false; };
-  
   #define arma_applier_1_mp(operatorA)  arma_applier_1u(operatorA)
   #define arma_applier_2_mp(operatorA)  arma_applier_2(operatorA)
   #define arma_applier_3_mp(operatorA)  arma_applier_3(operatorA)
@@ -248,7 +244,7 @@ eop_core<eop_type>::apply(outT& out, const eOp<T1, eop_type>& x)
   const eT  k       = x.aux;
         eT* out_mem = out.memptr();
   
-  const bool use_mp = eop_core_mp_avail::value && (eOp<T1, eop_type>::use_mp || (is_same_type<eop_type, eop_pow>::value && (is_cx<eT>::yes || x.aux != eT(2))));
+  const bool use_mp = (arma_config::cxx11 && arma_config::openmp) && (eOp<T1, eop_type>::use_mp || (is_same_type<eop_type, eop_pow>::value && (is_cx<eT>::yes || x.aux != eT(2))));
   
   if(Proxy<T1>::use_at == false)
     {
@@ -326,7 +322,7 @@ eop_core<eop_type>::apply_inplace_plus(Mat<typename T1::elem_type>& out, const e
   const eT  k       = x.aux;
         eT* out_mem = out.memptr();
   
-  const bool use_mp = eop_core_mp_avail::value && (eOp<T1, eop_type>::use_mp || (is_same_type<eop_type, eop_pow>::value && (is_cx<eT>::yes || x.aux != eT(2))));
+  const bool use_mp = (arma_config::cxx11 && arma_config::openmp) && (eOp<T1, eop_type>::use_mp || (is_same_type<eop_type, eop_pow>::value && (is_cx<eT>::yes || x.aux != eT(2))));
   
   if(Proxy<T1>::use_at == false)
     {
@@ -401,7 +397,7 @@ eop_core<eop_type>::apply_inplace_minus(Mat<typename T1::elem_type>& out, const 
   const eT  k       = x.aux;
         eT* out_mem = out.memptr();
   
-  const bool use_mp = eop_core_mp_avail::value && (eOp<T1, eop_type>::use_mp || (is_same_type<eop_type, eop_pow>::value && (is_cx<eT>::yes || x.aux != eT(2))));
+  const bool use_mp = (arma_config::cxx11 && arma_config::openmp) && (eOp<T1, eop_type>::use_mp || (is_same_type<eop_type, eop_pow>::value && (is_cx<eT>::yes || x.aux != eT(2))));
   
   if(Proxy<T1>::use_at == false)
     {
@@ -476,7 +472,7 @@ eop_core<eop_type>::apply_inplace_schur(Mat<typename T1::elem_type>& out, const 
   const eT  k       = x.aux;
         eT* out_mem = out.memptr();
   
-  const bool use_mp = eop_core_mp_avail::value && (eOp<T1, eop_type>::use_mp || (is_same_type<eop_type, eop_pow>::value && (is_cx<eT>::yes || x.aux != eT(2))));
+  const bool use_mp = (arma_config::cxx11 && arma_config::openmp) && (eOp<T1, eop_type>::use_mp || (is_same_type<eop_type, eop_pow>::value && (is_cx<eT>::yes || x.aux != eT(2))));
   
   if(Proxy<T1>::use_at == false)
     {
@@ -551,7 +547,7 @@ eop_core<eop_type>::apply_inplace_div(Mat<typename T1::elem_type>& out, const eO
   const eT  k       = x.aux;
         eT* out_mem = out.memptr();
   
-  const bool use_mp = eop_core_mp_avail::value && (eOp<T1, eop_type>::use_mp || (is_same_type<eop_type, eop_pow>::value && (is_cx<eT>::yes || x.aux != eT(2))));
+  const bool use_mp = (arma_config::cxx11 && arma_config::openmp) && (eOp<T1, eop_type>::use_mp || (is_same_type<eop_type, eop_pow>::value && (is_cx<eT>::yes || x.aux != eT(2))));
   
   if(Proxy<T1>::use_at == false)
     {
@@ -629,7 +625,7 @@ eop_core<eop_type>::apply(Cube<typename T1::elem_type>& out, const eOpCube<T1, e
   const eT  k       = x.aux;
         eT* out_mem = out.memptr();
   
-  const bool use_mp = eop_core_mp_avail::value && (eOpCube<T1, eop_type>::use_mp || (is_same_type<eop_type, eop_pow>::value && (is_cx<eT>::yes || x.aux != eT(2))));
+  const bool use_mp = (arma_config::cxx11 && arma_config::openmp) && (eOpCube<T1, eop_type>::use_mp || (is_same_type<eop_type, eop_pow>::value && (is_cx<eT>::yes || x.aux != eT(2))));
   
   if(ProxyCube<T1>::use_at == false)
     {
@@ -709,7 +705,7 @@ eop_core<eop_type>::apply_inplace_plus(Cube<typename T1::elem_type>& out, const 
   const eT  k       = x.aux;
         eT* out_mem = out.memptr();
   
-  const bool use_mp = eop_core_mp_avail::value && (eOpCube<T1, eop_type>::use_mp || (is_same_type<eop_type, eop_pow>::value && (is_cx<eT>::yes || x.aux != eT(2))));
+  const bool use_mp = (arma_config::cxx11 && arma_config::openmp) && (eOpCube<T1, eop_type>::use_mp || (is_same_type<eop_type, eop_pow>::value && (is_cx<eT>::yes || x.aux != eT(2))));
   
   if(ProxyCube<T1>::use_at == false)
     {
@@ -785,7 +781,7 @@ eop_core<eop_type>::apply_inplace_minus(Cube<typename T1::elem_type>& out, const
   const eT  k       = x.aux;
         eT* out_mem = out.memptr();
   
-  const bool use_mp = eop_core_mp_avail::value && (eOpCube<T1, eop_type>::use_mp || (is_same_type<eop_type, eop_pow>::value && (is_cx<eT>::yes || x.aux != eT(2))));
+  const bool use_mp = (arma_config::cxx11 && arma_config::openmp) && (eOpCube<T1, eop_type>::use_mp || (is_same_type<eop_type, eop_pow>::value && (is_cx<eT>::yes || x.aux != eT(2))));
   
   if(ProxyCube<T1>::use_at == false)
     {
@@ -861,7 +857,7 @@ eop_core<eop_type>::apply_inplace_schur(Cube<typename T1::elem_type>& out, const
   const eT  k       = x.aux;
         eT* out_mem = out.memptr();
   
-  const bool use_mp = eop_core_mp_avail::value && (eOpCube<T1, eop_type>::use_mp || (is_same_type<eop_type, eop_pow>::value && (is_cx<eT>::yes || x.aux != eT(2))));
+  const bool use_mp = (arma_config::cxx11 && arma_config::openmp) && (eOpCube<T1, eop_type>::use_mp || (is_same_type<eop_type, eop_pow>::value && (is_cx<eT>::yes || x.aux != eT(2))));
   
   if(ProxyCube<T1>::use_at == false)
     {
@@ -937,7 +933,7 @@ eop_core<eop_type>::apply_inplace_div(Cube<typename T1::elem_type>& out, const e
   const eT  k       = x.aux;
         eT* out_mem = out.memptr();
   
-  const bool use_mp = eop_core_mp_avail::value && (eOpCube<T1, eop_type>::use_mp || (is_same_type<eop_type, eop_pow>::value && (is_cx<eT>::yes || x.aux != eT(2))));
+  const bool use_mp = (arma_config::cxx11 && arma_config::openmp) && (eOpCube<T1, eop_type>::use_mp || (is_same_type<eop_type, eop_pow>::value && (is_cx<eT>::yes || x.aux != eT(2))));
   
   if(ProxyCube<T1>::use_at == false)
     {

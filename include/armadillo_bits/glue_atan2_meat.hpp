@@ -164,8 +164,6 @@ glue_atan2::apply_noalias(Cube<typename T1::elem_type>& out, const ProxyCube<T1>
   {
   arma_extra_debug_sigprint();
   
-  // TODO: expand to optionally use OpenMP
-  
   typedef typename T1::elem_type eT;
   
   const uword n_rows   = P1.get_n_rows();

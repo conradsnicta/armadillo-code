@@ -104,6 +104,7 @@ glue_atan2::apply_noalias(Mat<typename T1::elem_type>& out, const Proxy<T1>& P1,
     {
     if((arma_config::cxx11 && arma_config::openmp) && (P1.get_n_elem() >= ((is_cx<eT>::yes || Proxy<T1>::use_mp || Proxy<T2>::use_mp) ? (arma_config::mp_threshold/uword(2)) : (arma_config::mp_threshold))))
       {
+      ARMA_PRAGMA_OMP_PARALLEL_FOR
       for(uword col=0; col < n_cols; ++col)
       for(uword row=0; row < n_rows; ++row)
         {
@@ -182,19 +183,45 @@ glue_atan2::apply_noalias(Cube<typename T1::elem_type>& out, const ProxyCube<T1>
     
     const uword N = P1.get_n_elem();
     
-    for(uword i=0; i<N; ++i)
+    if((arma_config::cxx11 && arma_config::openmp) && (N >= ((is_cx<eT>::yes || ProxyCube<T1>::use_mp || ProxyCube<T2>::use_mp) ? (arma_config::mp_threshold/uword(2)) : (arma_config::mp_threshold))))
       {
-      out_mem[i] = std::atan2( eaP1[i], eaP2[i] );
+      ARMA_PRAGMA_OMP_PARALLEL_FOR
+      for(uword i=0; i<N; ++i)
+        {
+        out_mem[i] = std::atan2( eaP1[i], eaP2[i] );
+        }
+      }
+    else
+      {
+      for(uword i=0; i<N; ++i)
+        {
+        out_mem[i] = std::atan2( eaP1[i], eaP2[i] );
+        }
       }
     }
   else
     {
-    for(uword slice=0; slice < n_slices; ++slice)
-    for(uword   col=0;   col < n_cols;   ++col  )
-    for(uword   row=0;   row < n_rows;   ++row  )
+    if((arma_config::cxx11 && arma_config::openmp) && (P1.get_n_elem_slice() >= ((is_cx<eT>::yes || ProxyCube<T1>::use_mp || ProxyCube<T2>::use_mp) ? (arma_config::mp_threshold/uword(2)) : (arma_config::mp_threshold))))
       {
-      *out_mem = std::atan2( P1.at(row,col,slice), P2.at(row,col,slice) );
-      out_mem++;
+      for(uword slice=0; slice < n_slices; ++slice)
+        {
+        ARMA_PRAGMA_OMP_PARALLEL_FOR
+        for(uword col=0; col < n_cols; ++col)
+        for(uword row=0; row < n_rows; ++row)
+          {
+          out.at(row,col,slice) = std::atan2( P1.at(row,col,slice), P2.at(row,col,slice) );
+          }
+        }
+      }
+    else
+      {
+      for(uword slice=0; slice < n_slices; ++slice)
+      for(uword   col=0;   col < n_cols;   ++col  )
+      for(uword   row=0;   row < n_rows;   ++row  )
+        {
+        *out_mem = std::atan2( P1.at(row,col,slice), P2.at(row,col,slice) );
+        out_mem++;
+        }
       }
     }
   }

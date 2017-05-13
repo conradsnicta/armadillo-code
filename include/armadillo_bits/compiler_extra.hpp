@@ -25,6 +25,8 @@
 #if (defined(_MSVC_LANG) && (_MSVC_LANG >= 201402L))
   #undef  ARMA_USE_CXX11
   #define ARMA_USE_CXX11
+  #undef  ARMA_DONT_PRINT_CXX11_WARNING
+  #define ARMA_DONT_PRINT_CXX11_WARNING
 #endif
 
 

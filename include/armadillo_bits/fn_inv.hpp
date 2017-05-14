@@ -47,7 +47,7 @@ inv
   {
   arma_extra_debug_sigprint();
   
-  // arma_debug_warn("inv(X,bool) is deprecated and will be removed; change to inv(X)");
+  arma_debug_warn("inv(X,bool) is deprecated and will be removed; change to inv(X)");
   
   return Op<T1, op_inv>(X.get_ref());
   }
@@ -66,7 +66,7 @@ inv
   {
   arma_extra_debug_sigprint();
   
-  // arma_debug_warn("inv(X,char*) is deprecated and will be removed; change to inv(X)");
+  arma_debug_warn("inv(X,char*) is deprecated and will be removed; change to inv(X)");
   
   return Op<T1, op_inv>(X.get_ref());
   }
@@ -101,7 +101,7 @@ inv
   {
   arma_extra_debug_sigprint();
   
-  // arma_debug_warn("inv(X,bool) is deprecated and will be removed; change to inv(X)");
+  arma_debug_warn("inv(X,bool) is deprecated and will be removed; change to inv(X)");
   
   return Op<T1, op_inv_tr>(X.m, X.aux_uword_a, 0);
   }
@@ -120,7 +120,7 @@ inv
   {
   arma_extra_debug_sigprint();
   
-  // arma_debug_warn("inv(X,char*) is deprecated and will be removed; change to inv(X)");
+  arma_debug_warn("inv(X,char*) is deprecated and will be removed; change to inv(X)");
   
   return Op<T1, op_inv_tr>(X.m, X.aux_uword_a, 0);
   }
@@ -165,7 +165,7 @@ inv
   {
   arma_extra_debug_sigprint();
   
-  // arma_debug_warn("inv(Y,X,bool) is deprecated and will be removed; change to inv(Y,X)");
+  arma_debug_warn("inv(Y,X,bool) is deprecated and will be removed; change to inv(Y,X)");
   
   return inv(out,X);
   }
@@ -185,7 +185,7 @@ inv
   {
   arma_extra_debug_sigprint();
   
-  // arma_debug_warn("inv(Y,X,char*) is deprecated and will be removed; change to inv(Y,X)");
+  arma_debug_warn("inv(Y,X,char*) is deprecated and will be removed; change to inv(Y,X)");
   
   return inv(out,X);
   }
@@ -220,7 +220,7 @@ inv_sympd
   {
   arma_extra_debug_sigprint();
   
-  // arma_debug_warn("inv_sympd(X,bool) is deprecated and will be removed; change to inv_sympd(X)");
+  arma_debug_warn("inv_sympd(X,bool) is deprecated and will be removed; change to inv_sympd(X)");
   
   return Op<T1, op_inv_sympd>(X.get_ref());
   }
@@ -239,7 +239,7 @@ inv_sympd
   {
   arma_extra_debug_sigprint();
   
-  // arma_debug_warn("inv_sympd(X,char*) is deprecated and will be removed; change to inv_sympd(X)");
+  arma_debug_warn("inv_sympd(X,char*) is deprecated and will be removed; change to inv_sympd(X)");
   
   return Op<T1, op_inv_sympd>(X.get_ref());
   }
@@ -284,7 +284,7 @@ inv_sympd
   {
   arma_extra_debug_sigprint();
   
-  // arma_debug_warn("inv_sympd(Y,X,bool) is deprecated and will be removed; change to inv_sympd(Y,X)");
+  arma_debug_warn("inv_sympd(Y,X,bool) is deprecated and will be removed; change to inv_sympd(Y,X)");
   
   return inv_sympd(out,X);
   }
@@ -304,7 +304,7 @@ inv_sympd
   {
   arma_extra_debug_sigprint();
   
-  // arma_debug_warn("inv_sympd(Y,X,char*) is deprecated and will be removed; change to inv_sympd(Y,X)");
+  arma_debug_warn("inv_sympd(Y,X,char*) is deprecated and will be removed; change to inv_sympd(Y,X)");
   
   return inv_sympd(out,X);
   }

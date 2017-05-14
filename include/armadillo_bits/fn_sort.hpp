@@ -58,7 +58,7 @@ sort
   {
   arma_extra_debug_sigprint();
   
-  // arma_debug_warn("sort(X,uword) is deprecated and will be removed; change to sort(X,sort_direction)");
+  arma_debug_warn("sort(X,uword) is deprecated and will be removed; change to sort(X,sort_direction)");
   
   return Op<T1, op_sort_default>(X, sort_type, 0);
   }
@@ -84,7 +84,7 @@ sort
   {
   arma_extra_debug_sigprint();
   
-  // arma_debug_warn("sort(X,uword,uword) is deprecated and will be removed; change to sort(X,sort_direction,dim)");
+  arma_debug_warn("sort(X,uword,uword) is deprecated and will be removed; change to sort(X,sort_direction,dim)");
   
   return Op<T1, op_sort>(X, sort_type, dim);
   }

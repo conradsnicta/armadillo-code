@@ -6235,6 +6235,8 @@ Mat<eT>::reshape(const uword in_rows, const uword in_cols, const uword dim)
   {
   arma_extra_debug_sigprint();
   
+  arma_debug_warn("this form of reshape() is deprecated and will be removed");
+  
   *this = arma::reshape(*this, in_rows, in_cols, dim);
   }
 

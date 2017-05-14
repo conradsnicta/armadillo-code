@@ -149,7 +149,7 @@ det
   {
   arma_extra_debug_sigprint();
   
-  // arma_debug_warn("det(X,bool) is deprecated and will be removed; change to det(X)");
+  arma_debug_warn("det(X,bool) is deprecated and will be removed; change to det(X)");
   
   return det(X.get_ref());
   }
@@ -168,7 +168,7 @@ det
   {
   arma_extra_debug_sigprint();
   
-  // arma_debug_warn("det(X,char*) is deprecated and will be removed; change to det(X)");
+  arma_debug_warn("det(X,char*) is deprecated and will be removed; change to det(X)");
   
   return det(X.get_ref());
   }

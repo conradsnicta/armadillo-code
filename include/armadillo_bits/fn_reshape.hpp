@@ -56,6 +56,8 @@ reshape(const Base<typename T1::elem_type,T1>& X, const uword in_n_rows, const u
   
   arma_debug_check( (dim > 1), "reshape(): parameter 'dim' must be 0 or 1" );
   
+  arma_debug_warn("this form of reshape() is deprecated and will be removed");
+  
   return Op<T1, op_reshape_ext>(X.get_ref(), in_n_rows, in_n_cols, dim, 'j');
   }
 
@@ -68,6 +70,8 @@ const OpCube<T1, op_reshape_ext>
 reshape(const BaseCube<typename T1::elem_type,T1>& X, const uword in_n_rows, const uword in_n_cols, const uword in_n_slices, const uword dim = 0)
   {
   arma_extra_debug_sigprint();
+  
+  // TODO: split this function into non-deprecated and deprecated versions
   
   arma_debug_check( (dim > 1), "reshape(): parameter 'dim' must be 0 or 1" );
   
@@ -83,6 +87,8 @@ const OpCube<T1, op_reshape_ext>
 reshape(const BaseCube<typename T1::elem_type,T1>& X, const SizeCube& s, const uword dim = 0)
   {
   arma_extra_debug_sigprint();
+  
+  // TODO: split this function into non-deprecated and deprecated versions
   
   arma_debug_check( (dim > 1), "reshape(): parameter 'dim' must be 0 or 1" );
   

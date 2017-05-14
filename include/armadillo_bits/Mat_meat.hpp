@@ -6322,6 +6322,87 @@ Mat<eT>::for_each(functor F) const
 
 
 
+//! apply a functor to each element
+template<typename eT>
+template<typename functor>
+inline
+const Mat<eT>&
+Mat<eT>::for_each(functor F, const bool use_mp)
+  {
+  arma_extra_debug_sigprint();
+  
+  if( (use_mp == true) && (arma_config::openmp == false) )
+    {
+    arma_debug_warn("for_each(): use of OpenMP requested, but OpenMP is not available");
+    }
+  
+  
+  if( (use_mp == false) || (arma_config::openmp == false) )
+    {
+    return (*this).for_each(F);
+    }
+  else
+    {
+    #if defined(ARMA_USE_OPENMP)
+      {
+      eT* data = memptr();
+      
+      const uword N = n_elem;
+      
+      #pragma omp parallel for schedule(static)
+      for(uword i=0; i< N; ++i)
+        {
+        F(data[i]);
+        }
+      }
+    #endif
+    }
+  
+  return *this;
+  }
+
+
+
+template<typename eT>
+template<typename functor>
+inline
+const Mat<eT>&
+Mat<eT>::for_each(functor F, const bool use_mp) const
+  {
+  arma_extra_debug_sigprint();
+  
+  if( (use_mp == true) && (arma_config::openmp == false) )
+    {
+    arma_debug_warn("for_each(): use of OpenMP requested, but OpenMP is not available");
+    }
+  
+  
+  if( (use_mp == false) || (arma_config::openmp == false) )
+    {
+    return (*this).for_each(F);
+    }
+  else
+    {
+    #if defined(ARMA_USE_OPENMP)
+      {
+      const eT* data = memptr();
+      
+      const uword N = n_elem;
+      
+      #pragma omp parallel for schedule(static)
+      for(uword i=0; i< N; ++i)
+        {
+        F(data[i]);
+        }
+      }
+    #endif
+    }
+  
+  return *this;
+  }
+
+
+
 //! transform each element in the matrix using a functor
 template<typename eT>
 template<typename functor>

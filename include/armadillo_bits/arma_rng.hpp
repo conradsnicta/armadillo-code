@@ -270,20 +270,20 @@ struct arma_rng::randu
   void
   fill(eT* mem, const uword N)
     {
-    uword i,j;
+    uword j;
     
-    for(i=0, j=1; j < N; i+=2, j+=2)
+    for(j=1; j < N; j+=2)
       {
       const eT tmp_i = eT( arma_rng::randu<eT>() );
       const eT tmp_j = eT( arma_rng::randu<eT>() );
       
-      mem[i] = tmp_i;
-      mem[j] = tmp_j;
+      (*mem) = tmp_i;  mem++;
+      (*mem) = tmp_j;  mem++;
       }
     
-    if(i < N)
+    if((j-1) < N)
       {
-      mem[i] = eT( arma_rng::randu<eT>() );
+      (*mem) = eT( arma_rng::randu<eT>() );
       }
     }
   };

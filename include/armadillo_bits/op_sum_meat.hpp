@@ -134,24 +134,54 @@ op_sum::apply_noalias_proxy(Mat<typename T1::elem_type>& out, const Proxy<T1>& P
     
     eT* out_mem = out.memptr();
     
-    for(uword col=0; col < P_n_cols; ++col)
+    if( (arma_config::openmp && Proxy<T1>::use_mp) && (P.get_n_elem() >= ((is_cx<eT>::yes) ? (arma_config::mp_threshold/uword(2)) : (arma_config::mp_threshold))) )
       {
-      eT val1 = eT(0);
-      eT val2 = eT(0);
-      
-      uword i,j;
-      for(i=0, j=1; j < P_n_rows; i+=2, j+=2)
+      #if defined(ARMA_USE_OPENMP)
         {
-        val1 += P.at(i,col);
-        val2 += P.at(j,col);
+        #pragma omp parallel for
+        for(uword col=0; col < P_n_cols; ++col)
+          {
+          eT val1 = eT(0);
+          eT val2 = eT(0);
+          
+          uword i,j;
+          for(i=0, j=1; j < P_n_rows; i+=2, j+=2)
+            {
+            val1 += P.at(i,col);
+            val2 += P.at(j,col);
+            }
+          
+          if(i < P_n_rows)
+            {
+            val1 += P.at(i,col);
+            }
+          
+          out_mem[col] = (val1 + val2);
+          }
         }
-      
-      if(i < P_n_rows)
+      #endif
+      }
+    else
+      {
+      for(uword col=0; col < P_n_cols; ++col)
         {
-        val1 += P.at(i,col);
+        eT val1 = eT(0);
+        eT val2 = eT(0);
+        
+        uword i,j;
+        for(i=0, j=1; j < P_n_rows; i+=2, j+=2)
+          {
+          val1 += P.at(i,col);
+          val2 += P.at(j,col);
+          }
+        
+        if(i < P_n_rows)
+          {
+          val1 += P.at(i,col);
+          }
+        
+        out_mem[col] = (val1 + val2);
         }
-      
-      out_mem[col] = (val1 + val2);
       }
     }
   else

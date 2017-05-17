@@ -390,24 +390,43 @@ accu_cube_proxy(const ProxyCube<T1>& P)
     {
           ea_type Pea    = P.get_ea();
     const uword   n_elem = P.get_n_elem();
-    
-    eT val1 = eT(0);
-    eT val2 = eT(0);
-    
-    uword i,j;
-    
-    for(i=0, j=1; j<n_elem; i+=2, j+=2)
+
+    if( (arma_config::openmp && ProxyCube<T1>::use_mp) && (n_elem >= ((is_cx<eT>::yes) ? (arma_config::mp_threshold/uword(2)) : (arma_config::mp_threshold))) )
       {
-      val1 += Pea[i];
-      val2 += Pea[j];
+      eT val = eT(0);
+      
+      #if defined(ARMA_USE_OPENMP)
+        {
+        #pragma omp parallel for reduction(+:val)
+        for(uword i=0; i<n_elem; ++i)
+          {
+          val += Pea[i];
+          }
+        }
+      #endif
+      
+      return val;
       }
-    
-    if(i < n_elem)
+    else
       {
-      val1 += Pea[i];
+      eT val1 = eT(0);
+      eT val2 = eT(0);
+      
+      uword i,j;
+      
+      for(i=0, j=1; j<n_elem; i+=2, j+=2)
+        {
+        val1 += Pea[i];
+        val2 += Pea[j];
+        }
+      
+      if(i < n_elem)
+        {
+        val1 += Pea[i];
+        }
+      
+      return val1 + val2;
       }
-    
-    return val1 + val2;
     }
   else
     {

@@ -29,45 +29,66 @@ accu_proxy_linear(const Proxy<T1>& P)
   
   const uword n_elem = P.get_n_elem();
   
-  #if defined(__FINITE_MATH_ONLY__) && (__FINITE_MATH_ONLY__ > 0)
+  if( (arma_config::openmp && Proxy<T1>::use_mp) && (n_elem >= ((is_cx<eT>::yes) ? (arma_config::mp_threshold/uword(2)) : (arma_config::mp_threshold))) )
     {
     eT val = eT(0);
     
-    if(P.is_aligned())
-      {
-      typename Proxy<T1>::aligned_ea_type A = P.get_aligned_ea();
-      
-      for(uword i=0; i<n_elem; ++i)  { val += A.at_alt(i); }
-      }
-    else
+    #if defined(ARMA_USE_OPENMP)
       {
       typename Proxy<T1>::ea_type A = P.get_ea();
       
-      for(uword i=0; i<n_elem; ++i)  { val += A[i]; }
+      #pragma omp parallel for reduction(+:val)
+      for(uword i=0; i<n_elem; ++i)
+        {
+        val += A[i];
+        }
       }
+    #endif
     
     return val;
     }
-  #else
+  else
     {
-    eT val1 = eT(0);
-    eT val2 = eT(0);
-    
-    typename Proxy<T1>::ea_type A = P.get_ea();
-    
-    uword i,j;
-    for(i=0, j=1; j < n_elem; i+=2, j+=2)
+    #if defined(__FINITE_MATH_ONLY__) && (__FINITE_MATH_ONLY__ > 0)
       {
-      val1 += A[i];
-      val2 += A[j];
+      eT val = eT(0);
+      
+      if(P.is_aligned())
+        {
+        typename Proxy<T1>::aligned_ea_type A = P.get_aligned_ea();
+        
+        for(uword i=0; i<n_elem; ++i)  { val += A.at_alt(i); }
+        }
+      else
+        {
+        typename Proxy<T1>::ea_type A = P.get_ea();
+        
+        for(uword i=0; i<n_elem; ++i)  { val += A[i]; }
+        }
+      
+      return val;
       }
-    
-    if(i < n_elem)
+    #else
       {
-      val1 += A[i];   // equivalent to: val1 += A[n_elem-1];
+      eT val1 = eT(0);
+      eT val2 = eT(0);
+      
+      typename Proxy<T1>::ea_type A = P.get_ea();
+      
+      uword i,j;
+      for(i=0, j=1; j < n_elem; i+=2, j+=2)
+        {
+        val1 += A[i];
+        val2 += A[j];
+        }
+      
+      if(i < n_elem)
+        {
+        val1 += A[i];   // equivalent to: val1 += A[n_elem-1];
+        }
+      
+      return (val1 + val2);
       }
-    
-    return (val1 + val2);
     }
   #endif
   }

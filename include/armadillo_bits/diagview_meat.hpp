@@ -198,11 +198,12 @@ diagview<eT>::operator= (const Base<eT,T1>& o)
     "diagview: given object has incompatible size"
     );
   
+  const bool use_mp   = (arma_config::cxx11 && arma_config::openmp) && (Proxy<T1>::use_mp && (P.get_n_elem() >= ((is_cx<eT>::yes) ? (arma_config::mp_threshold/uword(2)) : (arma_config::mp_threshold))));
   const bool is_alias = P.is_alias(d_m);
   
   if(is_alias)  { arma_extra_debug_print("aliasing detected"); }
   
-  if( (is_Mat<typename Proxy<T1>::stored_type>::value) || (Proxy<T1>::use_at) || (is_alias) )
+  if( (is_Mat<typename Proxy<T1>::stored_type>::value) || (Proxy<T1>::use_at) || (use_mp) || (is_alias) )
     {
     const unwrap_check<typename Proxy<T1>::stored_type> tmp(P.Q, is_alias);
     const Mat<eT>& x = tmp.M;

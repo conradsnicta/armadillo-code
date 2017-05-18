@@ -34,17 +34,24 @@ op_sum::apply(Mat<typename T1::elem_type>& out, const Op<T1,op_sum>& in)
   
   const Proxy<T1> P(in.m);
   
-  if(P.is_alias(out) == false)
+  if( (arma_config::openmp && Proxy<T1>::use_mp) && (P.get_n_elem() >= ((is_cx<eT>::yes) ? (arma_config::mp_threshold/uword(2)) : (arma_config::mp_threshold))) )
     {
-    op_sum::apply_noalias(out, P, dim);
+    op_sum::apply_noalias_unwrap(out, P, dim);
     }
   else
     {
-    Mat<eT> tmp;
-    
-    op_sum::apply_noalias(tmp, P, dim);
-    
-    out.steal_mem(tmp);
+    if(P.is_alias(out) == false)
+      {
+      op_sum::apply_noalias(out, P, dim);
+      }
+    else
+      {
+      Mat<eT> tmp;
+      
+      op_sum::apply_noalias(tmp, P, dim);
+      
+      out.steal_mem(tmp);
+      }
     }
   }
 
@@ -134,54 +141,24 @@ op_sum::apply_noalias_proxy(Mat<typename T1::elem_type>& out, const Proxy<T1>& P
     
     eT* out_mem = out.memptr();
     
-    if( (arma_config::openmp && Proxy<T1>::use_mp) && (P.get_n_elem() >= ((is_cx<eT>::yes) ? (arma_config::mp_threshold/uword(2)) : (arma_config::mp_threshold))) )
+    for(uword col=0; col < P_n_cols; ++col)
       {
-      #if defined(ARMA_USE_OPENMP)
+      eT val1 = eT(0);
+      eT val2 = eT(0);
+      
+      uword i,j;
+      for(i=0, j=1; j < P_n_rows; i+=2, j+=2)
         {
-        #pragma omp parallel for
-        for(uword col=0; col < P_n_cols; ++col)
-          {
-          eT val1 = eT(0);
-          eT val2 = eT(0);
-          
-          uword i,j;
-          for(i=0, j=1; j < P_n_rows; i+=2, j+=2)
-            {
-            val1 += P.at(i,col);
-            val2 += P.at(j,col);
-            }
-          
-          if(i < P_n_rows)
-            {
-            val1 += P.at(i,col);
-            }
-          
-          out_mem[col] = (val1 + val2);
-          }
+        val1 += P.at(i,col);
+        val2 += P.at(j,col);
         }
-      #endif
-      }
-    else
-      {
-      for(uword col=0; col < P_n_cols; ++col)
+      
+      if(i < P_n_rows)
         {
-        eT val1 = eT(0);
-        eT val2 = eT(0);
-        
-        uword i,j;
-        for(i=0, j=1; j < P_n_rows; i+=2, j+=2)
-          {
-          val1 += P.at(i,col);
-          val2 += P.at(j,col);
-          }
-        
-        if(i < P_n_rows)
-          {
-          val1 += P.at(i,col);
-          }
-        
-        out_mem[col] = (val1 + val2);
+        val1 += P.at(i,col);
         }
+      
+      out_mem[col] = (val1 + val2);
       }
     }
   else
@@ -220,17 +197,24 @@ op_sum::apply(Cube<typename T1::elem_type>& out, const OpCube<T1,op_sum>& in)
   
   const ProxyCube<T1> P(in.m);
   
-  if(P.is_alias(out) == false)
+  if( (arma_config::openmp && ProxyCube<T1>::use_mp) && (P.get_n_elem() >= ((is_cx<eT>::yes) ? (arma_config::mp_threshold/uword(2)) : (arma_config::mp_threshold))) )
     {
-    op_sum::apply_noalias(out, P, dim);
+    op_sum::apply_noalias_unwrap(out, P, dim);
     }
   else
     {
-    Cube<eT> tmp;
-    
-    op_sum::apply_noalias(tmp, P, dim);
-    
-    out.steal_mem(tmp);
+    if(P.is_alias(out) == false)
+      {
+      op_sum::apply_noalias(out, P, dim);
+      }
+    else
+      {
+      Cube<eT> tmp;
+      
+      op_sum::apply_noalias(tmp, P, dim);
+      
+      out.steal_mem(tmp);
+      }
     }
   }
 

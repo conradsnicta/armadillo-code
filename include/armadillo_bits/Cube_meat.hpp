@@ -3035,6 +3035,20 @@ Cube<eT>::set_size(const uword in_n_rows, const uword in_n_cols, const uword in_
 template<typename eT>
 inline
 void
+Cube<eT>::reshape(const uword in_rows, const uword in_cols, const uword in_slices)
+  {
+  arma_extra_debug_sigprint();
+  
+  *this = arma::reshape(*this, in_rows, in_cols, in_slices);
+  }
+
+
+
+//! NOTE: don't use this form; it's deprecated and will be removed
+template<typename eT>
+arma_deprecated
+inline
+void
 Cube<eT>::reshape(const uword in_rows, const uword in_cols, const uword in_slices, const uword dim)
   {
   arma_extra_debug_sigprint();

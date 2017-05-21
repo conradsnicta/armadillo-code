@@ -433,7 +433,7 @@ class Mat : public Base< eT, Mat<eT> >
   inline void  reshape(const uword in_rows, const uword in_cols);
   inline void  reshape(const SizeMat& s);
   
-  arma_deprecated inline void reshape(const uword in_rows, const uword in_cols, const uword dim);  //!< NOTE: don't use this form: it's deprecated
+  arma_deprecated inline void reshape(const uword in_rows, const uword in_cols, const uword dim);  //!< NOTE: don't use this form: it will be removed
   
   
   template<typename functor> inline const Mat&  for_each(functor F);

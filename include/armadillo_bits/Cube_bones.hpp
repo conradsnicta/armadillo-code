@@ -272,13 +272,17 @@ class Cube : public BaseCube< eT, Cube<eT> >
   inline void impl_raw_print(                           const std::string& extra_text) const;
   inline void impl_raw_print(std::ostream& user_stream, const std::string& extra_text) const;
   
-  inline void  set_size(const uword in_rows, const uword in_cols, const uword in_slices);
-  inline void   reshape(const uword in_rows, const uword in_cols, const uword in_slices, const uword dim = 0);
-  inline void    resize(const uword in_rows, const uword in_cols, const uword in_slices);
+  inline void set_size(const uword in_rows, const uword in_cols, const uword in_slices);
+  inline void set_size(const SizeCube& s);
   
-  inline void  set_size(const SizeCube& s);
-  inline void   reshape(const SizeCube& s);
-  inline void    resize(const SizeCube& s);
+  inline void reshape(const uword in_rows, const uword in_cols, const uword in_slices);
+  inline void reshape(const SizeCube& s);
+                  
+  inline void resize(const uword in_rows, const uword in_cols, const uword in_slices);
+  inline void resize(const SizeCube& s);
+  
+  arma_deprecated inline void reshape(const uword in_rows, const uword in_cols, const uword in_slices, const uword dim);  //!< NOTE: don't use this form: it will be removed
+  
   
   template<typename eT2> inline void copy_size(const Cube<eT2>& m);
   

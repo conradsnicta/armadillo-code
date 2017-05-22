@@ -34,20 +34,6 @@ operator-
 
 
 
-//! cancellation of two consecutive negations: -(-T1)
-template<typename T1>
-arma_inline
-const typename Proxy<T1>::stored_type&
-operator-
-(const eOp<T1, eop_neg>& X)
-  {
-  arma_extra_debug_sigprint();
-  
-  return X.P.Q;
-  }
-
-
-
 //! Base - scalar
 template<typename T1>
 arma_inline

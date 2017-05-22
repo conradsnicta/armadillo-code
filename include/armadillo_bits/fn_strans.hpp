@@ -61,21 +61,6 @@ strans
 
 
 
-//! two consecutive transpose operations cancel each other
-template<typename T1>
-arma_warn_unused
-arma_inline
-const T1&
-strans(const Op<T1, op_strans>& X)
-  {
-  arma_extra_debug_sigprint();
-  arma_extra_debug_print("strans(): removing op_strans");
-  
-  return X.m;
-  }
-
-
-
 //
 // handling of sparse matrices
 

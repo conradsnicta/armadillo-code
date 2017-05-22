@@ -35,22 +35,6 @@ operator-
 
 
 
-//! cancellation of two consecutive negations: -(-T1)
-template<typename T1>
-arma_inline
-const typename ProxyCube<T1>::stored_type&
-operator-
-  (
-  const eOpCube<T1, eop_neg>& X
-  )
-  {
-  arma_extra_debug_sigprint();
-  
-  return X.P.Q;
-  }
-
-
-
 //! BaseCube - scalar
 template<typename T1>
 arma_inline

@@ -54,34 +54,6 @@ htrans
 
 
 
-//! two consecutive transpose operations cancel each other
-template<typename T1>
-arma_warn_unused
-arma_inline
-const T1&
-trans(const Op<T1, op_htrans>& X)
-  {
-  arma_extra_debug_sigprint();
-  arma_extra_debug_print("trans(): removing op_htrans");
-  
-  return X.m;
-  }
-
-
-
-template<typename T1>
-arma_inline
-const T1&
-htrans(const Op<T1, op_htrans>& X)
-  {
-  arma_extra_debug_sigprint();
-  arma_extra_debug_print("htrans(): removing op_htrans");
-  
-  return X.m;
-  }
-
-
-
 //
 // handling of sparse matrices
 

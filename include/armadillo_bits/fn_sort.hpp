@@ -40,7 +40,7 @@ sort
 
 
 
-//! kept only for compatibility with old code
+//! NOTE: don't use this form: it will be removed
 template<typename T1>
 arma_deprecated
 inline
@@ -65,7 +65,7 @@ sort
 
 
 
-//! kept only for compatibility with old code
+//! NOTE: don't use this form: it will be removed
 template<typename T1>
 arma_deprecated
 inline

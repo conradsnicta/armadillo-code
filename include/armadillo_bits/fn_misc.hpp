@@ -318,7 +318,7 @@ is_finite(const BaseCube<typename T1::elem_type,T1>& X)
 
 
 
-//! DO NOT USE IN NEW CODE; change instances of inv(sympd(X)) to inv_sympd(X)
+//! NOTE: don't use this function: it will be removed
 template<typename T1>
 arma_deprecated
 inline

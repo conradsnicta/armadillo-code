@@ -439,9 +439,6 @@ class Mat : public Base< eT, Mat<eT> >
   template<typename functor> inline const Mat&  for_each(functor F);
   template<typename functor> inline const Mat&  for_each(functor F) const;
   
-  template<typename functor> inline const Mat&  for_each(functor F, const bool use_mp);
-  template<typename functor> inline const Mat&  for_each(functor F, const bool use_mp) const;
-  
   template<typename functor> inline const Mat& transform(functor F);
   template<typename functor> inline const Mat&     imbue(functor F);
   

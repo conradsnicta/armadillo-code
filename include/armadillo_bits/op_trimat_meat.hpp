@@ -247,4 +247,186 @@ op_trimat::apply_htrans
 
 
 
+//
+
+
+
+template<typename T1>
+inline
+void
+op_trimatu_ext::apply(Mat<typename T1::elem_type>& out, const Op<T1,op_trimatu_ext>& in)
+  {
+  arma_extra_debug_sigprint();
+  
+  typedef typename T1::elem_type eT;
+  
+  const unwrap<T1>   tmp(in.m);
+  const Mat<eT>& A = tmp.M;
+  
+  arma_debug_check( (A.is_square() == false), "trimatu(): given matrix must be square sized" );
+  
+  const uword row_offset = in.aux_uword_a;
+  const uword col_offset = in.aux_uword_b;
+  
+  const uword n_rows = A.n_rows;
+  const uword n_cols = A.n_cols;
+  
+  arma_debug_check( ((row_offset > 0) && (row_offset >= n_rows)) || ((col_offset > 0) && (col_offset >= n_cols)), "trimatu(): requested diagonal is out of bounds" );
+  
+  if(&out != &A)
+    {
+    out.copy_size(A);
+    
+    const uword N = (std::min)(n_rows - row_offset, n_cols - col_offset);
+    
+    for(uword i=0; i < n_cols; ++i)
+      {
+      const uword col = i + col_offset;
+        
+      if(i < N)
+        {
+        const uword end_row = i + row_offset;
+        
+        for(uword row=0; row <= end_row; ++row)
+          {
+          out.at(row,col) = A.at(row,col);
+          }
+        }
+      else
+        {
+        if(col < n_cols)
+          {
+          arrayops::copy(out.colptr(col), A.colptr(col), n_rows);
+          }
+        }
+      }
+    }
+  
+  op_trimatu_ext::fill_zeros(out, row_offset, col_offset);
+  }
+
+
+
+template<typename eT>
+inline
+void
+op_trimatu_ext::fill_zeros(Mat<eT>& out, const uword row_offset, const uword col_offset)
+  {
+  arma_extra_debug_sigprint();
+  
+  const uword n_rows = out.n_rows;
+  const uword n_cols = out.n_cols;
+  
+  const uword N = (std::min)(n_rows - row_offset, n_cols - col_offset);
+  
+  for(uword col=0; col < col_offset; ++col)
+    {
+    arrayops::fill_zeros(out.colptr(col), n_rows);
+    }
+  
+  for(uword i=0; i < N; ++i)
+    {
+    const uword start_row = i + row_offset + 1;
+    const uword col       = i + col_offset;
+    
+    for(uword row=start_row; row < n_rows; ++row)
+      {
+      out.at(row,col) = eT(0);
+      }
+    }
+  }
+
+
+
+//
+
+
+
+template<typename T1>
+inline
+void
+op_trimatl_ext::apply(Mat<typename T1::elem_type>& out, const Op<T1,op_trimatl_ext>& in)
+  {
+  arma_extra_debug_sigprint();
+  
+  typedef typename T1::elem_type eT;
+  
+  const unwrap<T1>   tmp(in.m);
+  const Mat<eT>& A = tmp.M;
+  
+  arma_debug_check( (A.is_square() == false), "trimatl(): given matrix must be square sized" );
+  
+  const uword row_offset = in.aux_uword_a;
+  const uword col_offset = in.aux_uword_b;
+  
+  const uword n_rows = A.n_rows;
+  const uword n_cols = A.n_cols;
+  
+  arma_debug_check( ((row_offset > 0) && (row_offset >= n_rows)) || ((col_offset > 0) && (col_offset >= n_cols)), "trimatl(): requested diagonal is out of bounds" );
+  
+  if(&out != &A)
+    {
+    out.copy_size(A);
+    
+    const uword N = (std::min)(n_rows - row_offset, n_cols - col_offset);
+    
+    for(uword col=0; col < col_offset; ++col)
+      {
+      arrayops::copy( out.colptr(col), A.colptr(col), n_rows );
+      }
+    
+    for(uword i=0; i<N; ++i)
+      {
+      const uword start_row = i + row_offset;
+      const uword       col = i + col_offset;
+      
+      for(uword row=start_row; row < n_rows; ++row)
+        {
+        out.at(row,col) = A.at(row,col);
+        }
+      }
+    }
+  
+  op_trimatl_ext::fill_zeros(out, row_offset, col_offset);
+  }
+
+
+
+template<typename eT>
+inline
+void
+op_trimatl_ext::fill_zeros(Mat<eT>& out, const uword row_offset, const uword col_offset)
+  {
+  arma_extra_debug_sigprint();
+  
+  const uword n_rows = out.n_rows;
+  const uword n_cols = out.n_cols;
+  
+  const uword N = (std::min)(n_rows - row_offset, n_cols - col_offset);
+  
+  for(uword i=0; i < n_cols; ++i)
+    {
+    const uword col = i + col_offset;
+      
+    if(i < N)
+      {
+      const uword end_row = i + row_offset;
+      
+      for(uword row=0; row < end_row; ++row)
+        {
+        out.at(row,col) = eT(0);
+        }
+      }
+    else
+      {
+      if(col < n_cols)
+        {
+        arrayops::fill_zeros(out.colptr(col), n_rows);
+        }
+      }
+    }
+  }
+
+
+
 //! @}

@@ -7525,11 +7525,11 @@ The argument <i>k</i> is optional; by default the main diagonal is used (<i>k=0<
 </li>
 <br>
 <li>
-For <i>k &gt; 0</i>, the <i>k</i>-th super-diagonal is used (top-right corner)
+For <i>k &gt; 0</i>, the <i>k</i>-th super-diagonal is used (above main diagonal, towards top-right corner)
 </li>
 <br>
 <li>
-For <i>k &lt; 0</i>, the <i>k</i>-th sub-diagonal is used (bottom-left corner)
+For <i>k &lt; 0</i>, the <i>k</i>-th sub-diagonal is used (below main diagonal, towards bottom-left corner)
 </li>
 <br>
 <li>
@@ -9796,7 +9796,10 @@ mat Z = trapz(X,Y);
 <div class="pagebreak"></div><div class="noprint"><hr class="greyline"><br></div>
 <a name="trimat"></a>
 <b>trimatu( A )</b>
+<br><b>trimatu( A, k )</b>
+<br>
 <br><b>trimatl( A )</b>
+<br><b>trimatl( A, k )</b>
 <ul>
 <li>
 Create a new matrix by copying either the upper or lower triangular part from square matrix <i>A</i>, and setting the remaining elements to zero
@@ -9804,6 +9807,22 @@ Create a new matrix by copying either the upper or lower triangular part from sq
 <li><i>trimatu()</i> copies the upper triangular part</li>
 <li><i>trimatl()</i> copies the lower triangular part</li>
 </ul>
+</li>
+<br>
+<li>
+The argument <i>k</i> specifies the diagonal which inclusively delineates the boundary of the triangular part
+<ul>
+<li>
+for <i>k &gt; 0</i>, the <i>k</i>-th super-diagonal is used (above main diagonal, towards top-right corner)
+</li>
+<li>
+for <i>k &lt; 0</i>, the <i>k</i>-th sub-diagonal is used (below main diagonal, towards bottom-left corner)
+</li>
+</ul>
+</li>
+<br>
+<li>
+The argument <i>k</i> is optional; by default the main diagonal is used (<i>k=0</i>)
 </li>
 <br>
 <li>
@@ -9816,8 +9835,11 @@ Examples:
 <pre>
 mat A = randu&lt;mat&gt;(5,5);
 
-mat U = trimatu(A);
-mat L = trimatl(A);
+mat U  = trimatu(A);
+mat L  = trimatl(A);
+
+mat UU = trimatu(A,  1);  // omit the main diagonal
+mat LL = trimatl(A, -1);  // omit the main diagonal
 </pre>
 </ul>
 </li>
@@ -16247,6 +16269,14 @@ List of additions and changes for each version:
 
 
 
+<a name="version_7920"></a>
+<li>Version 7.920:
+<ul>
+<li>exanded <a href="#accu">accu()</a> and <a href="#sum">sum()</a> to process expressions with computationally expensive element-wise functions via OpenMP</li>
+<li>expanded <a href="#trimat">trimatu()</a> and <a href="#trimat">trimatl()</a> to allow specification of the diagonal which delineates the boundary of the triangular part</li>
+</ul>
+</li>
+<br>
 <a name="version_7900"></a>
 <li>Version 7.900:
 <ul>

@@ -29,7 +29,7 @@ accu_proxy_linear(const Proxy<T1>& P)
   
   const uword n_elem = P.get_n_elem();
   
-  if( (arma_config::openmp && Proxy<T1>::use_mp) && (n_elem >= ((is_cx<eT>::yes) ? (arma_config::mp_threshold/uword(2)) : (arma_config::mp_threshold))) )
+  if( arma_config::openmp && Proxy<T1>::use_mp && mp::meets_thresh<(is_cx<eT>::yes)>(n_elem) )
     {
     eT val = eT(0);
     
@@ -391,7 +391,7 @@ accu_cube_proxy(const ProxyCube<T1>& P)
           ea_type Pea    = P.get_ea();
     const uword   n_elem = P.get_n_elem();
 
-    if( (arma_config::openmp && ProxyCube<T1>::use_mp) && (n_elem >= ((is_cx<eT>::yes) ? (arma_config::mp_threshold/uword(2)) : (arma_config::mp_threshold))) )
+    if( arma_config::openmp && ProxyCube<T1>::use_mp && mp::meets_thresh<(is_cx<eT>::yes)>(n_elem) )
       {
       eT val = eT(0);
       

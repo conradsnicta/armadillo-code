@@ -113,6 +113,7 @@ namespace arma
   #include "armadillo_bits/distr_param.hpp"
   #include "armadillo_bits/constants.hpp"
   #include "armadillo_bits/constants_old.hpp"
+  #include "armadillo_bits/mp_misc.hpp"
   
   #ifdef ARMA_RNG_ALT
     #include ARMA_INCFILE_WRAP(ARMA_RNG_ALT)

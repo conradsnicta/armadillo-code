@@ -37,15 +37,35 @@ accu_proxy_linear(const Proxy<T1>& P)
       {
       typename Proxy<T1>::ea_type A = P.get_ea();
       
-      // TODO: may need to write a manual workaround to handle complex numbers.
-      // TODO: OpenMP can't handle reduction of complex values without user-defined reduction.
-      // TODO: user-defined reductions are in OpenMP 4.0; see OpenMP 4.0 spec, page 180
-      // TODO: compiler support for OpenMP 4.0: http://www.openmp.org/resources/openmp-compilers/
-      // TODO: OpenMP 4.0+ is in gcc 4.9+, Intel 15+; partial support in recent clang ??
-      // TODO: http://releases.llvm.org/4.0.0/tools/clang/docs/UsersManual.html#openmp-features
+      // NOTE: using manual parallelisation workaround to take into account complex numbers;
+      // NOTE: OpenMP versions lower than 4.0 do not support user-defined reduction, which is required for complex numbers
       
-      #pragma omp parallel for reduction(+:val)
-      for(uword i=0; i<n_elem; ++i)
+      const uword n_threads  = (std::min)(podarray_prealloc_n_elem::val, uword(omp_get_max_threads()));
+      const uword chunk_size = n_elem / n_threads;
+      
+      podarray<eT> partial_accs(n_threads);
+      
+      #pragma omp parallel for schedule(static)
+      for(uword thread_id=0; thread_id < n_threads; ++thread_id)
+        {
+        const uword start = (thread_id+0) * chunk_size;
+        const uword endp1 = (thread_id+1) * chunk_size;
+        
+        eT acc = eT(0);
+        for(uword i=start; i < endp1; ++i)
+          {
+          acc += A[i];
+          }
+        
+        partial_accs[thread_id] = acc;
+        }
+      
+      for(uword thread_id=0; thread_id < n_threads; ++thread_id)
+        {
+        val += partial_accs[thread_id];
+        }
+      
+      for(uword i=(n_threads*chunk_size); i < n_elem; ++i)
         {
         val += A[i];
         }
@@ -122,6 +142,11 @@ typename T1::elem_type
 accu_proxy_at(const Proxy<T1>& P)
   {
   typedef typename T1::elem_type eT;
+  
+  if( arma_config::openmp && Proxy<T1>::use_mp && mp::meets_thresh<(is_cx<eT>::yes)>(P.get_n_elem()) )
+    {
+    return accu_proxy_mat(P);
+    }
   
   const uword n_rows = P.get_n_rows();
   const uword n_cols = P.get_n_cols();
@@ -404,8 +429,35 @@ accu_cube_proxy(const ProxyCube<T1>& P)
       
       #if defined(ARMA_USE_OPENMP)
         {
-        #pragma omp parallel for reduction(+:val)
-        for(uword i=0; i<n_elem; ++i)
+        // NOTE: using manual parallelisation workaround to take into account complex numbers;
+        // NOTE: OpenMP versions lower than 4.0 do not support user-defined reduction, which is required for complex numbers
+        
+        const uword n_threads  = (std::min)(podarray_prealloc_n_elem::val, uword(omp_get_max_threads()));
+        const uword chunk_size = n_elem / n_threads;
+        
+        podarray<eT> partial_accs(n_threads);
+        
+        #pragma omp parallel for schedule(static)
+        for(uword thread_id=0; thread_id < n_threads; ++thread_id)
+          {
+          const uword start = (thread_id+0) * chunk_size;
+          const uword endp1 = (thread_id+1) * chunk_size;
+          
+          eT acc = eT(0);
+          for(uword i=start; i < endp1; ++i)
+            {
+            acc += Pea[i];
+            }
+          
+          partial_accs[thread_id] = acc;
+          }
+        
+        for(uword thread_id=0; thread_id < n_threads; ++thread_id)
+          {
+          val += partial_accs[thread_id];
+          }
+        
+        for(uword i=(n_threads*chunk_size); i < n_elem; ++i)
           {
           val += Pea[i];
           }
@@ -437,6 +489,13 @@ accu_cube_proxy(const ProxyCube<T1>& P)
     }
   else
     {
+    if( arma_config::openmp && ProxyCube<T1>::use_mp && mp::meets_thresh<(is_cx<eT>::yes)>(P.get_n_elem()) )
+      {
+      unwrap_cube<typename ProxyCube<T1>::stored_type> tmp(P.Q);
+      
+      return arrayops::accumulate(tmp.M.memptr(), tmp.M.n_elem);
+      }
+    
     const uword n_rows   = P.get_n_rows();
     const uword n_cols   = P.get_n_cols();
     const uword n_slices = P.get_n_slices();

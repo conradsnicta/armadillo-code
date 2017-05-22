@@ -129,11 +129,12 @@ subview<eT>::inplace_op(const Base<eT,T1>& in, const char* identifier)
   
   arma_debug_assert_same_size(s, P, identifier);
   
+  const bool use_mp   = arma_config::cxx11 && arma_config::openmp && Proxy<T1>::use_mp && mp::meets_thresh<(is_cx<eT>::yes)>(s.n_elem);
   const bool is_alias = P.is_alias(s.m);
   
   if(is_alias)  { arma_extra_debug_print("aliasing detected"); }
   
-  if( (is_Mat<typename Proxy<T1>::stored_type>::value) || (Proxy<T1>::use_mp && mp::meets_thresh<(is_cx<eT>::yes)>(s.n_elem)) || (is_alias) )
+  if( (is_Mat<typename Proxy<T1>::stored_type>::value) || (use_mp) || (is_alias) )
     {
     const unwrap_check<typename Proxy<T1>::stored_type> tmp(P.Q, is_alias);
     const Mat<eT>& B = tmp.M;

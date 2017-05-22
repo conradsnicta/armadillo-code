@@ -45,6 +45,7 @@ reshape(const T1& X, const SizeMat& s)
 
 
 
+//! NOTE: don't use this form: it will be removed
 template<typename T1>
 arma_deprecated
 inline
@@ -75,6 +76,7 @@ reshape(const BaseCube<typename T1::elem_type,T1>& X, const uword in_n_rows, con
 
 
 
+//! NOTE: don't use this form: it will be removed
 template<typename T1>
 arma_deprecated
 inline
@@ -105,11 +107,12 @@ reshape(const BaseCube<typename T1::elem_type,T1>& X, const SizeCube& s)
 
 
 
+//! NOTE: don't use this form: it will be removed
 template<typename T1>
 arma_deprecated
 inline
 const OpCube<T1, op_reshape_ext>
-reshape(const BaseCube<typename T1::elem_type,T1>& X, const SizeCube& s, const uword dim)
+reshape(const BaseCube<typename T1::elem_type,T1>& X, const SizeCube& s, const uword dim)  //!< NOTE: don't use this form: it will be removed
   {
   arma_extra_debug_sigprint();
   

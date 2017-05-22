@@ -6226,7 +6226,7 @@ Mat<eT>::reshape(const SizeMat& s)
 
 
 
-//! NOTE: this form is deprecated: don't use it
+//! NOTE: don't use this form; it's deprecated and will be removed
 template<typename eT>
 arma_deprecated
 inline

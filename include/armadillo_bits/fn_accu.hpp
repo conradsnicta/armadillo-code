@@ -37,6 +37,13 @@ accu_proxy_linear(const Proxy<T1>& P)
       {
       typename Proxy<T1>::ea_type A = P.get_ea();
       
+      // TODO: may need to write a manual workaround to handle complex numbers.
+      // TODO: OpenMP can't handle reduction of complex values without user-defined reduction.
+      // TODO: user-defined reductions are in OpenMP 4.0; see OpenMP 4.0 spec, page 180
+      // TODO: compiler support for OpenMP 4.0: http://www.openmp.org/resources/openmp-compilers/
+      // TODO: OpenMP 4.0+ is in gcc 4.9+, Intel 15+; partial support in recent clang ??
+      // TODO: http://releases.llvm.org/4.0.0/tools/clang/docs/UsersManual.html#openmp-features
+      
       #pragma omp parallel for reduction(+:val)
       for(uword i=0; i<n_elem; ++i)
         {

@@ -48,7 +48,7 @@ sort_index
   {
   arma_extra_debug_sigprint();
   
-  arma_debug_warn("sort_index(X,uword) is deprecated and will be removed; change to sort_index(X,sort_direction)");
+  // arma_debug_warn("sort_index(X,uword) is deprecated and will be removed; change to sort_index(X,sort_direction)");
   
   arma_debug_check( (sort_type > 1), "sort_index(): parameter 'sort_type' must be 0 or 1" );
   
@@ -116,7 +116,7 @@ stable_sort_index
   {
   arma_extra_debug_sigprint();
   
-  arma_debug_warn("stable_sort_index(X,uword) is deprecated and will be removed; change to stable_sort_index(X,sort_direction)");
+  // arma_debug_warn("stable_sort_index(X,uword) is deprecated and will be removed; change to stable_sort_index(X,sort_direction)");
   
   arma_debug_check( (sort_type > 1), "stable_sort_index(): parameter 'sort_type' must be 0 or 1" );
   

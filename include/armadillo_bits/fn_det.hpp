@@ -137,6 +137,7 @@ det
 
 
 
+//! NOTE: don't use this form: it will be removed
 template<typename T1>
 arma_deprecated
 inline
@@ -149,13 +150,14 @@ det
   {
   arma_extra_debug_sigprint();
   
-  arma_debug_warn("det(X,bool) is deprecated and will be removed; change to det(X)");
+  // arma_debug_warn("det(X,bool) is deprecated and will be removed; change to det(X)");
   
   return det(X.get_ref());
   }
 
 
 
+//! NOTE: don't use this form: it will be removed
 template<typename T1>
 arma_deprecated
 inline
@@ -168,7 +170,7 @@ det
   {
   arma_extra_debug_sigprint();
   
-  arma_debug_warn("det(X,char*) is deprecated and will be removed; change to det(X)");
+  // arma_debug_warn("det(X,char*) is deprecated and will be removed; change to det(X)");
   
   return det(X.get_ref());
   }

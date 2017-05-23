@@ -34,7 +34,7 @@ op_sum::apply(Mat<typename T1::elem_type>& out, const Op<T1,op_sum>& in)
   
   const Proxy<T1> P(in.m);
   
-  if( arma_config::cxx11 && arma_config::openmp && Proxy<T1>::use_mp && mp::meets_thresh<(is_cx<eT>::yes)>(P.get_n_elem()) )
+  if( arma_config::cxx11 && arma_config::openmp && Proxy<T1>::use_mp && mp_len<eT>::test(P.get_n_elem()) )
     {
     op_sum::apply_noalias_unwrap(out, P, dim);
     }
@@ -197,7 +197,7 @@ op_sum::apply(Cube<typename T1::elem_type>& out, const OpCube<T1,op_sum>& in)
   
   const ProxyCube<T1> P(in.m);
   
-  if( arma_config::cxx11 && arma_config::openmp && ProxyCube<T1>::use_mp && mp::meets_thresh<(is_cx<eT>::yes)>(P.get_n_elem()) )
+  if( arma_config::cxx11 && arma_config::openmp && ProxyCube<T1>::use_mp && mp_len<eT>::test(P.get_n_elem()) )
     {
     op_sum::apply_noalias_unwrap(out, P, dim);
     }

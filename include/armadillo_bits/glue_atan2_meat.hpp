@@ -84,7 +84,7 @@ glue_atan2::apply_noalias(Mat<typename T1::elem_type>& out, const Proxy<T1>& P1,
     
     const uword N = P1.get_n_elem();
     
-    if( arma_config::cxx11 && arma_config::openmp && mp::meets_thresh<(is_cx<eT>::yes || Proxy<T1>::use_mp || Proxy<T2>::use_mp)>(N) )
+    if( arma_config::cxx11 && arma_config::openmp && mp_len<eT, (Proxy<T1>::use_mp || Proxy<T2>::use_mp)>::test(N) )
       {
       ARMA_PRAGMA_OMP_PARALLEL_FOR
       for(uword i=0; i<N; ++i)
@@ -102,7 +102,7 @@ glue_atan2::apply_noalias(Mat<typename T1::elem_type>& out, const Proxy<T1>& P1,
     }
   else
     {
-    if( arma_config::cxx11 && arma_config::openmp && mp::meets_thresh<(is_cx<eT>::yes || Proxy<T1>::use_mp || Proxy<T2>::use_mp)>(P1.get_n_elem()) )
+    if( arma_config::cxx11 && arma_config::openmp && mp_len<eT, (Proxy<T1>::use_mp || Proxy<T2>::use_mp)>::test(P1.get_n_elem()) )
       {
       ARMA_PRAGMA_OMP_PARALLEL_FOR
       for(uword col=0; col < n_cols; ++col)
@@ -181,7 +181,7 @@ glue_atan2::apply_noalias(Cube<typename T1::elem_type>& out, const ProxyCube<T1>
     
     const uword N = P1.get_n_elem();
     
-    if( arma_config::cxx11 && arma_config::openmp && mp::meets_thresh<(is_cx<eT>::yes || ProxyCube<T1>::use_mp || ProxyCube<T2>::use_mp)>(N) )
+    if( arma_config::cxx11 && arma_config::openmp && mp_len<eT, (ProxyCube<T1>::use_mp || ProxyCube<T2>::use_mp)>::test(N) )
       {
       ARMA_PRAGMA_OMP_PARALLEL_FOR
       for(uword i=0; i<N; ++i)
@@ -199,7 +199,7 @@ glue_atan2::apply_noalias(Cube<typename T1::elem_type>& out, const ProxyCube<T1>
     }
   else
     {
-    if( arma_config::cxx11 && arma_config::openmp && mp::meets_thresh<(is_cx<eT>::yes || ProxyCube<T1>::use_mp || ProxyCube<T2>::use_mp)>(P1.get_n_elem_slice()) )
+    if( arma_config::cxx11 && arma_config::openmp && mp_len<eT, (ProxyCube<T1>::use_mp || ProxyCube<T2>::use_mp)>::test(P1.get_n_elem_slice()) )
       {
       for(uword slice=0; slice < n_slices; ++slice)
         {

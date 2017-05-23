@@ -29,7 +29,7 @@ accu_proxy_linear(const Proxy<T1>& P)
   
   const uword n_elem = P.get_n_elem();
   
-  if( arma_config::openmp && Proxy<T1>::use_mp && mp::meets_thresh<(is_cx<eT>::yes)>(n_elem) )
+  if( arma_config::openmp && Proxy<T1>::use_mp && mp_len<eT>::test(n_elem) )
     {
     eT val = eT(0);
     
@@ -143,7 +143,7 @@ accu_proxy_at(const Proxy<T1>& P)
   {
   typedef typename T1::elem_type eT;
   
-  if( arma_config::cxx11 && arma_config::openmp && Proxy<T1>::use_mp && mp::meets_thresh<(is_cx<eT>::yes)>(P.get_n_elem()) )
+  if( arma_config::cxx11 && arma_config::openmp && Proxy<T1>::use_mp && mp_len<eT>::test(P.get_n_elem()) )
     {
     return accu_proxy_mat(P);
     }
@@ -423,7 +423,7 @@ accu_cube_proxy(const ProxyCube<T1>& P)
           ea_type Pea    = P.get_ea();
     const uword   n_elem = P.get_n_elem();
 
-    if( arma_config::openmp && ProxyCube<T1>::use_mp && mp::meets_thresh<(is_cx<eT>::yes)>(n_elem) )
+    if( arma_config::openmp && ProxyCube<T1>::use_mp && mp_len<eT>::test(n_elem) )
       {
       eT val = eT(0);
       
@@ -489,7 +489,7 @@ accu_cube_proxy(const ProxyCube<T1>& P)
     }
   else
     {
-    if( arma_config::cxx11 && arma_config::openmp && ProxyCube<T1>::use_mp && mp::meets_thresh<(is_cx<eT>::yes)>(P.get_n_elem()) )
+    if( arma_config::cxx11 && arma_config::openmp && ProxyCube<T1>::use_mp && mp_len<eT>::test(P.get_n_elem()) )
       {
       unwrap_cube<typename ProxyCube<T1>::stored_type> tmp(P.Q);
       

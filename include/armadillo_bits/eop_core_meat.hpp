@@ -250,7 +250,7 @@ eop_core<eop_type>::apply(outT& out, const eOp<T1, eop_type>& x)
     {
     const uword n_elem = x.get_n_elem();
     
-    if(use_mp && mp::meets_thresh<(is_cx<eT>::yes)>(n_elem))
+    if(use_mp && mp_len<eT>::test(n_elem))
       {
       typename Proxy<T1>::ea_type P = x.P.get_ea();
       
@@ -290,7 +290,7 @@ eop_core<eop_type>::apply(outT& out, const eOp<T1, eop_type>& x)
     
     const Proxy<T1>& P = x.P;
     
-    if(use_mp && mp::meets_thresh<(is_cx<eT>::yes)>(x.get_n_elem()))
+    if(use_mp && mp_len<eT>::test(x.get_n_elem()))
       {
       arma_applier_2_mp(=);
       }
@@ -328,7 +328,7 @@ eop_core<eop_type>::apply_inplace_plus(Mat<typename T1::elem_type>& out, const e
     {
     const uword n_elem = x.get_n_elem();
     
-    if(use_mp && mp::meets_thresh<(is_cx<eT>::yes)>(n_elem))
+    if(use_mp && mp_len<eT>::test(n_elem))
       {
       typename Proxy<T1>::ea_type P = x.P.get_ea();
       
@@ -365,7 +365,7 @@ eop_core<eop_type>::apply_inplace_plus(Mat<typename T1::elem_type>& out, const e
     {
     const Proxy<T1>& P = x.P;
     
-    if(use_mp && mp::meets_thresh<(is_cx<eT>::yes)>(x.get_n_elem()))
+    if(use_mp && mp_len<eT>::test(x.get_n_elem()))
       {
       arma_applier_2_mp(+=);
       }
@@ -403,7 +403,7 @@ eop_core<eop_type>::apply_inplace_minus(Mat<typename T1::elem_type>& out, const 
     {
     const uword n_elem = x.get_n_elem();
     
-    if(use_mp && mp::meets_thresh<(is_cx<eT>::yes)>(n_elem))
+    if(use_mp && mp_len<eT>::test(n_elem))
       {
       typename Proxy<T1>::ea_type P = x.P.get_ea();
       
@@ -440,7 +440,7 @@ eop_core<eop_type>::apply_inplace_minus(Mat<typename T1::elem_type>& out, const 
     {
     const Proxy<T1>& P = x.P;
     
-    if(use_mp && mp::meets_thresh<(is_cx<eT>::yes)>(x.get_n_elem()))
+    if(use_mp && mp_len<eT>::test(x.get_n_elem()))
       {
       arma_applier_2_mp(-=);
       }
@@ -478,7 +478,7 @@ eop_core<eop_type>::apply_inplace_schur(Mat<typename T1::elem_type>& out, const 
     {
     const uword n_elem = x.get_n_elem();
     
-    if(use_mp && mp::meets_thresh<(is_cx<eT>::yes)>(n_elem))
+    if(use_mp && mp_len<eT>::test(n_elem))
       {
       typename Proxy<T1>::ea_type P = x.P.get_ea();
       
@@ -515,7 +515,7 @@ eop_core<eop_type>::apply_inplace_schur(Mat<typename T1::elem_type>& out, const 
     {
     const Proxy<T1>& P = x.P;
     
-    if(use_mp && mp::meets_thresh<(is_cx<eT>::yes)>(x.get_n_elem()))
+    if(use_mp && mp_len<eT>::test(x.get_n_elem()))
       {
       arma_applier_2_mp(*=);
       }
@@ -553,7 +553,7 @@ eop_core<eop_type>::apply_inplace_div(Mat<typename T1::elem_type>& out, const eO
     {
     const uword n_elem = x.get_n_elem();
     
-    if(use_mp && mp::meets_thresh<(is_cx<eT>::yes)>(n_elem))
+    if(use_mp && mp_len<eT>::test(n_elem))
       {
       typename Proxy<T1>::ea_type P = x.P.get_ea();
       
@@ -590,7 +590,7 @@ eop_core<eop_type>::apply_inplace_div(Mat<typename T1::elem_type>& out, const eO
     {
     const Proxy<T1>& P = x.P;
     
-    if(use_mp && mp::meets_thresh<(is_cx<eT>::yes)>(x.get_n_elem()))
+    if(use_mp && mp_len<eT>::test(x.get_n_elem()))
       {
       arma_applier_2_mp(/=);
       }
@@ -631,7 +631,7 @@ eop_core<eop_type>::apply(Cube<typename T1::elem_type>& out, const eOpCube<T1, e
     {
     const uword n_elem = out.n_elem;
     
-    if(use_mp && mp::meets_thresh<(is_cx<eT>::yes)>(n_elem))
+    if(use_mp && mp_len<eT>::test(n_elem))
       {
       typename ProxyCube<T1>::ea_type P = x.P.get_ea();
       
@@ -672,7 +672,7 @@ eop_core<eop_type>::apply(Cube<typename T1::elem_type>& out, const eOpCube<T1, e
     
     const ProxyCube<T1>& P = x.P;
     
-    if(use_mp && mp::meets_thresh<(is_cx<eT>::yes)>(x.get_n_elem_slice()))
+    if(use_mp && mp_len<eT>::test(x.get_n_elem_slice()))
       {
       arma_applier_3_mp(=);
       }
@@ -711,7 +711,7 @@ eop_core<eop_type>::apply_inplace_plus(Cube<typename T1::elem_type>& out, const 
     {
     const uword n_elem = out.n_elem;
     
-    if(use_mp && mp::meets_thresh<(is_cx<eT>::yes)>(n_elem))
+    if(use_mp && mp_len<eT>::test(n_elem))
       {
       typename ProxyCube<T1>::ea_type P = x.P.get_ea();
       
@@ -748,7 +748,7 @@ eop_core<eop_type>::apply_inplace_plus(Cube<typename T1::elem_type>& out, const 
     {
     const ProxyCube<T1>& P = x.P;
     
-    if(use_mp && mp::meets_thresh<(is_cx<eT>::yes)>(x.get_n_elem_slice()))
+    if(use_mp && mp_len<eT>::test(x.get_n_elem_slice()))
       {
       arma_applier_3_mp(+=);
       }
@@ -787,7 +787,7 @@ eop_core<eop_type>::apply_inplace_minus(Cube<typename T1::elem_type>& out, const
     {
     const uword n_elem = out.n_elem;
       
-    if(use_mp && mp::meets_thresh<(is_cx<eT>::yes)>(n_elem))
+    if(use_mp && mp_len<eT>::test(n_elem))
       {
       typename ProxyCube<T1>::ea_type P = x.P.get_ea();
       
@@ -824,7 +824,7 @@ eop_core<eop_type>::apply_inplace_minus(Cube<typename T1::elem_type>& out, const
     {
     const ProxyCube<T1>& P = x.P;
     
-    if(use_mp && mp::meets_thresh<(is_cx<eT>::yes)>(x.get_n_elem_slice()))
+    if(use_mp && mp_len<eT>::test(x.get_n_elem_slice()))
       {
       arma_applier_3_mp(-=);
       }
@@ -863,7 +863,7 @@ eop_core<eop_type>::apply_inplace_schur(Cube<typename T1::elem_type>& out, const
     {
     const uword n_elem = out.n_elem;
     
-    if(use_mp && mp::meets_thresh<(is_cx<eT>::yes)>(n_elem))
+    if(use_mp && mp_len<eT>::test(n_elem))
       {
       typename ProxyCube<T1>::ea_type P = x.P.get_ea();
       
@@ -900,7 +900,7 @@ eop_core<eop_type>::apply_inplace_schur(Cube<typename T1::elem_type>& out, const
     {
     const ProxyCube<T1>& P = x.P;
     
-    if(use_mp && mp::meets_thresh<(is_cx<eT>::yes)>(x.get_n_elem_slice()))
+    if(use_mp && mp_len<eT>::test(x.get_n_elem_slice()))
       {
       arma_applier_3_mp(*=);
       }
@@ -939,7 +939,7 @@ eop_core<eop_type>::apply_inplace_div(Cube<typename T1::elem_type>& out, const e
     {
     const uword n_elem = out.n_elem;
     
-    if(use_mp && mp::meets_thresh<(is_cx<eT>::yes)>(n_elem))
+    if(use_mp && mp_len<eT>::test(n_elem))
       {
       typename ProxyCube<T1>::ea_type P = x.P.get_ea();
       
@@ -976,7 +976,7 @@ eop_core<eop_type>::apply_inplace_div(Cube<typename T1::elem_type>& out, const e
     {
     const ProxyCube<T1>& P = x.P;
     
-    if(use_mp && mp::meets_thresh<(is_cx<eT>::yes)>(x.get_n_elem_slice()))
+    if(use_mp && mp_len<eT>::test(x.get_n_elem_slice()))
       {
       arma_applier_3_mp(/=);
       }

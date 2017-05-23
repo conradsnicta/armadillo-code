@@ -19,15 +19,16 @@
 
 
 
-struct mp
+
+template<typename eT, const bool use_smaller_thresh = false>
+struct mp_len
   {
-  template<const bool use_smaller_thresh>
   arma_inline
   static
   bool
-  meets_thresh(const uword n_elem)
+  test(const uword n_elem)
     {
-    return (use_smaller_thresh) ? (n_elem >= (arma_config::mp_threshold/uword(2))) : (n_elem >= arma_config::mp_threshold);
+    return (is_cx<eT>::yes || use_smaller_thresh) ? (n_elem >= (arma_config::mp_threshold/uword(2))) : (n_elem >= arma_config::mp_threshold);
     }
   };
 

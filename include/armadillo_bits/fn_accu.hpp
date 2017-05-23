@@ -40,7 +40,7 @@ accu_proxy_linear(const Proxy<T1>& P)
       // NOTE: using manual parallelisation workaround to take into account complex numbers;
       // NOTE: OpenMP versions lower than 4.0 do not support user-defined reduction, which is required for complex numbers
       
-      const uword n_threads  = (std::min)(podarray_prealloc_n_elem::val, uword(omp_get_max_threads()));
+      const uword n_threads  = (std::min)(uword(podarray_prealloc_n_elem::val), uword(omp_get_max_threads()));
       const uword chunk_size = n_elem / n_threads;
       
       podarray<eT> partial_accs(n_threads);
@@ -432,7 +432,7 @@ accu_cube_proxy(const ProxyCube<T1>& P)
         // NOTE: using manual parallelisation workaround to take into account complex numbers;
         // NOTE: OpenMP versions lower than 4.0 do not support user-defined reduction, which is required for complex numbers
         
-        const uword n_threads  = (std::min)(podarray_prealloc_n_elem::val, uword(omp_get_max_threads()));
+        const uword n_threads  = (std::min)(uword(podarray_prealloc_n_elem::val), uword(omp_get_max_threads()));
         const uword chunk_size = n_elem / n_threads;
         
         podarray<eT> partial_accs(n_threads);

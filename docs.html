@@ -4438,7 +4438,8 @@ Iterators for dense matrices and vectors traverse over all elements
 </li>
 <br>
 <li>
-Iterators for sparse matrices traverse over non-zero elements
+Iterators for sparse matrices traverse over non-zero elements;
+<br><b>caveat:</b> writing a zero value into a sparse matrix through an iterator will invalidate all current iterators associated with the sparse matrix
 </li>
 <br>
 <li>

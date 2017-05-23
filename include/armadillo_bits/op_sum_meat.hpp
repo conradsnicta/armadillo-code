@@ -36,6 +36,8 @@ op_sum::apply(Mat<typename T1::elem_type>& out, const Op<T1,op_sum>& in)
   
   if( arma_config::cxx11 && arma_config::openmp && Proxy<T1>::use_mp && mp_len<eT>::test(P.get_n_elem()) )
     {
+    // due to the use_mp tag, there is a pending element-wise operation, and so P is not holding a raw matrix;
+    // as such, we don't need to check for aliasing, as unwrap will forcefully evaluate P into a separate matrix
     op_sum::apply_noalias_unwrap(out, P, dim);
     }
   else
@@ -199,6 +201,8 @@ op_sum::apply(Cube<typename T1::elem_type>& out, const OpCube<T1,op_sum>& in)
   
   if( arma_config::cxx11 && arma_config::openmp && ProxyCube<T1>::use_mp && mp_len<eT>::test(P.get_n_elem()) )
     {
+    // due to the use_mp tag, there is a pending element-wise operation, and so P is not holding a raw cube;
+    // as such, we don't need to check for aliasing, as unwrap will forcefully evaluate P into a separate cube
     op_sum::apply_noalias_unwrap(out, P, dim);
     }
   else

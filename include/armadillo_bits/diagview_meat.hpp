@@ -205,7 +205,7 @@ diagview<eT>::operator= (const Base<eT,T1>& o)
   
   if( (is_Mat<typename Proxy<T1>::stored_type>::value) || (Proxy<T1>::use_at) || (use_mp) || (is_alias) )
     {
-    const unwrap_check<typename Proxy<T1>::stored_type> tmp(P.Q, is_alias );
+    const unwrap_check<typename Proxy<T1>::stored_type> tmp(P.Q, is_alias);
     const Mat<eT>& x = tmp.M;
     
     const eT* x_mem = x.memptr();

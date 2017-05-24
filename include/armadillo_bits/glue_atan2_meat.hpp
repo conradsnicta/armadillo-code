@@ -72,29 +72,31 @@ glue_atan2::apply_noalias(Mat<typename T1::elem_type>& out, const Proxy<T1>& P1,
   
   const uword n_rows = P1.get_n_rows();
   const uword n_cols = P1.get_n_cols();
+  const uword n_elem = P1.get_n_elem();
   
   out.set_size(n_rows, n_cols);
   
   eT* out_mem = out.memptr();
   
-  if( (Proxy<T1>::use_at == false) && (Proxy<T2>::use_at == false) )
+  const bool use_mp = arma_config::cxx11 && arma_config::openmp && mp_len<eT, (Proxy<T1>::use_mp || Proxy<T2>::use_mp)>::test(n_elem);
+  const bool use_at = Proxy<T1>::use_at || Proxy<T2>::use_at;
+  
+  if(use_at == false)
     {
     typename Proxy<T1>::ea_type eaP1 = P1.get_ea();
     typename Proxy<T2>::ea_type eaP2 = P2.get_ea();
     
-    const uword N = P1.get_n_elem();
-    
-    if( arma_config::cxx11 && arma_config::openmp && mp_len<eT, (Proxy<T1>::use_mp || Proxy<T2>::use_mp)>::test(N) )
+    if(use_mp)
       {
       ARMA_PRAGMA_OMP_PARALLEL_FOR
-      for(uword i=0; i<N; ++i)
+      for(uword i=0; i<n_elem; ++i)
         {
         out_mem[i] = std::atan2( eaP1[i], eaP2[i] );
         }
       }
     else
       {
-      for(uword i=0; i<N; ++i)
+      for(uword i=0; i<n_elem; ++i)
         {
         out_mem[i] = std::atan2( eaP1[i], eaP2[i] );
         }
@@ -102,14 +104,12 @@ glue_atan2::apply_noalias(Mat<typename T1::elem_type>& out, const Proxy<T1>& P1,
     }
   else
     {
-    if( arma_config::cxx11 && arma_config::openmp && mp_len<eT, (Proxy<T1>::use_mp || Proxy<T2>::use_mp)>::test(P1.get_n_elem()) )
+    if(use_mp)
       {
-      ARMA_PRAGMA_OMP_PARALLEL_FOR
-      for(uword col=0; col < n_cols; ++col)
-      for(uword row=0; row < n_rows; ++row)
-        {
-        out.at(row,col) = std::atan2( P1.at(row,col), P2.at(row,col) );
-        }
+      const unwrap<typename Proxy<T1>::stored_type> U1(P1.Q);
+      const unwrap<typename Proxy<T2>::stored_type> U2(P2.Q);
+      
+      out = arma::atan2(U1.M, U2.M);
       }
     else
       {
@@ -169,29 +169,31 @@ glue_atan2::apply_noalias(Cube<typename T1::elem_type>& out, const ProxyCube<T1>
   const uword n_rows   = P1.get_n_rows();
   const uword n_cols   = P1.get_n_cols();
   const uword n_slices = P1.get_n_slices();
+  const uword n_elem   = P1.get_n_elem();
   
   out.set_size(n_rows, n_cols, n_slices);
   
   eT* out_mem = out.memptr();
   
-  if( (ProxyCube<T1>::use_at == false) && (ProxyCube<T2>::use_at == false) )
+  const bool use_mp = arma_config::cxx11 && arma_config::openmp && mp_len<eT, (ProxyCube<T1>::use_mp || ProxyCube<T2>::use_mp)>::test(n_elem);
+  const bool use_at = ProxyCube<T1>::use_at || ProxyCube<T2>::use_at;
+  
+  if(use_at == false)
     {
     typename ProxyCube<T1>::ea_type eaP1 = P1.get_ea();
     typename ProxyCube<T2>::ea_type eaP2 = P2.get_ea();
     
-    const uword N = P1.get_n_elem();
-    
-    if( arma_config::cxx11 && arma_config::openmp && mp_len<eT, (ProxyCube<T1>::use_mp || ProxyCube<T2>::use_mp)>::test(N) )
+    if(use_mp)
       {
       ARMA_PRAGMA_OMP_PARALLEL_FOR
-      for(uword i=0; i<N; ++i)
+      for(uword i=0; i<n_elem; ++i)
         {
         out_mem[i] = std::atan2( eaP1[i], eaP2[i] );
         }
       }
     else
       {
-      for(uword i=0; i<N; ++i)
+      for(uword i=0; i<n_elem; ++i)
         {
         out_mem[i] = std::atan2( eaP1[i], eaP2[i] );
         }
@@ -199,17 +201,12 @@ glue_atan2::apply_noalias(Cube<typename T1::elem_type>& out, const ProxyCube<T1>
     }
   else
     {
-    if( arma_config::cxx11 && arma_config::openmp && mp_len<eT, (ProxyCube<T1>::use_mp || ProxyCube<T2>::use_mp)>::test(P1.get_n_elem_slice()) )
+    if(use_mp)
       {
-      for(uword slice=0; slice < n_slices; ++slice)
-        {
-        ARMA_PRAGMA_OMP_PARALLEL_FOR
-        for(uword col=0; col < n_cols; ++col)
-        for(uword row=0; row < n_rows; ++row)
-          {
-          out.at(row,col,slice) = std::atan2( P1.at(row,col,slice), P2.at(row,col,slice) );
-          }
-        }
+      const unwrap_cube<typename ProxyCube<T1>::stored_type> U1(P1.Q);
+      const unwrap_cube<typename ProxyCube<T2>::stored_type> U2(P2.Q);
+      
+      out = arma::atan2(U1.M, U2.M);
       }
     else
       {

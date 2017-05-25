@@ -106,4 +106,38 @@ trimatu(const Base<typename T1::elem_type,T1>& X, const sword k)
 
 
 
+// // TODO: implement for sparse matrices
+// template<typename T1>
+// arma_warn_unused
+// arma_inline
+// const SpOp<T1, spop_trimatu_ext>
+// trimatu(const SpBase<typename T1::elem_type,T1>& X, const sword k)
+//   {
+//   arma_extra_debug_sigprint();
+//   
+//   const uword row_offset = (k < 0) ? uword(-k) : uword(0);
+//   const uword col_offset = (k > 0) ? uword( k) : uword(0);
+//   
+//   return SpOp<T1, spop_trimatu_ext>(X.get_ref(), row_offset, col_offset);
+//   }
+// 
+// 
+// 
+// // TODO: implement for sparse matrices
+// template<typename T1>
+// arma_warn_unused
+// arma_inline
+// const SpOp<T1, spop_trimatl_ext>
+// trimatl(const SpBase<typename T1::elem_type,T1>& X, const sword k)
+//   {
+//   arma_extra_debug_sigprint();
+//   
+//   const uword row_offset = (k < 0) ? uword(-k) : uword(0);
+//   const uword col_offset = (k > 0) ? uword( k) : uword(0);
+//   
+//   return SpOp<T1, spop_trimatl_ext>(X.get_ref(), row_offset, col_offset);
+//   }
+
+
+
 //! @}

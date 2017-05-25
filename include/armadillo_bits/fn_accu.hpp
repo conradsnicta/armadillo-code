@@ -40,13 +40,14 @@ accu_proxy_linear(const Proxy<T1>& P)
       // NOTE: using parallelisation with manual reduction workaround to take into account complex numbers;
       // NOTE: OpenMP versions lower than 4.0 do not support user-defined reduction, which is required for complex numbers
       
-      const uword n_threads  = (std::min)(uword(podarray_prealloc_n_elem::val), uword(omp_get_max_threads()));
-      const uword chunk_size = n_elem / n_threads;
+      const int   n_threads_max = (std::max)(int(1), int(omp_get_max_threads()));
+      const uword n_threads_use = (std::min)(uword(podarray_prealloc_n_elem::val), uword(n_threads_max));
+      const uword chunk_size    = n_elem / n_threads_use;
       
-      podarray<eT> partial_accs(n_threads);
+      podarray<eT> partial_accs(n_threads_use);
       
       #pragma omp parallel for schedule(static)
-      for(uword thread_id=0; thread_id < n_threads; ++thread_id)
+      for(uword thread_id=0; thread_id < n_threads_use; ++thread_id)
         {
         const uword start = (thread_id+0) * chunk_size;
         const uword endp1 = (thread_id+1) * chunk_size;
@@ -60,12 +61,12 @@ accu_proxy_linear(const Proxy<T1>& P)
         partial_accs[thread_id] = acc;
         }
       
-      for(uword thread_id=0; thread_id < n_threads; ++thread_id)
+      for(uword thread_id=0; thread_id < n_threads_use; ++thread_id)
         {
         val += partial_accs[thread_id];
         }
       
-      for(uword i=(n_threads*chunk_size); i < n_elem; ++i)
+      for(uword i=(n_threads_use*chunk_size); i < n_elem; ++i)
         {
         val += A[i];
         }
@@ -429,13 +430,14 @@ accu_cube_proxy(const ProxyCube<T1>& P)
       
       #if defined(ARMA_USE_OPENMP)
         {
-        const uword n_threads  = (std::min)(uword(podarray_prealloc_n_elem::val), uword(omp_get_max_threads()));
-        const uword chunk_size = n_elem / n_threads;
+        const int   n_threads_max = (std::max)(int(1), int(omp_get_max_threads()));
+        const uword n_threads_use = (std::min)(uword(podarray_prealloc_n_elem::val), uword(n_threads_max));
+        const uword chunk_size    = n_elem / n_threads_use;
         
-        podarray<eT> partial_accs(n_threads);
+        podarray<eT> partial_accs(n_threads_use);
         
         #pragma omp parallel for schedule(static)
-        for(uword thread_id=0; thread_id < n_threads; ++thread_id)
+        for(uword thread_id=0; thread_id < n_threads_use; ++thread_id)
           {
           const uword start = (thread_id+0) * chunk_size;
           const uword endp1 = (thread_id+1) * chunk_size;
@@ -449,12 +451,12 @@ accu_cube_proxy(const ProxyCube<T1>& P)
           partial_accs[thread_id] = acc;
           }
         
-        for(uword thread_id=0; thread_id < n_threads; ++thread_id)
+        for(uword thread_id=0; thread_id < n_threads_use; ++thread_id)
           {
           val += partial_accs[thread_id];
           }
         
-        for(uword i=(n_threads*chunk_size); i < n_elem; ++i)
+        for(uword i=(n_threads_use*chunk_size); i < n_elem; ++i)
           {
           val += Pea[i];
           }

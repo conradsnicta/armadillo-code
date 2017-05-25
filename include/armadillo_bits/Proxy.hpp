@@ -247,7 +247,7 @@ class Proxy< Row<eT> >
 
 
 template<typename T1, typename gen_type>
-class Proxy< Gen<T1, gen_type > >
+class Proxy< Gen<T1, gen_type> >
   {
   public:
   
@@ -293,7 +293,7 @@ class Proxy< Gen<T1, gen_type > >
 
 
 template<typename T1>
-class Proxy< Gen<T1, gen_randu > >
+class Proxy< Gen<T1, gen_randu> >
   {
   public:
   
@@ -339,7 +339,7 @@ class Proxy< Gen<T1, gen_randu > >
 
 
 template<typename T1>
-class Proxy< Gen<T1, gen_randn > >
+class Proxy< Gen<T1, gen_randn> >
   {
   public:
   
@@ -385,7 +385,7 @@ class Proxy< Gen<T1, gen_randn > >
 
 
 template<typename T1, typename eop_type>
-class Proxy< eOp<T1, eop_type > >
+class Proxy< eOp<T1, eop_type> >
   {
   public:
   
@@ -431,7 +431,7 @@ class Proxy< eOp<T1, eop_type > >
 
 
 template<typename T1, typename T2, typename eglue_type>
-class Proxy< eGlue<T1, T2, eglue_type > >
+class Proxy< eGlue<T1, T2, eglue_type> >
   {
   public:
   
@@ -615,7 +615,7 @@ class Proxy< mtOp<out_eT, T1, op_type> >
 
 
 template<typename out_eT, typename T1, typename T2, typename glue_type>
-class Proxy< mtGlue<out_eT, T1, T2, glue_type > >
+class Proxy< mtGlue<out_eT, T1, T2, glue_type> >
   {
   public:
   

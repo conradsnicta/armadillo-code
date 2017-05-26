@@ -176,23 +176,32 @@
   
   #define arma_applier_2_mp(operatorA) \
     {\
-    if(n_rows != 1)\
+    if(n_cols == 1)\
       {\
       _Pragma("omp parallel for schedule(static)")\
-      for(uword col=0; col<n_cols; ++col)\
+      for(uword count=0; count < n_rows; ++count)\
         {\
-        for(uword row=0; row<n_rows; ++row)\
-          {\
-          out.at(row,col) operatorA eop_core<eop_type>::process(P.at(row,col), k);\
-          }\
+        out_mem[count] operatorA eop_core<eop_type>::process(P.at(count,0), k);\
         }\
       }\
     else\
+    if(n_rows == 1)\
       {\
       _Pragma("omp parallel for schedule(static)")\
       for(uword count=0; count < n_cols; ++count)\
         {\
         out_mem[count] operatorA eop_core<eop_type>::process(P.at(0,count), k);\
+        }\
+      }\
+    else\
+      {\
+      _Pragma("omp parallel for schedule(static)")\
+      for(uword col=0; col < n_cols; ++col)\
+        {\
+        for(uword row=0; row < n_rows; ++row)\
+          {\
+          out.at(row,col) operatorA eop_core<eop_type>::process(P.at(row,col), k);\
+          }\
         }\
       }\
     }

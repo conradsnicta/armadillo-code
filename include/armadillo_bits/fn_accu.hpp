@@ -25,6 +25,8 @@ inline
 typename T1::elem_type
 accu_proxy_linear(const Proxy<T1>& P)
   {
+  arma_extra_debug_sigprint();
+  
   typedef typename T1::elem_type eT;
   
   const uword n_elem = P.get_n_elem();
@@ -129,6 +131,8 @@ inline
 typename T1::elem_type
 accu_proxy_mat(const Proxy<T1>& P)
   {
+  arma_extra_debug_sigprint();
+  
   const quasi_unwrap<typename Proxy<T1>::stored_type> tmp(P.Q);
   
   return arrayops::accumulate(tmp.M.memptr(), tmp.M.n_elem);
@@ -142,11 +146,13 @@ inline
 typename T1::elem_type
 accu_proxy_at(const Proxy<T1>& P)
   {
+  arma_extra_debug_sigprint();
+  
   typedef typename T1::elem_type eT;
   
-  if( arma_config::cxx11 && arma_config::openmp && Proxy<T1>::use_mp && mp_len<eT>::test(P.get_n_elem()) )
+  if(arma_config::openmp && Proxy<T1>::use_mp && mp_len<eT>::test(P.get_n_elem()))
     {
-    return accu_proxy_mat(P);
+    return accu_proxy_at_mp(P);
     }
   
   const uword n_rows = P.get_n_rows();
@@ -189,6 +195,71 @@ accu_proxy_at(const Proxy<T1>& P)
 
 
 
+template<typename T1>
+arma_hot
+inline
+typename T1::elem_type
+accu_proxy_at_mp(const Proxy<T1>& P)
+  {
+  arma_extra_debug_sigprint();
+  
+  typedef typename T1::elem_type eT;
+  
+  const uword n_rows = P.get_n_rows();
+  const uword n_cols = P.get_n_cols();
+  
+  eT val = eT(0);
+  
+  #if defined(ARMA_USE_OPENMP)
+    {
+    if(n_cols == 1)
+      {
+      #pragma omp parallel for schedule(static)
+      for(uword row=0; row < n_rows; ++row)
+        {
+        val += P.at(row,0);
+        }
+      }
+    else
+    if(n_rows == 1)
+      {
+      #pragma omp parallel for schedule(static)
+      for(uword col=0; col < n_cols; ++col)
+        {
+        val += P.at(0,col);
+        }
+      }
+    else
+      {
+      eT val1 = eT(0);
+      eT val2 = eT(0);
+      
+      #pragma omp parallel for schedule(static)
+      for(uword col=0; col < n_cols; ++col)
+        {
+        uword i,j;
+        for(i=0, j=1; j < n_rows; i+=2, j+=2)
+          {
+          val1 += P.at(i,col);
+          val2 += P.at(j,col);
+          }
+        
+        if(i < n_rows)
+          {
+          val1 += P.at(i,col);
+          }
+        }
+      
+      val = val1 + val2;
+      }
+    }
+  #endif
+  
+  return val;
+  }
+
+
+
 //! accumulate the elements of a matrix
 template<typename T1>
 arma_warn_unused
@@ -199,11 +270,13 @@ accu(const T1& X)
   {
   arma_extra_debug_sigprint();
   
+  typedef typename Proxy<T1>::elem_type eT;
+  
   const Proxy<T1> P(X);
   
-  const bool have_direct_mem = (is_Mat<typename Proxy<T1>::stored_type>::value) || (is_subview_col<typename Proxy<T1>::stored_type>::value);
+  const bool direct_mem = (is_Mat<typename Proxy<T1>::stored_type>::value) || (is_subview_col<typename Proxy<T1>::stored_type>::value);
   
-  return (Proxy<T1>::use_at) ? accu_proxy_at(P) : (have_direct_mem ? accu_proxy_mat(P) : accu_proxy_linear(P));
+  return (direct_mem) ? accu_proxy_mat(P) : ( (Proxy<T1>::use_at) ? accu_proxy_at(P) : accu_proxy_linear(P) );
   }
 
 

@@ -190,7 +190,24 @@
   
   #define arma_applier_2_mp(operatorA, operatorB) \
     {\
-    if(n_rows != 1)\
+    if(n_cols == 1)\
+      {\
+      _Pragma("omp parallel for schedule(static)")\
+      for(uword count=0; count < n_rows; ++count)\
+        {\
+        out_mem[count] operatorA P1.at(count,0) operatorB P2.at(count,0);\
+        }\
+      }\
+    else\
+    if(n_rows == 1)\
+      {\
+      _Pragma("omp parallel for schedule(static)")\
+      for(uword count=0; count < n_cols; ++count)\
+        {\
+        out_mem[count] operatorA P1.at(0,count) operatorB P2.at(0,count);\
+        }\
+      }\
+    else\
       {\
       _Pragma("omp parallel for schedule(static)")\
       for(uword col=0; col<n_cols; ++col)\
@@ -199,14 +216,6 @@
           {\
           out.at(row,col) operatorA P1.at(row,col) operatorB P2.at(row,col);\
           }\
-        }\
-      }\
-    else\
-      {\
-      _Pragma("omp parallel for schedule(static)")\
-      for(uword count=0; count < n_cols; ++count)\
-        {\
-        out_mem[count] operatorA P1.at(0,count) operatorB P2.at(0,count);\
         }\
       }\
     }

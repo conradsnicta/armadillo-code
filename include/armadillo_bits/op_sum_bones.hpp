@@ -36,6 +36,9 @@ class op_sum
   template<typename T1>
   arma_hot inline static void apply_noalias_proxy(Mat<typename T1::elem_type>& out, const Proxy<T1>& P, const uword dim);
   
+  template<typename T1>
+  arma_hot inline static void apply_noalias_proxy_mp(Mat<typename T1::elem_type>& out, const Proxy<T1>& P, const uword dim);
+  
   
   // cubes
   

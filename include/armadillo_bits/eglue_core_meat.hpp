@@ -181,7 +181,8 @@
   
   #define arma_applier_1_mp(operatorA, operatorB) \
     {\
-    _Pragma("omp parallel for schedule(static)")\
+    const int n_threads = omp_in_parallel() ? int(1) : int((std::min)(int(8), int((std::max)(int(1),int(omp_get_max_threads())))));\
+    _Pragma("omp parallel for schedule(static) num_threads(n_threads)")\
     for(uword i=0; i<n_elem; ++i)\
       {\
       out_mem[i] operatorA P1[i] operatorB P2[i];\
@@ -190,9 +191,10 @@
   
   #define arma_applier_2_mp(operatorA, operatorB) \
     {\
+    const int n_threads = omp_in_parallel() ? int(1) : int((std::min)(int(8), int((std::max)(int(1),int(omp_get_max_threads())))));\
     if(n_cols == 1)\
       {\
-      _Pragma("omp parallel for schedule(static)")\
+      _Pragma("omp parallel for schedule(static) num_threads(n_threads)")\
       for(uword count=0; count < n_rows; ++count)\
         {\
         out_mem[count] operatorA P1.at(count,0) operatorB P2.at(count,0);\
@@ -201,7 +203,7 @@
     else\
     if(n_rows == 1)\
       {\
-      _Pragma("omp parallel for schedule(static)")\
+      _Pragma("omp parallel for schedule(static) num_threads(n_threads)")\
       for(uword count=0; count < n_cols; ++count)\
         {\
         out_mem[count] operatorA P1.at(0,count) operatorB P2.at(0,count);\
@@ -209,7 +211,7 @@
       }\
     else\
       {\
-      _Pragma("omp parallel for schedule(static)")\
+      _Pragma("omp parallel for schedule(static) num_threads(n_threads)")\
       for(uword col=0; col<n_cols; ++col)\
         {\
         for(uword row=0; row<n_rows; ++row)\
@@ -222,7 +224,8 @@
   
   #define arma_applier_3_mp(operatorA, operatorB) \
     {\
-    _Pragma("omp parallel for schedule(static)")\
+    const int n_threads = omp_in_parallel() ? int(1) : int((std::min)(int(8), int((std::max)(int(1),int(omp_get_max_threads())))));\
+    _Pragma("omp parallel for schedule(static) num_threads(n_threads)")\
     for(uword slice=0; slice<n_slices; ++slice)\
       {\
       for(uword col=0; col<n_cols; ++col)\

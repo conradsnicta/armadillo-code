@@ -192,13 +192,15 @@ op_sum::apply_noalias_proxy_mp(Mat<typename T1::elem_type>& out, const Proxy<T1>
     const uword P_n_rows = P.get_n_rows();
     const uword P_n_cols = P.get_n_cols();
     
+    const int n_threads = omp_in_parallel() ? int(1) : int((std::min)(int(8), int((std::max)(int(1),int(omp_get_max_threads())))));
+    
     if(dim == 0)
       {
       out.set_size(1, P_n_cols);
       
       eT* out_mem = out.memptr();
       
-      #pragma omp parallel for schedule(static)
+      #pragma omp parallel for schedule(static) num_threads(n_threads)
       for(uword col=0; col < P_n_cols; ++col)
         {
         eT val1 = eT(0);
@@ -225,7 +227,7 @@ op_sum::apply_noalias_proxy_mp(Mat<typename T1::elem_type>& out, const Proxy<T1>
       
       eT* out_mem = out.memptr();
       
-      #pragma omp parallel for schedule(static)
+      #pragma omp parallel for schedule(static) num_threads(n_threads)
       for(uword row=0; row < P_n_rows; ++row)
         {
         eT acc = eT(0);
@@ -468,11 +470,13 @@ op_sum::apply_noalias_proxy_mp(Cube<typename T1::elem_type>& out, const ProxyCub
     const uword P_n_cols   = P.get_n_cols();
     const uword P_n_slices = P.get_n_slices();
     
+    const int n_threads = omp_in_parallel() ? int(1) : int((std::min)(int(8), int((std::max)(int(1),int(omp_get_max_threads())))));
+    
     if(dim == 0)
       {
       out.set_size(1, P_n_cols, P_n_slices);
       
-      #pragma omp parallel for schedule(static)
+      #pragma omp parallel for schedule(static) num_threads(n_threads)
       for(uword slice=0; slice < P_n_slices; ++slice)
         {
         eT* out_mem = out.slice_memptr(slice);
@@ -503,7 +507,7 @@ op_sum::apply_noalias_proxy_mp(Cube<typename T1::elem_type>& out, const ProxyCub
       {
       out.zeros(P_n_rows, 1, P_n_slices);
       
-      #pragma omp parallel for schedule(static)
+      #pragma omp parallel for schedule(static) num_threads(n_threads)
       for(uword slice=0; slice < P_n_slices; ++slice)
         {
         eT* out_mem = out.slice_memptr(slice);
@@ -522,7 +526,7 @@ op_sum::apply_noalias_proxy_mp(Cube<typename T1::elem_type>& out, const ProxyCub
       
       if(P_n_cols >= P_n_rows)
         {
-        #pragma omp parallel for schedule(static)
+        #pragma omp parallel for schedule(static) num_threads(n_threads)
         for(uword col=0; col < P_n_cols; ++col)
           {
           for(uword row=0; row < P_n_rows; ++row)
@@ -539,7 +543,7 @@ op_sum::apply_noalias_proxy_mp(Cube<typename T1::elem_type>& out, const ProxyCub
         }
       else
         {
-        #pragma omp parallel for schedule(static)
+        #pragma omp parallel for schedule(static) num_threads(n_threads)
         for(uword row=0; row < P_n_rows; ++row)
           {
           for(uword col=0; col < P_n_cols; ++col)

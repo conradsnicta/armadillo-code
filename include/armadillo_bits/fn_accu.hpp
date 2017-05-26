@@ -42,13 +42,13 @@ accu_proxy_linear(const Proxy<T1>& P)
       // NOTE: using parallelisation with manual reduction workaround to take into account complex numbers;
       // NOTE: OpenMP versions lower than 4.0 do not support user-defined reduction, which is required for complex numbers
       
-      const int   n_threads_max = (std::max)(int(1), int(omp_get_max_threads()));
+      const int   n_threads_max = omp_in_parallel() ? int(1) : int((std::min)(int(8), int((std::max)(int(1),int(omp_get_max_threads())))));
       const uword n_threads_use = (std::min)(uword(podarray_prealloc_n_elem::val), uword(n_threads_max));
       const uword chunk_size    = n_elem / n_threads_use;
       
       podarray<eT> partial_accs(n_threads_use);
       
-      #pragma omp parallel for schedule(static)
+      #pragma omp parallel for schedule(static) num_threads(int(n_threads_use))
       for(uword thread_id=0; thread_id < n_threads_use; ++thread_id)
         {
         const uword start = (thread_id+0) * chunk_size;
@@ -163,9 +163,11 @@ accu_proxy_at_mp(const Proxy<T1>& P)
     const uword n_rows = P.get_n_rows();
     const uword n_cols = P.get_n_cols();
     
+    const int n_threads = omp_in_parallel() ? int(1) : int((std::min)(int(8), int((std::max)(int(1),int(omp_get_max_threads())))));
+    
     if(n_cols == 1)
       {
-      #pragma omp parallel for schedule(static)
+      #pragma omp parallel for schedule(static) num_threads(n_threads)
       for(uword row=0; row < n_rows; ++row)
         {
         val += P.at(row,0);
@@ -174,7 +176,7 @@ accu_proxy_at_mp(const Proxy<T1>& P)
     else
     if(n_rows == 1)
       {
-      #pragma omp parallel for schedule(static)
+      #pragma omp parallel for schedule(static) num_threads(n_threads)
       for(uword col=0; col < n_cols; ++col)
         {
         val += P.at(0,col);
@@ -185,7 +187,7 @@ accu_proxy_at_mp(const Proxy<T1>& P)
       eT val1 = eT(0);
       eT val2 = eT(0);
       
-      #pragma omp parallel for schedule(static)
+      #pragma omp parallel for schedule(static) num_threads(n_threads)
       for(uword col=0; col < n_cols; ++col)
         {
         uword i,j;
@@ -455,13 +457,13 @@ accu_cube_proxy_linear(const ProxyCube<T1>& P)
       // NOTE: using parallelisation with manual reduction workaround to take into account complex numbers;
       // NOTE: OpenMP versions lower than 4.0 do not support user-defined reduction, which is required for complex numbers
       
-      const int   n_threads_max = (std::max)(int(1), int(omp_get_max_threads()));
+      const int   n_threads_max = omp_in_parallel() ? int(1) : int((std::min)(int(8), int((std::max)(int(1),int(omp_get_max_threads())))));
       const uword n_threads_use = (std::min)(uword(podarray_prealloc_n_elem::val), uword(n_threads_max));
       const uword chunk_size    = n_elem / n_threads_use;
       
       podarray<eT> partial_accs(n_threads_use);
       
-      #pragma omp parallel for schedule(static)
+      #pragma omp parallel for schedule(static) num_threads(int(n_threads_use))
       for(uword thread_id=0; thread_id < n_threads_use; ++thread_id)
         {
         const uword start = (thread_id+0) * chunk_size;
@@ -570,7 +572,9 @@ accu_cube_proxy_at_mp(const ProxyCube<T1>& P)
     
     podarray<eT> slice_accs(n_slices);
     
-    #pragma omp parallel for schedule(static)
+    const int n_threads = omp_in_parallel() ? int(1) : int((std::min)(int(8), int((std::max)(int(1),int(omp_get_max_threads())))));
+    
+    #pragma omp parallel for schedule(static) num_threads(n_threads)
     for(uword slice = 0; slice < n_slices; ++slice)
       {
       eT val1 = eT(0);

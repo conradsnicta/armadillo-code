@@ -131,7 +131,13 @@
 #if !defined(ARMA_OPENMP_THRESHOLD)
   #define ARMA_OPENMP_THRESHOLD 384
 #endif
-//// The minimum number of elements in a matrix to allow the use of OpenMP for parallelisation;
+//// The minimum number of elements in a matrix to allow OpenMP based parallelisation;
+//// it must be an integer that is at least 1.
+
+#if !defined(ARMA_OPENMP_THREADS)
+  #define ARMA_OPENMP_THREADS 8
+#endif
+//// The maximum number of threads to use for OpenMP based parallelisation;
 //// it must be an integer that is at least 1.
 
 #if !defined(ARMA_SPMAT_CHUNKSIZE)

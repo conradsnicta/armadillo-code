@@ -35,6 +35,13 @@ struct arma_config
   #endif
   
   
+  #if defined(ARMA_OPENMP_THREADS)
+    static const uword mp_threads = (sword(ARMA_OPENMP_THREADS) > 0) ? uword(ARMA_OPENMP_THREADS) : 8;
+  #else
+    static const uword mp_threads = 8;
+  #endif
+  
+  
   #if defined(ARMA_SPMAT_CHUNKSIZE)
     static const uword spmat_chunksize = (sword(ARMA_SPMAT_CHUNKSIZE) > 0) ? uword(ARMA_SPMAT_CHUNKSIZE) : 256;
   #else

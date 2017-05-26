@@ -192,7 +192,7 @@ op_sum::apply_noalias_proxy_mp(Mat<typename T1::elem_type>& out, const Proxy<T1>
     const uword P_n_rows = P.get_n_rows();
     const uword P_n_cols = P.get_n_cols();
     
-    const int n_threads = omp_in_parallel() ? int(1) : int((std::min)(int(8), int((std::max)(int(1),int(omp_get_max_threads())))));
+    const int n_threads = mp_thread_limit::get();
     
     if(dim == 0)
       {
@@ -470,7 +470,7 @@ op_sum::apply_noalias_proxy_mp(Cube<typename T1::elem_type>& out, const ProxyCub
     const uword P_n_cols   = P.get_n_cols();
     const uword P_n_slices = P.get_n_slices();
     
-    const int n_threads = omp_in_parallel() ? int(1) : int((std::min)(int(8), int((std::max)(int(1),int(omp_get_max_threads())))));
+    const int n_threads = mp_thread_limit::get();
     
     if(dim == 0)
       {

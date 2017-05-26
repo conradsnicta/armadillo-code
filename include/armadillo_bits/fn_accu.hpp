@@ -42,7 +42,7 @@ accu_proxy_linear(const Proxy<T1>& P)
       // NOTE: using parallelisation with manual reduction workaround to take into account complex numbers;
       // NOTE: OpenMP versions lower than 4.0 do not support user-defined reduction, which is required for complex numbers
       
-      const int   n_threads_max = omp_in_parallel() ? int(1) : int((std::min)(int(8), int((std::max)(int(1),int(omp_get_max_threads())))));
+      const int   n_threads_max = mp_thread_limit::get();
       const uword n_threads_use = (std::min)(uword(podarray_prealloc_n_elem::val), uword(n_threads_max));
       const uword chunk_size    = n_elem / n_threads_use;
       
@@ -163,7 +163,7 @@ accu_proxy_at_mp(const Proxy<T1>& P)
     const uword n_rows = P.get_n_rows();
     const uword n_cols = P.get_n_cols();
     
-    const int n_threads = omp_in_parallel() ? int(1) : int((std::min)(int(8), int((std::max)(int(1),int(omp_get_max_threads())))));
+    const int n_threads = mp_thread_limit::get();
     
     if(n_cols == 1)
       {
@@ -457,7 +457,7 @@ accu_cube_proxy_linear(const ProxyCube<T1>& P)
       // NOTE: using parallelisation with manual reduction workaround to take into account complex numbers;
       // NOTE: OpenMP versions lower than 4.0 do not support user-defined reduction, which is required for complex numbers
       
-      const int   n_threads_max = omp_in_parallel() ? int(1) : int((std::min)(int(8), int((std::max)(int(1),int(omp_get_max_threads())))));
+      const int   n_threads_max = mp_thread_limit::get();
       const uword n_threads_use = (std::min)(uword(podarray_prealloc_n_elem::val), uword(n_threads_max));
       const uword chunk_size    = n_elem / n_threads_use;
       
@@ -572,7 +572,7 @@ accu_cube_proxy_at_mp(const ProxyCube<T1>& P)
     
     podarray<eT> slice_accs(n_slices);
     
-    const int n_threads = omp_in_parallel() ? int(1) : int((std::min)(int(8), int((std::max)(int(1),int(omp_get_max_threads())))));
+    const int n_threads = mp_thread_limit::get();
     
     #pragma omp parallel for schedule(static) num_threads(n_threads)
     for(uword slice = 0; slice < n_slices; ++slice)

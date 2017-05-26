@@ -1286,6 +1286,7 @@ arma_assert_atlas_size(const T1& A, const T2& B)
         out << "@ arma_config::extra_code   = " << arma_config::extra_code   << '\n';
         out << "@ arma_config::mat_prealloc = " << arma_config::mat_prealloc << '\n';
         out << "@ arma_config::mp_threshold = " << arma_config::mp_threshold << '\n';
+        out << "@ arma_config::mp_threads   = " << arma_config::mp_threads   << '\n';
         out << "@ sizeof(void*)    = " << sizeof(void*)    << '\n';
         out << "@ sizeof(int)      = " << sizeof(int)      << '\n';
         out << "@ sizeof(long)     = " << sizeof(long)     << '\n';

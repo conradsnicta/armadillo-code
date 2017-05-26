@@ -181,7 +181,7 @@
   
   #define arma_applier_1_mp(operatorA, operatorB) \
     {\
-    const int n_threads = omp_in_parallel() ? int(1) : int((std::min)(int(8), int((std::max)(int(1),int(omp_get_max_threads())))));\
+    const int n_threads = mp_thread_limit::get();\
     _Pragma("omp parallel for schedule(static) num_threads(n_threads)")\
     for(uword i=0; i<n_elem; ++i)\
       {\
@@ -191,7 +191,7 @@
   
   #define arma_applier_2_mp(operatorA, operatorB) \
     {\
-    const int n_threads = omp_in_parallel() ? int(1) : int((std::min)(int(8), int((std::max)(int(1),int(omp_get_max_threads())))));\
+    const int n_threads = mp_thread_limit::get();\
     if(n_cols == 1)\
       {\
       _Pragma("omp parallel for schedule(static) num_threads(n_threads)")\
@@ -224,7 +224,7 @@
   
   #define arma_applier_3_mp(operatorA, operatorB) \
     {\
-    const int n_threads = omp_in_parallel() ? int(1) : int((std::min)(int(8), int((std::max)(int(1),int(omp_get_max_threads())))));\
+    const int n_threads = mp_thread_limit::get();\
     _Pragma("omp parallel for schedule(static) num_threads(n_threads)")\
     for(uword slice=0; slice<n_slices; ++slice)\
       {\

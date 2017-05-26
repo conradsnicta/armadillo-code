@@ -34,4 +34,23 @@ struct mp_len
 
 
 
+struct mp_thread_limit
+  {
+  arma_inline
+  static
+  int
+  get()
+    {
+    #if defined(ARMA_USE_OPENMP)
+      int n_threads = omp_in_parallel() ? int(1) : int((std::min)(int(arma_config::mp_threads), int((std::max)(int(1), int(omp_get_max_threads())))));
+    #else
+      int n_threads = int(1);
+    #endif
+    
+    return n_threads;
+    }
+  };
+
+
+
 //! @}

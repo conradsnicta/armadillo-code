@@ -208,15 +208,13 @@
   
   #define arma_applier_3_mp(operatorA) \
     {\
+    _Pragma("omp parallel for schedule(static)")\
     for(uword slice=0; slice<n_slices; ++slice)\
       {\
-      _Pragma("omp parallel for schedule(static)")\
       for(uword col=0; col<n_cols; ++col)\
+      for(uword row=0; row<n_rows; ++row)\
         {\
-        for(uword row=0; row<n_rows; ++row)\
-          {\
-          out.at(row,col,slice) operatorA eop_core<eop_type>::process(P.at(row,col,slice), k);\
-          }\
+        out.at(row,col,slice) operatorA eop_core<eop_type>::process(P.at(row,col,slice), k);\
         }\
       }\
     }
@@ -681,7 +679,7 @@ eop_core<eop_type>::apply(Cube<typename T1::elem_type>& out, const eOpCube<T1, e
     
     const ProxyCube<T1>& P = x.P;
     
-    if(use_mp && mp_len<eT>::test(x.get_n_elem_slice()))
+    if(use_mp && mp_len<eT>::test(x.get_n_elem()))
       {
       arma_applier_3_mp(=);
       }
@@ -757,7 +755,7 @@ eop_core<eop_type>::apply_inplace_plus(Cube<typename T1::elem_type>& out, const 
     {
     const ProxyCube<T1>& P = x.P;
     
-    if(use_mp && mp_len<eT>::test(x.get_n_elem_slice()))
+    if(use_mp && mp_len<eT>::test(x.get_n_elem()))
       {
       arma_applier_3_mp(+=);
       }
@@ -833,7 +831,7 @@ eop_core<eop_type>::apply_inplace_minus(Cube<typename T1::elem_type>& out, const
     {
     const ProxyCube<T1>& P = x.P;
     
-    if(use_mp && mp_len<eT>::test(x.get_n_elem_slice()))
+    if(use_mp && mp_len<eT>::test(x.get_n_elem()))
       {
       arma_applier_3_mp(-=);
       }
@@ -909,7 +907,7 @@ eop_core<eop_type>::apply_inplace_schur(Cube<typename T1::elem_type>& out, const
     {
     const ProxyCube<T1>& P = x.P;
     
-    if(use_mp && mp_len<eT>::test(x.get_n_elem_slice()))
+    if(use_mp && mp_len<eT>::test(x.get_n_elem()))
       {
       arma_applier_3_mp(*=);
       }
@@ -985,7 +983,7 @@ eop_core<eop_type>::apply_inplace_div(Cube<typename T1::elem_type>& out, const e
     {
     const ProxyCube<T1>& P = x.P;
     
-    if(use_mp && mp_len<eT>::test(x.get_n_elem_slice()))
+    if(use_mp && mp_len<eT>::test(x.get_n_elem()))
       {
       arma_applier_3_mp(/=);
       }

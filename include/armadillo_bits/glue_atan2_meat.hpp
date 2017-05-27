@@ -68,7 +68,7 @@ glue_atan2::apply_noalias(Mat<typename T1::elem_type>& out, const Proxy<T1>& P1,
   
   eT* out_mem = out.memptr();
   
-  const bool use_mp = arma_config::cxx11 && arma_config::openmp && mp_len<eT, (Proxy<T1>::use_mp || Proxy<T2>::use_mp)>::test(n_elem);
+  const bool use_mp = arma_config::cxx11 && arma_config::openmp && mp_gate<eT, (Proxy<T1>::use_mp || Proxy<T2>::use_mp)>::eval(n_elem);
   const bool use_at = Proxy<T1>::use_at || Proxy<T2>::use_at;
   
   if(use_at == false)
@@ -170,7 +170,7 @@ glue_atan2::apply_noalias(Cube<typename T1::elem_type>& out, const ProxyCube<T1>
   
   eT* out_mem = out.memptr();
   
-  const bool use_mp = arma_config::cxx11 && arma_config::openmp && mp_len<eT, (ProxyCube<T1>::use_mp || ProxyCube<T2>::use_mp)>::test(n_elem);
+  const bool use_mp = arma_config::cxx11 && arma_config::openmp && mp_gate<eT, (ProxyCube<T1>::use_mp || ProxyCube<T2>::use_mp)>::eval(n_elem);
   const bool use_at = ProxyCube<T1>::use_at || ProxyCube<T2>::use_at;
   
   if(use_at == false)

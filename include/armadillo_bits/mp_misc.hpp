@@ -21,12 +21,12 @@
 
 
 template<typename eT, const bool use_smaller_thresh = false>
-struct mp_len
+struct mp_gate
   {
   arma_inline
   static
   bool
-  test(const uword n_elem)
+  eval(const uword n_elem)
     {
     #if defined(ARMA_USE_OPENMP)
       if(omp_in_parallel())  { return false; }

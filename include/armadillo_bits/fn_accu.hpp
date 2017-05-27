@@ -35,7 +35,7 @@ accu_proxy_linear(const Proxy<T1>& P)
   
   const uword n_elem = P.get_n_elem();
   
-  if( arma_config::openmp && Proxy<T1>::use_mp && mp_len<eT>::test(n_elem) )
+  if( arma_config::openmp && Proxy<T1>::use_mp && mp_gate<eT>::eval(n_elem) )
     {
     #if defined(ARMA_USE_OPENMP)
       {
@@ -111,7 +111,7 @@ accu_proxy_at(const Proxy<T1>& P)
   
   typedef typename T1::elem_type eT;
   
-  if(arma_config::openmp && Proxy<T1>::use_mp && mp_len<eT>::test(P.get_n_elem()))
+  if(arma_config::openmp && Proxy<T1>::use_mp && mp_gate<eT>::eval(P.get_n_elem()))
     {
     return accu_proxy_at_mp(P);
     }
@@ -450,7 +450,7 @@ accu_cube_proxy_linear(const ProxyCube<T1>& P)
   
   const uword n_elem = P.get_n_elem();
   
-  if( arma_config::openmp && ProxyCube<T1>::use_mp && mp_len<eT>::test(n_elem) )
+  if( arma_config::openmp && ProxyCube<T1>::use_mp && mp_gate<eT>::eval(n_elem) )
     {
     #if defined(ARMA_USE_OPENMP)
       {
@@ -526,7 +526,7 @@ accu_cube_proxy_at(const ProxyCube<T1>& P)
   
   typedef typename T1::elem_type eT;
   
-  if(arma_config::openmp && ProxyCube<T1>::use_mp && mp_len<eT>::test(P.get_n_elem()))
+  if(arma_config::openmp && ProxyCube<T1>::use_mp && mp_gate<eT>::eval(P.get_n_elem()))
     {
     return accu_cube_proxy_at_mp(P);
     }

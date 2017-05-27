@@ -129,7 +129,7 @@ subview<eT>::inplace_op(const Base<eT,T1>& in, const char* identifier)
   
   arma_debug_assert_same_size(s, P, identifier);
   
-  const bool use_mp   = arma_config::cxx11 && arma_config::openmp && Proxy<T1>::use_mp && mp_len<eT>::test(s.n_elem);
+  const bool use_mp   = arma_config::cxx11 && arma_config::openmp && Proxy<T1>::use_mp && mp_gate<eT>::eval(s.n_elem);
   const bool is_alias = P.is_alias(s.m);
   
   if(is_alias)  { arma_extra_debug_print("aliasing detected"); }

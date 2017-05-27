@@ -198,7 +198,7 @@ diagview<eT>::operator= (const Base<eT,T1>& o)
     "diagview: given object has incompatible size"
     );
   
-  const bool use_mp   = arma_config::cxx11 && arma_config::openmp && Proxy<T1>::use_mp && mp_len<eT>::test(P.get_n_elem());
+  const bool use_mp   = arma_config::cxx11 && arma_config::openmp && Proxy<T1>::use_mp && mp_gate<eT>::eval(P.get_n_elem());
   const bool is_alias = P.is_alias(d_m);
   
   if(is_alias)  { arma_extra_debug_print("aliasing detected"); }

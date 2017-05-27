@@ -275,7 +275,7 @@ eglue_core<eglue_type>::apply(outT& out, const eGlue<T1, T2, eglue_type>& x)
     {
     const uword n_elem = x.get_n_elem();
     
-    if(use_mp && mp_len<eT, (Proxy<T1>::use_mp && Proxy<T2>::use_mp)>::test(n_elem))
+    if(use_mp && mp_gate<eT, (Proxy<T1>::use_mp && Proxy<T2>::use_mp)>::eval(n_elem))
       {
       typename Proxy<T1>::ea_type P1 = x.P1.get_ea();
       typename Proxy<T2>::ea_type P2 = x.P2.get_ea();
@@ -332,7 +332,7 @@ eglue_core<eglue_type>::apply(outT& out, const eGlue<T1, T2, eglue_type>& x)
     const Proxy<T1>& P1 = x.P1;
     const Proxy<T2>& P2 = x.P2;
     
-    if(use_mp && mp_len<eT, (Proxy<T1>::use_mp && Proxy<T2>::use_mp)>::test(x.get_n_elem()))
+    if(use_mp && mp_gate<eT, (Proxy<T1>::use_mp && Proxy<T2>::use_mp)>::eval(x.get_n_elem()))
       {
            if(is_same_type<eglue_type, eglue_plus >::yes) { arma_applier_2_mp(=, +); }
       else if(is_same_type<eglue_type, eglue_minus>::yes) { arma_applier_2_mp(=, -); }
@@ -376,7 +376,7 @@ eglue_core<eglue_type>::apply_inplace_plus(Mat<typename T1::elem_type>& out, con
     {
     const uword n_elem = x.get_n_elem();
     
-    if(use_mp && mp_len<eT, (Proxy<T1>::use_mp && Proxy<T2>::use_mp)>::test(n_elem))
+    if(use_mp && mp_gate<eT, (Proxy<T1>::use_mp && Proxy<T2>::use_mp)>::eval(n_elem))
       {
       typename Proxy<T1>::ea_type P1 = x.P1.get_ea();
       typename Proxy<T2>::ea_type P2 = x.P2.get_ea();
@@ -430,7 +430,7 @@ eglue_core<eglue_type>::apply_inplace_plus(Mat<typename T1::elem_type>& out, con
     const Proxy<T1>& P1 = x.P1;
     const Proxy<T2>& P2 = x.P2;
     
-    if(use_mp && mp_len<eT, (Proxy<T1>::use_mp && Proxy<T2>::use_mp)>::test(x.get_n_elem()))
+    if(use_mp && mp_gate<eT, (Proxy<T1>::use_mp && Proxy<T2>::use_mp)>::eval(x.get_n_elem()))
       {
            if(is_same_type<eglue_type, eglue_plus >::yes) { arma_applier_2_mp(+=, +); }
       else if(is_same_type<eglue_type, eglue_minus>::yes) { arma_applier_2_mp(+=, -); }
@@ -474,7 +474,7 @@ eglue_core<eglue_type>::apply_inplace_minus(Mat<typename T1::elem_type>& out, co
     {
     const uword n_elem = x.get_n_elem();
     
-    if(use_mp && mp_len<eT, (Proxy<T1>::use_mp && Proxy<T2>::use_mp)>::test(n_elem))
+    if(use_mp && mp_gate<eT, (Proxy<T1>::use_mp && Proxy<T2>::use_mp)>::eval(n_elem))
       {
       typename Proxy<T1>::ea_type P1 = x.P1.get_ea();
       typename Proxy<T2>::ea_type P2 = x.P2.get_ea();
@@ -528,7 +528,7 @@ eglue_core<eglue_type>::apply_inplace_minus(Mat<typename T1::elem_type>& out, co
     const Proxy<T1>& P1 = x.P1;
     const Proxy<T2>& P2 = x.P2;
     
-    if(use_mp && mp_len<eT, (Proxy<T1>::use_mp && Proxy<T2>::use_mp)>::test(x.get_n_elem()))
+    if(use_mp && mp_gate<eT, (Proxy<T1>::use_mp && Proxy<T2>::use_mp)>::eval(x.get_n_elem()))
       {
            if(is_same_type<eglue_type, eglue_plus >::yes) { arma_applier_2_mp(-=, +); }
       else if(is_same_type<eglue_type, eglue_minus>::yes) { arma_applier_2_mp(-=, -); }
@@ -572,7 +572,7 @@ eglue_core<eglue_type>::apply_inplace_schur(Mat<typename T1::elem_type>& out, co
     {
     const uword n_elem = x.get_n_elem();
     
-    if(use_mp && mp_len<eT, (Proxy<T1>::use_mp && Proxy<T2>::use_mp)>::test(n_elem))
+    if(use_mp && mp_gate<eT, (Proxy<T1>::use_mp && Proxy<T2>::use_mp)>::eval(n_elem))
       {
       typename Proxy<T1>::ea_type P1 = x.P1.get_ea();
       typename Proxy<T2>::ea_type P2 = x.P2.get_ea();
@@ -626,7 +626,7 @@ eglue_core<eglue_type>::apply_inplace_schur(Mat<typename T1::elem_type>& out, co
     const Proxy<T1>& P1 = x.P1;
     const Proxy<T2>& P2 = x.P2;
     
-    if(use_mp && mp_len<eT, (Proxy<T1>::use_mp && Proxy<T2>::use_mp)>::test(x.get_n_elem()))
+    if(use_mp && mp_gate<eT, (Proxy<T1>::use_mp && Proxy<T2>::use_mp)>::eval(x.get_n_elem()))
       {
            if(is_same_type<eglue_type, eglue_plus >::yes) { arma_applier_2_mp(*=, +); }
       else if(is_same_type<eglue_type, eglue_minus>::yes) { arma_applier_2_mp(*=, -); }
@@ -670,7 +670,7 @@ eglue_core<eglue_type>::apply_inplace_div(Mat<typename T1::elem_type>& out, cons
     {
     const uword n_elem = x.get_n_elem();
     
-    if(use_mp && mp_len<eT, (Proxy<T1>::use_mp && Proxy<T2>::use_mp)>::test(n_elem))
+    if(use_mp && mp_gate<eT, (Proxy<T1>::use_mp && Proxy<T2>::use_mp)>::eval(n_elem))
       {
       typename Proxy<T1>::ea_type P1 = x.P1.get_ea();
       typename Proxy<T2>::ea_type P2 = x.P2.get_ea();
@@ -724,7 +724,7 @@ eglue_core<eglue_type>::apply_inplace_div(Mat<typename T1::elem_type>& out, cons
     const Proxy<T1>& P1 = x.P1;
     const Proxy<T2>& P2 = x.P2;
     
-    if(use_mp && mp_len<eT, (Proxy<T1>::use_mp && Proxy<T2>::use_mp)>::test(x.get_n_elem()))
+    if(use_mp && mp_gate<eT, (Proxy<T1>::use_mp && Proxy<T2>::use_mp)>::eval(x.get_n_elem()))
       {
            if(is_same_type<eglue_type, eglue_plus >::yes) { arma_applier_2_mp(/=, +); }
       else if(is_same_type<eglue_type, eglue_minus>::yes) { arma_applier_2_mp(/=, -); }
@@ -772,7 +772,7 @@ eglue_core<eglue_type>::apply(Cube<typename T1::elem_type>& out, const eGlueCube
     {
     const uword n_elem = out.n_elem;
     
-    if(use_mp && mp_len<eT, (ProxyCube<T1>::use_mp && ProxyCube<T2>::use_mp)>::test(n_elem))
+    if(use_mp && mp_gate<eT, (ProxyCube<T1>::use_mp && ProxyCube<T2>::use_mp)>::eval(n_elem))
       {
       typename ProxyCube<T1>::ea_type P1 = x.P1.get_ea();
       typename ProxyCube<T2>::ea_type P2 = x.P2.get_ea();
@@ -830,7 +830,7 @@ eglue_core<eglue_type>::apply(Cube<typename T1::elem_type>& out, const eGlueCube
     const ProxyCube<T1>& P1 = x.P1;
     const ProxyCube<T2>& P2 = x.P2;
     
-    if(use_mp && mp_len<eT, (ProxyCube<T1>::use_mp && ProxyCube<T2>::use_mp)>::test(x.get_n_elem()))
+    if(use_mp && mp_gate<eT, (ProxyCube<T1>::use_mp && ProxyCube<T2>::use_mp)>::eval(x.get_n_elem()))
       {
            if(is_same_type<eglue_type, eglue_plus >::yes) { arma_applier_3_mp(=, +); }
       else if(is_same_type<eglue_type, eglue_minus>::yes) { arma_applier_3_mp(=, -); }
@@ -875,7 +875,7 @@ eglue_core<eglue_type>::apply_inplace_plus(Cube<typename T1::elem_type>& out, co
     {
     const uword n_elem = out.n_elem;
     
-    if(use_mp && mp_len<eT, (ProxyCube<T1>::use_mp && ProxyCube<T2>::use_mp)>::test(n_elem))
+    if(use_mp && mp_gate<eT, (ProxyCube<T1>::use_mp && ProxyCube<T2>::use_mp)>::eval(n_elem))
       {
       typename ProxyCube<T1>::ea_type P1 = x.P1.get_ea();
       typename ProxyCube<T2>::ea_type P2 = x.P2.get_ea();
@@ -929,7 +929,7 @@ eglue_core<eglue_type>::apply_inplace_plus(Cube<typename T1::elem_type>& out, co
     const ProxyCube<T1>& P1 = x.P1;
     const ProxyCube<T2>& P2 = x.P2;
     
-    if(use_mp && mp_len<eT, (ProxyCube<T1>::use_mp && ProxyCube<T2>::use_mp)>::test(x.get_n_elem()))
+    if(use_mp && mp_gate<eT, (ProxyCube<T1>::use_mp && ProxyCube<T2>::use_mp)>::eval(x.get_n_elem()))
       {
            if(is_same_type<eglue_type, eglue_plus >::yes) { arma_applier_3_mp(+=, +); }
       else if(is_same_type<eglue_type, eglue_minus>::yes) { arma_applier_3_mp(+=, -); }
@@ -974,7 +974,7 @@ eglue_core<eglue_type>::apply_inplace_minus(Cube<typename T1::elem_type>& out, c
     {
     const uword n_elem = out.n_elem;
     
-    if(use_mp && mp_len<eT, (ProxyCube<T1>::use_mp && ProxyCube<T2>::use_mp)>::test(n_elem))
+    if(use_mp && mp_gate<eT, (ProxyCube<T1>::use_mp && ProxyCube<T2>::use_mp)>::eval(n_elem))
       {
       typename ProxyCube<T1>::ea_type P1 = x.P1.get_ea();
       typename ProxyCube<T2>::ea_type P2 = x.P2.get_ea();
@@ -1028,7 +1028,7 @@ eglue_core<eglue_type>::apply_inplace_minus(Cube<typename T1::elem_type>& out, c
     const ProxyCube<T1>& P1 = x.P1;
     const ProxyCube<T2>& P2 = x.P2;
     
-    if(use_mp && mp_len<eT, (ProxyCube<T1>::use_mp && ProxyCube<T2>::use_mp)>::test(x.get_n_elem()))
+    if(use_mp && mp_gate<eT, (ProxyCube<T1>::use_mp && ProxyCube<T2>::use_mp)>::eval(x.get_n_elem()))
       {
            if(is_same_type<eglue_type, eglue_plus >::yes) { arma_applier_3_mp(-=, +); }
       else if(is_same_type<eglue_type, eglue_minus>::yes) { arma_applier_3_mp(-=, -); }
@@ -1073,7 +1073,7 @@ eglue_core<eglue_type>::apply_inplace_schur(Cube<typename T1::elem_type>& out, c
     {
     const uword n_elem = out.n_elem;
     
-    if(use_mp && mp_len<eT, (ProxyCube<T1>::use_mp && ProxyCube<T2>::use_mp)>::test(n_elem))
+    if(use_mp && mp_gate<eT, (ProxyCube<T1>::use_mp && ProxyCube<T2>::use_mp)>::eval(n_elem))
       {
       typename ProxyCube<T1>::ea_type P1 = x.P1.get_ea();
       typename ProxyCube<T2>::ea_type P2 = x.P2.get_ea();
@@ -1127,7 +1127,7 @@ eglue_core<eglue_type>::apply_inplace_schur(Cube<typename T1::elem_type>& out, c
     const ProxyCube<T1>& P1 = x.P1;
     const ProxyCube<T2>& P2 = x.P2;
     
-    if(use_mp && mp_len<eT, (ProxyCube<T1>::use_mp && ProxyCube<T2>::use_mp)>::test(x.get_n_elem()))
+    if(use_mp && mp_gate<eT, (ProxyCube<T1>::use_mp && ProxyCube<T2>::use_mp)>::eval(x.get_n_elem()))
       {
            if(is_same_type<eglue_type, eglue_plus >::yes) { arma_applier_3_mp(*=, +); }
       else if(is_same_type<eglue_type, eglue_minus>::yes) { arma_applier_3_mp(*=, -); }
@@ -1172,7 +1172,7 @@ eglue_core<eglue_type>::apply_inplace_div(Cube<typename T1::elem_type>& out, con
     {
     const uword n_elem = out.n_elem;
     
-    if(use_mp && mp_len<eT, (ProxyCube<T1>::use_mp && ProxyCube<T2>::use_mp)>::test(n_elem))
+    if(use_mp && mp_gate<eT, (ProxyCube<T1>::use_mp && ProxyCube<T2>::use_mp)>::eval(n_elem))
       {
       typename ProxyCube<T1>::ea_type P1 = x.P1.get_ea();
       typename ProxyCube<T2>::ea_type P2 = x.P2.get_ea();
@@ -1226,7 +1226,7 @@ eglue_core<eglue_type>::apply_inplace_div(Cube<typename T1::elem_type>& out, con
     const ProxyCube<T1>& P1 = x.P1;
     const ProxyCube<T2>& P2 = x.P2;
     
-    if(use_mp && mp_len<eT, (ProxyCube<T1>::use_mp && ProxyCube<T2>::use_mp)>::test(x.get_n_elem()))
+    if(use_mp && mp_gate<eT, (ProxyCube<T1>::use_mp && ProxyCube<T2>::use_mp)>::eval(x.get_n_elem()))
       {
            if(is_same_type<eglue_type, eglue_plus >::yes) { arma_applier_3_mp(/=, +); }
       else if(is_same_type<eglue_type, eglue_minus>::yes) { arma_applier_3_mp(/=, -); }

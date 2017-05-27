@@ -28,6 +28,10 @@ struct mp_len
   bool
   test(const uword n_elem)
     {
+    #if defined(ARMA_USE_OPENMP)
+      if(omp_in_parallel())  { return false; }
+    #endif
+    
     return (is_cx<eT>::yes || use_smaller_thresh) ? (n_elem >= (arma_config::mp_threshold/uword(2))) : (n_elem >= arma_config::mp_threshold);
     }
   };
@@ -42,7 +46,7 @@ struct mp_thread_limit
   get()
     {
     #if defined(ARMA_USE_OPENMP)
-      int n_threads = omp_in_parallel() ? int(1) : int((std::min)(int(arma_config::mp_threads), int((std::max)(int(1), int(omp_get_max_threads())))));
+      int n_threads = (std::min)(int(arma_config::mp_threads), int((std::max)(int(1), int(omp_get_max_threads()))));
     #else
       int n_threads = int(1);
     #endif

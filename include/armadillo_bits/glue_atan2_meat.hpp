@@ -19,16 +19,6 @@
 
 
 
-#if (defined(ARMA_USE_OPENMP) && defined(ARMA_USE_CXX11))
-  #undef  ARMA_PRAGMA_OMP_PARALLEL_FOR
-  #define ARMA_PRAGMA_OMP_PARALLEL_FOR _Pragma("omp parallel for schedule(static) num_threads(n_threads)")
-#else
-  #undef  ARMA_PRAGMA_OMP_PARALLEL_FOR
-  #define ARMA_PRAGMA_OMP_PARALLEL_FOR
-#endif
-
-
-
 template<typename T1, typename T2>
 inline
 void
@@ -88,12 +78,16 @@ glue_atan2::apply_noalias(Mat<typename T1::elem_type>& out, const Proxy<T1>& P1,
     
     if(use_mp)
       {
-      const int n_threads = mp_thread_limit::get();
-      ARMA_PRAGMA_OMP_PARALLEL_FOR
-      for(uword i=0; i<n_elem; ++i)
+      #if defined(ARMA_USE_OPENMP)
         {
-        out_mem[i] = std::atan2( eaP1[i], eaP2[i] );
+        const int n_threads = mp_thread_limit::get();
+        #pragma omp parallel for schedule(static) num_threads(n_threads)
+        for(uword i=0; i<n_elem; ++i)
+          {
+          out_mem[i] = std::atan2( eaP1[i], eaP2[i] );
+          }
         }
+      #endif
       }
     else
       {
@@ -186,12 +180,16 @@ glue_atan2::apply_noalias(Cube<typename T1::elem_type>& out, const ProxyCube<T1>
     
     if(use_mp)
       {
-      const int n_threads = mp_thread_limit::get();
-      ARMA_PRAGMA_OMP_PARALLEL_FOR
-      for(uword i=0; i<n_elem; ++i)
+      #if defined(ARMA_USE_OPENMP)
         {
-        out_mem[i] = std::atan2( eaP1[i], eaP2[i] );
+        const int n_threads = mp_thread_limit::get();
+        #pragma omp parallel for schedule(static) num_threads(n_threads)
+        for(uword i=0; i<n_elem; ++i)
+          {
+          out_mem[i] = std::atan2( eaP1[i], eaP2[i] );
+          }
         }
+      #endif
       }
     else
       {
@@ -222,10 +220,6 @@ glue_atan2::apply_noalias(Cube<typename T1::elem_type>& out, const ProxyCube<T1>
       }
     }
   }
-
-
-
-#undef ARMA_PRAGMA_OMP_PARALLEL_FOR
 
 
 

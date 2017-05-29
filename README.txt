@@ -488,4 +488,4 @@ Octave/Matlab with C++ code that uses Armadillo matrices.
   https://sourceforge.net/projects/libpca/
   
 * matlab2cpp: conversion of Matlab code to Armadillo based C++ code
-  https://github.com/jonathf/matlab2cpp
+  https://github.com/emc2norway/m2cpp

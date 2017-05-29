@@ -40,7 +40,7 @@ accu_proxy_linear(const Proxy<T1>& P)
     #if defined(ARMA_USE_OPENMP)
       {
       // NOTE: using parallelisation with manual reduction workaround to take into account complex numbers;
-      // NOTE: OpenMP versions lower than 4.0 do not support user-defined reduction, which is required for complex numbers
+      // NOTE: OpenMP versions lower than 4.0 do not support user-defined reduction
       
       const int   n_threads_max = mp_thread_limit::get();
       const uword n_threads_use = (std::min)(uword(podarray_prealloc_n_elem::val), uword(n_threads_max));
@@ -455,7 +455,7 @@ accu_cube_proxy_linear(const ProxyCube<T1>& P)
     #if defined(ARMA_USE_OPENMP)
       {
       // NOTE: using parallelisation with manual reduction workaround to take into account complex numbers;
-      // NOTE: OpenMP versions lower than 4.0 do not support user-defined reduction, which is required for complex numbers
+      // NOTE: OpenMP versions lower than 4.0 do not support user-defined reduction
       
       const int   n_threads_max = mp_thread_limit::get();
       const uword n_threads_use = (std::min)(uword(podarray_prealloc_n_elem::val), uword(n_threads_max));

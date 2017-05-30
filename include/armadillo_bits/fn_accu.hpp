@@ -184,19 +184,23 @@ accu_proxy_at_mp(const Proxy<T1>& P)
       }
     else
       {
-      eT val1 = eT(0);
-      eT val2 = eT(0);
+      podarray<eT> col_accs(n_cols);
       
       #pragma omp parallel for schedule(static) num_threads(n_threads)
       for(uword col=0; col < n_cols; ++col)
         {
+        eT val1 = eT(0);
+        eT val2 = eT(0);
+        
         uword i,j;
         for(i=0, j=1; j < n_rows; i+=2, j+=2)  { val1 += P.at(i,col); val2 += P.at(j,col); }
         
         if(i < n_rows)  { val1 += P.at(i,col); }
+        
+        col_accs[col] = val1 + val2;
         }
       
-      val = val1 + val2;
+      return arrayops::accumulate(col_accs.memptr(), n_cols);
       }
     }
   #endif

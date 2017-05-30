@@ -239,8 +239,6 @@ accu(const eGlue<T1,T2,eglue_schur>& expr)
   {
   arma_extra_debug_sigprint();
   
-  typedef typename T1::elem_type eT;
-  
   typedef eGlue<T1,T2,eglue_schur> expr_type;
   
   typedef typename expr_type::proxy1_type::stored_type P1_stored_type;
@@ -634,8 +632,6 @@ typename T1::elem_type
 accu(const eGlueCube<T1,T2,eglue_schur>& expr)
   {
   arma_extra_debug_sigprint();
-  
-  typedef typename T1::elem_type eT;
   
   typedef eGlueCube<T1,T2,eglue_schur> expr_type;
   

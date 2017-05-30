@@ -239,6 +239,8 @@ accu(const eGlue<T1,T2,eglue_schur>& expr)
   {
   arma_extra_debug_sigprint();
   
+  typedef typename T1::elem_type eT;
+  
   typedef eGlue<T1,T2,eglue_schur> expr_type;
   
   typedef typename expr_type::proxy1_type::stored_type P1_stored_type;
@@ -252,7 +254,9 @@ accu(const eGlue<T1,T2,eglue_schur>& expr)
     const quasi_unwrap<P1_stored_type> tmp1(expr.P1.Q);
     const quasi_unwrap<P2_stored_type> tmp2(expr.P2.Q);
     
-    return op_dot::direct_dot(tmp1.M.n_elem, tmp1.M.memptr(), tmp2.M.memptr());
+    const eT result = eT( op_dot::direct_dot(tmp1.M.n_elem, tmp1.M.memptr(), tmp2.M.memptr()) );
+    
+    if(arma_isfinite(result))  { return result; }
     }
   
   const Proxy<expr_type> P(expr);
@@ -633,6 +637,8 @@ accu(const eGlueCube<T1,T2,eglue_schur>& expr)
   {
   arma_extra_debug_sigprint();
   
+  typedef typename T1::elem_type eT;
+  
   typedef eGlueCube<T1,T2,eglue_schur> expr_type;
   
   typedef typename ProxyCube<T1>::stored_type P1_stored_type;
@@ -643,12 +649,14 @@ accu(const eGlueCube<T1,T2,eglue_schur>& expr)
     const unwrap_cube<P1_stored_type> tmp1(expr.P1.Q);
     const unwrap_cube<P2_stored_type> tmp2(expr.P2.Q);
     
-    return op_dot::direct_dot(tmp1.M.n_elem, tmp1.M.memptr(), tmp2.M.memptr());
+    const eT result = eT( op_dot::direct_dot(tmp1.M.n_elem, tmp1.M.memptr(), tmp2.M.memptr()) );
+    
+    if(arma_isfinite(result))  { return result; }
     }
   
   const ProxyCube<expr_type> P(expr);
   
-  return accu_cube_proxy(P);
+  return (ProxyCube<T1>::use_at) ? accu_cube_proxy_at(P) : accu_cube_proxy_linear(P);
   }
 
 

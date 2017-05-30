@@ -163,28 +163,60 @@ accu_proxy_at_mp(const Proxy<T1>& P)
     const uword n_rows = P.get_n_rows();
     const uword n_cols = P.get_n_cols();
     
-    const int n_threads = mp_thread_limit::get();
-    
     if(n_cols == 1)
       {
-      #pragma omp parallel for schedule(static) num_threads(n_threads)
-      for(uword row=0; row < n_rows; ++row)
+      const int   n_threads_max = mp_thread_limit::get();
+      const uword n_threads_use = (std::min)(uword(podarray_prealloc_n_elem::val), uword(n_threads_max));
+      const uword chunk_size    = n_rows / n_threads_use;
+      
+      podarray<eT> partial_accs(n_threads_use);
+      
+      #pragma omp parallel for schedule(static) num_threads(int(n_threads_use))
+      for(uword thread_id=0; thread_id < n_threads_use; ++thread_id)
         {
-        val += P.at(row,0);
+        const uword start = (thread_id+0) * chunk_size;
+        const uword endp1 = (thread_id+1) * chunk_size;
+        
+        eT acc = eT(0);
+        for(uword i=start; i < endp1; ++i)  { acc += P.at(i,0); }
+        
+        partial_accs[thread_id] = acc;
         }
+      
+      for(uword thread_id=0; thread_id < n_threads_use; ++thread_id)  { val += partial_accs[thread_id]; }
+      
+      for(uword i=(n_threads_use*chunk_size); i < n_rows; ++i)  { val += P.at(i,0); }
       }
     else
     if(n_rows == 1)
       {
-      #pragma omp parallel for schedule(static) num_threads(n_threads)
-      for(uword col=0; col < n_cols; ++col)
+      const int   n_threads_max = mp_thread_limit::get();
+      const uword n_threads_use = (std::min)(uword(podarray_prealloc_n_elem::val), uword(n_threads_max));
+      const uword chunk_size    = n_cols / n_threads_use;
+      
+      podarray<eT> partial_accs(n_threads_use);
+      
+      #pragma omp parallel for schedule(static) num_threads(int(n_threads_use))
+      for(uword thread_id=0; thread_id < n_threads_use; ++thread_id)
         {
-        val += P.at(0,col);
+        const uword start = (thread_id+0) * chunk_size;
+        const uword endp1 = (thread_id+1) * chunk_size;
+        
+        eT acc = eT(0);
+        for(uword i=start; i < endp1; ++i)  { acc += P.at(0,i); }
+        
+        partial_accs[thread_id] = acc;
         }
+      
+      for(uword thread_id=0; thread_id < n_threads_use; ++thread_id)  { val += partial_accs[thread_id]; }
+      
+      for(uword i=(n_threads_use*chunk_size); i < n_cols; ++i)  { val += P.at(0,i); }
       }
     else
       {
       podarray<eT> col_accs(n_cols);
+      
+      const int n_threads = mp_thread_limit::get();
       
       #pragma omp parallel for schedule(static) num_threads(n_threads)
       for(uword col=0; col < n_cols; ++col)
@@ -200,7 +232,7 @@ accu_proxy_at_mp(const Proxy<T1>& P)
         col_accs[col] = val1 + val2;
         }
       
-      return arrayops::accumulate(col_accs.memptr(), n_cols);
+      val = arrayops::accumulate(col_accs.memptr(), n_cols);
       }
     }
   #endif

@@ -156,6 +156,11 @@ accu_proxy_at_mp(const Proxy<T1>& P)
   
   typedef typename T1::elem_type eT;
   
+  if(P.get_n_elem() == uword(0))
+    {
+    return eT(0);
+    }
+  
   eT val = eT(0);
   
   #if defined(ARMA_USE_OPENMP)

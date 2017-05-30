@@ -656,7 +656,7 @@ accu(const eGlueCube<T1,T2,eglue_schur>& expr)
   
   const ProxyCube<expr_type> P(expr);
   
-  return (ProxyCube<T1>::use_at) ? accu_cube_proxy_at(P) : accu_cube_proxy_linear(P);
+  return (ProxyCube<expr_type>::use_at) ? accu_cube_proxy_at(P) : accu_cube_proxy_linear(P);
   }
 
 

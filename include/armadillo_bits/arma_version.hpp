@@ -20,9 +20,9 @@
 
 
 #define ARMA_VERSION_MAJOR 7
-#define ARMA_VERSION_MINOR 919
+#define ARMA_VERSION_MINOR 950
 #define ARMA_VERSION_PATCH 0
-#define ARMA_VERSION_NAME  "unstable development version"
+#define ARMA_VERSION_NAME  "Northern Banana Republic"
 
 
 

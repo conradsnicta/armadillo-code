@@ -119,7 +119,7 @@ GenEigsSolver<eT, SelectionRule, OpType>::restart(uword k)
 
   for(uword i = k; i < ncv; i++)
     {
-    if(cx_attrib::is_complex(ritz_val(i), eT(0)) && (i < ncv - 1) && cx_attrib::is_conj(ritz_val(i), ritz_val(i + 1), eT(0)))
+    if(cx_attrib::is_complex(ritz_val(i), eT(0)) && (i < (ncv - 1)) && cx_attrib::is_conj(ritz_val(i), ritz_val(i + 1), eT(0)))
       {
       // H - mu * I = Q1 * R1
       // H <- R1 * Q1 + mu * I = Q1' * H * Q1
@@ -164,13 +164,14 @@ GenEigsSolver<eT, SelectionRule, OpType>::restart(uword k)
     Col<eT> v(Vs.colptr(i), dim_n, false);
     v = V * q;
     }
+  
   Vs.col(k) = fac_V * Q.col(k);
   fac_V.head_cols(k + 1) = Vs;
 
   Col<eT> fk = fac_f * Q(ncv - 1, k - 1) + fac_V.col(k) * fac_H(k, k - 1);
   factorise_from(k, ncv, fk);
   retrieve_ritzpair();
-}
+  }
 
 
 

@@ -28,10 +28,17 @@ struct arma_config
   #endif
   
   
-  #if defined(ARMA_OPENMP_THRESHOLD)
-    static const uword mp_threshold = (sword(ARMA_OPENMP_THRESHOLD) > 0) ? uword(ARMA_OPENMP_THRESHOLD) : 384;
+  #if defined(ARMA_OPENMP_THRESHOLD_LIGHT)
+    static const uword mp_thresh_a = (sword(ARMA_OPENMP_THRESHOLD_LIGHT) > 0) ? uword(ARMA_OPENMP_THRESHOLD_LIGHT) : 16384;
   #else
-    static const uword mp_threshold = 384;
+    static const uword mp_thresh_a = 16384;
+  #endif
+  
+  
+  #if defined(ARMA_OPENMP_THRESHOLD)
+    static const uword mp_thresh_b = (sword(ARMA_OPENMP_THRESHOLD) > 0) ? uword(ARMA_OPENMP_THRESHOLD) : 384;
+  #else
+    static const uword mp_thresh_b = 384;
   #endif
   
   

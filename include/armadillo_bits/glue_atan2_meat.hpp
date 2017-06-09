@@ -68,7 +68,7 @@ glue_atan2::apply_noalias(Mat<typename T1::elem_type>& out, const Proxy<T1>& P1,
   
   eT* out_mem = out.memptr();
   
-  const bool use_mp = arma_config::cxx11 && arma_config::openmp && mp_gate<eT, (Proxy<T1>::heavy || Proxy<T2>::heavy)>::eval(n_elem);
+  const bool use_mp = arma_config::cxx11 && arma_config::openmp && mp_allow<eT>::eval(n_elem, true, (Proxy<T1>::heavy || Proxy<T2>::heavy));
   const bool use_at = Proxy<T1>::use_at || Proxy<T2>::use_at;
   
   if(use_at == false)
@@ -80,7 +80,7 @@ glue_atan2::apply_noalias(Mat<typename T1::elem_type>& out, const Proxy<T1>& P1,
       {
       #if defined(ARMA_USE_OPENMP)
         {
-        const int n_threads = mp_thread_limit::get();
+        const int n_threads = mp_thread_limit::get(true);
         #pragma omp parallel for schedule(static) num_threads(n_threads)
         for(uword i=0; i<n_elem; ++i)
           {
@@ -170,7 +170,7 @@ glue_atan2::apply_noalias(Cube<typename T1::elem_type>& out, const ProxyCube<T1>
   
   eT* out_mem = out.memptr();
   
-  const bool use_mp = arma_config::cxx11 && arma_config::openmp && mp_gate<eT, (ProxyCube<T1>::heavy || ProxyCube<T2>::heavy)>::eval(n_elem);
+  const bool use_mp = arma_config::cxx11 && arma_config::openmp && mp_allow<eT>::eval(n_elem, (ProxyCube<T1>::heavy || ProxyCube<T2>::heavy));
   const bool use_at = ProxyCube<T1>::use_at || ProxyCube<T2>::use_at;
   
   if(use_at == false)
@@ -182,7 +182,7 @@ glue_atan2::apply_noalias(Cube<typename T1::elem_type>& out, const ProxyCube<T1>
       {
       #if defined(ARMA_USE_OPENMP)
         {
-        const int n_threads = mp_thread_limit::get();
+        const int n_threads = mp_thread_limit::get(true);
         #pragma omp parallel for schedule(static) num_threads(n_threads)
         for(uword i=0; i<n_elem; ++i)
           {

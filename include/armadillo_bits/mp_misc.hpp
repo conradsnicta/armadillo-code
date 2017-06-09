@@ -20,19 +20,35 @@
 
 
 
-template<typename eT, const bool use_smaller_thresh = false>
-struct mp_gate
+template<typename eT>
+struct mp_allow
   {
   arma_inline
   static
   bool
-  eval(const uword n_elem)
+  eval(const uword n_elem, const bool heavy, const bool heavy_dual = false)
     {
     #if defined(ARMA_USE_OPENMP)
-      if(omp_in_parallel())  { return false; }
+      {
+      const bool length_ok = (heavy)
+                             ? ((is_cx<eT>::yes || heavy_dual) ? (n_elem >= (arma_config::mp_thresh_b/uword(2))) : (n_elem >= arma_config::mp_thresh_b))
+                             : ((is_cx<eT>::yes              ) ? (n_elem >= (arma_config::mp_thresh_a/uword(2))) : (n_elem >= arma_config::mp_thresh_a));
+      
+      if(length_ok)
+        {
+        if(omp_in_parallel())  { return false; }
+        
+        return true;
+        }
+      
+      return false;
+      }
+    #else
+      arma_ignore(n_elem);
+      arma_ignore(heavy);
+      arma_ignore(heavy_dual);
+      return false;
     #endif
-    
-    return (is_cx<eT>::yes || use_smaller_thresh) ? (n_elem >= (arma_config::mp_threshold/uword(2))) : (n_elem >= arma_config::mp_threshold);
     }
   };
 
@@ -43,11 +59,13 @@ struct mp_thread_limit
   arma_inline
   static
   int
-  get()
+  get(const bool heavy)
     {
     #if defined(ARMA_USE_OPENMP)
-      int n_threads = (std::min)(int(arma_config::mp_threads), int((std::max)(int(1), int(omp_get_max_threads()))));
+      int n_wanted  = int( (heavy) ? int(arma_config::mp_threads) : int((std::min)(int(2), int(arma_config::mp_threads))) );
+      int n_threads = int( (std::min)(int(n_wanted), int((std::max)(int(1), int(omp_get_max_threads())))) );
     #else
+      arma_ignore(heavy);
       int n_threads = int(1);
     #endif
     

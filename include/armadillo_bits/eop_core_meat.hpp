@@ -167,7 +167,7 @@
   
   #define arma_applier_1_mp(operatorA) \
     {\
-    const int n_threads = mp_thread_limit::get();\
+    const int n_threads = mp_thread_limit::get(heavy);\
     _Pragma("omp parallel for schedule(static) num_threads(n_threads)")\
     for(uword i=0; i<n_elem; ++i)\
       {\
@@ -177,7 +177,7 @@
   
   #define arma_applier_2_mp(operatorA) \
     {\
-    const int n_threads = mp_thread_limit::get();\
+    const int n_threads = mp_thread_limit::get(heavy);\
     if(n_cols == 1)\
       {\
       _Pragma("omp parallel for schedule(static) num_threads(n_threads)")\
@@ -210,7 +210,7 @@
   
   #define arma_applier_3_mp(operatorA) \
     {\
-    const int n_threads = mp_thread_limit::get();\
+    const int n_threads = mp_thread_limit::get(heavy);\
     _Pragma("omp parallel for schedule(static) num_threads(n_threads)")\
     for(uword slice=0; slice<n_slices; ++slice)\
       {\
@@ -254,13 +254,14 @@ eop_core<eop_type>::apply(outT& out, const eOp<T1, eop_type>& x)
   const eT  k       = x.aux;
         eT* out_mem = out.memptr();
   
-  const bool use_mp = (arma_config::cxx11 && arma_config::openmp) && (eOp<T1, eop_type>::heavy || (is_same_type<eop_type, eop_pow>::value && (is_cx<eT>::yes || x.aux != eT(2))));
+  const bool use_mp = arma_config::cxx11 && arma_config::openmp;
+  const bool heavy  = eOp<T1, eop_type>::heavy || (is_same_type<eop_type, eop_pow>::value && (is_cx<eT>::yes || x.aux != eT(2)));
   
   if(Proxy<T1>::use_at == false)
     {
     const uword n_elem = x.get_n_elem();
     
-    if(use_mp && mp_gate<eT>::eval(n_elem))
+    if(use_mp && mp_allow<eT>::eval(n_elem, heavy))
       {
       typename Proxy<T1>::ea_type P = x.P.get_ea();
       
@@ -300,7 +301,7 @@ eop_core<eop_type>::apply(outT& out, const eOp<T1, eop_type>& x)
     
     const Proxy<T1>& P = x.P;
     
-    if(use_mp && mp_gate<eT>::eval(x.get_n_elem()))
+    if(use_mp && mp_allow<eT>::eval(x.get_n_elem(), heavy))
       {
       arma_applier_2_mp(=);
       }
@@ -332,13 +333,14 @@ eop_core<eop_type>::apply_inplace_plus(Mat<typename T1::elem_type>& out, const e
   const eT  k       = x.aux;
         eT* out_mem = out.memptr();
   
-  const bool use_mp = (arma_config::cxx11 && arma_config::openmp) && (eOp<T1, eop_type>::heavy || (is_same_type<eop_type, eop_pow>::value && (is_cx<eT>::yes || x.aux != eT(2))));
+  const bool use_mp = arma_config::cxx11 && arma_config::openmp;
+  const bool heavy  = eOp<T1, eop_type>::heavy || (is_same_type<eop_type, eop_pow>::value && (is_cx<eT>::yes || x.aux != eT(2)));
   
   if(Proxy<T1>::use_at == false)
     {
     const uword n_elem = x.get_n_elem();
     
-    if(use_mp && mp_gate<eT>::eval(n_elem))
+    if(use_mp && mp_allow<eT>::eval(n_elem, heavy))
       {
       typename Proxy<T1>::ea_type P = x.P.get_ea();
       
@@ -375,7 +377,7 @@ eop_core<eop_type>::apply_inplace_plus(Mat<typename T1::elem_type>& out, const e
     {
     const Proxy<T1>& P = x.P;
     
-    if(use_mp && mp_gate<eT>::eval(x.get_n_elem()))
+    if(use_mp && mp_allow<eT>::eval(x.get_n_elem(), heavy))
       {
       arma_applier_2_mp(+=);
       }
@@ -407,13 +409,14 @@ eop_core<eop_type>::apply_inplace_minus(Mat<typename T1::elem_type>& out, const 
   const eT  k       = x.aux;
         eT* out_mem = out.memptr();
   
-  const bool use_mp = (arma_config::cxx11 && arma_config::openmp) && (eOp<T1, eop_type>::heavy || (is_same_type<eop_type, eop_pow>::value && (is_cx<eT>::yes || x.aux != eT(2))));
+  const bool use_mp = arma_config::cxx11 && arma_config::openmp;
+  const bool heavy  = eOp<T1, eop_type>::heavy || (is_same_type<eop_type, eop_pow>::value && (is_cx<eT>::yes || x.aux != eT(2)));
   
   if(Proxy<T1>::use_at == false)
     {
     const uword n_elem = x.get_n_elem();
     
-    if(use_mp && mp_gate<eT>::eval(n_elem))
+    if(use_mp && mp_allow<eT>::eval(n_elem, heavy))
       {
       typename Proxy<T1>::ea_type P = x.P.get_ea();
       
@@ -450,7 +453,7 @@ eop_core<eop_type>::apply_inplace_minus(Mat<typename T1::elem_type>& out, const 
     {
     const Proxy<T1>& P = x.P;
     
-    if(use_mp && mp_gate<eT>::eval(x.get_n_elem()))
+    if(use_mp && mp_allow<eT>::eval(x.get_n_elem(), heavy))
       {
       arma_applier_2_mp(-=);
       }
@@ -482,13 +485,14 @@ eop_core<eop_type>::apply_inplace_schur(Mat<typename T1::elem_type>& out, const 
   const eT  k       = x.aux;
         eT* out_mem = out.memptr();
   
-  const bool use_mp = (arma_config::cxx11 && arma_config::openmp) && (eOp<T1, eop_type>::heavy || (is_same_type<eop_type, eop_pow>::value && (is_cx<eT>::yes || x.aux != eT(2))));
+  const bool use_mp = arma_config::cxx11 && arma_config::openmp;
+  const bool heavy  = eOp<T1, eop_type>::heavy || (is_same_type<eop_type, eop_pow>::value && (is_cx<eT>::yes || x.aux != eT(2)));
   
   if(Proxy<T1>::use_at == false)
     {
     const uword n_elem = x.get_n_elem();
     
-    if(use_mp && mp_gate<eT>::eval(n_elem))
+    if(use_mp && mp_allow<eT>::eval(n_elem, heavy))
       {
       typename Proxy<T1>::ea_type P = x.P.get_ea();
       
@@ -525,7 +529,7 @@ eop_core<eop_type>::apply_inplace_schur(Mat<typename T1::elem_type>& out, const 
     {
     const Proxy<T1>& P = x.P;
     
-    if(use_mp && mp_gate<eT>::eval(x.get_n_elem()))
+    if(use_mp && mp_allow<eT>::eval(x.get_n_elem(), heavy))
       {
       arma_applier_2_mp(*=);
       }
@@ -557,13 +561,14 @@ eop_core<eop_type>::apply_inplace_div(Mat<typename T1::elem_type>& out, const eO
   const eT  k       = x.aux;
         eT* out_mem = out.memptr();
   
-  const bool use_mp = (arma_config::cxx11 && arma_config::openmp) && (eOp<T1, eop_type>::heavy || (is_same_type<eop_type, eop_pow>::value && (is_cx<eT>::yes || x.aux != eT(2))));
+  const bool use_mp = arma_config::cxx11 && arma_config::openmp;
+  const bool heavy  = eOp<T1, eop_type>::heavy || (is_same_type<eop_type, eop_pow>::value && (is_cx<eT>::yes || x.aux != eT(2)));
   
   if(Proxy<T1>::use_at == false)
     {
     const uword n_elem = x.get_n_elem();
     
-    if(use_mp && mp_gate<eT>::eval(n_elem))
+    if(use_mp && mp_allow<eT>::eval(n_elem, heavy))
       {
       typename Proxy<T1>::ea_type P = x.P.get_ea();
       
@@ -600,7 +605,7 @@ eop_core<eop_type>::apply_inplace_div(Mat<typename T1::elem_type>& out, const eO
     {
     const Proxy<T1>& P = x.P;
     
-    if(use_mp && mp_gate<eT>::eval(x.get_n_elem()))
+    if(use_mp && mp_allow<eT>::eval(x.get_n_elem(), heavy))
       {
       arma_applier_2_mp(/=);
       }
@@ -635,13 +640,14 @@ eop_core<eop_type>::apply(Cube<typename T1::elem_type>& out, const eOpCube<T1, e
   const eT  k       = x.aux;
         eT* out_mem = out.memptr();
   
-  const bool use_mp = (arma_config::cxx11 && arma_config::openmp) && (eOpCube<T1, eop_type>::heavy || (is_same_type<eop_type, eop_pow>::value && (is_cx<eT>::yes || x.aux != eT(2))));
+  const bool use_mp = arma_config::cxx11 && arma_config::openmp;
+  const bool heavy  = eOpCube<T1, eop_type>::heavy || (is_same_type<eop_type, eop_pow>::value && (is_cx<eT>::yes || x.aux != eT(2)));
   
   if(ProxyCube<T1>::use_at == false)
     {
     const uword n_elem = out.n_elem;
     
-    if(use_mp && mp_gate<eT>::eval(n_elem))
+    if(use_mp && mp_allow<eT>::eval(n_elem, heavy))
       {
       typename ProxyCube<T1>::ea_type P = x.P.get_ea();
       
@@ -682,7 +688,7 @@ eop_core<eop_type>::apply(Cube<typename T1::elem_type>& out, const eOpCube<T1, e
     
     const ProxyCube<T1>& P = x.P;
     
-    if(use_mp && mp_gate<eT>::eval(x.get_n_elem()))
+    if(use_mp && mp_allow<eT>::eval(x.get_n_elem(), heavy))
       {
       arma_applier_3_mp(=);
       }
@@ -715,13 +721,14 @@ eop_core<eop_type>::apply_inplace_plus(Cube<typename T1::elem_type>& out, const 
   const eT  k       = x.aux;
         eT* out_mem = out.memptr();
   
-  const bool use_mp = (arma_config::cxx11 && arma_config::openmp) && (eOpCube<T1, eop_type>::heavy || (is_same_type<eop_type, eop_pow>::value && (is_cx<eT>::yes || x.aux != eT(2))));
+  const bool use_mp = arma_config::cxx11 && arma_config::openmp;
+  const bool heavy  = eOpCube<T1, eop_type>::heavy || (is_same_type<eop_type, eop_pow>::value && (is_cx<eT>::yes || x.aux != eT(2)));
   
   if(ProxyCube<T1>::use_at == false)
     {
     const uword n_elem = out.n_elem;
     
-    if(use_mp && mp_gate<eT>::eval(n_elem))
+    if(use_mp && mp_allow<eT>::eval(n_elem, heavy))
       {
       typename ProxyCube<T1>::ea_type P = x.P.get_ea();
       
@@ -758,7 +765,7 @@ eop_core<eop_type>::apply_inplace_plus(Cube<typename T1::elem_type>& out, const 
     {
     const ProxyCube<T1>& P = x.P;
     
-    if(use_mp && mp_gate<eT>::eval(x.get_n_elem()))
+    if(use_mp && mp_allow<eT>::eval(x.get_n_elem(), heavy))
       {
       arma_applier_3_mp(+=);
       }
@@ -791,13 +798,14 @@ eop_core<eop_type>::apply_inplace_minus(Cube<typename T1::elem_type>& out, const
   const eT  k       = x.aux;
         eT* out_mem = out.memptr();
   
-  const bool use_mp = (arma_config::cxx11 && arma_config::openmp) && (eOpCube<T1, eop_type>::heavy || (is_same_type<eop_type, eop_pow>::value && (is_cx<eT>::yes || x.aux != eT(2))));
+  const bool use_mp = arma_config::cxx11 && arma_config::openmp;
+  const bool heavy  = eOpCube<T1, eop_type>::heavy || (is_same_type<eop_type, eop_pow>::value && (is_cx<eT>::yes || x.aux != eT(2)));
   
   if(ProxyCube<T1>::use_at == false)
     {
     const uword n_elem = out.n_elem;
       
-    if(use_mp && mp_gate<eT>::eval(n_elem))
+    if(use_mp && mp_allow<eT>::eval(n_elem, heavy))
       {
       typename ProxyCube<T1>::ea_type P = x.P.get_ea();
       
@@ -834,7 +842,7 @@ eop_core<eop_type>::apply_inplace_minus(Cube<typename T1::elem_type>& out, const
     {
     const ProxyCube<T1>& P = x.P;
     
-    if(use_mp && mp_gate<eT>::eval(x.get_n_elem()))
+    if(use_mp && mp_allow<eT>::eval(x.get_n_elem(), heavy))
       {
       arma_applier_3_mp(-=);
       }
@@ -867,13 +875,14 @@ eop_core<eop_type>::apply_inplace_schur(Cube<typename T1::elem_type>& out, const
   const eT  k       = x.aux;
         eT* out_mem = out.memptr();
   
-  const bool use_mp = (arma_config::cxx11 && arma_config::openmp) && (eOpCube<T1, eop_type>::heavy || (is_same_type<eop_type, eop_pow>::value && (is_cx<eT>::yes || x.aux != eT(2))));
+  const bool use_mp = arma_config::cxx11 && arma_config::openmp;
+  const bool heavy  = eOpCube<T1, eop_type>::heavy || (is_same_type<eop_type, eop_pow>::value && (is_cx<eT>::yes || x.aux != eT(2)));
   
   if(ProxyCube<T1>::use_at == false)
     {
     const uword n_elem = out.n_elem;
     
-    if(use_mp && mp_gate<eT>::eval(n_elem))
+    if(use_mp && mp_allow<eT>::eval(n_elem, heavy))
       {
       typename ProxyCube<T1>::ea_type P = x.P.get_ea();
       
@@ -910,7 +919,7 @@ eop_core<eop_type>::apply_inplace_schur(Cube<typename T1::elem_type>& out, const
     {
     const ProxyCube<T1>& P = x.P;
     
-    if(use_mp && mp_gate<eT>::eval(x.get_n_elem()))
+    if(use_mp && mp_allow<eT>::eval(x.get_n_elem(), heavy))
       {
       arma_applier_3_mp(*=);
       }
@@ -943,13 +952,14 @@ eop_core<eop_type>::apply_inplace_div(Cube<typename T1::elem_type>& out, const e
   const eT  k       = x.aux;
         eT* out_mem = out.memptr();
   
-  const bool use_mp = (arma_config::cxx11 && arma_config::openmp) && (eOpCube<T1, eop_type>::heavy || (is_same_type<eop_type, eop_pow>::value && (is_cx<eT>::yes || x.aux != eT(2))));
+  const bool use_mp = arma_config::cxx11 && arma_config::openmp;
+  const bool heavy  = eOpCube<T1, eop_type>::heavy || (is_same_type<eop_type, eop_pow>::value && (is_cx<eT>::yes || x.aux != eT(2)));
   
   if(ProxyCube<T1>::use_at == false)
     {
     const uword n_elem = out.n_elem;
     
-    if(use_mp && mp_gate<eT>::eval(n_elem))
+    if(use_mp && mp_allow<eT>::eval(n_elem, heavy))
       {
       typename ProxyCube<T1>::ea_type P = x.P.get_ea();
       
@@ -986,7 +996,7 @@ eop_core<eop_type>::apply_inplace_div(Cube<typename T1::elem_type>& out, const e
     {
     const ProxyCube<T1>& P = x.P;
     
-    if(use_mp && mp_gate<eT>::eval(x.get_n_elem()))
+    if(use_mp && mp_allow<eT>::eval(x.get_n_elem(), heavy))
       {
       arma_applier_3_mp(/=);
       }

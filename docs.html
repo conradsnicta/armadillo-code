@@ -11446,7 +11446,7 @@ See also:
 <table>
 <tbody>
 <tr><td><code>"lm"</code></td><td>&nbsp;=&nbsp;</td><td>obtain eigenvalues with largest magnitude (default operation)</td></tr>
-<tr><td><code>"sm"</code></td><td>&nbsp;=&nbsp;</td><td>obtain eigenvalues with smallest magnitude</td></tr>
+<tr><td><code>"sm"</code></td><td>&nbsp;=&nbsp;</td><td>obtain eigenvalues with smallest magnitude (see caveat below)</td></tr>
 <tr><td><code>"la"</code></td><td>&nbsp;=&nbsp;</td><td>obtain eigenvalues with largest algebraic value</td></tr>
 <tr><td><code>"sa"</code></td><td>&nbsp;=&nbsp;</td><td>obtain eigenvalues with smallest algebraic value</td></tr>
 </tbody>
@@ -11470,7 +11470,15 @@ The argument <i>tol</i> is optional; it specifies the tolerance for convergence
 </ul>
 </li>
 <br>
-<li><b>Caveat:</b> there is currently no check whether <i>X</i> is symmetric</li>
+<li><b>Caveats:</b>
+<ul>
+<li>there is currently no check whether <i>X</i> is symmetric</li>
+<li>
+it's more difficult to compute the smallest eigenvalues than the largest eigenvalues;
+<br>if the decomposition fails, try increasing <i>k</i> (number of eigenvalues) and/or the tolerance
+</li>
+</ul>
+</li>
 <br>
 <li>
 Examples:
@@ -11528,7 +11536,7 @@ Obtain a limited number of eigenvalues and eigenvectors of <b>sparse</b> general
 <table>
 <tbody>
 <tr><td><code>"lm"</code></td><td>&nbsp;=&nbsp;</td><td>obtain eigenvalues with largest magnitude (default operation)</td></tr>
-<tr><td><code>"sm"</code></td><td>&nbsp;=&nbsp;</td><td>obtain eigenvalues with smallest magnitude</td></tr>
+<tr><td><code>"sm"</code></td><td>&nbsp;=&nbsp;</td><td>obtain eigenvalues with smallest magnitude (see caveat below)</td></tr>
 <tr><td><code>"lr"</code></td><td>&nbsp;=&nbsp;</td><td>obtain eigenvalues with largest real part</td></tr>
 <tr><td><code>"sr"</code></td><td>&nbsp;=&nbsp;</td><td>obtain eigenvalues with smallest real part</td></tr>
 <tr><td><code>"li"</code></td><td>&nbsp;=&nbsp;</td><td>obtain eigenvalues with largest imaginary part</td></tr>
@@ -11556,6 +11564,10 @@ If <i>X</i> is not square sized, a <i>std::logic_error</i> exception is thrown
 <li><i>eigs_gen(eigval,X,k)</i> resets <i>eigval</i> and returns a bool set to <i>false</i> (exception is not thrown)</li>
 <li><i>eigs_gen(eigval,eigvec,X,k)</i> resets <i>eigval</i> &amp; <i>eigvec</i> and returns a bool set to <i>false</i> (exception is not thrown)</li>
 </ul>
+</li>
+<br>
+<li><b>Caveat:</b> it's more difficult to compute the smallest eigenvalues than the largest eigenvalues;
+<br>if the decomposition fails, try increasing <i>k</i> (number of eigenvalues) and/or the tolerance
 </li>
 <br>
 <li>

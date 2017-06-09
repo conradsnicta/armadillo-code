@@ -125,7 +125,7 @@ op_sum::apply_noalias_proxy(Mat<typename T1::elem_type>& out, const Proxy<T1>& P
   
   typedef typename T1::elem_type eT;
   
-  if( arma_config::openmp && Proxy<T1>::use_mp && mp_gate<eT>::eval(P.get_n_elem()) )
+  if( arma_config::openmp && Proxy<T1>::heavy && mp_gate<eT>::eval(P.get_n_elem()) )
     {
     op_sum::apply_noalias_proxy_mp(out, P, dim);
     
@@ -376,7 +376,7 @@ op_sum::apply_noalias_proxy(Cube<typename T1::elem_type>& out, const ProxyCube<T
   
   typedef typename T1::elem_type eT;
   
-  if( arma_config::openmp && ProxyCube<T1>::use_mp && mp_gate<eT>::eval(P.get_n_elem()) )
+  if( arma_config::openmp && ProxyCube<T1>::heavy && mp_gate<eT>::eval(P.get_n_elem()) )
     {
     op_sum::apply_noalias_proxy_mp(out, P, dim);
     

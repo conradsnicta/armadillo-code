@@ -44,7 +44,7 @@ struct Proxy_fixed
   typedef const T1&                                aligned_ea_type;
   
   static const bool use_at      = false;
-  static const bool use_mp      = false;
+  static const bool heavy       = false;
   static const bool has_subview = false;
   static const bool fake_mat    = false;
   
@@ -120,7 +120,7 @@ class Proxy< Mat<eT> >
   typedef const Mat<eT>&                           aligned_ea_type;
   
   static const bool use_at      = false;
-  static const bool use_mp      = false;
+  static const bool heavy       = false;
   static const bool has_subview = false;
   static const bool fake_mat    = false;
   
@@ -166,7 +166,7 @@ class Proxy< Col<eT> >
   typedef const Col<eT>&                           aligned_ea_type;
   
   static const bool use_at      = false;
-  static const bool use_mp      = false;
+  static const bool heavy       = false;
   static const bool has_subview = false;
   static const bool fake_mat    = false;
   
@@ -212,7 +212,7 @@ class Proxy< Row<eT> >
   typedef const Row<eT>&                           aligned_ea_type;
   
   static const bool use_at      = false;
-  static const bool use_mp      = false;
+  static const bool heavy       = false;
   static const bool has_subview = false;
   static const bool fake_mat    = false;
   
@@ -258,7 +258,7 @@ class Proxy< Gen<T1, gen_type> >
   typedef const Gen<T1, gen_type>&                 aligned_ea_type;
   
   static const bool use_at      = Gen<T1, gen_type>::use_at;
-  static const bool use_mp      = false;
+  static const bool heavy       = false;
   static const bool has_subview = false;
   static const bool fake_mat    = false;
   
@@ -304,7 +304,7 @@ class Proxy< Gen<T1, gen_randu> >
   typedef const Mat<elem_type>&                    aligned_ea_type;
   
   static const bool use_at      = false;
-  static const bool use_mp      = false;
+  static const bool heavy       = false;
   static const bool has_subview = false;
   static const bool fake_mat    = false;
   
@@ -350,7 +350,7 @@ class Proxy< Gen<T1, gen_randn> >
   typedef const Mat<elem_type>&                    aligned_ea_type;
   
   static const bool use_at      = false;
-  static const bool use_mp      = false;
+  static const bool heavy       = false;
   static const bool has_subview = false;
   static const bool fake_mat    = false;
   
@@ -396,7 +396,7 @@ class Proxy< eOp<T1, eop_type> >
   typedef const eOp<T1, eop_type>&                 aligned_ea_type;
   
   static const bool use_at      = eOp<T1, eop_type>::use_at;
-  static const bool use_mp      = eOp<T1, eop_type>::use_mp;
+  static const bool heavy       = eOp<T1, eop_type>::heavy;
   static const bool has_subview = eOp<T1, eop_type>::has_subview;
   static const bool fake_mat    = eOp<T1, eop_type>::fake_mat;
   
@@ -442,7 +442,7 @@ class Proxy< eGlue<T1, T2, eglue_type> >
   typedef const eGlue<T1, T2, eglue_type>&         aligned_ea_type;
   
   static const bool use_at      = eGlue<T1, T2, eglue_type>::use_at;
-  static const bool use_mp      = eGlue<T1, T2, eglue_type>::use_mp;
+  static const bool heavy       = eGlue<T1, T2, eglue_type>::heavy;
   static const bool has_subview = eGlue<T1, T2, eglue_type>::has_subview;
   static const bool fake_mat    = eGlue<T1, T2, eglue_type>::fake_mat;
   
@@ -488,7 +488,7 @@ class Proxy< Op<T1, op_type> >
   typedef const Mat<elem_type>&                    aligned_ea_type;
   
   static const bool use_at      = false;
-  static const bool use_mp      = false;
+  static const bool heavy       = false;
   static const bool has_subview = false;
   static const bool fake_mat    = false;
   
@@ -535,7 +535,7 @@ class Proxy< Glue<T1, T2, glue_type> >
   
   static const bool use_at      = false;
   static const bool has_subview = false;
-  static const bool use_mp      = false;
+  static const bool heavy       = false;
   static const bool fake_mat    = false;
   
   static const bool is_row = Glue<T1, T2, glue_type>::is_row;
@@ -580,7 +580,7 @@ class Proxy< mtOp<out_eT, T1, op_type> >
   typedef          const Mat<out_eT>&           aligned_ea_type;
   
   static const bool use_at      = false;
-  static const bool use_mp      = false;
+  static const bool heavy       = false;
   static const bool has_subview = false;
   static const bool fake_mat    = false;
   
@@ -626,7 +626,7 @@ class Proxy< mtGlue<out_eT, T1, T2, glue_type> >
   typedef          const Mat<out_eT>&           aligned_ea_type;
   
   static const bool use_at      = false;
-  static const bool use_mp      = false;
+  static const bool heavy       = false;
   static const bool has_subview = false;
   static const bool fake_mat    = false;
   
@@ -672,7 +672,7 @@ class Proxy< subview<eT> >
   typedef const subview<eT>&                       aligned_ea_type;
   
   static const bool use_at      = true;
-  static const bool use_mp      = false;
+  static const bool heavy       = false;
   static const bool has_subview = true;
   static const bool fake_mat    = false;
   
@@ -718,7 +718,7 @@ class Proxy< subview_col<eT> >
   typedef const subview_col<eT>&                   aligned_ea_type;
   
   static const bool use_at      = false;
-  static const bool use_mp      = false;
+  static const bool heavy       = false;
   static const bool has_subview = true;
   static const bool fake_mat    = false;
   
@@ -764,7 +764,7 @@ class Proxy< subview_row<eT> >
   typedef const subview_row<eT>&                   aligned_ea_type;
   
   static const bool use_at      = false;
-  static const bool use_mp      = false;
+  static const bool heavy       = false;
   static const bool has_subview = true;
   static const bool fake_mat    = false;
   
@@ -810,7 +810,7 @@ class Proxy< subview_elem1<eT,T1> >
   typedef const Proxy< subview_elem1<eT,T1> >&     aligned_ea_type;
   
   static const bool use_at      = false;
-  static const bool use_mp      = false;
+  static const bool heavy       = false;
   static const bool has_subview = true;
   static const bool fake_mat    = false;
   
@@ -863,7 +863,7 @@ class Proxy< subview_elem2<eT,T1,T2> >
   typedef const Mat<eT>&                           aligned_ea_type;
   
   static const bool use_at      = false;
-  static const bool use_mp      = false;
+  static const bool heavy       = false;
   static const bool has_subview = false;
   static const bool fake_mat    = false;
   
@@ -909,7 +909,7 @@ class Proxy< diagview<eT> >
   typedef const diagview<eT>&                      aligned_ea_type;
   
   static const bool use_at      = false;
-  static const bool use_mp      = false;
+  static const bool heavy       = false;
   static const bool has_subview = true;
   static const bool fake_mat    = false;
   
@@ -955,7 +955,7 @@ class Proxy< spdiagview<eT> >
   typedef const spdiagview<eT>&                    aligned_ea_type;
   
   static const bool use_at      = false;
-  static const bool use_mp      = false;
+  static const bool heavy       = false;
   static const bool has_subview = false;
   static const bool fake_mat    = false;
   
@@ -1009,7 +1009,7 @@ class Proxy_diagvec_mat< Op<T1, op_diagvec> >
   typedef const diagview<elem_type>&               aligned_ea_type;
   
   static const bool use_at      = false;
-  static const bool use_mp      = false;
+  static const bool heavy       = false;
   static const bool has_subview = true;
   static const bool fake_mat    = false;
   
@@ -1064,7 +1064,7 @@ class Proxy_diagvec_expr< Op<T1, op_diagvec> >
   typedef const Mat<elem_type>&                    aligned_ea_type;
   
   static const bool use_at      = false;
-  static const bool use_mp      = false;
+  static const bool heavy       = false;
   static const bool has_subview = false;
   static const bool fake_mat    = false;
   
@@ -1146,7 +1146,7 @@ struct Proxy_xtrans_default< Op<T1, op_htrans> >
   typedef const xtrans_mat<elem_type,true>&        aligned_ea_type;
   
   static const bool use_at      = true;
-  static const bool use_mp      = false;
+  static const bool heavy       = false;
   static const bool has_subview = true;
   static const bool fake_mat    = false;
   
@@ -1186,7 +1186,7 @@ struct Proxy_xtrans_default< Op<T1, op_strans> >
   typedef const xtrans_mat<elem_type,false>&       aligned_ea_type;
   
   static const bool use_at      = true;
-  static const bool use_mp      = false;
+  static const bool heavy       = false;
   static const bool has_subview = true;
   static const bool fake_mat    = false;
   
@@ -1232,7 +1232,7 @@ struct Proxy_xtrans_vector< Op<T1, op_htrans> >
   typedef const Mat<elem_type>&                    aligned_ea_type;
   
   static const bool use_at      = false;
-  static const bool use_mp      = false;
+  static const bool heavy       = false;
   static const bool has_subview = quasi_unwrap<T1>::has_subview;
   static const bool fake_mat    = true;
   
@@ -1271,7 +1271,7 @@ struct Proxy_xtrans_vector< Op<T1, op_strans> >
   typedef const Mat<elem_type>&                    aligned_ea_type;
   
   static const bool use_at      = false;
-  static const bool use_mp      = false;
+  static const bool heavy       = false;
   static const bool has_subview = quasi_unwrap<T1>::has_subview;
   static const bool fake_mat    = true;
   
@@ -1338,7 +1338,7 @@ class Proxy< Op<T1, op_htrans> >
   typedef typename Proxy_xtrans::aligned_ea_type aligned_ea_type;
   
   static const bool use_at      = Proxy_xtrans::use_at;
-  static const bool use_mp      = Proxy_xtrans::use_mp;
+  static const bool heavy       = Proxy_xtrans::heavy;
   static const bool has_subview = Proxy_xtrans::has_subview;
   static const bool fake_mat    = Proxy_xtrans::fake_mat;
   
@@ -1399,7 +1399,7 @@ class Proxy< Op<T1, op_strans> >
   typedef typename Proxy_xtrans::aligned_ea_type aligned_ea_type;
   
   static const bool use_at      = Proxy_xtrans::use_at;
-  static const bool use_mp      = Proxy_xtrans::use_mp;
+  static const bool heavy       = Proxy_xtrans::heavy;
   static const bool has_subview = Proxy_xtrans::has_subview;
   static const bool fake_mat    = Proxy_xtrans::fake_mat;
   
@@ -1443,7 +1443,7 @@ struct Proxy_subview_row_htrans_cx
   typedef const subview_row_htrans<eT>&     aligned_ea_type;
   
   static const bool use_at      = false;
-  static const bool use_mp      = false;
+  static const bool heavy       = false;
   static const bool has_subview = true;
   static const bool fake_mat    = false;
   
@@ -1474,7 +1474,7 @@ struct Proxy_subview_row_htrans_non_cx
   typedef const subview_row_strans<eT>&     aligned_ea_type;
   
   static const bool use_at      = false;
-  static const bool use_mp      = false;
+  static const bool heavy       = false;
   static const bool has_subview = true;
   static const bool fake_mat    = false;
   
@@ -1533,7 +1533,7 @@ class Proxy< Op<subview_row<eT>, op_htrans> >
   typedef typename Proxy_sv_row_ht::ea_type     aligned_ea_type;
   
   static const bool use_at      = Proxy_sv_row_ht::use_at;
-  static const bool use_mp      = Proxy_sv_row_ht::use_mp;
+  static const bool heavy       = Proxy_sv_row_ht::heavy;
   static const bool has_subview = Proxy_sv_row_ht::has_subview;
   static const bool fake_mat    = Proxy_sv_row_ht::fake_mat;
   
@@ -1579,7 +1579,7 @@ class Proxy< Op<subview_row<eT>, op_strans> >
   typedef const subview_row_strans<eT>&     aligned_ea_type;
   
   static const bool use_at      = false;
-  static const bool use_mp      = false;
+  static const bool heavy       = false;
   static const bool has_subview = true;
   static const bool fake_mat    = false;
   
@@ -1627,7 +1627,7 @@ class Proxy< Op< Row< std::complex<T> >, op_htrans> >
   typedef const xvec_htrans<eT>&    aligned_ea_type;
   
   static const bool use_at      = false;
-  static const bool use_mp      = false;
+  static const bool heavy       = false;
   static const bool has_subview = false;
   static const bool fake_mat    = false;
   
@@ -1677,7 +1677,7 @@ class Proxy< Op< Col< std::complex<T> >, op_htrans> >
   typedef const xvec_htrans<eT>&    aligned_ea_type;
   
   static const bool use_at      = false;
-  static const bool use_mp      = false;
+  static const bool heavy       = false;
   static const bool has_subview = false;
   static const bool fake_mat    = false;
   
@@ -1727,7 +1727,7 @@ class Proxy< Op< subview_col< std::complex<T> >, op_htrans> >
   typedef const xvec_htrans<eT>&    aligned_ea_type;
   
   static const bool use_at      = false;
-  static const bool use_mp      = false;
+  static const bool heavy       = false;
   static const bool has_subview = true;
   static const bool fake_mat    = false;
   
@@ -1775,7 +1775,7 @@ class Proxy< Op<T1, op_htrans2> >
   typedef const eOp< Op<T1, op_htrans>, eop_scalar_times>& aligned_ea_type;
   
   static const bool use_at      = eOp< Op<T1, op_htrans>, eop_scalar_times>::use_at;
-  static const bool use_mp      = eOp< Op<T1, op_htrans>, eop_scalar_times>::use_mp;
+  static const bool heavy       = eOp< Op<T1, op_htrans>, eop_scalar_times>::heavy;
   static const bool has_subview = eOp< Op<T1, op_htrans>, eop_scalar_times>::has_subview;
   static const bool fake_mat    = eOp< Op<T1, op_htrans>, eop_scalar_times>::fake_mat;
   
@@ -1824,7 +1824,7 @@ class Proxy< subview_row_strans<eT> >
   typedef const subview_row_strans<eT>&            aligned_ea_type;
   
   static const bool use_at      = false;
-  static const bool use_mp      = false;
+  static const bool heavy       = false;
   static const bool has_subview = true;
   static const bool fake_mat    = false;
   
@@ -1870,7 +1870,7 @@ class Proxy< subview_row_htrans<eT> >
   typedef const subview_row_htrans<eT>&            aligned_ea_type;
   
   static const bool use_at      = false;
-  static const bool use_mp      = false;
+  static const bool heavy       = false;
   static const bool has_subview = true;
   static const bool fake_mat    = false;
   
@@ -1916,7 +1916,7 @@ class Proxy< xtrans_mat<eT, do_conj> >
   typedef const Mat<eT>&                           aligned_ea_type;
   
   static const bool use_at      = false;
-  static const bool use_mp      = false;
+  static const bool heavy       = false;
   static const bool has_subview = false;
   static const bool fake_mat    = false;
   
@@ -1962,7 +1962,7 @@ class Proxy< xvec_htrans<eT> >
   typedef const Mat<eT>&                           aligned_ea_type;
   
   static const bool use_at      = false;
-  static const bool use_mp      = false;
+  static const bool heavy       = false;
   static const bool has_subview = false;
   static const bool fake_mat    = false;
   
@@ -2016,7 +2016,7 @@ class Proxy_vectorise_col_mat< Op<T1, op_vectorise_col> >
   typedef const Mat<elem_type>&                    aligned_ea_type;
   
   static const bool use_at      = false;
-  static const bool use_mp      = false;
+  static const bool heavy       = false;
   static const bool has_subview = true;
   static const bool fake_mat    = true;
   
@@ -2072,7 +2072,7 @@ class Proxy_vectorise_col_expr< Op<T1, op_vectorise_col> >
   typedef typename Proxy<T1>::aligned_ea_type      aligned_ea_type;
   
   static const bool use_at      = false;
-  static const bool use_mp      = Proxy<T1>::use_mp;
+  static const bool heavy       = Proxy<T1>::heavy;
   static const bool has_subview = Proxy<T1>::has_subview;
   static const bool fake_mat    = Proxy<T1>::fake_mat;
   

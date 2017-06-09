@@ -46,7 +46,7 @@ class ProxyCube< Cube<eT> >
   typedef const Cube<eT>&                          aligned_ea_type;
   
   static const bool use_at      = false;
-  static const bool use_mp      = false;
+  static const bool heavy       = false;
   static const bool has_subview = false;
   
   arma_aligned const Cube<eT>& Q;
@@ -90,7 +90,7 @@ class ProxyCube< GenCube<eT, gen_type> >
   typedef const GenCube<eT, gen_type>&             aligned_ea_type;
   
   static const bool use_at      = false;
-  static const bool use_mp      = false;
+  static const bool heavy       = false;
   static const bool has_subview = false;
   
   arma_aligned const GenCube<eT, gen_type>& Q;
@@ -134,7 +134,7 @@ class ProxyCube< GenCube<eT, gen_randu> >
   typedef const Cube<eT>&                          aligned_ea_type;
   
   static const bool use_at      = false;
-  static const bool use_mp      = false;
+  static const bool heavy       = false;
   static const bool has_subview = false;
   
   arma_aligned const Cube<eT> Q;
@@ -178,7 +178,7 @@ class ProxyCube< GenCube<eT, gen_randn> >
   typedef const Cube<eT>&                          aligned_ea_type;
   
   static const bool use_at      = false;
-  static const bool use_mp      = false;
+  static const bool heavy       = false;
   static const bool has_subview = false;
   
   arma_aligned const Cube<eT> Q;
@@ -222,7 +222,7 @@ class ProxyCube< OpCube<T1, op_type> >
   typedef const Cube<elem_type>&                   aligned_ea_type;
   
   static const bool use_at      = false;
-  static const bool use_mp      = false;
+  static const bool heavy       = false;
   static const bool has_subview = false;
   
   arma_aligned const Cube<elem_type> Q;
@@ -266,7 +266,7 @@ class ProxyCube< GlueCube<T1, T2, glue_type> >
   typedef const Cube<elem_type>&                   aligned_ea_type;
   
   static const bool use_at      = false;
-  static const bool use_mp      = false;
+  static const bool heavy       = false;
   static const bool has_subview = false;
   
   arma_aligned const Cube<elem_type> Q;
@@ -310,7 +310,7 @@ class ProxyCube< subview_cube<eT> >
   typedef const subview_cube<eT>&                  aligned_ea_type;
   
   static const bool use_at      = true;
-  static const bool use_mp      = false;
+  static const bool heavy       = false;
   static const bool has_subview = true;
   
   arma_aligned const subview_cube<eT>& Q;
@@ -354,7 +354,7 @@ class ProxyCube< eOpCube<T1, eop_type > >
   typedef const eOpCube<T1, eop_type>&             aligned_ea_type;
   
   static const bool use_at      = eOpCube<T1, eop_type>::use_at;
-  static const bool use_mp      = eOpCube<T1, eop_type>::use_mp;
+  static const bool heavy       = eOpCube<T1, eop_type>::heavy;
   static const bool has_subview = eOpCube<T1, eop_type>::has_subview;
   
   arma_aligned const eOpCube<T1, eop_type>& Q;
@@ -398,7 +398,7 @@ class ProxyCube< eGlueCube<T1, T2, eglue_type > >
   typedef const eGlueCube<T1, T2, eglue_type>&     aligned_ea_type;
   
   static const bool use_at      = eGlueCube<T1, T2, eglue_type>::use_at;
-  static const bool use_mp      = eGlueCube<T1, T2, eglue_type>::use_mp;
+  static const bool heavy       = eGlueCube<T1, T2, eglue_type>::heavy;
   static const bool has_subview = eGlueCube<T1, T2, eglue_type>::has_subview;
   
   arma_aligned const eGlueCube<T1, T2, eglue_type>& Q;
@@ -442,7 +442,7 @@ class ProxyCube< mtOpCube<out_eT, T1, op_type> >
   typedef          const Cube<out_eT>&          aligned_ea_type;
   
   static const bool use_at      = false;
-  static const bool use_mp      = false;
+  static const bool heavy       = false;
   static const bool has_subview = false;
   
   arma_aligned const Cube<out_eT> Q;
@@ -486,7 +486,7 @@ class ProxyCube< mtGlueCube<out_eT, T1, T2, glue_type > >
   typedef          const Cube<out_eT>&          aligned_ea_type;
   
   static const bool use_at      = false;
-  static const bool use_mp      = false;
+  static const bool heavy       = false;
   static const bool has_subview = false;
   
   arma_aligned const Cube<out_eT> Q;

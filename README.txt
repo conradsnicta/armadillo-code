@@ -245,7 +245,7 @@ The installation is comprised of 3 steps:
 8: Windows: Compiling & Linking
 ===============================
 
-Within the "examples" folder, we have included an MSVC project named "example1_win64"
+Within the "examples" folder, there is an MSVC project named "example1_win64"
 which can be used to compile "example1.cpp". The project needs to be compiled as a
 64 bit program: the active solution platform must be set to x64, instead of win32.
 
@@ -254,33 +254,20 @@ You may need to make adaptations for 32 bit systems, later versions of Windows
 and/or the compiler. For example, you may have to enable or disable
 ARMA_BLAS_LONG and ARMA_BLAS_UNDERSCORE defines in "armadillo_bits/config.hpp".
 
-The folder "examples/lib_win64" contains standard LAPACK and BLAS libraries compiled
+The folder "examples/lib_win64" contains reference LAPACK and BLAS libraries compiled
 for 64 bit Windows. The compilation was done by a third party. USE AT YOUR OWN RISK.
 The compiled versions of LAPACK and BLAS were obtained from:
   http://ylzhao.blogspot.com.au/2013/10/blas-lapack-precompiled-binaries-for.html
 
-You can find the original sources for standard BLAS and LAPACK at:
-  http://www.netlib.org/blas/
-  http://www.netlib.org/lapack/
-  
 Faster and/or alternative implementations of BLAS and LAPACK are available:
   http://xianyi.github.com/OpenBLAS/
-  http://software.intel.com/en-us/intel-mkl/
   http://icl.cs.utk.edu/lapack-for-windows/lapack/
+  http://software.intel.com/en-us/intel-mkl/
 
 The OpenBLAS and Intel MKL libraries are generally the fastest.
 
-For better performance, we recommend the following high-quality C++ compilers:
-  GCC from MinGW:     http://www.mingw.org/
-  GCC from CygWin:    http://www.cygwin.com/
-  Intel C++ compiler: http://software.intel.com/en-us/intel-compilers/
-
-For the GCC compiler, use version 4.6 or later.
-For the Intel compiler, use version 13.0 or later.
-
-For best results we also recommend using an operating system
-that's more reliable and more suitable for heavy duty work,
-such as Mac OS X, or various Linux-based systems:
+Caveat: for any serious and/or performance critical work,
+we recommend using either Mac OS X or a Linux based operating system:
   Ubuntu                    http://www.ubuntu.com/
   Debian                    http://www.debian.org/
   OpenSUSE                  http://www.opensuse.org/

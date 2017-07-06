@@ -235,8 +235,6 @@
     #define ARMA_HAVE_ISNAN
   #endif
   
-  #undef ARMA_GCC_VERSION
-  
 #endif
 
 
@@ -454,10 +452,6 @@
 #endif
 
 
-#undef ARMA_PRINT_CXX98_WARNING
-#undef ARMA_PRINT_CXX11_WARNING
-
-
 #if ( defined(ARMA_USE_OPENMP) && (!defined(_OPENMP) || (defined(_OPENMP) && (_OPENMP < 200805))) )
   // we require OpenMP 3.0 to enable parallelisation of for loops with unsigned integers;
   // earlier versions of OpenMP can only handle signed integers
@@ -481,7 +475,22 @@
 #endif
 
 
+#if defined(ARMA_USE_OPENMP) && defined(ARMA_GCC_VERSION) && (ARMA_GCC_VERSION >= 40803) && !defined(ARMA_USE_CXX11)
+  #if !defined(ARMA_DONT_PRINT_OPENMP_WARNING)
+    #pragma message ("WARNING: support for OpenMP requires C++11/C++14; add -std=c++11 or -std=c++14 to compiler flags")
+  #endif
+#endif
+
+
+// cleanup
+
+#undef ARMA_FAKE_GCC
+#undef ARMA_FAKE_CLANG
+#undef ARMA_GCC_VERSION
+#undef ARMA_PRINT_CXX98_WARNING
+#undef ARMA_PRINT_CXX11_WARNING
 #undef ARMA_PRINT_OPENMP_WARNING
+
 
 
 #if defined(log2)

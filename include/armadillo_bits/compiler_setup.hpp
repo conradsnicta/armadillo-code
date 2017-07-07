@@ -475,11 +475,18 @@
 #endif
 
 
-#if defined(ARMA_USE_OPENMP) && defined(ARMA_GCC_VERSION) && (ARMA_GCC_VERSION >= 40803) && !defined(ARMA_USE_CXX11)
-  #if !defined(ARMA_DONT_PRINT_OPENMP_WARNING)
-    #pragma message ("WARNING: support for OpenMP requires C++11/C++14; add -std=c++11 or -std=c++14 to compiler flags")
+#if defined(ARMA_USE_OPENMP) && !defined(ARMA_USE_CXX11)
+  #if (defined(ARMA_GCC_VERSION) && (ARMA_GCC_VERSION >= 40803)) || (defined(__clang__) && !defined(ARMA_FAKE_CLANG))
+    #undef  ARMA_PRINT_OPENMP_CXX11_WARNING
+    #define ARMA_PRINT_OPENMP_CXX11_WARNING
   #endif
 #endif
+
+
+#if defined(ARMA_PRINT_OPENMP_CXX11_WARNING) && !defined(ARMA_DONT_PRINT_OPENMP_WARNING)
+  #pragma message ("WARNING: support for OpenMP requires C++11/C++14; add -std=c++11 or -std=c++14 to compiler flags")
+#endif
+
 
 
 // cleanup

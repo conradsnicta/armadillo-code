@@ -1686,6 +1686,7 @@ gmm_diag<eT>::km_iterate(const Mat<eT>& X, const uword max_iter, const bool verb
   
   
   #if defined(ARMA_USE_OPENMP)
+    
     const arma_omp_state save_omp_state;
     
     const umat boundaries = internal_gen_boundaries(X.n_cols);
@@ -1698,11 +1699,17 @@ gmm_diag<eT>::km_iterate(const Mat<eT>& X, const uword max_iter, const bool verb
     
     Col<eT> tmp_mean(N_dims);
     
-    if(verbose)
-      {
-      get_stream_err2() << signature << ": n_threads: " << n_threads  << '\n';
-      }
+  #else
+    
+    const uword n_threads = 1;
+    
   #endif
+  
+  
+  if(verbose)
+    {
+    get_stream_err2() << signature << ": n_threads: " << n_threads  << '\n';
+    }
   
   
   for(uword iter=1; iter <= max_iter; ++iter)
@@ -1966,12 +1973,10 @@ gmm_diag<eT>::em_iterate(const Mat<eT>& X, const uword max_iter, const eT var_fl
     }
   
   
-  #if defined(ARMA_USE_OPENMP)
-    if(verbose)
-      {
-      get_stream_err2() << "gmm_diag::learn(): EM: n_threads: " << n_threads  << '\n';
-      }
-  #endif
+  if(verbose)
+    {
+    get_stream_err2() << "gmm_diag::learn(): EM: n_threads: " << n_threads  << '\n';
+    }
   
   eT old_avg_log_p = -Datum<eT>::inf;
   

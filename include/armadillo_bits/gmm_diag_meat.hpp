@@ -1613,52 +1613,19 @@ gmm_diag<eT>::generate_initial_dcovs_and_hefts(const Mat<eT>& X, const eT var_fl
   
   const eT* mah_aux_mem = mah_aux.memptr();
   
-  #if defined(ARMA_USE_OPENMP)
-  Col<eT> distances(N_gaus);
-  eT*     distances_mem = distances.memptr();
-  
-  const bool allow_mp = ( (X.n_rows >= 10) && (X.n_rows * N_gaus) >= 100);
-  #endif
-  
   for(uword i=0; i<X.n_cols; ++i)
     {
     const eT* X_colptr = X.colptr(i);
     
-    uword best_g = 0;
+    double min_dist = Datum<eT>::inf;
+    uword  best_g   = 0;
     
-    #if defined(ARMA_USE_OPENMP)
+    for(uword g=0; g<N_gaus; ++g)
       {
-      if(allow_mp)
-        {
-        #pragma omp parallel for schedule(static)
-        for(uword g=0; g<N_gaus; ++g)
-          {
-          distances_mem[g] = distance<eT,dist_id>::eval(N_dims, X_colptr, means.colptr(g), mah_aux_mem);
-          }
-        }
-      else
-        {
-        for(uword g=0; g<N_gaus; ++g)
-          {
-          distances_mem[g] = distance<eT,dist_id>::eval(N_dims, X_colptr, means.colptr(g), mah_aux_mem);
-          }
-        }
+      const double dist = distance<eT,dist_id>::eval(N_dims, X_colptr, means.colptr(g), mah_aux_mem);
       
-      best_g = distances.index_min();
+      if(dist <= min_dist)  { min_dist = dist; best_g = g; }
       }
-    #else
-      {
-      double min_dist = Datum<eT>::inf;
-      
-      for(uword g=0; g<N_gaus; ++g)
-        {
-        const double dist = distance<eT,dist_id>::eval(N_dims, X_colptr, means.colptr(g), mah_aux_mem);
-        
-        if(dist <= min_dist)  { min_dist = dist; best_g = g; }
-        }
-      }
-    #endif
-    
     
     rs(best_g)(X.unsafe_col(i));
     }

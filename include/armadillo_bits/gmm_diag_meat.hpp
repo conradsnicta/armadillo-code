@@ -941,7 +941,7 @@ gmm_diag<eT>::internal_gen_boundaries(const uword N) const
   arma_extra_debug_sigprint();
   
   #if defined(ARMA_USE_OPENMP)
-    const uword n_threads_avail = uword(omp_get_num_threads());
+    const uword n_threads_avail = uword(omp_get_max_threads());
     const uword n_threads       = (n_threads_avail > 0) ? ( (n_threads_avail <= N) ? n_threads_avail : 1 ) : 1;
   #else
     static const uword n_threads = 1;

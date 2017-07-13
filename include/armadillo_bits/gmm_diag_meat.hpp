@@ -717,7 +717,7 @@ gmm_diag<eT>::learn
     
     reset(X.n_rows, N_gaus);
     
-    if(print_mode)  { get_stream_err2() << "gmm_diag::learn(): generating initial means\n"; }
+    if(print_mode)  { get_stream_err2() << "gmm_diag::learn(): generating initial means\n"; get_stream_err2().flush(); }
     
          if(dist_mode == eucl_dist)  { generate_initial_means<1>(X, seed_mode); }
     else if(dist_mode == maha_dist)  { generate_initial_means<2>(X, seed_mode); }
@@ -747,7 +747,7 @@ gmm_diag<eT>::learn
   
   if(seed_mode != keep_existing)
     {
-    if(print_mode)  { get_stream_err2() << "gmm_diag::learn(): generating initial covariances\n"; }
+    if(print_mode)  { get_stream_err2() << "gmm_diag::learn(): generating initial covariances\n"; get_stream_err2().flush(); }
     
          if(dist_mode == eucl_dist)  { generate_initial_dcovs_and_hefts<1>(X, vfloor); }
     else if(dist_mode == maha_dist)  { generate_initial_dcovs_and_hefts<2>(X, vfloor); }
@@ -1905,6 +1905,7 @@ gmm_diag<eT>::km_iterate(const Mat<eT>& X, const uword max_iter, const bool verb
       get_stream_err2().unsetf(ios::fixed);
       //get_stream_err2().setf(ios::scientific);
       get_stream_err2() << rs_delta.mean() << '\n';
+      get_stream_err2().flush();
       }
     
     arma::swap(old_means, new_means);
@@ -2038,6 +2039,7 @@ gmm_diag<eT>::em_iterate(const Mat<eT>& X, const uword max_iter, const eT var_fl
       get_stream_err2().unsetf(ios::fixed);
       //get_stream_err2().setf(ios::scientific);
       get_stream_err2() << new_avg_log_p << '\n';
+      get_stream_err2().flush();
       }
     
     if(is_finite(new_avg_log_p) == false)  { return false; }

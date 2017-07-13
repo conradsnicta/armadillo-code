@@ -1613,22 +1613,62 @@ gmm_diag<eT>::generate_initial_dcovs_and_hefts(const Mat<eT>& X, const eT var_fl
   
   const eT* mah_aux_mem = mah_aux.memptr();
   
-  for(uword i=0; i<X.n_cols; ++i)
+  #if defined(ARMA_USE_OPENMP)
     {
-    const eT* X_colptr = X.colptr(i);
+    const uword X_n_cols = X.n_cols;
     
-    double min_dist = Datum<eT>::inf;
-    uword  best_g   = 0;
+    Row<uword> assignments(X_n_cols);
+    uword*     assignments_mem = assignments.memptr();
     
-    for(uword g=0; g<N_gaus; ++g)
+    #pragma omp parallel for schedule(static)
+    for(uword i=0; i<X_n_cols; ++i)
       {
-      const double dist = distance<eT,dist_id>::eval(N_dims, X_colptr, means.colptr(g), mah_aux_mem);
+      const eT* X_colptr = X.colptr(i);
       
-      if(dist <= min_dist)  { min_dist = dist; best_g = g; }
+      double min_dist = Datum<eT>::inf;
+      uword  best_g   = 0;
+      
+      for(uword g=0; g<N_gaus; ++g)
+        {
+        const double dist = distance<eT,dist_id>::eval(N_dims, X_colptr, means.colptr(g), mah_aux_mem);
+        
+        if(dist <= min_dist)  { min_dist = dist; best_g = g; }
+        }
+      
+      assignments_mem[i] = best_g;
       }
     
-    rs(best_g)(X.unsafe_col(i));
+    #pragma omp parallel for schedule(static)
+    for(uword g=0; g<N_gaus; ++g)
+      {
+      running_stat_vec< Col<eT> >& rs_g = rs(g);
+      
+      for(uword i=0; i<X_n_cols; ++i)
+        {
+        if(g == assignments_mem[i])  { rs_g(X.unsafe_col(i)); }
+        }
+      }
     }
+  #else
+    {
+    for(uword i=0; i<X.n_cols; ++i)
+      {
+      const eT* X_colptr = X.colptr(i);
+      
+      double min_dist = Datum<eT>::inf;
+      uword  best_g   = 0;
+      
+      for(uword g=0; g<N_gaus; ++g)
+        {
+        const double dist = distance<eT,dist_id>::eval(N_dims, X_colptr, means.colptr(g), mah_aux_mem);
+        
+        if(dist <= min_dist)  { min_dist = dist; best_g = g; }
+        }
+      
+      rs(best_g)(X.unsafe_col(i));
+      }
+    }
+  #endif
   
   for(uword g=0; g<N_gaus; ++g)
     {

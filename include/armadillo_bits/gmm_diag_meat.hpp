@@ -258,6 +258,7 @@ gmm_diag<eT>::load(const std::string name)
   if( (status == false) || (Q.n_slices != 2) )
     {
     reset();
+    arma_debug_warn("gmm_diag::load(): problem with loading or incompatible format");
     return false;
     }
   
@@ -910,22 +911,40 @@ gmm_diag<eT>::init_constants()
   const uword N_dims = means.n_rows;
   const uword N_gaus = means.n_cols;
   
+  // 
+  
+  inv_dcovs.copy_size(dcovs);
+  
+  const eT*     dcovs_mem =     dcovs.memptr();
+        eT* inv_dcovs_mem = inv_dcovs.memptr();
+  
+  const uword dcovs_n_elem = dcovs.n_elem;
+  
+  for(uword i=0; i < dcovs_n_elem; ++i)
+    {
+    inv_dcovs_mem[i] = eT(1) / (std::max)( dcovs_mem[i], std::numeric_limits<eT>::min() );
+    }
+  
+  //
+  
   const eT tmp = (eT(N_dims)/eT(2)) * std::log(eT(2) * Datum<eT>::pi);
   
   log_det_etc.set_size(N_gaus);
   
-  for(uword i=0; i<N_gaus; ++i)
+  for(uword g=0; g < N_gaus; ++g)
     {
-    const eT logdet = accu( log(dcovs.col(i)) );
+    const eT logdet = accu( log(dcovs.col(g)) );
     
-    log_det_etc[i] = eT(-1) * ( tmp + eT(0.5) * logdet );
+    log_det_etc[g] = eT(-1) * ( tmp + eT(0.5) * logdet );
     }
+  
+  //
   
   eT* hefts_mem = access::rw(hefts).memptr();
   
-  for(uword i=0; i<N_gaus; ++i)
+  for(uword g=0; g < N_gaus; ++g)
     {
-    hefts_mem[i] = (std::max)( hefts_mem[i], std::numeric_limits<eT>::min() );
+    hefts_mem[g] = (std::max)( hefts_mem[g], std::numeric_limits<eT>::min() );
     }
   
   log_hefts = log(hefts);
@@ -1021,8 +1040,8 @@ gmm_diag<eT>::internal_scalar_log_p(const eT* x, const uword g) const
   {
   arma_extra_debug_sigprint();
   
-  const eT* mean = means.colptr(g);
-  const eT* dcov = dcovs.colptr(g);
+  const eT*     mean =     means.colptr(g);
+  const eT* inv_dcov = inv_dcovs.colptr(g);
   
   const uword N_dims = means.n_rows;
   
@@ -1039,15 +1058,15 @@ gmm_diag<eT>::internal_scalar_log_p(const eT* x, const uword g) const
     tmp_i -= mean[i];
     tmp_j -= mean[j];
     
-    val_i += (tmp_i*tmp_i) / dcov[i];
-    val_j += (tmp_j*tmp_j) / dcov[j];
+    val_i += (tmp_i*tmp_i) * inv_dcov[i];
+    val_j += (tmp_j*tmp_j) * inv_dcov[j];
     }
   
   if(i < N_dims)
     {
     const eT tmp = x[i] - mean[i];
     
-    val_i += (tmp*tmp) / dcov[i];
+    val_i += (tmp*tmp) * inv_dcov[i];
     }
   
   return eT(-0.5)*(val_i + val_j) + log_det_etc.mem[g];

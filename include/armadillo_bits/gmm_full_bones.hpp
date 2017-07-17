@@ -95,7 +95,7 @@ class gmm_full
   protected:
   
   
-  arma_aligned Cube<eT> fcovs_inv;
+  arma_aligned Cube<eT> inv_fcovs;
   arma_aligned Row<eT>  log_det_etc;
   arma_aligned Row<eT>  log_hefts;
   arma_aligned Col<eT>  mah_aux;
@@ -106,12 +106,15 @@ class gmm_full
   
   inline void init(const uword in_n_dim, const uword in_n_gaus);
   
-  inline bool init_constants();
-
+  inline void init_constants();
+  
   inline umat internal_gen_boundaries(const uword N) const;
-
+  
   inline eT internal_scalar_log_p(const eT* x                     ) const;
   inline eT internal_scalar_log_p(const eT* x, const uword gaus_id) const;
+  
+  inline eT internal_scalar_log_p(const eT* x, Row<eT>& tmp1, Row<eT>& tmp2)                      const;
+  inline eT internal_scalar_log_p(const eT* x, Row<eT>& tmp1, Row<eT>& tmp2, const uword gaus_id) const;
   
   template<typename T1> inline Row<eT> internal_vec_log_p(const T1& X                     ) const;
   template<typename T1> inline Row<eT> internal_vec_log_p(const T1& X, const uword gaus_id) const;

@@ -108,7 +108,6 @@ class gmm_diag
   
   protected:
   
-  
   arma_aligned Mat<eT> inv_dcovs;
   arma_aligned Row<eT> log_det_etc;
   arma_aligned Row<eT> log_hefts;
@@ -121,9 +120,9 @@ class gmm_diag
   inline void init(const uword in_n_dim, const uword in_n_gaus);
   
   inline void init_constants();
-
+  
   inline umat internal_gen_boundaries(const uword N) const;
-
+  
   inline eT internal_scalar_log_p(const eT* x                     ) const;
   inline eT internal_scalar_log_p(const eT* x, const uword gaus_id) const;
   

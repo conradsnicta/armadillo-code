@@ -933,9 +933,16 @@ gmm_diag<eT>::init_constants()
   
   for(uword g=0; g < N_gaus; ++g)
     {
-    const eT logdet = accu( log(dcovs.col(g)) );
+    const eT* dcovs_colmem = dcovs.colptr(g);
     
-    log_det_etc[g] = eT(-1) * ( tmp + eT(0.5) * logdet );
+    eT log_det_val = eT(0);
+    
+    for(uword d=0; d < N_dims; ++d)
+      {
+      log_det_val += std::log( (std::max)( dcovs_colmem[d], std::numeric_limits<eT>::min() ) );
+      }
+    
+    log_det_etc[g] = eT(-1) * ( tmp + eT(0.5) * log_det_val );
     }
   
   //

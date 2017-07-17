@@ -143,9 +143,7 @@ gmm_full<eT>::set_params(const Base<eT,T1>& in_means_expr, const BaseCube<eT,T2>
   access::rw(fcovs) = in_fcovs;
   access::rw(hefts) = in_hefts;
   
-  const bool init_ok = init_constants();
-  
-  arma_debug_check( (init_ok == false), "gmm_full::set_params(): failed to initialise internal constants" );
+  init_constants();
   }
 
 
@@ -840,7 +838,7 @@ gmm_full<eT>::init(const uword in_n_dims, const uword in_n_gaus)
 
 template<typename eT>
 inline
-bool
+void
 gmm_full<eT>::init_constants()
   {
   arma_extra_debug_sigprint();
@@ -850,39 +848,62 @@ gmm_full<eT>::init_constants()
   
   const eT tmp = (eT(N_dims)/eT(2)) * std::log(eT(2) * Datum<eT>::pi);
   
-  Mat<eT> tmp_inv;
-  
-  fcovs_inv.copy_size(fcovs);
+  inv_fcovs.copy_size(fcovs);
   
   log_det_etc.set_size(N_gaus);
   
+  Mat<eT> tmp_inv;
+  
   for(uword g=0; g < N_gaus; ++g)
     {
-    const bool inv_status = inv_sympd(tmp_inv, fcovs.slice(g));
+    bool use_diag = false;
     
-    if(inv_status == false)
+    Mat<eT>&     fcov =     fcovs.slice(g);
+    Mat<eT>& inv_fcov = inv_fcovs.slice(g);
+    
+    const bool inv_ok = inv_sympd(tmp_inv, fcov);
+    
+    if(inv_ok)
       {
-      arma_warn("gmm_full::init_constants(): couldn't find inverse of covariance matrix");
-      return false;
+      inv_fcov = tmp_inv;
       }
     else
       {
-      fcovs_inv.slice(g) = tmp_inv;
+      use_diag = true;
+      
+      inv_fcov.zeros();
+      
+      for(uword d=0; d < N_dims; ++d)
+        {
+        inv_fcov.at(d,d) = eT(1) / (std::max)( eT(fcov.at(d,d)), eT(std::numeric_limits<eT>::min()) );
+        }
       }
     
-    eT log_det_val  = eT(0);
-    eT log_det_sign = eT(0);
+    eT log_det_val = eT(0);
     
-    log_det(log_det_val, log_det_sign, fcovs.slice(i));
-    
-    if(log_det_sign < eT(0))
+    if(use_diag == false)
       {
-      arma_warn("gmm_full::init_constants(): covariance matrix has negative determinant");
-      return false;
+      eT log_det_sign = eT(0);
+      
+      log_det(log_det_val, log_det_sign, fcov);
+      
+      if(log_det_sign < eT(0))  { use_diag = true; }
+      }
+    
+    if(use_diag == true)
+      {
+      log_det_val = eT(0);
+      
+      for(uword d=0; d < N_dims; ++d)
+        {
+        log_det_val += std::log( (std::max)( eT(fcov.at(d,d)), eT(std::numeric_limits<eT>::min()) ) );
+        }
       }
     
     log_det_etc[g] = eT(-1) * ( tmp + eT(0.5) * log_det_val );
     }
+  
+  //
   
   eT* hefts_mem = access::rw(hefts).memptr();
   
@@ -892,8 +913,6 @@ gmm_full<eT>::init_constants()
     }
   
   log_hefts = log(hefts);
-  
-  return true;
   }
 
 
@@ -946,10 +965,43 @@ gmm_full<eT>::internal_gen_boundaries(const uword N) const
 
 
 template<typename eT>
-arma_hot
 inline
 eT
 gmm_full<eT>::internal_scalar_log_p(const eT* x) const
+  {
+  arma_extra_debug_sigprint();
+  
+  const uword N_dims = means.n_rows;
+  
+  Row<eT> tmp1(N_dims);
+  Row<eT> tmp2(N_dims);
+  
+  return internal_scalar_log_p(x, tmp1, tmp2);
+  }
+
+
+
+template<typename eT>
+inline
+eT
+gmm_full<eT>::internal_scalar_log_p(const eT* x, const uword g) const
+  {
+  arma_extra_debug_sigprint();
+  
+  const uword N_dims = means.n_rows;
+  
+  Row<eT> tmp1(N_dims);
+  Row<eT> tmp2(N_dims);
+  
+  return internal_scalar_log_p(x, tmp1, tmp2, g);
+  }
+
+
+
+template<typename eT>
+inline
+eT
+gmm_full<eT>::internal_scalar_log_p(const eT* x, Row<eT>& tmp1, Row<eT>& tmp2) const
   {
   arma_extra_debug_sigprint();
   
@@ -959,13 +1011,13 @@ gmm_full<eT>::internal_scalar_log_p(const eT* x) const
   
   if(N_gaus > 0)
     {
-    eT log_sum = internal_scalar_log_p(x, 0) + log_hefts_mem[0];
+    eT log_sum = internal_scalar_log_p(x, tmp1, tmp2, 0) + log_hefts_mem[0];
     
     for(uword g=1; g < N_gaus; ++g)
       {
-      const eT tmp = internal_scalar_log_p(x, g) + log_hefts_mem[g];
+      const eT log_val = internal_scalar_log_p(x, tmp1, tmp2, g) + log_hefts_mem[g];
       
-      log_sum = log_add_exp(log_sum, tmp);
+      log_sum = log_add_exp(log_sum, log_val);
       }
     
     return log_sum;
@@ -979,43 +1031,27 @@ gmm_full<eT>::internal_scalar_log_p(const eT* x) const
 
 
 template<typename eT>
-arma_hot
 inline
 eT
-gmm_full<eT>::internal_scalar_log_p(const eT* x, const uword g) const
+gmm_full<eT>::internal_scalar_log_p(const eT* x, Row<eT>& tmp1, Row<eT>& tmp2, const uword g) const
   {
   arma_extra_debug_sigprint();
   
-  const eT* mean = means.colptr(g);
-  const eT* dcov = fcovs.colptr(g);
-  
   const uword N_dims = means.n_rows;
   
-  eT val_i = eT(0);
-  eT val_j = eT(0);
+  const eT* mean_mem = means.colptr(g);
+        eT* tmp1_mem = tmp1.memptr();
   
-  uword i,j;
-  
-  for(i=0, j=1; j<N_dims; i+=2, j+=2)
+  for(uword d=0; d < N_dims; ++d)
     {
-    eT tmp_i = x[i];
-    eT tmp_j = x[j];
-    
-    tmp_i -= mean[i];
-    tmp_j -= mean[j];
-    
-    val_i += (tmp_i*tmp_i) / dcov[i];
-    val_j += (tmp_j*tmp_j) / dcov[j];
+    tmp1[d] = x[d] - mean_mem[d];
     }
   
-  if(i < N_dims)
-    {
-    const eT tmp = x[i] - mean[i];
-    
-    val_i += (tmp*tmp) / dcov[i];
-    }
+  tmp2 = tmp1 * inv_fcovs.slice(g);
   
-  return eT(-0.5)*(val_i + val_j) + log_det_etc.mem[g];
+  const Col<eT> trans_tmp1(tmp1.memptr(), N_dims, false);
+  
+  return eT(-0.5)*as_scalar(tmp2 * trans_tmp1) + log_det_etc.mem[g];
   }
 
 
@@ -1028,21 +1064,31 @@ gmm_full<eT>::internal_vec_log_p(const T1& X) const
   {
   arma_extra_debug_sigprint();
   
-  arma_debug_check( (X.n_rows != means.n_rows), "gmm_full::log_p(): incompatible dimensions" );
+  const uword N_dims    = means.n_rows;
+  const uword N_samples = X.n_cols;
   
-  const uword N = X.n_cols;
+  arma_debug_check( (X.n_rows != N_dims), "gmm_full::log_p(): incompatible dimensions" );
   
-  Row<eT> out(N);
+  Row<eT> out(N_samples);
   
-  if(N > 0)
+  if(N_samples > 0)
     {
     #if defined(ARMA_USE_OPENMP)
       {
       const arma_omp_state save_omp_state;
       
-      const umat boundaries = internal_gen_boundaries(N);
+      const umat boundaries = internal_gen_boundaries(N_samples);
       
       const uword n_threads = boundaries.n_cols;
+      
+      field< Row<eT> > tmp1_thread(n_threads);
+      field< Row<eT> > tmp2_thread(n_threads);
+      
+      for(uword t=0; t < n_threads; ++t)
+        {
+        tmp1_thread(t).set_size(N_dims);
+        tmp2_thread(t).set_size(N_dims);
+        }
       
       #pragma omp parallel for schedule(static)
       for(uword t=0; t < n_threads; ++t)
@@ -1050,21 +1096,27 @@ gmm_full<eT>::internal_vec_log_p(const T1& X) const
         const uword start_index = boundaries.at(0,t);
         const uword   end_index = boundaries.at(1,t);
         
+        Row<eT>& tmp1 = tmp1_thread(t);
+        Row<eT>& tmp2 = tmp2_thread(t);
+        
         eT* out_mem = out.memptr();
         
         for(uword i=start_index; i <= end_index; ++i)
           {
-          out_mem[i] = internal_scalar_log_p( X.colptr(i) );
+          out_mem[i] = internal_scalar_log_p( X.colptr(i), tmp1, tmp2 );
           }
         }
       }
     #else
       {
+      Row<eT> tmp1(N_dims);
+      Row<eT> tmp2(N_dims);
+        
       eT* out_mem = out.memptr();
       
-      for(uword i=0; i < N; ++i)
+      for(uword i=0; i < N_samples; ++i)
         {
-        out_mem[i] = internal_scalar_log_p( X.colptr(i) );
+        out_mem[i] = internal_scalar_log_p( X.colptr(i), tmp1, tmp2 );
         }
       }
     #endif

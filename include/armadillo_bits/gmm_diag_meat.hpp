@@ -2251,22 +2251,40 @@ gmm_diag<eT>::em_fix_params(const eT var_floor)
   {
   arma_extra_debug_sigprint();
   
-  const uword N_dims = means.n_rows;
-  const uword N_gaus = means.n_cols;
+  const eT var_ceiling = std::numeric_limits<eT>::max();
   
-  for(uword g=0; g < N_gaus; ++g)
+  const uword dcovs_n_elem = dcovs.n_elem;
+        eT*   dcovs_mem    = access::rw(dcovs).memptr();
+  
+  for(uword i=0; i < dcovs_n_elem; ++i)
     {
-    eT* dcov_mem = access::rw(dcovs).colptr(g);
+    eT& var_val = dcovs_mem[i];
     
-    for(uword d=0; d < N_dims; ++d)
-      {
-      if(dcov_mem[d] < var_floor)  { dcov_mem[d] = var_floor; }
-      }
+         if(var_val < var_floor  )  { var_val = var_floor;   }
+    else if(var_val > var_ceiling)  { var_val = var_ceiling; }
+    else if(arma_isnan(var_val)  )  { var_val = eT(1);       }
+    }
+  
+  
+  const eT heft_floor   = std::numeric_limits<eT>::min();
+  const eT heft_ceiling = std::numeric_limits<eT>::max();
+  const eT heft_initial = eT(1) / eT(means.n_cols);
+  
+  const uword hefts_n_elem = hefts.n_elem;
+        eT*   hefts_mem    = access::rw(hefts).memptr();
+  
+  for(uword i=0; i < hefts_n_elem; ++i)
+    {
+    eT& heft_val = hefts_mem[i];
+    
+         if(heft_val < heft_floor  )  { heft_val = heft_floor;   }
+    else if(heft_val > heft_ceiling)  { heft_val = heft_ceiling; }
+    else if(arma_isnan(heft_val)   )  { heft_val = heft_initial; }
     }
   
   const eT heft_sum = accu(hefts);
   
-  if(heft_sum != eT(1))  { access::rw(hefts) / heft_sum; }
+  if((heft_sum < (eT(1) - Datum<eT>::eps)) || (heft_sum > (eT(1) + Datum<eT>::eps)))  { access::rw(hefts) / heft_sum; }
   }
 
 

@@ -402,7 +402,7 @@ struct arma_rng::randn
         {
         std::mt19937_64& t_engine = engine[t];
         
-        t_engine.seed( seed_type(arma_rng::randi<seed_type>()) );
+        t_engine.seed( seed_type(t) + seed_type(arma_rng::randi<seed_type>()) );
         }
       
       const uword chunk_size = N / n_threads;
@@ -481,7 +481,7 @@ struct arma_rng::randn< std::complex<T> >
         {
         std::mt19937_64& t_engine = engine[t];
         
-        t_engine.seed( seed_type(arma_rng::randi<seed_type>()) );
+        t_engine.seed( seed_type(t) + seed_type(arma_rng::randi<seed_type>()) );
         }
       
       const uword chunk_size = N / n_threads;
@@ -497,8 +497,8 @@ struct arma_rng::randn< std::complex<T> >
         
         for(uword i=start; i < endp1; ++i)
           {
-          const T val1 = t_distr(t_engine);
-          const T val2 = t_distr(t_engine);
+          const T val1 = T( t_distr(t_engine) );
+          const T val2 = T( t_distr(t_engine) );
           
           mem[i] = std::complex<T>(val1, val2);
           }
@@ -509,8 +509,8 @@ struct arma_rng::randn< std::complex<T> >
       
       for(uword i=(n_threads*chunk_size); i < N; ++i)
         {
-        const T val1 = t0_distr(t0_engine);
-        const T val2 = t0_distr(t0_engine);
+        const T val1 = T( t0_distr(t0_engine) );
+        const T val2 = T( t0_distr(t0_engine) );
         
         mem[i] = std::complex<T>(val1, val2);
         }

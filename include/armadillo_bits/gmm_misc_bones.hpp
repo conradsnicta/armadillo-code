@@ -58,20 +58,6 @@ namespace gmm_priv
 struct gmm_empty_arg {};
 
 
-#if defined(ARMA_USE_OPENMP)
-  struct arma_omp_state
-    {
-    const int orig_dynamic_state;
-    
-    inline  arma_omp_state() : orig_dynamic_state(omp_get_dynamic()) { omp_set_dynamic(0); }
-    inline ~arma_omp_state() { omp_set_dynamic(orig_dynamic_state); }
-    };
-#else
-  struct arma_omp_state {};
-#endif
-
-
-
 // running_mean_scalar
 
 template<typename eT>

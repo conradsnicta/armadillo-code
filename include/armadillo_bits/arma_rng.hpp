@@ -452,7 +452,7 @@ struct arma_rng::randn< std::complex<T> >
   inline
   static
   void
-  fill(std::complex<T>* mem, const uword N)
+  fill_simple(std::complex<T>* mem, const uword N)
     {
     for(uword i=0; i < N; ++i)
       {
@@ -460,6 +460,67 @@ struct arma_rng::randn< std::complex<T> >
       }
     }
   
+  
+  inline
+  static
+  void
+  fill(std::complex<T>* mem, const uword N)
+    {
+    #if defined(ARMA_USE_CXX11) && defined(ARMA_USE_OPENMP)
+      {
+      if((N < 512) || omp_in_parallel())  { arma_rng::randn< std::complex<T> >::fill_simple(mem, N); return; }
+      
+      typedef std::mt19937_64::result_type seed_type;
+      
+      const uword n_threads = uword( mp_thread_limit::get(true) );
+      
+      std::vector< std::mt19937_64                  > engine(n_threads);
+      std::vector< std::normal_distribution<double> >  distr(n_threads);
+      
+      for(uword t=0; t < n_threads; ++t)
+        {
+        std::mt19937_64& t_engine = engine[t];
+        
+        t_engine.seed( seed_type(arma_rng::randi<seed_type>()) );
+        }
+      
+      const uword chunk_size = N / n_threads;
+      
+      #pragma omp parallel for schedule(static) num_threads(int(n_threads))
+      for(uword t=0; t < n_threads; ++t)
+        {
+        const uword start = (t+0) * chunk_size;
+        const uword endp1 = (t+1) * chunk_size;
+        
+        std::mt19937_64&                  t_engine = engine[t];
+        std::normal_distribution<double>& t_distr  =  distr[t];
+        
+        for(uword i=start; i < endp1; ++i)
+          {
+          const T val1 = t_distr(t_engine);
+          const T val2 = t_distr(t_engine);
+          
+          mem[i] = std::complex<T>(val1, val2);
+          }
+        }
+      
+      std::mt19937_64&                  t0_engine = engine[0];
+      std::normal_distribution<double>& t0_distr  =  distr[0];
+      
+      for(uword i=(n_threads*chunk_size); i < N; ++i)
+        {
+        const T val1 = t0_distr(t0_engine);
+        const T val2 = t0_distr(t0_engine);
+        
+        mem[i] = std::complex<T>(val1, val2);
+        }
+      }
+    #else
+      {
+      arma_rng::randn< std::complex<T> >::fill_simple(mem, N);
+      }
+    #endif
+    }
   };
 
 

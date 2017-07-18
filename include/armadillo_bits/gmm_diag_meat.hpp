@@ -353,59 +353,27 @@ gmm_diag<eT>::generate(const uword N_vec) const
   
   if(N_gaus > 0)
     {
-    #if defined(ARMA_USE_OPENMP)
+    const eT* hefts_mem = hefts.memptr();
+    
+    for(uword i=0; i < N_vec; ++i)
       {
-      const Row<double> vals(N_vec, fill::randu);
+      const double val = randu<double>();
       
-      const double*  vals_mem =  vals.memptr();
-      const     eT* hefts_mem = hefts.memptr();
+      double csum    = double(0);
+      uword  gaus_id = 0;
       
-      #pragma omp parallel for schedule(static)
-      for(uword i=0; i < N_vec; ++i)
+      for(uword j=0; j < N_gaus; ++j)
         {
-        const double val = vals_mem[i];
+        csum += hefts_mem[j];
         
-        double csum    = double(0);
-        uword  gaus_id = 0;
-        
-        for(uword j=0; j < N_gaus; ++j)
-          {
-          csum += hefts_mem[j];
-          
-          if(val <= csum)  { gaus_id = j; break; }
-          }
-        
-        subview_col<eT> out_col = out.col(i);
-        
-        out_col %= sqrt(dcovs.col(gaus_id));
-        out_col += means.col(gaus_id);
+        if(val <= csum)  { gaus_id = j; break; }
         }
-      }
-    #else
-      {
-      const eT* hefts_mem = hefts.memptr();
       
-      for(uword i=0; i < N_vec; ++i)
-        {
-        const double val = randu<double>();
-        
-        double csum    = double(0);
-        uword  gaus_id = 0;
-        
-        for(uword j=0; j < N_gaus; ++j)
-          {
-          csum += hefts_mem[j];
-          
-          if(val <= csum)  { gaus_id = j; break; }
-          }
-        
-        subview_col<eT> out_col = out.col(i);
-        
-        out_col %= sqrt(dcovs.col(gaus_id));
-        out_col += means.col(gaus_id);
-        }
+      subview_col<eT> out_col = out.col(i);
+      
+      out_col %= sqrt(dcovs.col(gaus_id));
+      out_col += means.col(gaus_id);
       }
-    #endif
     }
   
   return out;

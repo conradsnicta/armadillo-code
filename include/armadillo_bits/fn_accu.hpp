@@ -35,14 +35,14 @@ accu_proxy_linear(const Proxy<T1>& P)
   
   const uword n_elem = P.get_n_elem();
   
-  if( arma_config::openmp && mp_allow<eT>::eval(n_elem, Proxy<T1>::heavy) )
+  if( arma_config::openmp && Proxy<T1>::use_mp && mp_gate<eT>::eval(n_elem) )
     {
     #if defined(ARMA_USE_OPENMP)
       {
       // NOTE: using parallelisation with manual reduction workaround to take into account complex numbers;
       // NOTE: OpenMP versions lower than 4.0 do not support user-defined reduction
       
-      const int   n_threads_max = mp_thread_limit::get(Proxy<T1>::heavy);
+      const int   n_threads_max = mp_thread_limit::get();
       const uword n_threads_use = (std::min)(uword(podarray_prealloc_n_elem::val), uword(n_threads_max));
       const uword chunk_size    = n_elem / n_threads_use;
       
@@ -111,7 +111,7 @@ accu_proxy_at(const Proxy<T1>& P)
   
   typedef typename T1::elem_type eT;
   
-  if(arma_config::openmp && mp_allow<eT>::eval(P.get_n_elem(), Proxy<T1>::heavy))
+  if(arma_config::openmp && Proxy<T1>::use_mp && mp_gate<eT>::eval(P.get_n_elem()))
     {
     return accu_proxy_at_mp(P);
     }
@@ -170,7 +170,7 @@ accu_proxy_at_mp(const Proxy<T1>& P)
     
     if(n_cols == 1)
       {
-      const int   n_threads_max = mp_thread_limit::get(Proxy<T1>::heavy);
+      const int   n_threads_max = mp_thread_limit::get();
       const uword n_threads_use = (std::min)(uword(podarray_prealloc_n_elem::val), uword(n_threads_max));
       const uword chunk_size    = n_rows / n_threads_use;
       
@@ -195,7 +195,7 @@ accu_proxy_at_mp(const Proxy<T1>& P)
     else
     if(n_rows == 1)
       {
-      const int   n_threads_max = mp_thread_limit::get(Proxy<T1>::heavy);
+      const int   n_threads_max = mp_thread_limit::get();
       const uword n_threads_use = (std::min)(uword(podarray_prealloc_n_elem::val), uword(n_threads_max));
       const uword chunk_size    = n_cols / n_threads_use;
       
@@ -221,7 +221,7 @@ accu_proxy_at_mp(const Proxy<T1>& P)
       {
       podarray<eT> col_accs(n_cols);
       
-      const int n_threads = mp_thread_limit::get(Proxy<T1>::heavy);
+      const int n_threads = mp_thread_limit::get();
       
       #pragma omp parallel for schedule(static) num_threads(n_threads)
       for(uword col=0; col < n_cols; ++col)
@@ -491,14 +491,14 @@ accu_cube_proxy_linear(const ProxyCube<T1>& P)
   
   const uword n_elem = P.get_n_elem();
   
-  if( arma_config::openmp && mp_allow<eT>::eval(n_elem, ProxyCube<T1>::heavy) )
+  if( arma_config::openmp && ProxyCube<T1>::use_mp && mp_gate<eT>::eval(n_elem) )
     {
     #if defined(ARMA_USE_OPENMP)
       {
       // NOTE: using parallelisation with manual reduction workaround to take into account complex numbers;
       // NOTE: OpenMP versions lower than 4.0 do not support user-defined reduction
       
-      const int   n_threads_max = mp_thread_limit::get(ProxyCube<T1>::heavy);
+      const int   n_threads_max = mp_thread_limit::get();
       const uword n_threads_use = (std::min)(uword(podarray_prealloc_n_elem::val), uword(n_threads_max));
       const uword chunk_size    = n_elem / n_threads_use;
       
@@ -567,7 +567,7 @@ accu_cube_proxy_at(const ProxyCube<T1>& P)
   
   typedef typename T1::elem_type eT;
   
-  if(arma_config::openmp && mp_allow<eT>::eval(P.get_n_elem(), ProxyCube<T1>::heavy))
+  if(arma_config::openmp && ProxyCube<T1>::use_mp && mp_gate<eT>::eval(P.get_n_elem()))
     {
     return accu_cube_proxy_at_mp(P);
     }
@@ -613,7 +613,7 @@ accu_cube_proxy_at_mp(const ProxyCube<T1>& P)
     
     podarray<eT> slice_accs(n_slices);
     
-    const int n_threads = mp_thread_limit::get(ProxyCube<T1>::heavy);
+    const int n_threads = mp_thread_limit::get();
     
     #pragma omp parallel for schedule(static) num_threads(n_threads)
     for(uword slice = 0; slice < n_slices; ++slice)

@@ -125,7 +125,7 @@ op_sum::apply_noalias_proxy(Mat<typename T1::elem_type>& out, const Proxy<T1>& P
   
   typedef typename T1::elem_type eT;
   
-  if( arma_config::openmp && mp_allow<eT>::eval(P.get_n_elem(), Proxy<T1>::heavy) )
+  if( arma_config::openmp && Proxy<T1>::use_mp && mp_gate<eT>::eval(P.get_n_elem()) )
     {
     op_sum::apply_noalias_proxy_mp(out, P, dim);
     
@@ -192,7 +192,7 @@ op_sum::apply_noalias_proxy_mp(Mat<typename T1::elem_type>& out, const Proxy<T1>
     const uword P_n_rows = P.get_n_rows();
     const uword P_n_cols = P.get_n_cols();
     
-    const int n_threads = mp_thread_limit::get(Proxy<T1>::heavy);
+    const int n_threads = mp_thread_limit::get();
     
     if(dim == 0)
       {
@@ -376,7 +376,7 @@ op_sum::apply_noalias_proxy(Cube<typename T1::elem_type>& out, const ProxyCube<T
   
   typedef typename T1::elem_type eT;
   
-  if( arma_config::openmp && mp_allow<eT>::eval(P.get_n_elem(), ProxyCube<T1>::heavy) )
+  if( arma_config::openmp && ProxyCube<T1>::use_mp && mp_gate<eT>::eval(P.get_n_elem()) )
     {
     op_sum::apply_noalias_proxy_mp(out, P, dim);
     
@@ -470,7 +470,7 @@ op_sum::apply_noalias_proxy_mp(Cube<typename T1::elem_type>& out, const ProxyCub
     const uword P_n_cols   = P.get_n_cols();
     const uword P_n_slices = P.get_n_slices();
     
-    const int n_threads = mp_thread_limit::get(ProxyCube<T1>::heavy);
+    const int n_threads = mp_thread_limit::get();
     
     if(dim == 0)
       {

@@ -393,7 +393,7 @@ struct arma_rng::randn
       
       typedef std::mt19937_64::result_type seed_type;
       
-      const uword n_threads = uword( mp_thread_limit::get(true) );
+      const uword n_threads = uword( mp_thread_limit::get() );
       
       std::vector< std::mt19937_64                  > engine(n_threads);
       std::vector< std::normal_distribution<double> >  distr(n_threads);
@@ -472,7 +472,7 @@ struct arma_rng::randn< std::complex<T> >
       
       typedef std::mt19937_64::result_type seed_type;
       
-      const uword n_threads = uword( mp_thread_limit::get(true) );
+      const uword n_threads = uword( mp_thread_limit::get() );
       
       std::vector< std::mt19937_64                  > engine(n_threads);
       std::vector< std::normal_distribution<double> >  distr(n_threads);

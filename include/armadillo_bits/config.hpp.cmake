@@ -135,7 +135,7 @@
 //// it must be an integer that is at least 1.
 
 #if !defined(ARMA_OPENMP_THREADS)
-  #define ARMA_OPENMP_THREADS 8
+  #define ARMA_OPENMP_THREADS 10
 #endif
 //// The maximum number of threads to use for OpenMP based parallelisation;
 //// it must be an integer that is at least 1.

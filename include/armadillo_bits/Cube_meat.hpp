@@ -1582,6 +1582,69 @@ Cube<eT>::each_slice(const Base<uword, T1>& indices) const
     return *this;
     }
   
+  
+  
+  template<typename eT>
+  inline
+  const Cube<eT>&
+  Cube<eT>::each_slice(const std::function< void(Mat<eT>&) >& F, const bool use_mp)
+    {
+    arma_extra_debug_sigprint();
+    
+    if((use_mp == false) || (arma_config::openmp == false))
+      {
+      return (*this).each_slice(F);
+      }
+    
+    #if defined(ARMA_USE_OPENMP)
+      {
+      const uword local_n_slices = n_slices;
+      const int   n_threads      = mp_thread_limit::get();
+      
+      #pragma omp parallel for schedule(static) num_threads(n_threads)
+      for(uword slice_id=0; slice_id < local_n_slices; ++slice_id)
+        {
+        Mat<eT> tmp('j', slice_memptr(slice_id), n_rows, n_cols);
+        
+        F(tmp);
+        }
+      }
+    #endif
+    
+    return *this;
+    }
+  
+  
+  
+  template<typename eT>
+  inline
+  const Cube<eT>&
+  Cube<eT>::each_slice(const std::function< void(const Mat<eT>&) >& F, const bool use_mp) const
+    {
+    arma_extra_debug_sigprint();
+    
+    if((use_mp == false) || (arma_config::openmp == false))
+      {
+      return (*this).each_slice(F);
+      }
+    
+    #if defined(ARMA_USE_OPENMP)
+      {
+      const uword local_n_slices = n_slices;
+      const int   n_threads      = mp_thread_limit::get();
+      
+      #pragma omp parallel for schedule(static) num_threads(n_threads)
+      for(uword slice_id=0; slice_id < local_n_slices; ++slice_id)
+        {
+        Mat<eT> tmp('j', slice_memptr(slice_id), n_rows, n_cols);
+        
+        F(tmp);
+        }
+      }
+    #endif
+    
+    return *this;
+    }
 #endif
 
 

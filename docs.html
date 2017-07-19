@@ -149,7 +149,7 @@ hr.greyline
 <!--  -->
 <a class="noprint" style="display:scroll; position:fixed; bottom:5px; right:5px;" href="#top"><font size=-1>[top]</font></a>
 
-<big><b>API Documentation for Armadillo 7.950</b></big>
+<big><b>API Documentation for Armadillo 7.960</b></big>
 <br>
 <br>
 <br>
@@ -3858,11 +3858,12 @@ See also:
 
 <div class="pagebreak"></div><div class="noprint"><hr class="greyline"><br></div>
 <a name="each_slice"></a>
-<b>.each_slice()</b>
-<br>
-<b>.each_slice(</b>&nbsp;vector_of_indices&nbsp;<b>)</b>
-<br>
-<b>.each_slice(</b>&nbsp;lambda_function&nbsp;<b>)</b>&nbsp;&nbsp;&nbsp;<i>(C++11 only)</i>
+<table>
+<tr><td><b>.each_slice()</b></td><td>&nbsp;&nbsp;&nbsp;</td><td>(form 1)</td><td>&nbsp;</td></tr>
+<tr><td><b>.each_slice(</b>&nbsp;vector_of_indices&nbsp;<b>)</b></td><td>&nbsp;&nbsp;&nbsp;</td><td>(form 2)</td><td>&nbsp;</td></tr>
+<tr><td><b>.each_slice(</b>&nbsp;lambda_function&nbsp;<b>)</b></td><td>&nbsp;&nbsp;&nbsp;</td><td>(form 3)</td><td>&nbsp;&nbsp;&nbsp;<i>(C++11 only)</i></td></tr>
+<tr><td><b>.each_slice(</b>&nbsp;lambda_function, use_mp&nbsp;<b>)</b></td><td>&nbsp;&nbsp;&nbsp;</td><td>(form 4)</td><td>&nbsp;&nbsp;&nbsp;<i>(C++11 only)</i></td></tr>
+</table>
 <ul>
 <li>
 Member function of <i>Cube</i>
@@ -3873,7 +3874,7 @@ Repeat a matrix operation on each slice of a cube, with each slice treated as a 
 </li>
 <br>
 <li>
-Supported operations for the <i>.each_slice()</i> form:
+Supported operations for form 1:
 <br>
 <br>
 <ul>
@@ -3889,19 +3890,29 @@ Supported operations for the <i>.each_slice()</i> form:
 </li>
 <br>
 <li>
-The <i>.each_slice(vector_of_indices)</i> form also supports the above operations, except for <code><b>*</b></code> and <code><b>*=</b></code> (ie. matrix multiplication)
-</li>
-<br>
-<li>The argument <i>vector_of_indices</i> is optional; by default all slices are used</li>
-<br>
-<li>
-If the argument <i>vector_of_indices</i> is specified, it must evaluate to a vector of type <i><a href="#Col">uvec</a></i>;
-the vector contains a list of indices of the slices to be used
+For form 2:
+<ul>
+<li>the argument <i>vector_of_indices</i> contains a list of indices of the slices to be used; it must evaluate to a vector of type <i><a href="#Col">uvec</a></i></li>
+<li>arithemtic operations as per form 1 are supported, except for <code><b>*</b></code> and <code><b>*=</b></code> (ie. matrix multiplication)</li>
+</ul>
 </li>
 <br>
 <li>
-If the <i>lambda_function</i> is specified,
-the function must accept a reference to a <a href="#Mat">Mat</a> object with the same element type as the underlying cube
+For form 3:
+<ul>
+<li>apply the given <i>lambda_function</i> to each slice; the function must accept a reference to a <a href="#Mat">Mat</a> object with the same element type as the underlying cube</li>
+</ul>
+</li>
+<br>
+<li>
+For form 4:
+<ul>
+<li>apply the given <i>lambda_function</i> to each slice, as per form 3</li>
+<li>the argument <i>use_mp</i> is a bool which enables the use of OpenMP for multi-threaded execution of <i>lambda_function</i> on multiple slices at the same time</li>
+<li>the order of processing the slices is not deterministic (eg. slice&nbsp;2 can be processed before slice&nbsp;1)</li>
+<li><i>lambda_function</i> must be thread-safe, ie. it must not write to variables outside of its scope
+</li>
+</ul>
 </li>
 <br>
 <li>
@@ -3938,6 +3949,7 @@ See also:
 <li><a href="#subcube">subcube views</a></li>
 <li><a href="#for_each">.for_each()</a></li>
 <li><a href="#each_colrow">.each_col() &amp; .each_row()</a> &nbsp;</li>
+<li><a href="http://www.cprogramming.com/c++11/c++11-lambda-closures.html">lambda function</a> at cprogramming.com</li>
 </ul>
 </li>
 <br>
@@ -16305,6 +16317,15 @@ List of additions and changes for each version:
 
 
 
+<a name="version_7960"></a>
+<li>Version 7.960:
+<ul>
+<li>faster <a href="#randu_randn_standalone">randn()</a> when using OpenMP</li>
+<li>faster training of Gaussian mixture models in the <a href="#gmm_diag">gmm_diag</a> class</li>
+<li>expanded <a href="#each_slice">.each_slice()</a> to optionally use OpenMP for multi-threaded execution</li>
+</ul>
+</li>
+<br>
 <a name="version_7950"></a>
 <li>Version 7.950:
 <ul>

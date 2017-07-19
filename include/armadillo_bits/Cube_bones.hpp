@@ -157,6 +157,9 @@ class Cube : public BaseCube< eT, Cube<eT> >
   #if defined(ARMA_USE_CXX11)
   inline const Cube& each_slice(const std::function< void(      Mat<eT>&) >& F);
   inline const Cube& each_slice(const std::function< void(const Mat<eT>&) >& F) const;
+  
+  inline const Cube& each_slice(const std::function< void(      Mat<eT>&) >& F, const bool use_mp);
+  inline const Cube& each_slice(const std::function< void(const Mat<eT>&) >& F, const bool use_mp) const;
   #endif
   
   

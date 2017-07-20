@@ -1735,11 +1735,11 @@ gmm_full<eT>::generate_initial_fcovs_and_hefts(const Mat<eT>& X, const eT var_fl
     {
     if( rs(g).count() >= eT(2) )
       {
-      access::rw(fcovs).col(g) = rs(g).var(1);
+      access::rw(fcovs).slice(g).diag() = rs(g).var(1);
       }
     else
       {
-      access::rw(fcovs).col(g).ones();
+      access::rw(fcovs).slice(g).diag().ones();
       }
     
     access::rw(hefts)(g) = (std::max)( (rs(g).count() / eT(X.n_cols)), std::numeric_limits<eT>::min() );
@@ -1780,8 +1780,8 @@ gmm_full<eT>::em_iterate(const Mat<eT>& X, const uword max_iter, const eT var_fl
   
   const uword n_threads = boundaries.n_cols;
   
-  field< Mat<eT> > t_acc_means(n_threads); 
-  field< Mat<eT> > t_acc_fcovs(n_threads);
+  field<  Mat<eT> > t_acc_means(n_threads); 
+  field< Cube<eT> > t_acc_fcovs(n_threads);
   
   field< Col<eT> > t_acc_norm_lhoods(n_threads);
   field< Col<eT> > t_gaus_log_lhoods(n_threads);
@@ -1791,7 +1791,7 @@ gmm_full<eT>::em_iterate(const Mat<eT>& X, const uword max_iter, const eT var_fl
   for(uword t=0; t<n_threads; t++)
     {
     t_acc_means[t].set_size(N_dims, N_gaus);
-    t_acc_fcovs[t].set_size(N_dims, N_gaus);
+    t_acc_fcovs[t].set_size(N_dims, N_dims, N_gaus);
     
     t_acc_norm_lhoods[t].set_size(N_gaus);
     t_gaus_log_lhoods[t].set_size(N_gaus);
@@ -1838,10 +1838,16 @@ gmm_full<eT>::em_iterate(const Mat<eT>& X, const uword max_iter, const eT var_fl
     }
   
   
-  if(any(vectorise(fcovs) <= eT(0)))  { return false; }
-  if(means.is_finite() == false    )  { return false; }
-  if(fcovs.is_finite() == false    )  { return false; }
-  if(hefts.is_finite() == false    )  { return false; }
+  for(uword g=0; g < N_gaus; ++g)
+    {
+    const Mat<eT>& fcov = fcovs.slice(g);
+    
+    if(any(vectorise(fcov.diag()) <= eT(0)))  { return false; }
+    }
+  
+  if(means.is_finite() == false)  { return false; }
+  if(fcovs.is_finite() == false)  { return false; }
+  if(hefts.is_finite() == false)  { return false; }
   
   return true;
   }
@@ -1854,13 +1860,13 @@ inline
 void
 gmm_full<eT>::em_update_params
   (
-  const Mat<eT>&          X,
-  const umat&             boundaries,
-        field< Mat<eT> >& t_acc_means,
-        field< Mat<eT> >& t_acc_fcovs,
-        field< Col<eT> >& t_acc_norm_lhoods,
-        field< Col<eT> >& t_gaus_log_lhoods,
-        Col<eT>&          t_progress_log_lhood
+  const Mat<eT>&           X,
+  const umat&              boundaries,
+        field<  Mat<eT> >& t_acc_means,
+        field< Cube<eT> >& t_acc_fcovs,
+        field<  Col<eT> >& t_acc_norm_lhoods,
+        field<  Col<eT> >& t_gaus_log_lhoods,
+        Col<eT>&           t_progress_log_lhood
   )
   {
   arma_extra_debug_sigprint();
@@ -1875,11 +1881,11 @@ gmm_full<eT>::em_update_params
     #pragma omp parallel for schedule(static)
     for(uword t=0; t<n_threads; t++)
       {
-      Mat<eT>& acc_means          = t_acc_means[t];
-      Mat<eT>& acc_fcovs          = t_acc_fcovs[t];
-      Col<eT>& acc_norm_lhoods    = t_acc_norm_lhoods[t];
-      Col<eT>& gaus_log_lhoods    = t_gaus_log_lhoods[t];
-      eT&      progress_log_lhood = t_progress_log_lhood[t];
+       Mat<eT>& acc_means          = t_acc_means[t];
+      Cube<eT>& acc_fcovs          = t_acc_fcovs[t];
+       Col<eT>& acc_norm_lhoods    = t_acc_norm_lhoods[t];
+       Col<eT>& gaus_log_lhoods    = t_gaus_log_lhoods[t];
+       eT&      progress_log_lhood = t_progress_log_lhood[t];
       
       em_generate_acc(X, boundaries.at(0,t), boundaries.at(1,t), acc_means, acc_fcovs, acc_norm_lhoods, gaus_log_lhoods, progress_log_lhood);
       }
@@ -1893,8 +1899,8 @@ gmm_full<eT>::em_update_params
   const uword N_dims = means.n_rows;
   const uword N_gaus = means.n_cols;
   
-  Mat<eT>& final_acc_means = t_acc_means[0];
-  Mat<eT>& final_acc_fcovs = t_acc_fcovs[0];
+   Mat<eT>& final_acc_means = t_acc_means[0];
+  Cube<eT>& final_acc_fcovs = t_acc_fcovs[0];
   
   Col<eT>& final_acc_norm_lhoods = t_acc_norm_lhoods[0];
   
@@ -1911,26 +1917,31 @@ gmm_full<eT>::em_update_params
   
   
   eT* hefts_mem = access::rw(hefts).memptr();
-    
+  
+  Mat<eT> mean_outer(N_dims,N_dims);
+  
   for(uword g=0; g < N_gaus; ++g)
     {
-    eT* mean_mem = access::rw(means).colptr(g);
-    eT* dcov_mem = access::rw(fcovs).colptr(g);
-    
-    eT* acc_mean_mem = final_acc_means.colptr(g);
-    eT* acc_dcov_mem = final_acc_fcovs.colptr(g);
-    
     const eT acc_norm_lhood = (std::max)( final_acc_norm_lhoods[g], std::numeric_limits<eT>::min() );
     
     hefts_mem[g] = acc_norm_lhood / eT(X.n_cols);
     
+    eT*     mean_mem = access::rw(means).colptr(g);
+    eT* acc_mean_mem = final_acc_means.colptr(g);
+    
     for(uword d=0; d < N_dims; ++d)
       {
-      const eT tmp = acc_mean_mem[d] / acc_norm_lhood;
-      
-      mean_mem[d] = tmp;
-      dcov_mem[d] = acc_dcov_mem[d] / acc_norm_lhood - tmp*tmp;
+      mean_mem[d] = acc_mean_mem[d] / acc_norm_lhood;
       }
+    
+    const Col<eT> mean(mean_mem, N_dims, false);
+    
+    mean_outer = mean * mean.t();
+    
+     Mat<eT>&     fcov = access::rw(fcovs).slice(g);
+    Cube<eT>& acc_fcov = final_acc_fcovs.slice(g);
+    
+    fcov = acc_fcov / acc_norm_lhood - mean_outer;
     }
   }
 
@@ -1941,14 +1952,14 @@ inline
 void
 gmm_full<eT>::em_generate_acc
   (
-  const Mat<eT>& X,
-  const uword    start_index,
-  const uword      end_index,
-        Mat<eT>& acc_means,
-        Mat<eT>& acc_fcovs,
-        Col<eT>& acc_norm_lhoods,
-        Col<eT>& gaus_log_lhoods,
-        eT&      progress_log_lhood
+  const  Mat<eT>& X,
+  const  uword    start_index,
+  const  uword      end_index,
+         Mat<eT>& acc_means,
+        Cube<eT>& acc_fcovs,
+         Col<eT>& acc_norm_lhoods,
+         Col<eT>& gaus_log_lhoods,
+         eT&      progress_log_lhood
   )
   const
   {
@@ -1968,6 +1979,8 @@ gmm_full<eT>::em_generate_acc
   const eT* log_hefts_mem       = log_hefts.memptr();
         eT* gaus_log_lhoods_mem = gaus_log_lhoods.memptr();
   
+  
+  Mat<eT> xx_outer(N_dims, N_dims);
   
   for(uword i=start_index; i <= end_index; i++)
     {
@@ -1994,16 +2007,19 @@ gmm_full<eT>::em_generate_acc
       acc_norm_lhoods[g] += norm_lhood;
       
       eT* acc_mean_mem = acc_means.colptr(g);
-      eT* acc_dcov_mem = acc_fcovs.colptr(g);
       
       for(uword d=0; d < N_dims; ++d)
         {
-        const eT x_d = x[d];
-        const eT y_d = x_d * norm_lhood;
-        
-        acc_mean_mem[d] += y_d;
-        acc_dcov_mem[d] += y_d * x_d;  // equivalent to x_d * x_d * norm_lhood
+        acc_mean_mem[d] += x_d * norm_lhood;
         }
+      
+      const Col<eT> xx(const_cast<eT*>(x), N_dims, false);
+      
+      xx_outer = xx * xx.t();
+      
+      Mat<eT>& acc_fcov = access::rw(acc_fcovs).slice(g);
+      
+      acc_fcov += norm_lhood * xx_outer;
       }
     }
   
@@ -2024,11 +2040,11 @@ gmm_full<eT>::em_fix_params(const eT var_floor)
   
   for(uword g=0; g < N_gaus; ++g)
     {
-    eT* dcov_mem = access::rw(fcovs).colptr(g);
+    Mat<eT>& fcov = access::rw(fcovs).slice(g);
     
     for(uword d=0; d < N_dims; ++d)
       {
-      if(dcov_mem[d] < var_floor)  { dcov_mem[d] = var_floor; }
+      if(fcov.at(d,d) < var_floor)  { fcov.at(d,d) = var_floor; }
       }
     }
   

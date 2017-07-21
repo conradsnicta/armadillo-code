@@ -742,14 +742,14 @@ gmm_diag<eT>::learn
   
   // initial dcovs
   
-  const eT vfloor = (eT(var_floor) > eT(0)) ? eT(var_floor) : std::numeric_limits<eT>::min();
+  const eT var_floor_actual = (eT(var_floor) > eT(0)) ? eT(var_floor) : std::numeric_limits<eT>::min();
   
   if(seed_mode != keep_existing)
     {
     if(print_mode)  { get_stream_err2() << "gmm_diag::learn(): generating initial covariances\n"; get_stream_err2().flush(); }
     
-         if(dist_mode == eucl_dist)  { generate_initial_dcovs_and_hefts<1>(X, vfloor); }
-    else if(dist_mode == maha_dist)  { generate_initial_dcovs_and_hefts<2>(X, vfloor); }
+         if(dist_mode == eucl_dist)  { generate_initial_dcovs_and_hefts<1>(X, var_floor_actual); }
+    else if(dist_mode == maha_dist)  { generate_initial_dcovs_and_hefts<2>(X, var_floor_actual); }
     }
   
   
@@ -759,7 +759,7 @@ gmm_diag<eT>::learn
     {
     const arma_ostream_state stream_state(get_stream_err2());
     
-    const bool status = em_iterate(X, em_iter, vfloor, print_mode);
+    const bool status = em_iterate(X, em_iter, var_floor_actual, print_mode);
     
     stream_state.restore(get_stream_err2());
     

@@ -330,25 +330,24 @@ gmm_full<eT>::generate() const
   
   Col<eT> out( (N_gaus > 0) ? N_dims : uword(0) );
   
-//   if(N_gaus > 0)
-//     {
-//     const double val = randu<double>();
-//     
-//     double csum    = double(0);
-//     uword  gaus_id = 0;
-//     
-//     for(uword j=0; j < N_gaus; ++j)
-//       {
-//       csum += hefts[j];
-//       
-//       if(val <= csum)  { gaus_id = j; break; }
-//       }
-//     
-//     // TODO
-//     out =  randn< Col<eT> >(N_dims);    
-//     out %= sqrt(fcovs.col(gaus_id));
-//     out += means.col(gaus_id);
-//     }
+  if(N_gaus > 0)
+    {
+    const double val = randu<double>();
+    
+    double csum    = double(0);
+    uword  gaus_id = 0;
+    
+    for(uword j=0; j < N_gaus; ++j)
+      {
+      csum += hefts[j];
+      
+      if(val <= csum)  { gaus_id = j; break; }
+      }
+    
+    // TODO: precalcuate trans(chol(fcovs.slice(gaus_id))) for all gaus_id
+    out  = trans(chol(fcovs.slice(gaus_id))) * arma::randn< Col<eT> >(N_dims);
+    out += means.col(gaus_id);
+    }
   
   return out;
   }

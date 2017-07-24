@@ -259,30 +259,52 @@ gmm_full<eT>::load(const std::string name)
   {
   arma_extra_debug_sigprint();
   
-  // TODO
+  field< Mat<eT> > storage;
   
-//   Cube<eT> Q;
-//   
-//   bool status = Q.load(name, arma_binary);
-//   
-//   if( (status == false) || (Q.n_slices != 2) )
-//     {
-//     reset();
-//     arma_debug_warn("gmm_diag::load(): problem with loading or incompatible format");
-//     return false;
-//     }
-//   
-//   if( (Q.n_rows < 2) || (Q.n_cols < 1) )
-//     {
-//     reset();
-//     return true;
-//     }
-//   
-//   access::rw(hefts) = Q.slice(0).row(0);
-//   access::rw(means) = Q.slice(0).submat(1, 0, Q.n_rows-1, Q.n_cols-1);
-//   access::rw(fcovs) = Q.slice(1).submat(1, 0, Q.n_rows-1, Q.n_cols-1);
-//   
-//   init_constants();
+  bool status = storage.load(name, arma_binary);
+  
+  if( (status == false) || (storage.n_slices < 2) )
+    {
+    reset();
+    arma_debug_warn("gmm_full::load(): problem with loading or incompatible format");
+    return false;
+    }
+  
+  uword count = 0;
+  
+  const Mat<eT>& storage_means = storage(count);  ++count;
+  const Mat<eT>& storage_hefts = storage(count);  ++count;
+  
+  const uword N_dims = storage_means.n_rows;
+  const uword N_gaus = storage_means.n_cols;
+  
+  if( (storage.n_slices != (N_gaus + 2)) || (storage_hefts.n_rows != 1) || (storage_hefts.n_cols != N_gaus) )
+    {
+    reset();
+    arma_debug_warn("gmm_full::load(): incompatible format");
+    return false;
+    }
+  
+  reset(N_dims, N_gaus);
+  
+  access::rw(means) = storage_means;
+  access::rw(hefts) = storage_hefts;
+  
+  for(uword g=0; g < N_gaus; ++g)
+    {
+    const Mat<eT>& storage_fcov = storage(count);  ++count;
+    
+    if( (storage_fcov.n_rows != N_dims) || (storage_fcov.n_cols != N_dims) )
+      {
+      reset();
+      arma_debug_warn("gmm_full::load(): incompatible format");
+      return false;
+      }
+    
+    access::rw(fcovs).slice(g) = storage_fcov;
+    }
+  
+  init_constants();
   
   return true;
   }
@@ -296,20 +318,22 @@ gmm_full<eT>::save(const std::string name) const
   {
   arma_extra_debug_sigprint();
   
-  // TODO
+  const uword N_dims = means.n_rows;
+  const uword N_gaus = means.n_cols;
   
-//   Cube<eT> Q(means.n_rows + 1, means.n_cols, 2);
-//   
-//   if(Q.n_elem > 0)
-//     {
-//     Q.slice(0).row(0) = hefts;
-//     Q.slice(1).row(0).zeros();  // reserved for future use
-//     
-//     Q.slice(0).submat(1, 0, arma::size(means)) = means;
-//     Q.slice(1).submat(1, 0, arma::size(fcovs)) = fcovs;
-//     }
-//   
-//   const bool status = Q.save(name, arma_binary);
+  field< Mat<eT> > storage(2 + N_gaus);
+  
+  uword count = 0;
+  
+  storage(count) = means;  ++count;
+  storage(count) = hefts;  ++count;
+  
+  for(uword g=0; g < N_gaus; ++g)
+    {
+    storage(count) = fcovs.slice(g);  ++count;
+    }
+  
+  const bool status = storage.save(name, arma_binary);
   
   return status;
   }
@@ -328,7 +352,8 @@ gmm_full<eT>::generate() const
   const uword N_dims = means.n_rows;
   const uword N_gaus = means.n_cols;
   
-  Col<eT> out( (N_gaus > 0) ? N_dims : uword(0) );
+  Col<eT> out( (N_gaus > 0) ? N_dims : uword(0)              );
+  Col<eT> tmp( (N_gaus > 0) ? N_dims : uword(0), fill::randn );
   
   if(N_gaus > 0)
     {
@@ -344,8 +369,7 @@ gmm_full<eT>::generate() const
       if(val <= csum)  { gaus_id = j; break; }
       }
     
-    // TODO: precalcuate trans(chol(fcovs.slice(gaus_id))) for all gaus_id
-    out  = trans(chol(fcovs.slice(gaus_id))) * arma::randn< Col<eT> >(N_dims);
+    out  = chol_fcovs.slice(gaus_id) * tmp;
     out += means.col(gaus_id);
     }
   
@@ -361,39 +385,37 @@ gmm_full<eT>::generate(const uword N_vec) const
   {
   arma_extra_debug_sigprint();
   
-  // TODO
-  
   const uword N_dims = means.n_rows;
   const uword N_gaus = means.n_cols;
   
-  Mat<eT> out( ( (N_gaus > 0) ? N_dims : uword(0) ), N_vec );
+  Mat<eT> out( ( (N_gaus > 0) ? N_dims : uword(0) ), N_vec              );
+  Mat<eT> tmp( ( (N_gaus > 0) ? N_dims : uword(0) ), N_vec, fill::randn );
   
-//   if(N_gaus > 0)
-//     {
-//     const eT* hefts_mem = hefts.memptr();
-//     
-//     for(uword i=0; i < N_vec; ++i)
-//       {
-//       const double val = randu<double>();
-//       
-//       double csum    = double(0);
-//       uword  gaus_id = 0;
-//       
-//       for(uword j=0; j < N_gaus; ++j)
-//         {
-//         csum += hefts_mem[j];
-//         
-//         if(val <= csum)  { gaus_id = j; break; }
-//         }
-//       
-//       subview_col<eT> out_col = out.col(i);
-//       
-//       // TODO
-//       out_col =  randn< Col<eT> >(N_dims);    
-//       out_col %= sqrt(fcovs.col(gaus_id));
-//       out_col += means.col(gaus_id);
-//       }
-//     }
+  if(N_gaus > 0)
+    {
+    const eT* hefts_mem = hefts.memptr();
+    
+    for(uword i=0; i < N_vec; ++i)
+      {
+      const double val = randu<double>();
+      
+      double csum    = double(0);
+      uword  gaus_id = 0;
+      
+      for(uword j=0; j < N_gaus; ++j)
+        {
+        csum += hefts_mem[j];
+        
+        if(val <= csum)  { gaus_id = j; break; }
+        }
+      
+      Col<eT> out_vec(out.colptr(i), N_dims, false, true);
+      Col<eT> tmp_vec(tmp.colptr(i), N_dims, false, true);
+      
+      out_vec  = chol_fcovs.slice(gaus_id) * tmp_vec;
+      out_vec += means.col(gaus_id);
+      }
+    }
   
   return out;
   }
@@ -856,55 +878,57 @@ gmm_full<eT>::init_constants()
   
   const eT tmp = (eT(N_dims)/eT(2)) * std::log(eT(2) * Datum<eT>::pi);
   
-  inv_fcovs.copy_size(fcovs);
+  //
+  
+   inv_fcovs.copy_size(fcovs);
+  chol_fcovs.copy_size(fcovs);
   
   log_det_etc.set_size(N_gaus);
   
   Mat<eT> tmp_inv;
+  Mat<eT> tmp_chol;
+  
+  eT log_det_val  = eT(0);
+  eT log_det_sign = eT(0);
   
   for(uword g=0; g < N_gaus; ++g)
     {
     bool use_diag = false;
     
-    Mat<eT>&     fcov =     fcovs.slice(g);
-    Mat<eT>& inv_fcov = inv_fcovs.slice(g);
+    Mat<eT>&      fcov =      fcovs.slice(g);
+    Mat<eT>&  inv_fcov =  inv_fcovs.slice(g);
+    Mat<eT>& chol_fcov = chol_fcovs.slice(g);
     
-    const bool inv_ok = inv_sympd(tmp_inv, fcov);
+    const bool  inv_ok = inv_sympd(tmp_inv,  fcov);
+    const bool chol_ok =      chol(tmp_chol, fcov, "lower");
     
-    if(inv_ok)
+    log_det_val  = eT(0);
+    log_det_sign = eT(0);
+    
+    log_det(log_det_val, log_det_sign, fcov);
+    
+    const bool log_det_ok = (log_det_sign > eT(0));
+    
+    if(inv_ok && chol_ok && log_det_ok)
       {
-      inv_fcov = tmp_inv;
+       inv_fcov = tmp_inv;
+      chol_fcov = tmp_chol;
       }
     else
       {
-      use_diag = true;
+       inv_fcov.zeros();
+      chol_fcov.zeros();
       
-      inv_fcov.zeros();
-      
-      for(uword d=0; d < N_dims; ++d)
-        {
-        inv_fcov.at(d,d) = eT(1) / (std::max)( eT(fcov.at(d,d)), eT(std::numeric_limits<eT>::min()) );
-        }
-      }
-    
-    eT log_det_val = eT(0);
-    
-    if(use_diag == false)
-      {
-      eT log_det_sign = eT(0);
-      
-      log_det(log_det_val, log_det_sign, fcov);
-      
-      if(log_det_sign < eT(0))  { use_diag = true; }
-      }
-    
-    if(use_diag == true)
-      {
       log_det_val = eT(0);
       
       for(uword d=0; d < N_dims; ++d)
         {
-        log_det_val += std::log( (std::max)( eT(fcov.at(d,d)), eT(std::numeric_limits<eT>::min()) ) );
+        const eT sanitised_val = (std::max)( eT(fcov.at(d,d)), eT(std::numeric_limits<eT>::min()) );
+        
+         inv_fcov.at(d,d) =   eT(1) / sanitised_val;
+        chol_fcov.at(d,d) = std::sqrt(sanitised_val);
+        
+        log_det_val += std::log(sanitised_val);
         }
       }
     

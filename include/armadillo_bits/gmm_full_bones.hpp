@@ -95,7 +95,8 @@ class gmm_full
   protected:
   
   
-  arma_aligned Cube<eT> inv_fcovs;
+  arma_aligned Cube<eT>  inv_fcovs;
+  arma_aligned Cube<eT> chol_fcovs;
   arma_aligned Row<eT>  log_det_etc;
   arma_aligned Row<eT>  log_hefts;
   arma_aligned Col<eT>  mah_aux;

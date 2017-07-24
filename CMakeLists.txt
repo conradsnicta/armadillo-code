@@ -41,14 +41,15 @@ set(ARMA_USE_EXTERN_CXX11_RNG false)
 set(ARMA_USE_SUPERLU          false)  # Caveat: only SuperLU version 5.x can be used!
 
 ## NOTE: OpenBLAS appears to have its own LAPACK functions,
-## NOTE: but Debian and Ubuntu use a modified version of OpenBLAS
-## NOTE: which doesn't come with LAPACK functions.
+## NOTE: but on some systems the installed version of OpenBLAS
+## NOTE: has been modified not to include LAPACK functions.
 ## NOTE: As the presence of LAPACK functions in OpenBLAS can't be guaranteed,
 ## NOTE: this installer script requires LAPACK to be present on the system
 ## NOTE: in order to enable the use of LAPACK functions by Armadillo.
-## NOTE: If OpenBLAS is also present on the system, the installer will
-## NOTE: link with OpenBLAS first, which has the effect of using
-## NOTE: LAPACK functions from OpenBLAS instead of standard LAPACK.
+## NOTE: This installer will link with OpenBLAS first,
+## NOTE: so if a full version of OpenBLAS is actually present on the system,
+## NOTE: the linker should make use of LAPACK functions from OpenBLAS
+## NOTE: instead of standard LAPACK.
 
 
 ## extract version from sources

@@ -748,8 +748,8 @@ gmm_diag<eT>::learn
     {
     if(print_mode)  { get_stream_err2() << "gmm_diag::learn(): generating initial covariances\n"; get_stream_err2().flush(); }
     
-         if(dist_mode == eucl_dist)  { generate_initial_dcovs_and_hefts<1>(X, var_floor_actual); }
-    else if(dist_mode == maha_dist)  { generate_initial_dcovs_and_hefts<2>(X, var_floor_actual); }
+         if(dist_mode == eucl_dist)  { generate_initial_params<1>(X, var_floor_actual); }
+    else if(dist_mode == maha_dist)  { generate_initial_params<2>(X, var_floor_actual); }
     }
   
   
@@ -1445,10 +1445,10 @@ gmm_diag<eT>::internal_vec_assign(urowvec& out, const T1& X, const gmm_dist_mode
   else
   if(dist_mode == prob_dist)
     {
-    const eT* log_hefts_mem = log_hefts.memptr();
-    
     #if defined(ARMA_USE_OPENMP)
       {
+      const eT* log_hefts_mem = log_hefts.memptr();
+      
       #pragma omp parallel for schedule(static)
       for(uword i=0; i<X_n_cols; ++i)
         {
@@ -1469,6 +1469,8 @@ gmm_diag<eT>::internal_vec_assign(urowvec& out, const T1& X, const gmm_dist_mode
       }
     #else
       {
+      const eT* log_hefts_mem = log_hefts.memptr();
+      
       for(uword i=0; i<X_n_cols; ++i)
         {
         const eT* X_colptr = X.colptr(i);
@@ -1521,10 +1523,8 @@ gmm_diag<eT>::internal_raw_hist(urowvec& hist, const Mat<eT>& X, const gmm_dist_
     
     field<urowvec> thread_hist(n_threads);
     
-    for(uword t=0; t < n_threads; ++t)
-      {
-      thread_hist(t).zeros(N_gaus);
-      }
+    for(uword t=0; t < n_threads; ++t)  { thread_hist(t).zeros(N_gaus); }
+    
     
     if(dist_mode == eucl_dist)
       {
@@ -1743,25 +1743,92 @@ template<typename eT>
 template<uword dist_id>
 inline
 void
-gmm_diag<eT>::generate_initial_dcovs_and_hefts(const Mat<eT>& X, const eT var_floor)
+gmm_diag<eT>::generate_initial_params(const Mat<eT>& X, const eT var_floor)
   {
   arma_extra_debug_sigprint();
   
   const uword N_dims = means.n_rows;
   const uword N_gaus = means.n_cols;
   
-  field< running_stat_vec< Col<eT> > > rs(N_gaus);
-  
   const eT* mah_aux_mem = mah_aux.memptr();
+  
+  const uword X_n_cols = X.n_cols;
+  
+  // as the covariances are calcualted via accumulators,
+  // the means also need to be calculated via accumulators to ensure numerical consistency;
+  // this also takes into account the corner-case of imprecise means being supplied by the user
+  
+  Mat<eT> acc_means(N_dims, N_gaus, fill::zeros);
+  Mat<eT> acc_dcovs(N_dims, N_gaus, fill::zeros);
+  
+  Row<uword> acc_hefts(N_gaus, fill::zeros);
+  
+  uword* acc_hefts_mem = acc_hefts.memptr();
   
   #if defined(ARMA_USE_OPENMP)
     {
-    const uword X_n_cols = X.n_cols;
+    const umat boundaries = internal_gen_boundaries(X_n_cols);
     
-    Row<uword> assignments(X_n_cols);
-    uword*     assignments_mem = assignments.memptr();
+    const uword n_threads = boundaries.n_cols;
+    
+    field< Mat<eT>    > t_acc_means(n_threads);
+    field< Mat<eT>    > t_acc_dcovs(n_threads);
+    field< Row<uword> > t_acc_hefts(n_threads);
+    
+    for(uword t=0; t < n_threads; ++t)
+      {
+      t_acc_means(t).zeros(N_dims, N_gaus);
+      t_acc_dcovs(t).zeros(N_dims, N_gaus);
+      t_acc_hefts(t).zeros();
+      }
     
     #pragma omp parallel for schedule(static)
+    for(uword t=0; t < n_threads; ++t)
+      {
+      uword* t_acc_hefts_mem = t_acc_hefts(t).memptr();
+      
+      const uword start_index = boundaries.at(0,t);
+      const uword   end_index = boundaries.at(1,t);
+      
+      for(uword i=start_index; i <= end_index; ++i)
+        {
+        const eT* X_colptr = X.colptr(i);
+        
+        eT     min_dist = Datum<eT>::inf;
+        uword  best_g   = 0;
+        
+        for(uword g=0; g<N_gaus; ++g)
+          {
+          const eT dist = distance<eT,dist_id>::eval(N_dims, X_colptr, means.colptr(g), mah_aux_mem);
+          
+          if(dist <= min_dist)  { min_dist = dist;  best_g = g; }
+          }
+        
+        eT* t_acc_mean = t_acc_means(t).colptr(best_g);
+        eT* t_acc_dcov = t_acc_dcovs(t).colptr(best_g);
+        
+        for(uword d=0; d<N_dims; ++d)
+          {
+          const eT x_d = X_colptr[d];
+          
+          t_acc_mean[d] += x_d;
+          t_acc_dcov[d] += x_d*x_d;
+          }
+        
+        t_acc_hefts_mem[best_g]++;
+        }
+      }
+    
+    // reduction
+    for(uword t=0; t < n_threads; ++t)
+      {
+      acc_means += t_acc_means(t);
+      acc_dcovs += t_acc_dcovs(t);
+      acc_hefts += t_acc_hefts(t);
+      }
+    }
+  #else
+    {
     for(uword i=0; i<X_n_cols; ++i)
       {
       const eT* X_colptr = X.colptr(i);
@@ -1776,53 +1843,42 @@ gmm_diag<eT>::generate_initial_dcovs_and_hefts(const Mat<eT>& X, const eT var_fl
         if(dist <= min_dist)  { min_dist = dist;  best_g = g; }
         }
       
-      assignments_mem[i] = best_g;
-      }
-    
-    #pragma omp parallel for schedule(static)
-    for(uword g=0; g<N_gaus; ++g)
-      {
-      running_stat_vec< Col<eT> >& rs_g = rs(g);
+      eT* acc_mean = acc_means.colptr(best_g);
+      eT* acc_dcov = acc_dcovs.colptr(best_g);
       
-      for(uword i=0; i<X_n_cols; ++i)
+      for(uword d=0; d<N_dims; ++d)
         {
-        if(g == assignments_mem[i])  { rs_g(X.unsafe_col(i)); }
-        }
-      }
-    }
-  #else
-    {
-    for(uword i=0; i<X.n_cols; ++i)
-      {
-      const eT* X_colptr = X.colptr(i);
-      
-      eT     min_dist = Datum<eT>::inf;
-      uword  best_g   = 0;
-      
-      for(uword g=0; g<N_gaus; ++g)
-        {
-        const eT dist = distance<eT,dist_id>::eval(N_dims, X_colptr, means.colptr(g), mah_aux_mem);
+        const eT x_d = X_colptr[d];
         
-        if(dist <= min_dist)  { min_dist = dist;  best_g = g; }
+        acc_mean[d] += x_d;
+        acc_dcov[d] += x_d*x_d;
         }
       
-      rs(best_g)(X.unsafe_col(i));
+      acc_hefts_mem[best_g]++;
       }
     }
   #endif
   
+  eT* hefts_mem = access::rw(hefts).memptr();
+  
   for(uword g=0; g<N_gaus; ++g)
     {
-    if( rs(g).count() >= eT(2) )
+    const eT*   acc_mean = acc_means.colptr(g);
+    const eT*   acc_dcov = acc_dcovs.colptr(g);
+    const uword acc_heft = acc_hefts_mem[g];
+    
+    eT* mean = access::rw(means).colptr(g);
+    eT* dcov = access::rw(dcovs).colptr(g);
+    
+    for(uword d=0; d<N_dims; ++d)
       {
-      access::rw(dcovs).col(g) = rs(g).var(1);
-      }
-    else
-      {
-      access::rw(dcovs).col(g).ones();
+      const eT tmp = eT(acc_mean[d] / eT(acc_heft));
+      
+      mean[d] = (acc_heft >= 1) ? tmp : eT(0);
+      dcov[d] = (acc_heft >= 2) ? eT((acc_dcov[d] / eT(acc_heft)) - (tmp*tmp)) : eT(1);
       }
     
-    access::rw(hefts)(g) = (std::max)( (rs(g).count() / eT(X.n_cols)), std::numeric_limits<eT>::min() );
+    hefts_mem[g] = eT(acc_heft) / eT(X_n_cols);
     }
   
   em_fix_params(var_floor);
@@ -2383,7 +2439,6 @@ gmm_diag<eT>::em_fix_params(const eT var_floor)
   
   
   const eT heft_floor   = std::numeric_limits<eT>::min();
-  const eT heft_ceiling = std::numeric_limits<eT>::max();
   const eT heft_initial = eT(1) / eT(means.n_cols);
   
   const uword hefts_n_elem = hefts.n_elem;
@@ -2393,9 +2448,9 @@ gmm_diag<eT>::em_fix_params(const eT var_floor)
     {
     eT& heft_val = hefts_mem[i];
     
-         if(heft_val < heft_floor  )  { heft_val = heft_floor;   }
-    else if(heft_val > heft_ceiling)  { heft_val = heft_ceiling; }
-    else if(arma_isnan(heft_val)   )  { heft_val = heft_initial; }
+         if(heft_val < heft_floor)  { heft_val = heft_floor;   }
+    else if(heft_val > eT(1)     )  { heft_val = eT(1);        }
+    else if(arma_isnan(heft_val) )  { heft_val = heft_initial; }
     }
   
   const eT heft_sum = accu(hefts);

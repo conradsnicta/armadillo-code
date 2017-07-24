@@ -142,7 +142,7 @@ class gmm_diag
   
   template<uword dist_id> inline void generate_initial_means(const Mat<eT>& X, const gmm_seed_mode& seed);
   
-  template<uword dist_id> inline void generate_initial_dcovs_and_hefts(const Mat<eT>& X, const eT var_floor);
+  template<uword dist_id> inline void generate_initial_params(const Mat<eT>& X, const eT var_floor);
   
   template<uword dist_id> inline bool km_iterate(const Mat<eT>& X, const uword max_iter, const bool verbose, const char* signature);
   

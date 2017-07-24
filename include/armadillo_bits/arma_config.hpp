@@ -36,9 +36,9 @@ struct arma_config
   
   
   #if defined(ARMA_OPENMP_THREADS)
-    static const uword mp_threads = (sword(ARMA_OPENMP_THREADS) > 0) ? uword(ARMA_OPENMP_THREADS) : 8;
+    static const uword mp_threads = (sword(ARMA_OPENMP_THREADS) > 0) ? uword(ARMA_OPENMP_THREADS) : 10;
   #else
-    static const uword mp_threads = 8;
+    static const uword mp_threads = 10;
   #endif
   
   

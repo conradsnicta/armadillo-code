@@ -1779,7 +1779,7 @@ gmm_diag<eT>::generate_initial_params(const Mat<eT>& X, const eT var_floor)
       {
       t_acc_means(t).zeros(N_dims, N_gaus);
       t_acc_dcovs(t).zeros(N_dims, N_gaus);
-      t_acc_hefts(t).zeros();
+      t_acc_hefts(t).zeros(N_gaus);
       }
     
     #pragma omp parallel for schedule(static)
@@ -1872,7 +1872,7 @@ gmm_diag<eT>::generate_initial_params(const Mat<eT>& X, const eT var_floor)
     
     for(uword d=0; d<N_dims; ++d)
       {
-      const eT tmp = eT(acc_mean[d] / eT(acc_heft));
+      const eT tmp = acc_mean[d] / eT(acc_heft);
       
       mean[d] = (acc_heft >= 1) ? tmp : eT(0);
       dcov[d] = (acc_heft >= 2) ? eT((acc_dcov[d] / eT(acc_heft)) - (tmp*tmp)) : eT(1);
@@ -2147,7 +2147,7 @@ gmm_diag<eT>::km_update_stats(const Mat<eT>& X, const uword start_index, const u
       // vec tmp(old_means.colptr(g), old_means.n_rows);
       // tmp.print("tmp:");
       
-      if(dist <= best_dist)  { best_dist = dist; best_g = g; }
+      if(dist < best_dist)  { best_dist = dist; best_g = g; }
       }
     
     // get_stream_err2() << "best_g: " << best_g << '\n';
@@ -2455,7 +2455,7 @@ gmm_diag<eT>::em_fix_params(const eT var_floor)
   
   const eT heft_sum = accu(hefts);
   
-  if((heft_sum < (eT(1) - Datum<eT>::eps)) || (heft_sum > (eT(1) + Datum<eT>::eps)))  { access::rw(hefts) / heft_sum; }
+  if((heft_sum < (eT(1) - Datum<eT>::eps)) || (heft_sum > (eT(1) + Datum<eT>::eps)))  { access::rw(hefts) /= heft_sum; }
   }
 
 

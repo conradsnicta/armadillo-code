@@ -1801,7 +1801,7 @@ gmm_diag<eT>::generate_initial_params(const Mat<eT>& X, const eT var_floor)
           {
           const eT dist = distance<eT,dist_id>::eval(N_dims, X_colptr, means.colptr(g), mah_aux_mem);
           
-          if(dist <= min_dist)  { min_dist = dist;  best_g = g; }
+          if(dist < min_dist)  { min_dist = dist;  best_g = g; }
           }
         
         eT* t_acc_mean = t_acc_means(t).colptr(best_g);
@@ -1840,7 +1840,7 @@ gmm_diag<eT>::generate_initial_params(const Mat<eT>& X, const eT var_floor)
         {
         const eT dist = distance<eT,dist_id>::eval(N_dims, X_colptr, means.colptr(g), mah_aux_mem);
         
-        if(dist <= min_dist)  { min_dist = dist;  best_g = g; }
+        if(dist < min_dist)  { min_dist = dist;  best_g = g; }
         }
       
       eT* acc_mean = acc_means.colptr(best_g);
@@ -2438,13 +2438,33 @@ gmm_diag<eT>::em_fix_params(const eT var_floor)
     }
   
   
+  const uword N_dims = means.n_rows;
+  const uword N_gaus = means.n_cols;
+  
+  eT* hefts_mem = access::rw(hefts).memptr();
+  
+  for(uword g1=0; g1 < N_gaus; ++g1)
+    {
+    if(hefts_mem[g1] > eT(0))
+      {
+      const eT* means_colptr_g1 = means.colptr(g1);
+      
+      for(uword g2=(g1+1); g2 < N_gaus; ++g2)
+        {
+        if( (hefts_mem[g2] > eT(0)) && (std::abs(hefts_mem[g1] - hefts_mem[g2]) <= std::numeric_limits<eT>::epsilon()) )
+          {
+          const eT dist = distance<eT,1>::eval(N_dims, means_colptr_g1, means.colptr(g2), means_colptr_g1);
+          
+          if(dist == eT(0)) { hefts_mem[g2] = eT(0); }
+          }
+        }
+      }
+    }
+  
   const eT heft_floor   = std::numeric_limits<eT>::min();
   const eT heft_initial = eT(1) / eT(means.n_cols);
   
-  const uword hefts_n_elem = hefts.n_elem;
-        eT*   hefts_mem    = access::rw(hefts).memptr();
-  
-  for(uword i=0; i < hefts_n_elem; ++i)
+  for(uword i=0; i < N_gaus; ++i)
     {
     eT& heft_val = hefts_mem[i];
     

@@ -13096,7 +13096,8 @@ The <i>data</i> parameter is the input data matrix, with each sample stored as a
 </li>
 <br>
 <li>
-The <i>k</i> parameter indicates the number of centroids
+The <i>k</i> parameter indicates the number of centroids;
+the number of samples in the <i>data</i> matrix should be much larger than <i>k</i>
 </li>
 <br>
 <li>
@@ -13111,11 +13112,14 @@ The <i>seed_mode</i> parameter specifies how the initial centroids are seeded; i
   <tr><td><code>random_spread</code></td><td>&nbsp;&nbsp;&nbsp;</td><td>use a maximally spread subset of data vectors (random start)</td></tr>
   </tbody>
 </table>
+<br>
+<b>caveat:</b> seeding the initial centroids with <code>static_spread</code> and <code>random_spread</code>
+can be much more time consuming than with <code>static_subset</code> and <code>random_subset</code>
 </ul>
 </li>
 <br>
 <li>
-The <i>n_iter</i> parameter specifies the number of clustering iterations; about 10 is typically sufficient
+The <i>n_iter</i> parameter specifies the number of clustering iterations; this is data dependent, but about 10 is typically sufficient
 </li>
 <br>
 <li>
@@ -13127,26 +13131,9 @@ If the clustering fails, the <i>means</i> matrix is reset and a bool set to <i>f
 </li>
 <br>
 <li>
-The clustering will run faster on multi-core machines when OpenMP is enabled in your compiler (eg. <i>-fopenmp</i> in GCC)
+The clustering will run faster on multi-core machines when OpenMP is enabled in your compiler (eg. <i>-fopenmp</i> in GCC and clang)
 </li>
 <br>
-<li>
-<b>Caveats</b>:
-<ul>
-<br>
-<li>
-the number of data vectors (number of columns in the <i>data</i> matrix) should be much larger than <i>k</i>&nbsp; (number of centroids)
-</li>
-<br>
-<li>
-seeding the initial centroids with <code>static_spread</code> and <code>random_spread</code>
-can be much more time consuming than with <code>static_subset</code> and <code>random_subset</code>
-</li>
-</ul>
-</li>
-<br>
-
-
 <li>
 Examples:
 <ul>
@@ -13200,7 +13187,7 @@ Provides associated parameter estimation algorithms: k-means clustering and Expe
 </li>
 <br>
 <li>
-The k-means and EM algorithms are parallelised (multi-threaded) when compiling with OpenMP enabled (eg. the <i>-fopenmp</i> option in gcc)
+The k-means and EM algorithms are multi-threaded and will run much faster on multi-core machines when OpenMP is enabled in your compiler (eg. <i>-fopenmp</i> in GCC and clang)
 </li>
 <br>
 <li>
@@ -13247,7 +13234,7 @@ For an instance of <i>gmm_diag</i> named as <i>M</i>, the member functions and v
       <td style="vertical-align: top;">&nbsp;<br>
       </td>
       <td style="vertical-align: top;">
-      return a scalar representing the log-likelihood of vector <i>V</i>
+      return a scalar representing the log-likelihood of vector <i>V</i> (of type <i>vec</i>)
       </td>
     </tr>
     <tr>
@@ -13257,7 +13244,7 @@ For an instance of <i>gmm_diag</i> named as <i>M</i>, the member functions and v
       <td style="vertical-align: top;">&nbsp;<br>
       </td>
       <td style="vertical-align: top;">
-      return a scalar representing the log-likelihood of vector <i>V</i>, according to Gaussian <i>g</i>
+      return a scalar representing the log-likelihood of vector <i>V</i> (of type <i>vec</i>), according to Gaussian with index <i>g</i>
       </td>
     </tr>
     <tr>
@@ -13272,7 +13259,7 @@ For an instance of <i>gmm_diag</i> named as <i>M</i>, the member functions and v
       <td style="vertical-align: top;">&nbsp;<br>
       </td>
       <td style="vertical-align: top;">
-      return a row vector (of type <code>rowvec</code>) containing log-likelihoods of each column vector in matrix <i>X</i>
+      return a row vector (of type <code>rowvec</code>) containing log-likelihoods of each column vector in matrix <i>X</i> (of type <i>mat</i>)
       </td>
     </tr>
     <tr>
@@ -13282,7 +13269,7 @@ For an instance of <i>gmm_diag</i> named as <i>M</i>, the member functions and v
       <td style="vertical-align: top;">&nbsp;<br>
       </td>
       <td style="vertical-align: top;">
-      return a row vector (of type <code>rowvec</code>) containing log-likelihoods of each column vector in matrix <i>X</i>, according to Gaussian <i>g</i>
+      return a row vector (of type <code>rowvec</code>) containing log-likelihoods of each column vector in matrix <i>X</i> (of type <i>mat</i>), according to Gaussian with index <i>g</i>
       </td>
     </tr>
     <tr>
@@ -13297,7 +13284,7 @@ For an instance of <i>gmm_diag</i> named as <i>M</i>, the member functions and v
       <td style="vertical-align: top;">&nbsp;<br>
       </td>
       <td style="vertical-align: top;">
-      return a scalar representing the average log-likelihood of all column vectors in matrix <i>X</i>
+      return a scalar representing the average log-likelihood of all column vectors in matrix <i>X</i> (of type <i>mat</i>)
       </td>
     </tr>
     <tr>
@@ -13307,7 +13294,7 @@ For an instance of <i>gmm_diag</i> named as <i>M</i>, the member functions and v
       <td style="vertical-align: top;">&nbsp;<br>
       </td>
       <td style="vertical-align: top;">
-      return a scalar representing the average log-likelihood of all column vectors in matrix <i>X</i>, according to Gaussian <i>g</i>
+      return a scalar representing the average log-likelihood of all column vectors in matrix <i>X</i> (of type <i>mat</i>), according to Gaussian with index <i>g</i>
       </td>
     </tr>
     <tr>
@@ -13322,8 +13309,8 @@ For an instance of <i>gmm_diag</i> named as <i>M</i>, the member functions and v
       <td style="vertical-align: top;">&nbsp;<br>
       </td>
       <td style="vertical-align: top;">
-      return the index of the closest mean (or Gaussian) to vector <i>V</i>;<br>
-      <i>dist_mode</i> is one of:
+      return the index of the closest mean (or Gaussian) to vector <i>V</i> (of type <i>vec</i>);<br>
+      parameter <i>dist_mode</i> is one of:
       <table style="text-align: left;" border="0" cellpadding="2" cellspacing="2">
         <tbody>
         <tr><td style="vertical-align: top;"><code>eucl_dist</code></td><td>&nbsp;&nbsp;&nbsp;</td><td style="vertical-align: top;">Euclidean distance (takes only means into account)</td></tr>
@@ -13339,7 +13326,8 @@ For an instance of <i>gmm_diag</i> named as <i>M</i>, the member functions and v
       <td style="vertical-align: top;">&nbsp;<br>
       </td>
       <td style="vertical-align: top;">
-      return a row vector containing the indices of the closest means (or Gaussians) to each column vector in matrix <i>X</i>
+      return a row vector (of type <i>urowvec</i>) containing the indices of the closest means (or Gaussians) to each column vector in matrix <i>X</i> (of type <i>mat</i>);<br>
+      parameter <i>dist_mode</i> is either <code>eucl_dist</code> or <code>prob_dist</code> (as per the <b>.assign()</b> function above)
       </td>
     </tr>
     <tr>
@@ -13356,8 +13344,8 @@ For an instance of <i>gmm_diag</i> named as <i>M</i>, the member functions and v
       <td style="vertical-align: top;">
       return a row vector (of type <code>urowvec</code>) representing the raw histogram of counts;
       each entry is the number of counts corresponding to a Gaussian;
-      each count is the number times the corresponding Gaussian was the closest to each column vector in matrix <i>X</i>;
-      parameter <i>dist_mode</i> is either <code>eucl_dist</code> or <code>prob_dist</code> (as per the <i>.assign()</i> function above)
+      each count is the number times the corresponding Gaussian was the closest to each column vector in matrix <i>X</i>;<br>
+      parameter <i>dist_mode</i> is either <code>eucl_dist</code> or <code>prob_dist</code> (as per the <b>.assign()</b> function above)
       </td>
     </tr>
     <tr>
@@ -13367,8 +13355,10 @@ For an instance of <i>gmm_diag</i> named as <i>M</i>, the member functions and v
       <td style="vertical-align: top;">&nbsp;<br>
       </td>
       <td style="vertical-align: top;">
+      similar to the <b>.raw_hist()</b> function above;
       return a row vector (of type <code>rowvec</code>) containing normalised counts;
-      the vector sums to one
+      the vector sums to one;<br>
+      parameter <i>dist_mode</i> is either <code>eucl_dist</code> or <code>prob_dist</code> (as per the <b>.assign()</b> function above)
       </td>
     </tr>
     <tr>
@@ -13383,7 +13373,7 @@ For an instance of <i>gmm_diag</i> named as <i>M</i>, the member functions and v
       <td style="vertical-align: top;">&nbsp;<br>
       </td>
       <td style="vertical-align: top;">
-      return a column vector representing a random sample generated according to the model's parameters
+      return a column vector (of type <i>vec</i>) representing a random sample generated according to the model's parameters
       </td>
     </tr>
     <tr>
@@ -13393,7 +13383,7 @@ For an instance of <i>gmm_diag</i> named as <i>M</i>, the member functions and v
       <td style="vertical-align: top;">&nbsp;<br>
       </td>
       <td style="vertical-align: top;">
-      return a matrix containing <i>N</i> column vectors, with each vector representing a random sample generated according to the model's parameters
+      return a matrix (of type <i>mat</i>) containing <i>N</i> column vectors, with each vector representing a random sample generated according to the model's parameters
       </td>
     </tr>
     <tr>
@@ -13408,7 +13398,7 @@ For an instance of <i>gmm_diag</i> named as <i>M</i>, the member functions and v
       <td style="vertical-align: top;">&nbsp;<br>
       </td>
       <td style="vertical-align: top;">
-      save the model to the given <i>filename</i>
+      save the model to a file and return a <i>bool</i> indicating either success (<i>true</i>) or failure (<i>false</i>) 
       </td>
     </tr>
     <tr>
@@ -13418,7 +13408,7 @@ For an instance of <i>gmm_diag</i> named as <i>M</i>, the member functions and v
       <td style="vertical-align: top;">&nbsp;<br>
       </td>
       <td style="vertical-align: top;">
-      load the model from the given <i>filename</i>
+      load the model from a file and return a <i>bool</i> indicating either success (<i>true</i>) or failure (<i>false</i>) 
       </td>
     </tr>
     <tr>
@@ -13474,7 +13464,7 @@ For an instance of <i>gmm_diag</i> named as <i>M</i>, the member functions and v
       <td style="vertical-align: top;">&nbsp;<br>
       </td>
       <td style="vertical-align: top;">
-      read-only matrix containing the means (centroids), stored as column vectors
+      read-only matrix (of type <i>mat</i>) containing the means (centroids), stored as column vectors
       </td>
     </tr>
     <tr>
@@ -13484,8 +13474,8 @@ For an instance of <i>gmm_diag</i> named as <i>M</i>, the member functions and v
       <td style="vertical-align: top;">&nbsp;<br>
       </td>
       <td style="vertical-align: top;">
-      read-only matrix containing the diagonal covariance matrices,
-      stored as column vectors
+      read-only matrix (of type <i>mat</i>) containing the diagonal covariance matrices,
+      with the set of diagonal covariances for each Gaussian stored as a column vector
       </td>
     </tr>
     <tr>
@@ -13495,7 +13485,7 @@ For an instance of <i>gmm_diag</i> named as <i>M</i>, the member functions and v
       <td style="vertical-align: top;">&nbsp;<br>
       </td>
       <td style="vertical-align: top;">
-      read-only row vector containing the hefts (weights)
+      read-only row vector (of type <i>rowvec</i>) containing the hefts (weights)
       </td>
     </tr>
     <tr>
@@ -13510,7 +13500,7 @@ For an instance of <i>gmm_diag</i> named as <i>M</i>, the member functions and v
       <td style="vertical-align: top;">&nbsp;<br>
       </td>
       <td style="vertical-align: top;">
-      set the means to be as specified in matrix <i>X</i>;<br>
+      set the means to be as specified in matrix <i>X</i> (of type <i>mat</i>);
       the number of means and their dimensionality must match the existing model
       </td>
     </tr>
@@ -13521,7 +13511,8 @@ For an instance of <i>gmm_diag</i> named as <i>M</i>, the member functions and v
       <td style="vertical-align: top;">&nbsp;<br>
       </td>
       <td style="vertical-align: top;">
-      set the diagonal covariances matrices to be as specified in matrix <i>X</i>;<br>
+      set the diagonal covariances matrices to be as specified in matrix <i>X</i> (of type <i>mat</i>),
+      with the set of diagonal covariances for each Gaussian stored as a column vector;
       the number of diagonal covariance matrices and their dimensionality must match the existing model
       </td>
     </tr>
@@ -13532,7 +13523,7 @@ For an instance of <i>gmm_diag</i> named as <i>M</i>, the member functions and v
       <td style="vertical-align: top;">&nbsp;<br>
       </td>
       <td style="vertical-align: top;">
-      set the hefts (weights) of the model to be as specified in row vector <i>V</i>;<br>
+      set the hefts (weights) of the model to be as specified in row vector <i>V</i> (of type <i>rowvec</i>);
       the number of hefts must match the existing model
       </td>
     </tr>
@@ -13548,7 +13539,8 @@ For an instance of <i>gmm_diag</i> named as <i>M</i>, the member functions and v
       <td style="vertical-align: top;">&nbsp;<br>
       </td>
       <td style="vertical-align: top;">
-      set all the parameters in one hit;<br>
+      set all the parameters at the same time, using matrices denoted as <b>means</b> and <b>dcovs</b> as well as the row vector denoted as <b>hefts</b>;
+      the layout of the matrices and vectors is as per the <b>.set_means()</b>, <b>.set_dcovs()</b> and <b>.set_hefts()</b> functions above;
       the number of Gaussians and dimensionality can be different from the existing model
       </td>
     </tr>
@@ -13559,27 +13551,12 @@ For an instance of <i>gmm_diag</i> named as <i>M</i>, the member functions and v
     </tr>
     <tr>
       <td style="vertical-align: top;" colspan=3>
-      <b>M.learn(</b>data,&nbsp;n_gaus,&nbsp;dist_mode,&nbsp;seed_mode,&nbsp;km_iter,&nbsp;em_iter,&nbsp;var_floor,&nbsp;print_mode<b>)</b>
-      </td>
-    </tr>
-    <tr>
-      <td style="vertical-align: top;">&nbsp;<br></td>
-      <td style="vertical-align: top;">&nbsp;<br></td>
-      <td style="vertical-align: top;">
+      <b>M.learn(</b>data,&nbsp;n_gaus,&nbsp;dist_mode,&nbsp;seed_mode,&nbsp;km_iter,&nbsp;em_iter,&nbsp;var_floor,&nbsp;print_mode<b>)</b><br>
       learn the model parameters via the k-means and/or EM algorithms,
-      <br>and return a <code>bool</code> value, with <i>true</i> indicating success, and <i>false</i> indicating failure
+      and return a <code>bool</code> value, with <i>true</i> indicating success, and <i>false</i> indicating failure;
+      the parameters have the following meanings:
       </td>
     </tr>
-  </tbody>
-</table>
-</ul>
-</li>
-<br>
-<li>
-Parameters for the <code>.learn()</code> member function:
-<ul>
-<table style="text-align: left;" border="0" cellpadding="2" cellspacing="2">
-  <tbody>
     <tr>
       <td style="vertical-align: top;">&nbsp;</td>
       <td style="vertical-align: top;">&nbsp;</td>
@@ -13589,7 +13566,7 @@ Parameters for the <code>.learn()</code> member function:
       <td style="vertical-align: top;"><i>data</i></td>
       <td style="vertical-align: top;">&nbsp;</td>
       <td style="vertical-align: top;">
-      matrix containing training samples; each sample is stored as a column vector
+      matrix (of type <i>mat</i>) containing training samples; each sample is stored as a column vector
       </td>
     </tr>
     <tr>
@@ -13601,7 +13578,8 @@ Parameters for the <code>.learn()</code> member function:
       <td style="vertical-align: top;"><i>n_gaus</i></td>
       <td style="vertical-align: top;">&nbsp;</td>
       <td style="vertical-align: top;">
-      set the number of Gaussians to <i>n_gaus</i>
+      set the number of Gaussians to <i>n_gaus</i>;
+      to help convergence, it is recommended that the given <i>data</i> matrix (above) contains at least 10 samples for each Gaussian
       </td>
     </tr>
     <tr>
@@ -13617,7 +13595,7 @@ Parameters for the <code>.learn()</code> member function:
       <table style="text-align: left;" border="0" cellpadding="2" cellspacing="2">
         <tbody>
         <tr><td><code>eucl_dist</code></td><td>&nbsp;&nbsp;&nbsp;</td><td>Euclidean distance</td></tr>
-        <tr><td><code>maha_dist</code></td><td>&nbsp;&nbsp;&nbsp;</td><td>Mahalanobis distance, which uses a global diagonal covariance matrix estimated from the training samples</td></tr>
+        <tr><td><code>maha_dist</code></td><td>&nbsp;&nbsp;&nbsp;</td><td>Mahalanobis distance, which uses a global diagonal covariance matrix estimated from the training samples; this is recommended for probabilistic applications</td></tr>
         </tbody>
       </table>
       </td>
@@ -13641,6 +13619,9 @@ Parameters for the <code>.learn()</code> member function:
         <tr><td><code>random_spread</code></td><td>&nbsp;&nbsp;&nbsp;</td><td>a maximally spread subset of training samples (random start)</td></tr>
         </tbody>
       </table>
+      <br>
+      <b>caveat:</b> seeding the initial means with <code>static_spread</code> and <code>random_spread</code>
+      can be much more time consuming than with <code>static_subset</code> and <code>random_subset</code>
       </td>
     </tr>
     <tr>
@@ -13652,7 +13633,8 @@ Parameters for the <code>.learn()</code> member function:
       <td style="vertical-align: top;"><i>km_iter</i></td>
       <td style="vertical-align: top;">&nbsp;</td>
       <td style="vertical-align: top;">
-      the number of iterations of the k-means algorithm
+      the number of iterations of the k-means algorithm;
+      this is data dependent, but typically 10 iterations are sufficient
       </td>
     </tr>
     <tr>
@@ -13664,7 +13646,8 @@ Parameters for the <code>.learn()</code> member function:
       <td style="vertical-align: top;"><i>em_iter</i></td>
       <td style="vertical-align: top;">&nbsp;</td>
       <td style="vertical-align: top;">
-      the number of iterations of the EM algorithm
+      the number of iterations of the EM algorithm;
+      this is data dependent, but typically 5 to 10 iterations are sufficient
       </td>
     </tr>
     <tr>
@@ -13676,7 +13659,8 @@ Parameters for the <code>.learn()</code> member function:
       <td style="vertical-align: top;"><i>var_floor</i></td>
       <td style="vertical-align: top;">&nbsp;</td>
       <td style="vertical-align: top;">
-      the variance floor (smallest allowed value) for the diagonal covariances
+      the variance floor (smallest allowed value) for the diagonal covariances;
+      setting this to a small non-zero value can help with convergence and/or better quality parameter estimates
       </td>
     </tr>
     <tr>
@@ -13697,40 +13681,6 @@ Parameters for the <code>.learn()</code> member function:
 </ul>
 </li>
 <br>
-<br>
-<li>
-<b>Notes</b>:
-<ul>
-<br>
-<li>
-for probabilistic applications,
-better model parameters are typically learned with <i>dist_mode</i> set to <code>maha_dist</code>
-</li>
-<br>
-<li>
-for vector quantisation applications, 
-model parameters should be learned with <i>dist_mode</i> set to <code>eucl_dist</code>,
-and the number of EM iterations set to zero
-</li>
-<br>
-<li>
-in general, a sufficient number of k-means and EM iterations is typically about 10
-</li>
-<br>
-<li>
-the number of training samples should be much larger than the number of Gaussians
-</li>
-<br>
-<li>
-seeding the initial means with <code>static_spread</code> and <code>random_spread</code>
-can be much more time consuming than with <code>static_subset</code> and <code>random_subset</code>
-</li>
-<br>
-<li>
-the k-means and EM algorithms will run faster on multi-core machines when OpenMP is enabled in your compiler (eg. <i>-fopenmp</i> in GCC)
-</li>
-</ul>
-</li>
 <br>
 <li>
 Examples:

@@ -1587,7 +1587,9 @@ gmm_diag<eT>::internal_raw_hist(urowvec& hist, const Mat<eT>& X, const gmm_dist_
       }
     
     // reduction
-    for(uword t=0; t < n_threads; ++t)
+    hist = thread_hist(0);
+    
+    for(uword t=1; t < n_threads; ++t)
       {
       hist += thread_hist(t);
       }
@@ -1820,7 +1822,11 @@ gmm_diag<eT>::generate_initial_params(const Mat<eT>& X, const eT var_floor)
       }
     
     // reduction
-    for(uword t=0; t < n_threads; ++t)
+    acc_means = t_acc_means(0);
+    acc_dcovs = t_acc_dcovs(0);
+    acc_hefts = t_acc_hefts(0);
+    
+    for(uword t=1; t < n_threads; ++t)
       {
       acc_means += t_acc_means(t);
       acc_dcovs += t_acc_dcovs(t);
@@ -1906,37 +1912,34 @@ gmm_diag<eT>::km_iterate(const Mat<eT>& X, const uword max_iter, const bool verb
     get_stream_err2().setf(ios::fixed);
     }
   
+  const uword X_n_cols = X.n_cols;
+  
+  if(X_n_cols == 0)  { return true; }
+  
   const uword N_dims = means.n_rows;
   const uword N_gaus = means.n_cols;
   
-  Mat<eT> old_means = means;
-  Mat<eT> new_means = means;
-  
-  running_mean_scalar<double> rs_delta;
-  
-  field< running_mean_vec<eT> > running_means(N_gaus);
-  
   const eT* mah_aux_mem = mah_aux.memptr();
   
+  Mat<eT>    acc_means(N_dims, N_gaus, fill::zeros);
+  Row<uword> acc_hefts(N_gaus, fill::zeros);
+  Row<uword> last_indx(N_gaus, fill::zeros);
+  
+  Mat<eT> new_means = means;
+  Mat<eT> old_means = means;
+  
+  running_mean_scalar<eT> rs_delta;
   
   #if defined(ARMA_USE_OPENMP)
-    
-    const umat boundaries = internal_gen_boundaries(X.n_cols);
-    
+    const umat boundaries = internal_gen_boundaries(X_n_cols);
     const uword n_threads = boundaries.n_cols;
     
-    field< field< running_mean_vec<eT> > > t_running_means(n_threads);
-    
-    for(uword t=0; t < n_threads; ++t)  { t_running_means[t].set_size(N_gaus); }
-    
-    Col<eT> tmp_mean(N_dims);
-    
+    field< Mat<eT>    > t_acc_means(n_threads);
+    field< Row<uword> > t_acc_hefts(n_threads);
+    field< Row<uword> > t_last_indx(n_threads);
   #else
-    
     const uword n_threads = 1;
-    
   #endif
-  
   
   if(verbose)
     {
@@ -1950,138 +1953,139 @@ gmm_diag<eT>::km_iterate(const Mat<eT>& X, const uword max_iter, const bool verb
       {
       for(uword t=0; t < n_threads; ++t)
         {
-        for(uword g=0; g < N_gaus; ++g)  { t_running_means[t][g].reset(); }
+        t_acc_means(t).zeros(N_dims, N_gaus);
+        t_acc_hefts(t).zeros(N_gaus);
+        t_last_indx(t).zeros(N_gaus);
         }
-      
-      
-      // km_update_stats() is the "map" operation, which produces partial means
       
       #pragma omp parallel for schedule(static)
       for(uword t=0; t < n_threads; ++t)
         {
-        field< running_mean_vec<eT> >& current_running_means = t_running_means[t];
+        Mat<eT>& t_acc_means_t   = t_acc_means(t);
+        uword*   t_acc_hefts_mem = t_acc_hefts(t).memptr();
+        uword*   t_last_indx_mem = t_last_indx(t).memptr();
         
-        km_update_stats<dist_id>(X, boundaries.at(0,t), boundaries.at(1,t), old_means, current_running_means);
+        const uword start_index = boundaries.at(0,t);
+        const uword   end_index = boundaries.at(1,t);
+        
+        for(uword i=start_index; i <= end_index; ++i)
+          {
+          const eT* X_colptr = X.colptr(i);
+          
+          eT     min_dist = Datum<eT>::inf;
+          uword  best_g   = 0;
+          
+          for(uword g=0; g<N_gaus; ++g)
+            {
+            const eT dist = distance<eT,dist_id>::eval(N_dims, X_colptr, old_means.colptr(g), mah_aux_mem);
+            
+            if(dist < min_dist)  { min_dist = dist;  best_g = g; }
+            }
+          
+          eT* t_acc_mean = t_acc_means_t.colptr(best_g);
+          
+          for(uword d=0; d<N_dims; ++d)  { t_acc_mean[d] += X_colptr[d]; }
+          
+          t_acc_hefts_mem[best_g]++;
+          t_last_indx_mem[best_g] = i;
+          }
         }
       
+      // reduction
       
-      // the "reduce" operation, which combines the partial means produced by the separate threads;
-      // takes into account the counts for each mean
+      acc_means = t_acc_means(0);
+      acc_hefts = t_acc_hefts(0);
       
-      for(uword g=0; g < N_gaus; ++g)
+      for(uword t=1; t < n_threads; ++t)
         {
-        uword total_count = 0;
-        
-        for(uword t=0; t < n_threads; ++t)  { total_count += t_running_means[t][g].count(); }
-        
-        tmp_mean.zeros();
-        
-        bool  dead       = true;
-        uword last_index = 0;
-        
-        if(total_count > 0)
-          {
-          for(uword t=0; t < n_threads; ++t)
-            {
-            const eT w = eT(t_running_means[t][g].count()) / eT(total_count);
-            
-            if(w > eT(0))
-              {
-              tmp_mean += w * t_running_means[t][g].mean();
-              
-              dead       = false;
-              last_index = t_running_means[t][g].last_index();
-              }
-            }
-          }
-        
-        running_means[g].reset();
-        
-        if(dead == false)  { running_means[g](tmp_mean, last_index); }
+        acc_means += t_acc_means(t);
+        acc_hefts += t_acc_hefts(t);
+        }
+      
+      for(uword g=0; g < N_gaus;    ++g)
+      for(uword t=0; t < n_threads; ++t)
+        {
+        if( t_acc_hefts(t)(g) >= 1 )  { last_indx(g) = t_last_indx(t)(g); }
         }
       }
     #else
       {
-      for(uword g=0; g < N_gaus; ++g)  { running_means[g].reset(); }
+      uword* acc_hefts_mem = acc_hefts.memptr();
+      uword* last_indx_mem = last_indx.memptr();
       
-      km_update_stats<dist_id>(X, 0, X.n_cols-1, old_means, running_means);
+      for(uword i=0; i < X_n_cols; ++i)
+        {
+        const eT* X_colptr = X.colptr(i);
+        
+        eT     min_dist = Datum<eT>::inf;
+        uword  best_g   = 0;
+        
+        for(uword g=0; g<N_gaus; ++g)
+          {
+          const eT dist = distance<eT,dist_id>::eval(N_dims, X_colptr, old_means.colptr(g), mah_aux_mem);
+          
+          if(dist < min_dist)  { min_dist = dist;  best_g = g; }
+          }
+        
+        eT* acc_mean = acc_means.colptr(best_g);
+        
+        for(uword d=0; d<N_dims; ++d)  { acc_mean[d] += X_colptr[d]; }
+        
+        acc_hefts_mem[best_g]++;
+        last_indx_mem[best_g] = i;
+        }
       }
     #endif
     
-    uword n_dead_means = 0;
+    // generate new means
+    
+    uword* acc_hefts_mem = acc_hefts.memptr();
     
     for(uword g=0; g < N_gaus; ++g)
       {
-      if(running_means[g].count() > 0)
+      const eT*   acc_mean = acc_means.colptr(g);
+      const uword acc_heft = acc_hefts_mem[g];
+      
+      eT* new_mean = access::rw(new_means).colptr(g);
+  
+      for(uword d=0; d<N_dims; ++d)
         {
-        new_means.col(g) = running_means[g].mean();
-        }
-      else
-        {
-        n_dead_means++;
+        new_mean[d] = (acc_heft >= 1) ? (acc_mean[d] / eT(acc_heft)) : eT(0);
         }
       }
+    
     
     // heuristics to resurrect dead means
     
-    if(n_dead_means > 0)
+    const uvec dead_gs = find(acc_hefts == uword(0));
+    
+    if(dead_gs.n_elem > 0)
       {
-      if(verbose)  { get_stream_err2() << signature << ": recovering from dead means\n"; }
+      if(verbose)  { get_stream_err2() << signature << ": recovering from dead means\n"; get_stream_err2().flush(); }
       
-      if(n_dead_means == 1)
+      uword* last_indx_mem = last_indx.memptr();
+    
+      const uvec live_gs = sort( find(acc_hefts >= uword(2)), "descend" );
+      
+      uword live_g_index  = 0;
+      
+      for(uword dead_g_index = 0; dead_g_index < dead_gs.n_elem; ++dead_g_index)
         {
-        uword dead_g         = 0;
-        uword populous_g     = 0;
-        uword populous_count = running_means(0).count(); 
-        
-        for(uword g=1; g < N_gaus; ++g)
+        if(live_g_index < live_gs.n_elem)
           {
-          const uword count = running_means(g).count();
+          // recover by using a sample from a known good mean
+          new_means.col(dead_g_index) = X.col( last_indx_mem[live_g_index] );
           
-          if(count == 0)  { dead_g = g; }
-          
-          if(populous_count < count)
-            {
-            populous_count = count;
-            populous_g     = g;
-            }
+          ++live_g_index;
           }
-        
-        if( (populous_count <= 2) || (dead_g == populous_g) )  { return false; }
-        
-        new_means.col(dead_g) = X.unsafe_col( running_means(populous_g).last_index() );
-        }
-      else
-        {
-        uword n_resurrected_means = 0;
-        
-        uword dead_g = 0;
-        
-        for(uword live_g = 0; live_g < N_gaus; ++live_g)
+        else
           {
-          if(running_means(live_g).count() >= 2)
-            {
-            for(; dead_g < N_gaus; ++dead_g)
-              {
-              if(running_means(dead_g).count() == 0)  { break; }
-              }
-            
-            if(dead_g == N_gaus)  { break; }
-            
-            new_means.col(dead_g) = X.unsafe_col( running_means(live_g).last_index() );
-            
-            dead_g++;
-            n_resurrected_means++;
-            }
-          }
-        
-        if(n_resurrected_means != n_dead_means)
-          {
-          if(verbose)  { get_stream_err2() << signature << ": WARNING: did not resurrect all dead means\n"; }
+          // better-than-nothing recovery
+          new_means.col(dead_g_index) = X.col( as_scalar(randi<uvec>(1, distr_param(0,X_n_cols-1))) );
           }
         }
       }
-    
+
     rs_delta.reset();
     
     for(uword g=0; g < N_gaus; ++g)
@@ -2115,49 +2119,6 @@ gmm_diag<eT>::km_iterate(const Mat<eT>& X, const uword max_iter, const bool verb
 
 
 
-template<typename eT>
-template<uword dist_id>
-inline
-void
-gmm_diag<eT>::km_update_stats(const Mat<eT>& X, const uword start_index, const uword end_index, const Mat<eT>& old_means, field< running_mean_vec<eT> >& running_means) const
-  {
-  arma_extra_debug_sigprint();
-  
-  // get_stream_err2() << "km_update_stats(): start_index: " << start_index << '\n';
-  // get_stream_err2() << "km_update_stats():   end_index: " <<   end_index << '\n';
-  
-  const uword N_dims = means.n_rows;
-  const uword N_gaus = means.n_cols;
-  
-  const eT* mah_aux_mem = mah_aux.memptr();
-  
-  for(uword i=start_index; i <= end_index; ++i)
-    {
-    const eT* X_colptr = X.colptr(i);
-    
-    double best_dist = Datum<eT>::inf;
-    uword  best_g    = 0;
-    
-    for(uword g=0; g < N_gaus; ++g)
-      {
-      const double dist = distance<eT,dist_id>::eval(N_dims, X_colptr, old_means.colptr(g), mah_aux_mem);
-      
-      // get_stream_err2() << "g: " << g << "   dist: " << dist << '\n';
-      // old_means.col(g).print("old_means.col(g):");
-      // vec tmp(old_means.colptr(g), old_means.n_rows);
-      // tmp.print("tmp:");
-      
-      if(dist < best_dist)  { best_dist = dist; best_g = g; }
-      }
-    
-    // get_stream_err2() << "best_g: " << best_g << '\n';
-    
-    running_means[best_g]( X.unsafe_col(i), i );
-    }
-  }
-
-
-
 //! multi-threaded implementation of Expectation-Maximisation, inspired by MapReduce
 template<typename eT>
 inline
@@ -2165,6 +2126,8 @@ bool
 gmm_diag<eT>::em_iterate(const Mat<eT>& X, const uword max_iter, const eT var_floor, const bool verbose)
   {
   arma_extra_debug_sigprint();
+  
+  if(X.n_cols == 0)  { return true; }
   
   const uword N_dims = means.n_rows;
   const uword N_gaus = means.n_cols;

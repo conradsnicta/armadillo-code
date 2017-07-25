@@ -86,36 +86,6 @@ class running_mean_scalar
 
 
 
-// running_mean_vec
-
-template<typename eT>
-class running_mean_vec
-  {
-  public:
-  
-  inline running_mean_vec();
-  inline running_mean_vec(const running_mean_vec& in_rmv);
-  
-  inline const running_mean_vec& operator=(const running_mean_vec& in_rmv);
-  
-  arma_hot inline void operator() (const Col<eT>& X, const uword index);
-  
-  inline void reset();
-  
-  inline uword          last_index() const;
-  inline uword          count()      const;
-  inline const Col<eT>& mean()       const;
-  
-  
-  private:
-  
-  arma_aligned uword   last_i;
-  arma_aligned uword   counter;
-  arma_aligned Col<eT> r_mean;
-  };
-
-
-
 // distance
 
 template<typename eT, uword dist_id>

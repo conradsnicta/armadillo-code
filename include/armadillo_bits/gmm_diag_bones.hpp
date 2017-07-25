@@ -146,8 +146,6 @@ class gmm_diag
   
   template<uword dist_id> inline bool km_iterate(const Mat<eT>& X, const uword max_iter, const bool verbose, const char* signature);
   
-  template<uword dist_id> inline void km_update_stats(const Mat<eT>& X, const uword start_index, const uword end_index, const Mat<eT>& old_means, field< running_mean_vec<eT> >& running_means) const;
-  
   //
   
   inline bool em_iterate(const Mat<eT>& X, const uword max_iter, const eT var_floor, const bool verbose);

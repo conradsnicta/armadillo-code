@@ -2069,18 +2069,22 @@ gmm_diag<eT>::km_iterate(const Mat<eT>& X, const uword max_iter, const bool verb
       
       if(live_gs.n_elem == 0)  { return false; }
       
-      uword live_g_index  = 0;
+      uword live_gs_count  = 0;
       
-      for(uword dead_g_index = 0; dead_g_index < dead_gs.n_elem; ++dead_g_index)
+      for(uword dead_gs_count = 0; dead_gs_count < dead_gs.n_elem; ++dead_gs_count)
         {
+        const uword dead_g_id = dead_gs(dead_gs_count);
+        
         uword proposed_i = 0;
         
-        if(live_g_index < live_gs.n_elem)
+        if(live_gs_count < live_gs.n_elem)
           {
-          if(live_g_index == dead_g_index)  { return false; }
+          const uword live_g_id = live_gs(live_gs_count);  ++live_gs_count;
+          
+          if(live_g_id == dead_g_id)  { return false; }
           
           // recover by using a sample from a known good mean
-          proposed_i = last_indx_mem[live_g_index];  ++live_g_index;
+          proposed_i = last_indx_mem[live_g_id];
           }
         else
           {
@@ -2090,7 +2094,7 @@ gmm_diag<eT>::km_iterate(const Mat<eT>& X, const uword max_iter, const bool verb
         
         if(proposed_i >= X_n_cols)  { return false; }
         
-        new_means.col(dead_g_index) = X.col(proposed_i);
+        new_means.col(dead_g_id) = X.col(proposed_i);
         }
       }
 

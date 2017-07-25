@@ -1941,11 +1941,7 @@ gmm_diag<eT>::km_iterate(const Mat<eT>& X, const uword max_iter, const bool verb
     const uword n_threads = 1;
   #endif
   
-  if(verbose)
-    {
-    get_stream_err2() << signature << ": n_threads: " << n_threads  << '\n';
-    }
-  
+  if(verbose)  { get_stream_err2() << signature << ": n_threads: " << n_threads  << '\n'; get_stream_err2().flush(); }
   
   for(uword iter=1; iter <= max_iter; ++iter)
     {
@@ -2400,6 +2396,9 @@ gmm_diag<eT>::em_fix_params(const eT var_floor)
   {
   arma_extra_debug_sigprint();
   
+  const uword N_dims = means.n_rows;
+  const uword N_gaus = means.n_cols;
+  
   const eT var_ceiling = std::numeric_limits<eT>::max();
   
   const uword dcovs_n_elem = dcovs.n_elem;
@@ -2414,9 +2413,6 @@ gmm_diag<eT>::em_fix_params(const eT var_floor)
     else if(arma_isnan(var_val)  )  { var_val = eT(1);       }
     }
   
-  
-  const uword N_dims = means.n_rows;
-  const uword N_gaus = means.n_cols;
   
   eT* hefts_mem = access::rw(hefts).memptr();
   
@@ -2439,7 +2435,7 @@ gmm_diag<eT>::em_fix_params(const eT var_floor)
     }
   
   const eT heft_floor   = std::numeric_limits<eT>::min();
-  const eT heft_initial = eT(1) / eT(means.n_cols);
+  const eT heft_initial = eT(1) / eT(N_gaus);
   
   for(uword i=0; i < N_gaus; ++i)
     {

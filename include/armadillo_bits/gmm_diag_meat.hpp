@@ -2088,7 +2088,7 @@ gmm_diag<eT>::km_iterate(const Mat<eT>& X, const uword max_iter, const bool verb
           proposed_i = as_scalar(randi<uvec>(1, distr_param(0,X_n_cols-1)));
           }
         
-        if(proposed_i > X_n_cols)  { return false; }
+        if(proposed_i >= X_n_cols)  { return false; }
         
         new_means.col(dead_g_index) = X.col(proposed_i);
         }

@@ -1243,7 +1243,7 @@ gmm_full<eT>::internal_avg_log_p(const T1& X) const
   
   #if defined(ARMA_USE_OPENMP)
     {
-    const umat boundaries = internal_gen_boundaries(N);
+    const umat boundaries = internal_gen_boundaries(N_samples);
     
     const uword n_threads = boundaries.n_cols;
     
@@ -1277,7 +1277,7 @@ gmm_full<eT>::internal_avg_log_p(const T1& X) const
       {
       running_mean_scalar<eT>& current_running_mean = t_running_means[t];
       
-      const eT w = eT(current_running_mean.count()) / eT(N);
+      const eT w = eT(current_running_mean.count()) / eT(N_samples);
       
       avg += w * current_running_mean.mean();
       }
@@ -1877,7 +1877,7 @@ gmm_full<eT>::generate_initial_params(const Mat<eT>& X, const eT var_floor)
     for(uword t=0; t < n_threads; ++t)
       {
       t_acc_means(t).zeros(N_dims, N_gaus);
-      t_acc_dcovs(t).zeros(N_dims, N_dims, N_gaus);
+      t_acc_fcovs(t).zeros(N_dims, N_dims, N_gaus);
       t_acc_hefts(t).zeros(N_gaus);
       t_xx_outer(t).set_size(N_dims, N_dims);
       }
@@ -2288,6 +2288,10 @@ gmm_full<eT>::em_iterate(const Mat<eT>& X, const uword max_iter, const eT var_fl
   
   Col<eT>          t_progress_log_lhood(n_threads);
   
+  field< Row<eT> > t_tmp1(n_threads);
+  field< Row<eT> > t_tmp2(n_threads);
+  field< Mat<eT> > t_xx_outer(n_threads);
+  
   for(uword t=0; t<n_threads; t++)
     {
     t_acc_means[t].set_size(N_dims, N_gaus);
@@ -2295,6 +2299,10 @@ gmm_full<eT>::em_iterate(const Mat<eT>& X, const uword max_iter, const eT var_fl
     
     t_acc_norm_lhoods[t].set_size(N_gaus);
     t_gaus_log_lhoods[t].set_size(N_gaus);
+    
+    t_tmp1[t].set_size(N_dims);
+    t_tmp2[t].set_size(N_dims);
+    t_xx_outer[t].set_size(N_dims,N_dims);
     }
   
   
@@ -2309,7 +2317,7 @@ gmm_full<eT>::em_iterate(const Mat<eT>& X, const uword max_iter, const eT var_fl
     {
     init_constants();
     
-    em_update_params(X, boundaries, t_acc_means, t_acc_fcovs, t_acc_norm_lhoods, t_gaus_log_lhoods, t_progress_log_lhood);
+    em_update_params(X, boundaries, t_acc_means, t_acc_fcovs, t_acc_norm_lhoods, t_gaus_log_lhoods, t_progress_log_lhood, t_tmp1, t_tmp2, t_xx_outer);
     
     em_fix_params(var_floor);
     
@@ -2366,7 +2374,10 @@ gmm_full<eT>::em_update_params
         field< Cube<eT> >& t_acc_fcovs,
         field<  Col<eT> >& t_acc_norm_lhoods,
         field<  Col<eT> >& t_gaus_log_lhoods,
-        Col<eT>&           t_progress_log_lhood
+        Col<eT>&           t_progress_log_lhood,
+        field<  Row<eT> >& t_tmp1,
+        field<  Row<eT> >& t_tmp2,
+        field<  Mat<eT> >& t_xx_outer
   )
   {
   arma_extra_debug_sigprint();
@@ -2386,13 +2397,16 @@ gmm_full<eT>::em_update_params
        Col<eT>& acc_norm_lhoods    = t_acc_norm_lhoods[t];
        Col<eT>& gaus_log_lhoods    = t_gaus_log_lhoods[t];
        eT&      progress_log_lhood = t_progress_log_lhood[t];
+       Row<eT>& tmp1               = t_tmp1[t];
+       Row<eT>& tmp2               = t_tmp2[t];
+       Mat<eT>& xx_outer           = t_xx_outer[t];
       
-      em_generate_acc(X, boundaries.at(0,t), boundaries.at(1,t), acc_means, acc_fcovs, acc_norm_lhoods, gaus_log_lhoods, progress_log_lhood);
+      em_generate_acc(X, boundaries.at(0,t), boundaries.at(1,t), acc_means, acc_fcovs, acc_norm_lhoods, gaus_log_lhoods, progress_log_lhood, tmp1, tmp2, xx_outer);
       }
     }
   #else
     {
-    em_generate_acc(X, boundaries.at(0,0), boundaries.at(1,0), t_acc_means[0], t_acc_fcovs[0], t_acc_norm_lhoods[0], t_gaus_log_lhoods[0], t_progress_log_lhood[0]);
+    em_generate_acc(X, boundaries.at(0,0), boundaries.at(1,0), t_acc_means[0], t_acc_fcovs[0], t_acc_norm_lhoods[0], t_gaus_log_lhoods[0], t_progress_log_lhood[0], t_tmp1[0], t_tmp2[0], t_xx_outer[0]);
     }
   #endif
   
@@ -2459,7 +2473,10 @@ gmm_full<eT>::em_generate_acc
         Cube<eT>& acc_fcovs,
          Col<eT>& acc_norm_lhoods,
          Col<eT>& gaus_log_lhoods,
-         eT&      progress_log_lhood
+         eT&      progress_log_lhood,
+         Row<eT>& tmp1,
+         Row<eT>& tmp2,
+         Mat<eT>& xx_outer
   )
   const
   {
@@ -2480,15 +2497,13 @@ gmm_full<eT>::em_generate_acc
         eT* gaus_log_lhoods_mem = gaus_log_lhoods.memptr();
   
   
-  Mat<eT> xx_outer(N_dims, N_dims);
-  
   for(uword i=start_index; i <= end_index; i++)
     {
     const eT* x = X.colptr(i);
     
     for(uword g=0; g < N_gaus; ++g)
       {
-      gaus_log_lhoods_mem[g] = internal_scalar_log_p(x, g) + log_hefts_mem[g];
+      gaus_log_lhoods_mem[g] = internal_scalar_log_p(x, tmp1, tmp2, g) + log_hefts_mem[g];
       }
     
     eT log_lhood_sum = gaus_log_lhoods_mem[0];

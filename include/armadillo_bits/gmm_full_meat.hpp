@@ -777,19 +777,22 @@ gmm_full<eT>::learn
   
   // k-means
   
-  // TODO: farm it out to gmm_diag
+  if(km_iter > 0)
+    {
+    // TODO
+    }
   
   
   // initial fcovs
   
-  const eT vfloor = (eT(var_floor) > eT(0)) ? eT(var_floor) : std::numeric_limits<eT>::min();
+  const eT var_floor_actual = (eT(var_floor) > eT(0)) ? eT(var_floor) : std::numeric_limits<eT>::min();
   
   if(seed_mode != keep_existing)
     {
     if(print_mode)  { get_stream_err2() << "gmm_full::learn(): generating initial covariances\n"; get_stream_err2().flush(); }
     
-         if(dist_mode == eucl_dist)  { generate_initial_fcovs_and_hefts<1>(X, vfloor); }
-    else if(dist_mode == maha_dist)  { generate_initial_fcovs_and_hefts<2>(X, vfloor); }
+         if(dist_mode == eucl_dist)  { generate_initial_params<1>(X, var_floor_actual); }
+    else if(dist_mode == maha_dist)  { generate_initial_params<2>(X, var_floor_actual); }
     }
   
   
@@ -799,7 +802,7 @@ gmm_full<eT>::learn
     {
     const arma_ostream_state stream_state(get_stream_err2());
     
-    const bool status = em_iterate(X, em_iter, vfloor, print_mode);
+    const bool status = em_iterate(X, em_iter, var_floor_actual, print_mode);
     
     stream_state.restore(get_stream_err2());
     
@@ -1833,86 +1836,173 @@ template<typename eT>
 template<uword dist_id>
 inline
 void
-gmm_full<eT>::generate_initial_fcovs_and_hefts(const Mat<eT>& X, const eT var_floor)
+gmm_full<eT>::generate_initial_params(const Mat<eT>& X, const eT var_floor)
   {
   arma_extra_debug_sigprint();
   
   const uword N_dims = means.n_rows;
   const uword N_gaus = means.n_cols;
   
-  field< running_stat_vec< Col<eT> > > rs(N_gaus);
-  
   const eT* mah_aux_mem = mah_aux.memptr();
+  
+  const uword X_n_cols = X.n_cols;
+  
+  // as the covariances are calcualted via accumulators,
+  // the means also need to be calculated via accumulators to ensure numerical consistency;
+  // this also takes into account the corner-case of imprecise means being supplied by the user
+  
+   Mat<eT> acc_means(N_dims, N_gaus,         fill::zeros);
+  Cube<eT> acc_fcovs(N_dims, N_dims, N_gaus, fill::zeros);
+  
+  Row<uword> acc_hefts(N_gaus, fill::zeros);
+  
+  uword* acc_hefts_mem = acc_hefts.memptr();
   
   #if defined(ARMA_USE_OPENMP)
     {
-    const uword X_n_cols = X.n_cols;
+    const umat boundaries = internal_gen_boundaries(X_n_cols);
     
-    Row<uword> assignments(X_n_cols);
-    uword*     assignments_mem = assignments.memptr();
+    const uword n_threads = boundaries.n_cols;
     
-    #pragma omp parallel for schedule(static)
-    for(uword i=0; i<X_n_cols; ++i)
+    field<  Mat<eT>    > t_acc_means(n_threads);
+    field< Cube<eT>    > t_acc_fcovs(n_threads);
+    field<  Row<uword> > t_acc_hefts(n_threads);
+    field<  Mat<eT>    > t_xx_outer(n_threads);
+    
+    for(uword t=0; t < n_threads; ++t)
       {
-      const eT* X_colptr = X.colptr(i);
-      
-      double min_dist = Datum<eT>::inf;
-      uword  best_g   = 0;
-      
-      for(uword g=0; g<N_gaus; ++g)
-        {
-        const double dist = distance<eT,dist_id>::eval(N_dims, X_colptr, means.colptr(g), mah_aux_mem);
-        
-        if(dist <= min_dist)  { min_dist = dist; best_g = g; }
-        }
-      
-      assignments_mem[i] = best_g;
+      t_acc_means(t).zeros(N_dims, N_gaus);
+      t_acc_dcovs(t).zeros(N_dims, N_dims, N_gaus);
+      t_acc_hefts(t).zeros(N_gaus);
+      t_xx_outer(t).set_size(N_dims, N_dims);
       }
     
     #pragma omp parallel for schedule(static)
-    for(uword g=0; g<N_gaus; ++g)
+    for(uword t=0; t < n_threads; ++t)
       {
-      running_stat_vec< Col<eT> >& rs_g = rs(g);
+      uword* t_acc_hefts_mem = t_acc_hefts(t).memptr();
       
-      for(uword i=0; i<X_n_cols; ++i)
+      const uword start_index = boundaries.at(0,t);
+      const uword   end_index = boundaries.at(1,t);
+      
+      Mat<eT>& xx_outer = t_xx_outer(t);
+      
+      for(uword i=start_index; i <= end_index; ++i)
         {
-        if(g == assignments_mem[i])  { rs_g(X.unsafe_col(i)); }
+        const eT* x = X.colptr(i);
+        
+        eT     min_dist = Datum<eT>::inf;
+        uword  best_g   = 0;
+        
+        for(uword g=0; g<N_gaus; ++g)
+          {
+          const eT dist = distance<eT,dist_id>::eval(N_dims, x, means.colptr(g), mah_aux_mem);
+          
+          if(dist < min_dist)  { min_dist = dist;  best_g = g; }
+          }
+        
+        t_acc_hefts_mem[best_g]++;
+        
+        eT* t_acc_mean = t_acc_means(t).colptr(best_g);
+        
+        for(uword d=0; d < N_dims; ++d)
+          {
+          t_acc_mean[d] += x[d];
+          }
+        
+        const Col<eT> xx(const_cast<eT*>(x), N_dims, false, true);
+        
+        xx_outer = xx * xx.t();
+        
+        Mat<eT>& t_acc_fcov = t_acc_fcovs(t).slice(best_g);
+        
+        t_acc_fcov += xx_outer;
         }
+      }
+    
+    // reduction
+    acc_means = t_acc_means(0);
+    acc_fcovs = t_acc_fcovs(0);
+    acc_hefts = t_acc_hefts(0);
+    
+    for(uword t=1; t < n_threads; ++t)
+      {
+      acc_means += t_acc_means(t);
+      acc_fcovs += t_acc_fcovs(t);
+      acc_hefts += t_acc_hefts(t);
       }
     }
   #else
     {
-    for(uword i=0; i<X.n_cols; ++i)
+    Mat<eT> xx_outer(n_dims, n_dims);
+    
+    for(uword i=0; i<X_n_cols; ++i)
       {
-      const eT* X_colptr = X.colptr(i);
+      const eT* x = X.colptr(i);
       
-      double min_dist = Datum<eT>::inf;
+      eT     min_dist = Datum<eT>::inf;
       uword  best_g   = 0;
       
       for(uword g=0; g<N_gaus; ++g)
         {
-        const double dist = distance<eT,dist_id>::eval(N_dims, X_colptr, means.colptr(g), mah_aux_mem);
+        const eT dist = distance<eT,dist_id>::eval(N_dims, x, means.colptr(g), mah_aux_mem);
         
-        if(dist <= min_dist)  { min_dist = dist; best_g = g; }
+        if(dist < min_dist)  { min_dist = dist;  best_g = g; }
         }
       
-      rs(best_g)(X.unsafe_col(i));
+      acc_hefts_mem[best_g]++;
+      
+      eT* acc_mean = acc_means.colptr(best_g);
+      
+      for(uword d=0; d < N_dims; ++d)
+        {
+        acc_mean[d] += x[d];
+        }
+      
+      const Col<eT> xx(const_cast<eT*>(x), N_dims, false, true);
+      
+      xx_outer = xx * xx.t();
+      
+      Mat<eT>& acc_fcov = acc_fcovs.slice(best_g);
+      
+      acc_fcov += xx_outer;
       }
     }
   #endif
   
+  
+  eT* hefts_mem = access::rw(hefts).memptr();
+  
+  Mat<eT> mm_outer(N_dims, N_dims);
+  
   for(uword g=0; g<N_gaus; ++g)
     {
-    if( rs(g).count() >= eT(2) )
+    const uword acc_heft = acc_hefts_mem[g];
+    const eT*   acc_mean = acc_means.colptr(g);
+    
+    hefts_mem[g] = eT(acc_heft) / eT(X_n_cols);
+    
+    eT* m = access::rw(means).colptr(g);
+    
+    for(uword d=0; d<N_dims; ++d)
       {
-      access::rw(fcovs).slice(g).diag() = rs(g).var(1);
+      m[d] = (acc_heft >= 1) ? (acc_mean[d] / eT(acc_heft)) : eT(0);
+      }
+    
+    Mat<eT>& fcov = access::rw(fcovs).slice(g);
+      
+    if(acc_heft >= 2)
+      {
+      const Col<eT> mm(m, N_dims, false, true);
+      
+      mm_outer = mm * mm.t();
+      
+      fcov = acc_fcov / eT(acc_heft) - mm_outer;
       }
     else
       {
-      access::rw(fcovs).slice(g).diag().ones();
+      fcov.eye();
       }
-    
-    access::rw(hefts)(g) = (std::max)( (rs(g).count() / eT(X.n_cols)), std::numeric_limits<eT>::min() );
     }
   
   em_fix_params(var_floor);
@@ -2176,10 +2266,10 @@ gmm_full<eT>::em_generate_acc
       
       for(uword d=0; d < N_dims; ++d)
         {
-        acc_mean_mem[d] += x_d * norm_lhood;
+        acc_mean_mem[d] += x[d] * norm_lhood;
         }
       
-      const Col<eT> xx(const_cast<eT*>(x), N_dims, false);
+      const Col<eT> xx(const_cast<eT*>(x), N_dims, false, true);
       
       xx_outer = xx * xx.t();
       

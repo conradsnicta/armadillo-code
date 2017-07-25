@@ -133,9 +133,7 @@ class gmm_full
   
   template<uword dist_id> inline void generate_initial_means(const Mat<eT>& X, const gmm_seed_mode& seed);
   
-  template<uword dist_id> inline void generate_initial_dcovs_and_hefts(const Mat<eT>& X, const eT var_floor);
-  
-  template<uword dist_id> inline void km_update_stats(const Mat<eT>& X, const uword start_index, const uword end_index, const Mat<eT>& old_means, field< running_mean_vec<eT> >& running_means) const;
+  template<uword dist_id> inline void generate_initial_params(const Mat<eT>& X, const eT var_floor);
   
   //
   

@@ -2067,22 +2067,30 @@ gmm_diag<eT>::km_iterate(const Mat<eT>& X, const uword max_iter, const bool verb
     
       const uvec live_gs = sort( find(acc_hefts >= uword(2)), "descend" );
       
+      if(live_gs.n_elem == 0)  { return false; }
+      
       uword live_g_index  = 0;
       
       for(uword dead_g_index = 0; dead_g_index < dead_gs.n_elem; ++dead_g_index)
         {
+        uword proposed_i = 0;
+        
         if(live_g_index < live_gs.n_elem)
           {
-          // recover by using a sample from a known good mean
-          new_means.col(dead_g_index) = X.col( last_indx_mem[live_g_index] );
+          if(live_g_index == dead_g_index)  { return false; }
           
-          ++live_g_index;
+          // recover by using a sample from a known good mean
+          proposed_i = last_indx_mem[live_g_index];  ++live_g_index;
           }
         else
           {
-          // better-than-nothing recovery
-          new_means.col(dead_g_index) = X.col( as_scalar(randi<uvec>(1, distr_param(0,X_n_cols-1))) );
+          // recover by using a randomly seleced sample (last resort)
+          proposed_i = as_scalar(randi<uvec>(1, distr_param(0,X_n_cols-1)));
           }
+        
+        if(proposed_i > X_n_cols)  { return false; }
+        
+        new_means.col(dead_g_index) = X.col(proposed_i);
         }
       }
 
@@ -2113,6 +2121,8 @@ gmm_diag<eT>::km_iterate(const Mat<eT>& X, const uword max_iter, const bool verb
     }
   
   access::rw(means) = old_means;
+  
+  if(means.is_finite() == false)  { return false; }
   
   return true;
   }

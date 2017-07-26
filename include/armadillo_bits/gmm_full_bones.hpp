@@ -95,11 +95,11 @@ class gmm_full
   protected:
   
   
-  arma_aligned Cube<eT>  inv_fcovs;
-  arma_aligned Cube<eT> chol_fcovs;
+  arma_aligned Cube<eT> inv_fcovs;
   arma_aligned Row<eT>  log_det_etc;
   arma_aligned Row<eT>  log_hefts;
   arma_aligned Col<eT>  mah_aux;
+  arma_aligned Cube<eT> chol_fcovs;
   
   //
   
@@ -107,7 +107,7 @@ class gmm_full
   
   inline void init(const uword in_n_dim, const uword in_n_gaus);
   
-  inline void init_constants();
+  inline void init_constants(const bool calc_chol = true);
   
   inline umat internal_gen_boundaries(const uword N) const;
   

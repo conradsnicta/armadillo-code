@@ -878,7 +878,7 @@ gmm_full<eT>::init(const uword in_n_dims, const uword in_n_gaus)
 template<typename eT>
 inline
 void
-gmm_full<eT>::init_constants()
+gmm_full<eT>::init_constants(const bool calc_chol)
   {
   arma_extra_debug_sigprint();
   
@@ -889,43 +889,33 @@ gmm_full<eT>::init_constants()
   
   //
   
-   inv_fcovs.copy_size(fcovs);
-  chol_fcovs.copy_size(fcovs);
-  
+  inv_fcovs.copy_size(fcovs);
   log_det_etc.set_size(N_gaus);
   
   Mat<eT> tmp_inv;
-  Mat<eT> tmp_chol;
-  
-  eT log_det_val  = eT(0);
-  eT log_det_sign = eT(0);
   
   for(uword g=0; g < N_gaus; ++g)
     {
-    const Mat<eT>& fcov = fcovs.slice(g);
+    const Mat<eT>&     fcov =      fcovs.slice(g);
+          Mat<eT>& inv_fcov =  inv_fcovs.slice(g);
     
-    Mat<eT>&  inv_fcov =  inv_fcovs.slice(g);
-    Mat<eT>& chol_fcov = chol_fcovs.slice(g);
+  //const bool inv_ok = auxlib::inv(tmp_inv, fcov);
+    const bool inv_ok = auxlib::inv_sympd(tmp_inv, fcov);
     
-    const bool  inv_ok = inv_sympd(tmp_inv,  fcov);
-    const bool chol_ok =      chol(tmp_chol, fcov, "lower");
-    
-    log_det_val  = eT(0);
-    log_det_sign = eT(0);
+    eT log_det_val  = eT(0);
+    eT log_det_sign = eT(0);
     
     log_det(log_det_val, log_det_sign, fcov);
     
     const bool log_det_ok = (log_det_sign > eT(0));
     
-    if(inv_ok && chol_ok && log_det_ok)
+    if(inv_ok && log_det_ok)
       {
-       inv_fcov = tmp_inv;
-      chol_fcov = tmp_chol;
+      inv_fcov = tmp_inv;
       }
     else
       {
-       inv_fcov.zeros();
-      chol_fcov.zeros();
+      inv_fcov.zeros();
       
       log_det_val = eT(0);
       
@@ -933,8 +923,7 @@ gmm_full<eT>::init_constants()
         {
         const eT sanitised_val = (std::max)( eT(fcov.at(d,d)), eT(std::numeric_limits<eT>::min()) );
         
-         inv_fcov.at(d,d) =   eT(1) / sanitised_val;
-        chol_fcov.at(d,d) = std::sqrt(sanitised_val);
+        inv_fcov.at(d,d) = eT(1) / sanitised_val;
         
         log_det_val += std::log(sanitised_val);
         }
@@ -953,6 +942,39 @@ gmm_full<eT>::init_constants()
     }
   
   log_hefts = log(hefts);
+  
+  
+  if(calc_chol)
+    {
+    chol_fcovs.copy_size(fcovs);
+    Mat<eT> tmp_chol;
+    
+    for(uword g=0; g < N_gaus; ++g)
+      {
+      const Mat<eT>& fcov      =      fcovs.slice(g);
+            Mat<eT>& chol_fcov = chol_fcovs.slice(g);
+      
+      const uword chol_layout = 1;  // indicates "lower"
+      
+      const bool chol_ok = auxlib::chol(tmp_chol, fcov, chol_layout);
+      
+      if(chol_ok)
+        {
+        chol_fcov = tmp_chol;
+        }
+      else
+        {
+        chol_fcov.zeros();
+        
+        for(uword d=0; d < N_dims; ++d)
+          {
+          const eT sanitised_val = (std::max)( eT(fcov.at(d,d)), eT(std::numeric_limits<eT>::min()) );
+          
+          chol_fcov.at(d,d) = std::sqrt(sanitised_val);
+          }
+        }
+      }
+    }
   }
 
 
@@ -1853,11 +1875,10 @@ gmm_full<eT>::generate_initial_params(const Mat<eT>& X, const eT var_floor)
   const uword X_n_cols = X.n_cols;
   
   // as the covariances are calcualted via accumulators,
-  // the means also need to be calculated via accumulators to ensure numerical consistency;
-  // this also takes into account the corner-case of imprecise means being supplied by the user
+  // the means also need to be calculated via accumulators to ensure numerical consistency
   
-   Mat<eT> acc_means(N_dims, N_gaus,         fill::zeros);
-  Cube<eT> acc_fcovs(N_dims, N_dims, N_gaus, fill::zeros);
+  Mat<eT> acc_means(N_dims, N_gaus, fill::zeros);
+  Mat<eT> acc_dcovs(N_dims, N_gaus, fill::zeros);
   
   Row<uword> acc_hefts(N_gaus, fill::zeros);
   
@@ -1869,17 +1890,15 @@ gmm_full<eT>::generate_initial_params(const Mat<eT>& X, const eT var_floor)
     
     const uword n_threads = boundaries.n_cols;
     
-    field<  Mat<eT>    > t_acc_means(n_threads);
-    field< Cube<eT>    > t_acc_fcovs(n_threads);
-    field<  Row<uword> > t_acc_hefts(n_threads);
-    field<  Mat<eT>    > t_xx_outer(n_threads);
+    field< Mat<eT>    > t_acc_means(n_threads);
+    field< Mat<eT>    > t_acc_dcovs(n_threads);
+    field< Row<uword> > t_acc_hefts(n_threads);
     
     for(uword t=0; t < n_threads; ++t)
       {
       t_acc_means(t).zeros(N_dims, N_gaus);
-      t_acc_fcovs(t).zeros(N_dims, N_dims, N_gaus);
+      t_acc_dcovs(t).zeros(N_dims, N_gaus);
       t_acc_hefts(t).zeros(N_gaus);
-      t_xx_outer(t).set_size(N_dims, N_dims);
       }
     
     #pragma omp parallel for schedule(static)
@@ -1890,126 +1909,101 @@ gmm_full<eT>::generate_initial_params(const Mat<eT>& X, const eT var_floor)
       const uword start_index = boundaries.at(0,t);
       const uword   end_index = boundaries.at(1,t);
       
-      Mat<eT>& xx_outer = t_xx_outer(t);
-      
       for(uword i=start_index; i <= end_index; ++i)
         {
-        const eT* x = X.colptr(i);
+        const eT* X_colptr = X.colptr(i);
         
         eT     min_dist = Datum<eT>::inf;
         uword  best_g   = 0;
         
         for(uword g=0; g<N_gaus; ++g)
           {
-          const eT dist = distance<eT,dist_id>::eval(N_dims, x, means.colptr(g), mah_aux_mem);
+          const eT dist = distance<eT,dist_id>::eval(N_dims, X_colptr, means.colptr(g), mah_aux_mem);
           
           if(dist < min_dist)  { min_dist = dist;  best_g = g; }
           }
         
-        t_acc_hefts_mem[best_g]++;
-        
         eT* t_acc_mean = t_acc_means(t).colptr(best_g);
+        eT* t_acc_dcov = t_acc_dcovs(t).colptr(best_g);
         
-        for(uword d=0; d < N_dims; ++d)
+        for(uword d=0; d<N_dims; ++d)
           {
-          t_acc_mean[d] += x[d];
+          const eT x_d = X_colptr[d];
+          
+          t_acc_mean[d] += x_d;
+          t_acc_dcov[d] += x_d*x_d;
           }
         
-        const Col<eT> xx(const_cast<eT*>(x), N_dims, false, true);
-        
-        xx_outer = xx * xx.t();
-        
-        Mat<eT>& t_acc_fcov = t_acc_fcovs(t).slice(best_g);
-        
-        t_acc_fcov += xx_outer;
+        t_acc_hefts_mem[best_g]++;
         }
       }
     
     // reduction
     acc_means = t_acc_means(0);
-    acc_fcovs = t_acc_fcovs(0);
+    acc_dcovs = t_acc_dcovs(0);
     acc_hefts = t_acc_hefts(0);
     
     for(uword t=1; t < n_threads; ++t)
       {
       acc_means += t_acc_means(t);
-      acc_fcovs += t_acc_fcovs(t);
+      acc_dcovs += t_acc_dcovs(t);
       acc_hefts += t_acc_hefts(t);
       }
     }
   #else
     {
-    Mat<eT> xx_outer(N_dims, N_dims);
-    
     for(uword i=0; i<X_n_cols; ++i)
       {
-      const eT* x = X.colptr(i);
+      const eT* X_colptr = X.colptr(i);
       
       eT     min_dist = Datum<eT>::inf;
       uword  best_g   = 0;
       
       for(uword g=0; g<N_gaus; ++g)
         {
-        const eT dist = distance<eT,dist_id>::eval(N_dims, x, means.colptr(g), mah_aux_mem);
+        const eT dist = distance<eT,dist_id>::eval(N_dims, X_colptr, means.colptr(g), mah_aux_mem);
         
         if(dist < min_dist)  { min_dist = dist;  best_g = g; }
         }
       
-      acc_hefts_mem[best_g]++;
-      
       eT* acc_mean = acc_means.colptr(best_g);
+      eT* acc_dcov = acc_dcovs.colptr(best_g);
       
-      for(uword d=0; d < N_dims; ++d)
+      for(uword d=0; d<N_dims; ++d)
         {
-        acc_mean[d] += x[d];
+        const eT x_d = X_colptr[d];
+        
+        acc_mean[d] += x_d;
+        acc_dcov[d] += x_d*x_d;
         }
       
-      const Col<eT> xx(const_cast<eT*>(x), N_dims, false, true);
-      
-      xx_outer = xx * xx.t();
-      
-      Mat<eT>& acc_fcov = acc_fcovs.slice(best_g);
-      
-      acc_fcov += xx_outer;
+      acc_hefts_mem[best_g]++;
       }
     }
   #endif
   
-  
   eT* hefts_mem = access::rw(hefts).memptr();
-  
-  Mat<eT> mm_outer(N_dims, N_dims);
   
   for(uword g=0; g<N_gaus; ++g)
     {
-    const uword acc_heft = acc_hefts_mem[g];
     const eT*   acc_mean = acc_means.colptr(g);
+    const eT*   acc_dcov = acc_dcovs.colptr(g);
+    const uword acc_heft = acc_hefts_mem[g];
     
-    hefts_mem[g] = eT(acc_heft) / eT(X_n_cols);
+    eT* mean = access::rw(means).colptr(g);
     
-    eT* m = access::rw(means).colptr(g);
+    Mat<eT>& fcov = access::rw(fcovs).slice(g);
+    fcov.zeros();
     
     for(uword d=0; d<N_dims; ++d)
       {
-      m[d] = (acc_heft >= 1) ? (acc_mean[d] / eT(acc_heft)) : eT(0);
+      const eT tmp = acc_mean[d] / eT(acc_heft);
+      
+      mean[d]      = (acc_heft >= 1) ? tmp : eT(0);
+      fcov.at(d,d) = (acc_heft >= 2) ? eT((acc_dcov[d] / eT(acc_heft)) - (tmp*tmp)) : eT(1);
       }
     
-    Mat<eT>& fcov = access::rw(fcovs).slice(g);
-      
-    if(acc_heft >= 2)
-      {
-      const Col<eT> mm(m, N_dims, false, true);
-      
-      mm_outer = mm * mm.t();
-      
-      Mat<eT>& acc_fcov = acc_fcovs.slice(g);
-      
-      fcov = acc_fcov / eT(acc_heft) - mm_outer;
-      }
-    else
-      {
-      fcov.eye();
-      }
+    hefts_mem[g] = eT(acc_heft) / eT(X_n_cols);
     }
   
   em_fix_params(var_floor);
@@ -2313,9 +2307,11 @@ gmm_full<eT>::em_iterate(const Mat<eT>& X, const uword max_iter, const eT var_fl
   
   eT old_avg_log_p = -Datum<eT>::inf;
   
+  const bool calc_chol = false;
+  
   for(uword iter=1; iter <= max_iter; ++iter)
     {
-    init_constants();
+    init_constants(calc_chol);
     
     em_update_params(X, boundaries, t_acc_means, t_acc_fcovs, t_acc_norm_lhoods, t_gaus_log_lhoods, t_progress_log_lhood, t_tmp1, t_tmp2, t_xx_outer);
     

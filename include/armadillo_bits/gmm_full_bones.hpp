@@ -146,6 +146,10 @@ class gmm_full
   inline void em_generate_acc(const Mat<eT>& X, const uword start_index, const uword end_index, Mat<eT>& acc_means, Cube<eT>& acc_fcovs, Col<eT>& acc_norm_lhoods, Col<eT>& gaus_log_lhoods, eT& progress_log_lhood, Row<eT>& tmp1, Row<eT>& tmp2, Mat<eT>& xx_outer) const;
   
   inline void em_fix_params(const eT var_floor);
+  
+  //
+  
+  inline void sym_outer_product(Mat<eT>& out, const Col<eT>& x) const;
   };
 
 }

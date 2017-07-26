@@ -2446,7 +2446,8 @@ gmm_full<eT>::em_update_params
     
     const Col<eT> mean(mean_mem, N_dims, false, true);
     
-    mean_outer = mean * mean.t();
+    //mean_outer = mean * mean.t();
+    sym_outer_product(mean_outer, mean);
     
     Mat<eT>&     fcov = access::rw(fcovs).slice(g);
     Mat<eT>& acc_fcov = final_acc_fcovs.slice(g);
@@ -2526,7 +2527,8 @@ gmm_full<eT>::em_generate_acc
       
       const Col<eT> xx(const_cast<eT*>(x), N_dims, false, true);
       
-      xx_outer = xx * xx.t();
+      //xx_outer = xx * xx.t();
+      sym_outer_product(xx_outer, xx);
       
       Mat<eT>& acc_fcov = access::rw(acc_fcovs).slice(g);
       
@@ -2604,7 +2606,45 @@ gmm_full<eT>::em_fix_params(const eT var_floor)
   }
 
 
-}
+
+template<typename eT>
+inline
+void
+gmm_full<eT>::sym_outer_product(Mat<eT>& out, const Col<eT>& x) const
+  {
+  arma_extra_debug_sigprint();
+  
+  const eT* x_mem = x.memptr();
+  
+  const uword N = x.n_rows;
+  
+  out.set_size(N, N);
+  
+  for(uword i=0; i < N; ++i)
+    {
+    const uword ip1 = i+1;
+    
+    const eT xi = x_mem[i];
+    
+    eT* out_col_i = out.colptr(i) + i;
+    eT* out_row_i = &(out.at(i,ip1));
+    
+    (*out_col_i) = xi * xi;  out_col_i++;
+    
+    for(uword j=ip1; j < N; ++j)
+      {
+      const eT val = xi * x_mem[j];
+      
+      (*out_col_i) = val;  out_col_i++;
+      (*out_row_i) = val;  out_row_i += N;
+      }
+    }
+  }
+
+
+
+} // namespace gmm_priv
+
 
 
 //! @}

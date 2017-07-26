@@ -263,7 +263,7 @@ gmm_full<eT>::load(const std::string name)
   
   bool status = storage.load(name, arma_binary);
   
-  if( (status == false) || (storage.n_slices < 2) )
+  if( (status == false) || (storage.n_elem < 2) )
     {
     reset();
     arma_debug_warn("gmm_full::load(): problem with loading or incompatible format");
@@ -278,7 +278,7 @@ gmm_full<eT>::load(const std::string name)
   const uword N_dims = storage_means.n_rows;
   const uword N_gaus = storage_means.n_cols;
   
-  if( (storage.n_slices != (N_gaus + 2)) || (storage_hefts.n_rows != 1) || (storage_hefts.n_cols != N_gaus) )
+  if( (storage.n_elem != (N_gaus + 2)) || (storage_hefts.n_rows != 1) || (storage_hefts.n_cols != N_gaus) )
     {
     reset();
     arma_debug_warn("gmm_full::load(): incompatible format");

@@ -294,6 +294,7 @@ namespace arma
   
   #include "armadillo_bits/gmm_misc_bones.hpp"
   #include "armadillo_bits/gmm_diag_bones.hpp"
+  #include "armadillo_bits/gmm_full_bones.hpp"
   
   #include "armadillo_bits/spop_max_bones.hpp"
   #include "armadillo_bits/spop_min_bones.hpp"
@@ -669,6 +670,7 @@ namespace arma
   
   #include "armadillo_bits/gmm_misc_meat.hpp"
   #include "armadillo_bits/gmm_diag_meat.hpp"
+  #include "armadillo_bits/gmm_full_meat.hpp"
   
   #include "armadillo_bits/spop_max_meat.hpp"
   #include "armadillo_bits/spop_min_meat.hpp"

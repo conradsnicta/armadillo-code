@@ -13172,10 +13172,16 @@ means.print("means:");
 
 <div class="pagebreak"></div><div class="noprint"><hr class="greyline"><br></div>
 <a name="gmm_diag"></a>
+<a name="gmm_full"></a>
 <b>gmm_diag</b>
+<br><b>gmm_full</b>
 <ul>
 <li>
-Class for modelling data as a Gaussian Mixture Model (GMM), under the assumption of diagonal covariance matrices
+Classes for probabilistic modelling of data as a Gaussian Mixture Model (GMM)
+<ul>
+<li><i>gmm_diag</i> uses diagonal covariance matrices</li>
+<li><i>gmm_full</i> uses full covariance matrices</li>
+</ul>
 </li>
 <br>
 <li>
@@ -13183,11 +13189,9 @@ Can also be used for clustering and vector quantisation (VQ)
 </li>
 <br>
 <li>
-Provides associated parameter estimation algorithms: k-means clustering and Expectation-Maximisation (EM)
-</li>
+Includes multi-threaded parameter estimation algorithms: k-means clustering and Expectation-Maximisation (EM);
 <br>
-<li>
-The k-means and EM algorithms are multi-threaded and will run much faster on multi-core machines when OpenMP is enabled in your compiler (eg. <i>-fopenmp</i> in GCC and clang)
+the algorithms will run much faster on multi-core machines when OpenMP is enabled in your compiler (eg. <i>-fopenmp</i> in GCC and clang)
 </li>
 <br>
 <li>
@@ -13214,7 +13218,7 @@ where:
 <ul>
 <li><i>h<sub>g</sub></i> is the heft (weight), with <i>h<sub>g</sub></i> &ge; 0 and &sum;<i>h<sub>g</sub></i> = 1</li>
 <li><i>m<sub>g</sub></i> is the mean (centroid) vector with dimensionality <i>n_dims</i></li>
-<li><i>C<sub>g</sub></i> is the diagonal covariance matrix</li>
+<li><i>C<sub>g</sub></i> is the covariance matrix</li>
 </ul>
 </li>
 </ul>
@@ -13459,27 +13463,6 @@ For an instance of <i>gmm_diag</i> named as <i>M</i>, the member functions and v
     </tr>
     <tr>
       <td style="vertical-align: top;">
-      <b>M.means</b>
-      </td>
-      <td style="vertical-align: top;">&nbsp;<br>
-      </td>
-      <td style="vertical-align: top;">
-      read-only matrix (of type <i>mat</i>) containing the means (centroids), stored as column vectors
-      </td>
-    </tr>
-    <tr>
-      <td style="vertical-align: top;">
-      <b>M.dcovs</b>
-      </td>
-      <td style="vertical-align: top;">&nbsp;<br>
-      </td>
-      <td style="vertical-align: top;">
-      read-only matrix (of type <i>mat</i>) containing the diagonal covariance matrices,
-      with the set of diagonal covariances for each Gaussian stored as a column vector
-      </td>
-    </tr>
-    <tr>
-      <td style="vertical-align: top;">
       <b>M.hefts</b>
       </td>
       <td style="vertical-align: top;">&nbsp;<br>
@@ -13489,32 +13472,55 @@ For an instance of <i>gmm_diag</i> named as <i>M</i>, the member functions and v
       </td>
     </tr>
     <tr>
+      <td style="vertical-align: top;">
+      <b>M.means</b>
+      </td>
+      <td style="vertical-align: top;">&nbsp;<br>
+      </td>
+      <td style="vertical-align: top;">
+      read-only matrix (of type <i>mat</i>) containing the means (centroids), stored as column vectors
+      </td>
+    </tr>
+    <tr>
       <td style="vertical-align: top;">&nbsp;<br></td>
       <td style="vertical-align: top;">&nbsp;<br></td>
       <td style="vertical-align: top;">&nbsp;<br></td>
     </tr>
     <tr>
       <td style="vertical-align: top;">
-      <b>M.set_means(</b>X<b>)</b>
+      <b>M.dcovs</b>
+      <br><i>[only&nbsp;in&nbsp;gmm_diag]</i>
       </td>
       <td style="vertical-align: top;">&nbsp;<br>
       </td>
       <td style="vertical-align: top;">
-      set the means to be as specified in matrix <i>X</i> (of type <i>mat</i>);
-      the number of means and their dimensionality must match the existing model
-      </td>
-    </tr>
-    <tr>
-      <td style="vertical-align: top;">
-      <b>M.set_dcovs(</b>X<b>)</b>
-      </td>
-      <td style="vertical-align: top;">&nbsp;<br>
-      </td>
-      <td style="vertical-align: top;">
-      set the diagonal covariances matrices to be as specified in matrix <i>X</i> (of type <i>mat</i>),
+      read-only matrix (of type <i>mat</i>) containing the diagonal covariance matrices,
       with the set of diagonal covariances for each Gaussian stored as a column vector;
-      the number of diagonal covariance matrices and their dimensionality must match the existing model
+      applicable only to the <i>gmm_diag</i> class
       </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">&nbsp;<br></td>
+      <td style="vertical-align: top;">&nbsp;<br></td>
+      <td style="vertical-align: top;">&nbsp;<br></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">
+      <b>M.fcovs</b>
+      <br><i>[only&nbsp;in&nbsp;gmm_full]</i>
+      </td>
+      <td style="vertical-align: top;">&nbsp;<br>
+      </td>
+      <td style="vertical-align: top;">
+      read-only <a href="#Cube">cube</a> containing the full covariance matrices,
+      with each covariance matrix stored as a slice within the cube;
+      applicable only to the <i>gmm_full</i> class
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">&nbsp;<br></td>
+      <td style="vertical-align: top;">&nbsp;<br></td>
+      <td style="vertical-align: top;">&nbsp;<br></td>
     </tr>
     <tr>
       <td style="vertical-align: top;">
@@ -13528,19 +13534,68 @@ For an instance of <i>gmm_diag</i> named as <i>M</i>, the member functions and v
       </td>
     </tr>
     <tr>
+      <td style="vertical-align: top;">
+      <b>M.set_means(</b>X<b>)</b>
+      </td>
+      <td style="vertical-align: top;">&nbsp;<br>
+      </td>
+      <td style="vertical-align: top;">
+      set the means to be as specified in matrix <i>X</i> (of type <i>mat</i>);
+      the number of means and their dimensionality must match the existing model
+      </td>
+    </tr>
+    <tr>
       <td style="vertical-align: top;">&nbsp;<br></td>
       <td style="vertical-align: top;">&nbsp;<br></td>
       <td style="vertical-align: top;">&nbsp;<br></td>
     </tr>
     <tr>
       <td style="vertical-align: top;">
-      <b>M.set_params(</b><small>means</small>,&nbsp;<small>dcovs</small>,&nbsp;<small>hefts</small><b>)</b>
+      <b>M.set_dcovs(</b>X<b>)</b>
+      <br><i>[only&nbsp;in&nbsp;gmm_diag]</i>
       </td>
       <td style="vertical-align: top;">&nbsp;<br>
       </td>
       <td style="vertical-align: top;">
-      set all the parameters at the same time, using matrices denoted as <b>means</b> and <b>dcovs</b> as well as the row vector denoted as <b>hefts</b>;
-      the layout of the matrices and vectors is as per the <b>.set_means()</b>, <b>.set_dcovs()</b> and <b>.set_hefts()</b> functions above;
+      set the diagonal covariances matrices to be as specified in matrix <i>X</i> (of type <i>mat</i>),
+      with the set of diagonal covariances for each Gaussian stored as a column vector;
+      the number of covariance matrices and their dimensionality must match the existing model;
+      applicable only to the <i>gmm_diag</i> class
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">&nbsp;<br></td>
+      <td style="vertical-align: top;">&nbsp;<br></td>
+      <td style="vertical-align: top;">&nbsp;<br></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">
+      <b>M.set_fcovs(</b>X<b>)</b>
+      <br><i>[only&nbsp;in&nbsp;gmm_full]</i>
+      </td>
+      <td style="vertical-align: top;">&nbsp;<br>
+      </td>
+      <td style="vertical-align: top;">
+      set the full covariances matrices to be as specified in cube <i>X</i>,
+      with each covariance matrix stored as a slice within the cube;
+      the number of covariance matrices and their dimensionality must match the existing model;
+      applicable only to the <i>gmm_full</i> class
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">&nbsp;<br></td>
+      <td style="vertical-align: top;">&nbsp;<br></td>
+      <td style="vertical-align: top;">&nbsp;<br></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">
+      <b>M.set_params(</b><small>means</small>,&nbsp;<small>covs</small>,&nbsp;<small>hefts</small><b>)</b>
+      </td>
+      <td style="vertical-align: top;">&nbsp;<br>
+      </td>
+      <td style="vertical-align: top;">
+      set all the parameters at the same time;
+      the type and layout of the parameters is as per the <b>.set_hefts()</b>, <b>.set_means()</b>, <b>.set_dcovs()</b> and <b>.set_fcovs()</b> functions above;
       the number of Gaussians and dimensionality can be different from the existing model
       </td>
     </tr>
@@ -13552,8 +13607,8 @@ For an instance of <i>gmm_diag</i> named as <i>M</i>, the member functions and v
     <tr>
       <td style="vertical-align: top;" colspan=3>
       <b>M.learn(</b>data,&nbsp;n_gaus,&nbsp;dist_mode,&nbsp;seed_mode,&nbsp;km_iter,&nbsp;em_iter,&nbsp;var_floor,&nbsp;print_mode<b>)</b><br>
-      learn the model parameters via the k-means and/or EM algorithms,
-      and return a <code>bool</code> value, with <i>true</i> indicating success, and <i>false</i> indicating failure;
+      learn the model parameters via multi-threaded k-means and/or EM algorithms;
+      return a <code>bool</code> value, with <i>true</i> indicating success, and <i>false</i> indicating failure;
       the parameters have the following meanings:
       </td>
     </tr>
@@ -13706,7 +13761,7 @@ while(i &lt; N)
   }
 
 
-// model the data as a GMM with 2 Gaussians
+// model the data as a diagonal GMM with 2 Gaussians
 
 gmm_diag model;
 
@@ -13740,7 +13795,8 @@ model.save("my_model.gmm");
 <li><a href="#stats_fns">statistics functions</a></li>
 <li><a href="#running_stat_vec">running_stat_vec</a></li>
 <li><a href="#kmeans">kmeans()</a></li>
-<li><a href="#diagmat">diagmat()</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Covariance_matrix">covariance matrix in Wikipedia</a></li>
+<li><a href="http://mathworld.wolfram.com/CovarianceMatrix.html">covariance matrix in MathWorld</a></li>
 <li><a href="http://en.wikipedia.org/wiki/Mahalanobis_distance">Mahalanobis distance in Wikipedia</a></li>
 <li><a href="http://en.wikipedia.org/wiki/Normal_distribution">normal distribution in Wikipedia</a></li>
 <li><a href="http://en.wikipedia.org/wiki/Mixture_model">mixture model in Wikipedia</a></li>

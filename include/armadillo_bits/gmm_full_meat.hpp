@@ -2430,29 +2430,75 @@ gmm_full<eT>::em_update_params
   
   Mat<eT> mean_outer(N_dims,N_dims);
   
+  
+  //// update each component without sanity checking
+  //for(uword g=0; g < N_gaus; ++g)
+  //  {
+  //  const eT acc_norm_lhood = (std::max)( final_acc_norm_lhoods[g], std::numeric_limits<eT>::min() );
+  //    
+  //    hefts_mem[g] = acc_norm_lhood / eT(X.n_cols);
+  //    
+  //    eT*     mean_mem = access::rw(means).colptr(g);
+  //    eT* acc_mean_mem = final_acc_means.colptr(g);
+  //    
+  //    for(uword d=0; d < N_dims; ++d)
+  //      {
+  //      mean_mem[d] = acc_mean_mem[d] / acc_norm_lhood;
+  //      }
+  //    
+  //    const Col<eT> mean(mean_mem, N_dims, false, true);
+  //    
+  //    //mean_outer = mean * mean.t();
+  //    sym_outer_product(mean_outer, mean);
+  //    
+  //    Mat<eT>&     fcov = access::rw(fcovs).slice(g);
+  //    Mat<eT>& acc_fcov = final_acc_fcovs.slice(g);
+  //    
+  //    fcov = acc_fcov / acc_norm_lhood - mean_outer;
+  //    }
+  
+  
+  //// update each component only if the corresponding new covariance matrix is positive definite
   for(uword g=0; g < N_gaus; ++g)
     {
     const eT acc_norm_lhood = (std::max)( final_acc_norm_lhoods[g], std::numeric_limits<eT>::min() );
     
-    hefts_mem[g] = acc_norm_lhood / eT(X.n_cols);
-    
-    eT*     mean_mem = access::rw(means).colptr(g);
     eT* acc_mean_mem = final_acc_means.colptr(g);
     
     for(uword d=0; d < N_dims; ++d)
       {
-      mean_mem[d] = acc_mean_mem[d] / acc_norm_lhood;
+      acc_mean_mem[d] /= acc_norm_lhood;
       }
     
-    const Col<eT> mean(mean_mem, N_dims, false, true);
+    const Col<eT> new_mean(acc_mean_mem, N_dims, false, true);
     
-    //mean_outer = mean * mean.t();
-    sym_outer_product(mean_outer, mean);
+    //mean_outer = new_mean * new_mean.t();
+    sym_outer_product(mean_outer, new_mean);
     
-    Mat<eT>&     fcov = access::rw(fcovs).slice(g);
     Mat<eT>& acc_fcov = final_acc_fcovs.slice(g);
     
-    fcov = acc_fcov / acc_norm_lhood - mean_outer;
+    acc_fcov /= acc_norm_lhood;
+    acc_fcov -= mean_outer;
+    
+    const bool inv_ok = auxlib::inv_sympd(mean_outer, acc_fcov);  // mean_outer is used as a junk matrix
+    
+    if(inv_ok)
+      {
+      hefts_mem[g] = acc_norm_lhood / eT(X.n_cols);
+      
+      eT* mean_mem = access::rw(means).colptr(g);
+      
+      for(uword d=0; d < N_dims; ++d)
+        {
+        mean_mem[d] = acc_mean_mem[d];
+        }
+      
+      Mat<eT>& fcov = access::rw(fcovs).slice(g);
+      
+      fcov = acc_fcov;
+      }
+    
+    // the weights will be sanitised by em_fix_params()
     }
   }
 

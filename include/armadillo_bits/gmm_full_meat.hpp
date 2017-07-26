@@ -947,6 +947,7 @@ gmm_full<eT>::init_constants(const bool calc_chol)
   if(calc_chol)
     {
     chol_fcovs.copy_size(fcovs);
+    
     Mat<eT> tmp_chol;
     
     for(uword g=0; g < N_gaus; ++g)
@@ -2458,7 +2459,8 @@ gmm_full<eT>::em_update_params
   //    }
   
   
-  //// update each component only if the corresponding new covariance matrix is positive definite
+  //// update each component only if the corresponding new covariance matrix is positive definite;
+  //// if only a subset of the hefts was updated, em_fix_params() will sanitise them
   for(uword g=0; g < N_gaus; ++g)
     {
     const eT acc_norm_lhood = (std::max)( final_acc_norm_lhoods[g], std::numeric_limits<eT>::min() );
@@ -2498,7 +2500,6 @@ gmm_full<eT>::em_update_params
       fcov = acc_fcov;
       }
     
-    // the weights will be sanitised by em_fix_params()
     }
   }
 
@@ -2688,9 +2689,7 @@ gmm_full<eT>::sym_outer_product(Mat<eT>& out, const Col<eT>& x) const
   }
 
 
-
 } // namespace gmm_priv
-
 
 
 //! @}

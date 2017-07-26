@@ -1757,8 +1757,7 @@ gmm_diag<eT>::generate_initial_params(const Mat<eT>& X, const eT var_floor)
   const uword X_n_cols = X.n_cols;
   
   // as the covariances are calcualted via accumulators,
-  // the means also need to be calculated via accumulators to ensure numerical consistency;
-  // this also takes into account the corner-case of imprecise means being supplied by the user
+  // the means also need to be calculated via accumulators to ensure numerical consistency
   
   Mat<eT> acc_means(N_dims, N_gaus, fill::zeros);
   Mat<eT> acc_dcovs(N_dims, N_gaus, fill::zeros);

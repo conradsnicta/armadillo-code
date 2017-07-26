@@ -371,8 +371,6 @@ gmm_full<eT>::generate() const
   {
   arma_extra_debug_sigprint();
   
-  // TODO
-  
   const uword N_dims = means.n_rows;
   const uword N_gaus = means.n_cols;
   

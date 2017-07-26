@@ -13177,21 +13177,11 @@ means.print("means:");
 <br><b>gmm_full</b>
 <ul>
 <li>
-Classes for probabilistic modelling of data as a Gaussian Mixture Model (GMM)
-<ul>
-<li><i>gmm_diag</i> uses diagonal covariance matrices</li>
-<li><i>gmm_full</i> uses full covariance matrices</li>
-</ul>
+Classes for multivariate data modelling and evaluation via Gaussian Mixture Models (GMMs)
 </li>
 <br>
 <li>
-Can also be used for clustering and vector quantisation (VQ)
-</li>
-<br>
-<li>
-Includes multi-threaded parameter estimation algorithms: k-means clustering and Expectation-Maximisation (EM);
-<br>
-the algorithms will run much faster on multi-core machines when OpenMP is enabled in your compiler (eg. <i>-fopenmp</i> in GCC and clang)
+Can also be used for probabilistic clustering and vector quantisation (VQ)
 </li>
 <br>
 <li>
@@ -13216,16 +13206,34 @@ where:
 <li>N(<small>&nbsp;</small><i>x</i><small>&nbsp;</small>|<small>&nbsp;</small><i>m<sub>g</sub></i><small>&nbsp;</small>,&nbsp;<i>C<sub>g</sub></i><small>&nbsp;</small>) represents a Gaussian (normal) distribution</li>
 <li>for each Gaussian <i>g</i>:
 <ul>
-<li><i>h<sub>g</sub></i> is the heft (weight), with <i>h<sub>g</sub></i> &ge; 0 and &sum;<i>h<sub>g</sub></i> = 1</li>
+<li><i>h<sub>g</sub></i> is the heft (weight), with constraints <i>h<sub>g</sub></i> &ge; 0 and &sum;<i>h<sub>g</sub></i> = 1</li>
 <li><i>m<sub>g</sub></i> is the mean (centroid) vector with dimensionality <i>n_dims</i></li>
-<li><i>C<sub>g</sub></i> is the covariance matrix</li>
+<li><i>C<sub>g</sub></i> is the covariance matrix (either diagonal or full)</li>
 </ul>
 </li>
 </ul>
 </li>
 <br>
 <li>
-For an instance of <i>gmm_diag</i> named as <i>M</i>, the member functions and variables are:
+The <i>gmm_diag</i> class is tailored for diagonal covariance matrices (ie. in each covariance matrix, all entries outside the main diagonal are assumed to be zero)
+</li>
+<br>
+<li>
+The <i>gmm_full</i> class is tailored for full covariance matrices
+</li>
+<br>
+<li>
+The <i>gmm_diag</i> class is typically much faster to train and use than the <i>gmm_full</i> class,
+at the potential cost of some reduction in modelling accuracy
+</li>
+<br>
+<li>
+The classes include parameter estimation (training) algorithms: k-means clustering and Expectation-Maximisation (EM);
+the training algorithms will run much quicker on multi-core machines when OpenMP is enabled in your compiler (eg. <i>-fopenmp</i> in GCC and clang)
+</li>
+<br>
+<li>
+For an instance of <i>gmm_diag</i> or <i>gmm_full</i> named as <i>M</i>, the member functions and variables are:
 <br>
 <br>
 <ul>
@@ -13453,7 +13461,7 @@ For an instance of <i>gmm_diag</i> named as <i>M</i>, the member functions and v
       </td>
       <td style="vertical-align: top;">
       set the model to have dimensionality <i>n_dims</i>, with <i>n_gaus</i> number of Gaussians;<br>
-      all the means are set to zero, all diagonal covariances are set to one, and all the hefts (weights) are set to be uniform
+      all the means are set to zero, all covariance matrix representations are equivalent to the identity matrix, and all the hefts (weights) are set to be uniform
       </td>
     </tr>
     <tr>
@@ -13494,7 +13502,7 @@ For an instance of <i>gmm_diag</i> named as <i>M</i>, the member functions and v
       <td style="vertical-align: top;">&nbsp;<br>
       </td>
       <td style="vertical-align: top;">
-      read-only matrix (of type <i>mat</i>) containing the diagonal covariance matrices,
+      read-only matrix (of type <i>mat</i>) containing the representation of diagonal covariance matrices,
       with the set of diagonal covariances for each Gaussian stored as a column vector;
       applicable only to the <i>gmm_diag</i> class
       </td>
@@ -13795,6 +13803,7 @@ model.save("my_model.gmm");
 <li><a href="#stats_fns">statistics functions</a></li>
 <li><a href="#running_stat_vec">running_stat_vec</a></li>
 <li><a href="#kmeans">kmeans()</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Diagonal_matrix">diagonal matrix in Wikipedia</a></li>
 <li><a href="https://en.wikipedia.org/wiki/Covariance_matrix">covariance matrix in Wikipedia</a></li>
 <li><a href="http://mathworld.wolfram.com/CovarianceMatrix.html">covariance matrix in MathWorld</a></li>
 <li><a href="http://en.wikipedia.org/wiki/Mahalanobis_distance">Mahalanobis distance in Wikipedia</a></li>
@@ -16328,7 +16337,8 @@ List of additions and changes for each version:
 <li>Version 7.960:
 <ul>
 <li>faster <a href="#randu_randn_standalone">randn()</a> when using OpenMP</li>
-<li>faster training of Gaussian mixture models in the <a href="#gmm_diag">gmm_diag</a> class</li>
+<li>faster <a href="#gmm_diag">gmm_diag</a> class, for Gaussian mixture models with diagonal covariance matrices</li>
+<li>added <a href="#gmm_full">gmm_full</a> class, for Gaussian mixture models with full covariance matrices</li>
 <li>expanded <a href="#each_slice">.each_slice()</a> to optionally use OpenMP for multi-threaded execution</li>
 </ul>
 </li>

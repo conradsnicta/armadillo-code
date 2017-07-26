@@ -203,7 +203,7 @@ gmm_full<eT>::set_fcovs(const BaseCube<eT,T1>& in_fcovs_expr)
   
   const unwrap_cube<T1> tmp(in_fcovs_expr.get_ref());
   
-  const Mat<eT>& in_fcovs = tmp.M;
+  const Cube<eT>& in_fcovs = tmp.M;
   
   arma_debug_check( (size(in_fcovs) != size(fcovs)), "gmm_full::set_fcovs(): given fcovs have incompatible size" );
   arma_debug_check( (in_fcovs.is_finite() == false), "gmm_full::set_fcovs(): given fcovs have non-finite values" );

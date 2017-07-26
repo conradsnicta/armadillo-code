@@ -39,6 +39,9 @@ class gmm_diag
   inline            gmm_diag(const gmm_diag& x);
   inline gmm_diag& operator=(const gmm_diag& x);
   
+  inline explicit            gmm_diag(const gmm_full<eT>& x);
+  inline          gmm_diag& operator=(const gmm_full<eT>& x);
+  
   inline      gmm_diag(const uword in_n_dims, const uword in_n_gaus);
   inline void    reset(const uword in_n_dims, const uword in_n_gaus);
   inline void    reset();
@@ -115,7 +118,8 @@ class gmm_diag
   
   //
   
-  inline void init(const gmm_diag& x);
+  inline void init(const gmm_diag&     x);
+  inline void init(const gmm_full<eT>& x);
   
   inline void init(const uword in_n_dim, const uword in_n_gaus);
   

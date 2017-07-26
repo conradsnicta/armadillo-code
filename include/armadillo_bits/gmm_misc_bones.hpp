@@ -55,6 +55,10 @@ namespace gmm_priv
 {
 
 
+template<typename eT> class gmm_diag;
+template<typename eT> class gmm_full;
+
+
 struct gmm_empty_arg {};
 
 

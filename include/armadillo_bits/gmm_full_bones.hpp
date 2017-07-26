@@ -39,6 +39,9 @@ class gmm_full
   inline            gmm_full(const gmm_full& x);
   inline gmm_full& operator=(const gmm_full& x);
   
+  inline explicit            gmm_full(const gmm_diag<eT>& x);
+  inline          gmm_full& operator=(const gmm_diag<eT>& x);
+  
   inline      gmm_full(const uword in_n_dims, const uword in_n_gaus);
   inline void    reset(const uword in_n_dims, const uword in_n_gaus);
   inline void    reset();
@@ -103,7 +106,8 @@ class gmm_full
   
   //
   
-  inline void init(const gmm_full& x);
+  inline void init(const gmm_full&     x);
+  inline void init(const gmm_diag<eT>& x);
   
   inline void init(const uword in_n_dim, const uword in_n_gaus);
   

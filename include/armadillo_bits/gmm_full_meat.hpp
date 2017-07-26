@@ -69,6 +69,31 @@ gmm_full<eT>::operator=(const gmm_full<eT>& x)
 
 template<typename eT>
 inline
+gmm_full<eT>::gmm_full(const gmm_diag<eT>& x)
+  {
+  arma_extra_debug_sigprint_this(this);
+  
+  init(x);
+  }
+
+
+
+template<typename eT>
+inline
+gmm_full<eT>&
+gmm_full<eT>::operator=(const gmm_diag<eT>& x)
+  {
+  arma_extra_debug_sigprint();
+  
+  init(x);
+  
+  return *this;
+  }
+
+
+
+template<typename eT>
+inline
 gmm_full<eT>::gmm_full(const uword in_n_dims, const uword in_n_gaus)
   {
   arma_extra_debug_sigprint_this(this);
@@ -847,6 +872,38 @@ gmm_full<eT>::init(const gmm_full<eT>& x)
     
     init_constants();
     }
+  }
+
+
+
+template<typename eT>
+inline
+void
+gmm_full<eT>::init(const gmm_diag<eT>& x)
+  {
+  arma_extra_debug_sigprint();
+  
+  access::rw(hefts) = x.hefts;
+  access::rw(means) = x.means;
+  
+  const uword N_dims = x.means.n_rows;
+  const uword N_gaus = x.means.n_cols;
+  
+  access::rw(fcovs).zeros(N_dims,N_dims,N_gaus);
+  
+  for(uword g=0; g < N_gaus; ++g)
+    {
+    Mat<eT>& fcov = access::rw(fcovs).slice(g);
+    
+    const eT* dcov_mem = x.dcovs.colptr(g);
+    
+    for(uword d=0; d < N_dims; ++d)
+      {
+      fcov.at(d,d) = dcov_mem[d];
+      }
+    }
+  
+  init_constants();
   }
 
 

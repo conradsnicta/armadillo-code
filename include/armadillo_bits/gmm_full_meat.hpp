@@ -481,7 +481,7 @@ gmm_full<eT>::log_p(const T1& expr, const uword gaus_id, typename enable_if<((is
   arma_debug_check( (U.M.n_rows != N_dims),    "gmm_full::log_p(): incompatible dimensions"            );
   arma_debug_check( (gaus_id >= means.n_cols), "gmm_full::log_p(): specified gaussian is out of range" );
   
-  return internal_scalar_log_p( U.M.memptr() );
+  return internal_scalar_log_p( U.M.memptr(), gaus_id );
   }
 
 

@@ -115,11 +115,8 @@ class gmm_full
   
   inline umat internal_gen_boundaries(const uword N) const;
   
-  inline eT internal_scalar_log_p(const eT* x                     ) const;
+  inline eT internal_scalar_log_p(const eT* x)                      const;
   inline eT internal_scalar_log_p(const eT* x, const uword gaus_id) const;
-  
-  inline eT internal_scalar_log_p(const eT* x, Row<eT>& tmp1, Row<eT>& tmp2)                      const;
-  inline eT internal_scalar_log_p(const eT* x, Row<eT>& tmp1, Row<eT>& tmp2, const uword gaus_id) const;
   
   template<typename T1> inline Row<eT> internal_vec_log_p(const T1& X                     ) const;
   template<typename T1> inline Row<eT> internal_vec_log_p(const T1& X, const uword gaus_id) const;
@@ -145,15 +142,12 @@ class gmm_full
   
   inline bool em_iterate(const Mat<eT>& X, const uword max_iter, const eT var_floor, const bool verbose);
   
-  inline void em_update_params(const Mat<eT>& X, const umat& boundaries, field< Mat<eT> >& t_acc_means, field< Cube<eT> >& t_acc_fcovs, field< Col<eT> >& t_acc_norm_lhoods, field< Col<eT> >& t_gaus_log_lhoods, Col<eT>& t_progress_log_lhoods, field< Row<eT> >& t_tmp1, field< Row<eT> >& t_tmp2, field< Mat<eT> >& t_xx_outer);
+  inline void em_update_params(const Mat<eT>& X, const umat& boundaries, field< Mat<eT> >& t_acc_means, field< Cube<eT> >& t_acc_fcovs, field< Col<eT> >& t_acc_norm_lhoods, field< Col<eT> >& t_gaus_log_lhoods, Col<eT>& t_progress_log_lhoods);
   
-  inline void em_generate_acc(const Mat<eT>& X, const uword start_index, const uword end_index, Mat<eT>& acc_means, Cube<eT>& acc_fcovs, Col<eT>& acc_norm_lhoods, Col<eT>& gaus_log_lhoods, eT& progress_log_lhood, Row<eT>& tmp1, Row<eT>& tmp2, Mat<eT>& xx_outer) const;
+  inline void em_generate_acc(const Mat<eT>& X, const uword start_index, const uword end_index, Mat<eT>& acc_means, Cube<eT>& acc_fcovs, Col<eT>& acc_norm_lhoods, Col<eT>& gaus_log_lhoods, eT& progress_log_lhood) const;
   
   inline void em_fix_params(const eT var_floor);
   
-  //
-  
-  inline void sym_outer_product(Mat<eT>& out, const Col<eT>& x) const;
   };
 
 }

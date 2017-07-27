@@ -460,10 +460,7 @@ gmm_full<eT>::log_p(const T1& expr, const gmm_empty_arg& junk1, typename enable_
   
   arma_debug_check( (U.M.n_rows != N_dims), "gmm_full::log_p(): incompatible dimensions" );
   
-  Row<eT> tmp1(N_dims);
-  Row<eT> tmp2(N_dims);
-  
-  return internal_scalar_log_p( U.M.memptr(), tmp1, tmp2 );
+  return internal_scalar_log_p( U.M.memptr() );
   }
 
 
@@ -484,10 +481,7 @@ gmm_full<eT>::log_p(const T1& expr, const uword gaus_id, typename enable_if<((is
   arma_debug_check( (U.M.n_rows != N_dims),    "gmm_full::log_p(): incompatible dimensions"            );
   arma_debug_check( (gaus_id >= means.n_cols), "gmm_full::log_p(): specified gaussian is out of range" );
   
-  Row<eT> tmp1(N_dims);
-  Row<eT> tmp2(N_dims);
-  
-  return internal_scalar_log_p( U.M.memptr(), tmp1, tmp2, gaus_id );
+  return internal_scalar_log_p( U.M.memptr() );
   }
 
 
@@ -1083,45 +1077,9 @@ gmm_full<eT>::internal_gen_boundaries(const uword N) const
 
 
 template<typename eT>
-arma_deprecated
 inline
 eT
 gmm_full<eT>::internal_scalar_log_p(const eT* x) const
-  {
-  arma_extra_debug_sigprint();
-  
-  const uword N_dims = means.n_rows;
-  
-  Row<eT> tmp1(N_dims);
-  Row<eT> tmp2(N_dims);
-  
-  return internal_scalar_log_p(x, tmp1, tmp2);
-  }
-
-
-
-template<typename eT>
-arma_deprecated
-inline
-eT
-gmm_full<eT>::internal_scalar_log_p(const eT* x, const uword g) const
-  {
-  arma_extra_debug_sigprint();
-  
-  const uword N_dims = means.n_rows;
-  
-  Row<eT> tmp1(N_dims);
-  Row<eT> tmp2(N_dims);
-  
-  return internal_scalar_log_p(x, tmp1, tmp2, g);
-  }
-
-
-
-template<typename eT>
-inline
-eT
-gmm_full<eT>::internal_scalar_log_p(const eT* x, Row<eT>& tmp1, Row<eT>& tmp2) const
   {
   arma_extra_debug_sigprint();
   
@@ -1131,11 +1089,11 @@ gmm_full<eT>::internal_scalar_log_p(const eT* x, Row<eT>& tmp1, Row<eT>& tmp2) c
   
   if(N_gaus > 0)
     {
-    eT log_sum = internal_scalar_log_p(x, tmp1, tmp2, 0) + log_hefts_mem[0];
+    eT log_sum = internal_scalar_log_p(x, 0) + log_hefts_mem[0];
     
     for(uword g=1; g < N_gaus; ++g)
       {
-      const eT log_val = internal_scalar_log_p(x, tmp1, tmp2, g) + log_hefts_mem[g];
+      const eT log_val = internal_scalar_log_p(x, g) + log_hefts_mem[g];
       
       log_sum = log_add_exp(log_sum, log_val);
       }
@@ -1153,25 +1111,32 @@ gmm_full<eT>::internal_scalar_log_p(const eT* x, Row<eT>& tmp1, Row<eT>& tmp2) c
 template<typename eT>
 inline
 eT
-gmm_full<eT>::internal_scalar_log_p(const eT* x, Row<eT>& tmp1, Row<eT>& tmp2, const uword g) const
+gmm_full<eT>::internal_scalar_log_p(const eT* x, const uword g) const
   {
   arma_extra_debug_sigprint();
   
-  const uword N_dims = means.n_rows;
+  const uword N_dims   = means.n_rows;
+  const eT*   mean_mem = means.colptr(g);
   
-  const eT* mean_mem = means.colptr(g);
-        eT* tmp1_mem = tmp1.memptr();
+  eT outer_acc = eT(0);
   
-  for(uword d=0; d < N_dims; ++d)
+  const eT* inv_fcov_coldata = inv_fcovs.slice(g).memptr();
+  
+  for(uword i=0; i < N_dims; ++i)
     {
-    tmp1_mem[d] = x[d] - mean_mem[d];
+    eT inner_acc = eT(0);
+    
+    for(uword j=0; j < N_dims; ++j)
+      {
+      inner_acc += (x[j] - mean_mem[j]) * inv_fcov_coldata[j];
+      }
+    
+    inv_fcov_coldata += N_dims;
+    
+    outer_acc += inner_acc * (x[i] - mean_mem[i]);
     }
   
-  tmp2 = tmp1 * inv_fcovs.slice(g);
-  
-  const Col<eT> trans_tmp1(tmp1.memptr(), N_dims, false);
-  
-  return eT(-0.5)*as_scalar(tmp2 * trans_tmp1) + log_det_etc.mem[g];
+  return eT(-0.5)*outer_acc + log_det_etc.mem[g];
   }
 
 
@@ -1199,15 +1164,9 @@ gmm_full<eT>::internal_vec_log_p(const T1& X) const
       
       const uword n_threads = boundaries.n_cols;
       
-      Mat<eT> tmp1_set(N_dims, n_threads);
-      Mat<eT> tmp2_set(N_dims, n_threads);
-      
       #pragma omp parallel for schedule(static)
       for(uword t=0; t < n_threads; ++t)
         {
-        Row<eT> tmp1(tmp1_set.colptr(t), N_dims, false, true);
-        Row<eT> tmp2(tmp2_set.colptr(t), N_dims, false, true);
-        
         const uword start_index = boundaries.at(0,t);
         const uword   end_index = boundaries.at(1,t);
         
@@ -1215,20 +1174,17 @@ gmm_full<eT>::internal_vec_log_p(const T1& X) const
         
         for(uword i=start_index; i <= end_index; ++i)
           {
-          out_mem[i] = internal_scalar_log_p( X.colptr(i), tmp1, tmp2 );
+          out_mem[i] = internal_scalar_log_p( X.colptr(i) );
           }
         }
       }
     #else
       {
-      Row<eT> tmp1(N_dims);
-      Row<eT> tmp2(N_dims);
-        
       eT* out_mem = out.memptr();
       
       for(uword i=0; i < N_samples; ++i)
         {
-        out_mem[i] = internal_scalar_log_p( X.colptr(i), tmp1, tmp2 );
+        out_mem[i] = internal_scalar_log_p( X.colptr(i) );
         }
       }
     #endif
@@ -1263,15 +1219,9 @@ gmm_full<eT>::internal_vec_log_p(const T1& X, const uword gaus_id) const
       
       const uword n_threads = boundaries.n_cols;
       
-      Mat<eT> tmp1_set(N_dims, n_threads);
-      Mat<eT> tmp2_set(N_dims, n_threads);
-      
       #pragma omp parallel for schedule(static)
       for(uword t=0; t < n_threads; ++t)
         {
-        Row<eT> tmp1(tmp1_set.colptr(t), N_dims, false, true);
-        Row<eT> tmp2(tmp2_set.colptr(t), N_dims, false, true);
-        
         const uword start_index = boundaries.at(0,t);
         const uword   end_index = boundaries.at(1,t);
         
@@ -1279,20 +1229,17 @@ gmm_full<eT>::internal_vec_log_p(const T1& X, const uword gaus_id) const
         
         for(uword i=start_index; i <= end_index; ++i)
           {
-          out_mem[i] = internal_scalar_log_p( X.colptr(i), tmp1, tmp2, gaus_id );
+          out_mem[i] = internal_scalar_log_p( X.colptr(i), gaus_id );
           }
         }
       }
     #else
       {
-      Row<eT> tmp1(N_dims);
-      Row<eT> tmp2(N_dims);
-        
       eT* out_mem = out.memptr();
       
       for(uword i=0; i < N_samples; ++i)
         {
-        out_mem[i] = internal_scalar_log_p( X.colptr(i), tmp1, tmp2, gaus_id );
+        out_mem[i] = internal_scalar_log_p( X.colptr(i), gaus_id );
         }
       }
     #endif
@@ -1325,18 +1272,12 @@ gmm_full<eT>::internal_avg_log_p(const T1& X) const
     
     const uword n_threads = boundaries.n_cols;
     
-    Mat<eT> tmp1_set(N_dims, n_threads);
-    Mat<eT> tmp2_set(N_dims, n_threads);
-    
     field< running_mean_scalar<eT> > t_running_means(n_threads);
     
     
     #pragma omp parallel for schedule(static)
     for(uword t=0; t < n_threads; ++t)
       {
-      Row<eT> tmp1(tmp1_set.colptr(t), N_dims, false, true);
-      Row<eT> tmp2(tmp2_set.colptr(t), N_dims, false, true);
-      
       const uword start_index = boundaries.at(0,t);
       const uword   end_index = boundaries.at(1,t);
       
@@ -1344,7 +1285,7 @@ gmm_full<eT>::internal_avg_log_p(const T1& X) const
       
       for(uword i=start_index; i <= end_index; ++i)
         {
-        current_running_mean( internal_scalar_log_p( X.colptr(i), tmp1, tmp2 ) );
+        current_running_mean( internal_scalar_log_p( X.colptr(i) ) );
         }
       }
     
@@ -1364,14 +1305,11 @@ gmm_full<eT>::internal_avg_log_p(const T1& X) const
     }
   #else
     {
-    Row<eT> tmp1(N_dims);
-    Row<eT> tmp2(N_dims);
-    
     running_mean_scalar<eT> running_mean;
     
     for(uword i=0; i < N_samples; ++i)
       {
-      running_mean( internal_scalar_log_p( X.colptr(i), tmp1, tmp2 ) );
+      running_mean( internal_scalar_log_p( X.colptr(i) ) );
       }
     
     return running_mean.mean();
@@ -1404,18 +1342,12 @@ gmm_full<eT>::internal_avg_log_p(const T1& X, const uword gaus_id) const
     
     const uword n_threads = boundaries.n_cols;
     
-    Mat<eT> tmp1_set(N_dims, n_threads);
-    Mat<eT> tmp2_set(N_dims, n_threads);
-    
     field< running_mean_scalar<eT> > t_running_means(n_threads);
     
     
     #pragma omp parallel for schedule(static)
     for(uword t=0; t < n_threads; ++t)
       {
-      Row<eT> tmp1(tmp1_set.colptr(t), N_dims, false, true);
-      Row<eT> tmp2(tmp2_set.colptr(t), N_dims, false, true);
-      
       const uword start_index = boundaries.at(0,t);
       const uword   end_index = boundaries.at(1,t);
       
@@ -1423,7 +1355,7 @@ gmm_full<eT>::internal_avg_log_p(const T1& X, const uword gaus_id) const
       
       for(uword i=start_index; i <= end_index; ++i)
         {
-        current_running_mean( internal_scalar_log_p( X.colptr(i), tmp1, tmp2, gaus_id) );
+        current_running_mean( internal_scalar_log_p( X.colptr(i), gaus_id) );
         }
       }
     
@@ -1443,14 +1375,11 @@ gmm_full<eT>::internal_avg_log_p(const T1& X, const uword gaus_id) const
     }
   #else
     {
-    Row<eT> tmp1(N_dims);
-    Row<eT> tmp2(N_dims);
-    
     running_mean_scalar<eT> running_mean;
     
     for(uword i=0; i<N_samples; ++i)
       {
-      running_mean( internal_scalar_log_p( X.colptr(i), tmp1, tmp2, gaus_id ) );
+      running_mean( internal_scalar_log_p( X.colptr(i), gaus_id ) );
       }
     
     return running_mean.mean();
@@ -1497,9 +1426,6 @@ gmm_full<eT>::internal_scalar_assign(const T1& X, const gmm_dist_mode& dist_mode
   else
   if(dist_mode == prob_dist)
     {
-    Row<eT> tmp1(N_dims);
-    Row<eT> tmp2(N_dims);
-    
     const eT* log_hefts_mem = log_hefts.memptr();
     
     eT    best_p = -Datum<eT>::inf;
@@ -1507,7 +1433,7 @@ gmm_full<eT>::internal_scalar_assign(const T1& X, const gmm_dist_mode& dist_mode
     
     for(uword g=0; g < N_gaus; ++g)
       {
-      const eT tmp_p = internal_scalar_log_p(X_mem, tmp1, tmp2, g) + log_hefts_mem[g];
+      const eT tmp_p = internal_scalar_log_p(X_mem, g) + log_hefts_mem[g];
       
       if(tmp_p >= best_p)
         {
@@ -1599,17 +1525,11 @@ gmm_full<eT>::internal_vec_assign(urowvec& out, const T1& X, const gmm_dist_mode
       
       const uword n_threads = boundaries.n_cols;
       
-      Mat<eT> tmp1_set(N_dims, n_threads);
-      Mat<eT> tmp2_set(N_dims, n_threads);
-      
       const eT* log_hefts_mem = log_hefts.memptr();
       
       #pragma omp parallel for schedule(static)
       for(uword t=0; t < n_threads; ++t)
         {
-        Row<eT> tmp1(tmp1_set.colptr(t), N_dims, false, true);
-        Row<eT> tmp2(tmp2_set.colptr(t), N_dims, false, true);
-        
         const uword start_index = boundaries.at(0,t);
         const uword   end_index = boundaries.at(1,t);
         
@@ -1622,7 +1542,7 @@ gmm_full<eT>::internal_vec_assign(urowvec& out, const T1& X, const gmm_dist_mode
           
           for(uword g=0; g<N_gaus; ++g)
             {
-            const eT tmp_p = internal_scalar_log_p(X_colptr, tmp1, tmp2, g) + log_hefts_mem[g];
+            const eT tmp_p = internal_scalar_log_p(X_colptr, g) + log_hefts_mem[g];
             
             if(tmp_p >= best_p)  { best_p = tmp_p; best_g = g; }
             }
@@ -1633,9 +1553,6 @@ gmm_full<eT>::internal_vec_assign(urowvec& out, const T1& X, const gmm_dist_mode
       }
     #else
       {
-      Row<eT> tmp1(N_dims);
-      Row<eT> tmp2(N_dims);
-      
       const eT* log_hefts_mem = log_hefts.memptr();
       
       for(uword i=0; i<X_n_cols; ++i)
@@ -1647,7 +1564,7 @@ gmm_full<eT>::internal_vec_assign(urowvec& out, const T1& X, const gmm_dist_mode
         
         for(uword g=0; g<N_gaus; ++g)
           {
-          const eT tmp_p = internal_scalar_log_p(X_colptr, tmp1, tmp2, g) + log_hefts_mem[g];
+          const eT tmp_p = internal_scalar_log_p(X_colptr, g) + log_hefts_mem[g];
           
           if(tmp_p >= best_p)  { best_p = tmp_p; best_g = g; }
           }
@@ -1724,17 +1641,11 @@ gmm_full<eT>::internal_raw_hist(urowvec& hist, const Mat<eT>& X, const gmm_dist_
     else
     if(dist_mode == prob_dist)
       {
-      Mat<eT> tmp1_set(N_dims, n_threads);
-      Mat<eT> tmp2_set(N_dims, n_threads);
-      
       const eT* log_hefts_mem = log_hefts.memptr();
       
       #pragma omp parallel for schedule(static)
       for(uword t=0; t < n_threads; ++t)
         {
-        Row<eT> tmp1(tmp1_set.colptr(t), N_dims, false, true);
-        Row<eT> tmp2(tmp2_set.colptr(t), N_dims, false, true);
-        
         uword* thread_hist_mem = thread_hist(t).memptr();
         
         const uword start_index = boundaries.at(0,t);
@@ -1749,7 +1660,7 @@ gmm_full<eT>::internal_raw_hist(urowvec& hist, const Mat<eT>& X, const gmm_dist_
           
           for(uword g=0; g < N_gaus; ++g)
             {
-            const eT tmp_p = internal_scalar_log_p(X_colptr, tmp1, tmp2, g) + log_hefts_mem[g];
+            const eT tmp_p = internal_scalar_log_p(X_colptr, g) + log_hefts_mem[g];
             
             if(tmp_p >= best_p)  { best_p = tmp_p; best_g = g; }
             }
@@ -1791,9 +1702,6 @@ gmm_full<eT>::internal_raw_hist(urowvec& hist, const Mat<eT>& X, const gmm_dist_
     else
     if(dist_mode == prob_dist)
       {
-      Row<eT> tmp1(N_dims);
-      Row<eT> tmp2(N_dims);
-      
       const eT* log_hefts_mem = log_hefts.memptr();
       
       for(uword i=0; i<X_n_cols; ++i)
@@ -1805,7 +1713,7 @@ gmm_full<eT>::internal_raw_hist(urowvec& hist, const Mat<eT>& X, const gmm_dist_
         
         for(uword g=0; g < N_gaus; ++g)
           {
-          const eT tmp_p = internal_scalar_log_p(X_colptr, tmp1, tmp2, g) + log_hefts_mem[g];
+          const eT tmp_p = internal_scalar_log_p(X_colptr, g) + log_hefts_mem[g];
           
           if(tmp_p >= best_p)  { best_p = tmp_p; best_g = g; }
           }
@@ -2338,10 +2246,6 @@ gmm_full<eT>::em_iterate(const Mat<eT>& X, const uword max_iter, const eT var_fl
   
   Col<eT>          t_progress_log_lhood(n_threads);
   
-  field< Row<eT> > t_tmp1(n_threads);
-  field< Row<eT> > t_tmp2(n_threads);
-  field< Mat<eT> > t_xx_outer(n_threads);
-  
   for(uword t=0; t<n_threads; t++)
     {
     t_acc_means[t].set_size(N_dims, N_gaus);
@@ -2349,10 +2253,6 @@ gmm_full<eT>::em_iterate(const Mat<eT>& X, const uword max_iter, const eT var_fl
     
     t_acc_norm_lhoods[t].set_size(N_gaus);
     t_gaus_log_lhoods[t].set_size(N_gaus);
-    
-    t_tmp1[t].set_size(N_dims);
-    t_tmp2[t].set_size(N_dims);
-    t_xx_outer[t].set_size(N_dims,N_dims);
     }
   
   
@@ -2369,7 +2269,7 @@ gmm_full<eT>::em_iterate(const Mat<eT>& X, const uword max_iter, const eT var_fl
     {
     init_constants(calc_chol);
     
-    em_update_params(X, boundaries, t_acc_means, t_acc_fcovs, t_acc_norm_lhoods, t_gaus_log_lhoods, t_progress_log_lhood, t_tmp1, t_tmp2, t_xx_outer);
+    em_update_params(X, boundaries, t_acc_means, t_acc_fcovs, t_acc_norm_lhoods, t_gaus_log_lhoods, t_progress_log_lhood);
     
     em_fix_params(var_floor);
     
@@ -2426,10 +2326,7 @@ gmm_full<eT>::em_update_params
         field< Cube<eT> >& t_acc_fcovs,
         field<  Col<eT> >& t_acc_norm_lhoods,
         field<  Col<eT> >& t_gaus_log_lhoods,
-        Col<eT>&           t_progress_log_lhood,
-        field<  Row<eT> >& t_tmp1,
-        field<  Row<eT> >& t_tmp2,
-        field<  Mat<eT> >& t_xx_outer
+        Col<eT>&           t_progress_log_lhood
   )
   {
   arma_extra_debug_sigprint();
@@ -2449,16 +2346,13 @@ gmm_full<eT>::em_update_params
        Col<eT>& acc_norm_lhoods    = t_acc_norm_lhoods[t];
        Col<eT>& gaus_log_lhoods    = t_gaus_log_lhoods[t];
        eT&      progress_log_lhood = t_progress_log_lhood[t];
-       Row<eT>& tmp1               = t_tmp1[t];
-       Row<eT>& tmp2               = t_tmp2[t];
-       Mat<eT>& xx_outer           = t_xx_outer[t];
       
-      em_generate_acc(X, boundaries.at(0,t), boundaries.at(1,t), acc_means, acc_fcovs, acc_norm_lhoods, gaus_log_lhoods, progress_log_lhood, tmp1, tmp2, xx_outer);
+      em_generate_acc(X, boundaries.at(0,t), boundaries.at(1,t), acc_means, acc_fcovs, acc_norm_lhoods, gaus_log_lhoods, progress_log_lhood);
       }
     }
   #else
     {
-    em_generate_acc(X, boundaries.at(0,0), boundaries.at(1,0), t_acc_means[0], t_acc_fcovs[0], t_acc_norm_lhoods[0], t_gaus_log_lhoods[0], t_progress_log_lhood[0], t_tmp1[0], t_tmp2[0], t_xx_outer[0]);
+    em_generate_acc(X, boundaries.at(0,0), boundaries.at(1,0), t_acc_means[0], t_acc_fcovs[0], t_acc_norm_lhoods[0], t_gaus_log_lhoods[0], t_progress_log_lhood[0]);
     }
   #endif
   
@@ -2484,7 +2378,7 @@ gmm_full<eT>::em_update_params
   
   eT* hefts_mem = access::rw(hefts).memptr();
   
-  Mat<eT> mean_outer(N_dims,N_dims);
+  Mat<eT> mean_outer(N_dims, N_dims);
   
   
   //// update each component without sanity checking
@@ -2504,8 +2398,7 @@ gmm_full<eT>::em_update_params
   //    
   //    const Col<eT> mean(mean_mem, N_dims, false, true);
   //    
-  //    //mean_outer = mean * mean.t();
-  //    sym_outer_product(mean_outer, mean);
+  //    mean_outer = mean * mean.t();
   //    
   //    Mat<eT>&     fcov = access::rw(fcovs).slice(g);
   //    Mat<eT>& acc_fcov = final_acc_fcovs.slice(g);
@@ -2529,8 +2422,7 @@ gmm_full<eT>::em_update_params
     
     const Col<eT> new_mean(acc_mean_mem, N_dims, false, true);
     
-    //mean_outer = new_mean * new_mean.t();
-    sym_outer_product(mean_outer, new_mean);
+    mean_outer = new_mean * new_mean.t();
     
     Mat<eT>& acc_fcov = final_acc_fcovs.slice(g);
     
@@ -2572,10 +2464,7 @@ gmm_full<eT>::em_generate_acc
         Cube<eT>& acc_fcovs,
          Col<eT>& acc_norm_lhoods,
          Col<eT>& gaus_log_lhoods,
-         eT&      progress_log_lhood,
-         Row<eT>& tmp1,
-         Row<eT>& tmp2,
-         Mat<eT>& xx_outer
+         eT&      progress_log_lhood
   )
   const
   {
@@ -2602,7 +2491,7 @@ gmm_full<eT>::em_generate_acc
     
     for(uword g=0; g < N_gaus; ++g)
       {
-      gaus_log_lhoods_mem[g] = internal_scalar_log_p(x, tmp1, tmp2, g) + log_hefts_mem[g];
+      gaus_log_lhoods_mem[g] = internal_scalar_log_p(x, g) + log_hefts_mem[g];
       }
     
     eT log_lhood_sum = gaus_log_lhoods_mem[0];
@@ -2627,14 +2516,29 @@ gmm_full<eT>::em_generate_acc
         acc_mean_mem[d] += x[d] * norm_lhood;
         }
       
-      const Col<eT> xx(const_cast<eT*>(x), N_dims, false, true);
-      
-      //xx_outer = xx * xx.t();
-      sym_outer_product(xx_outer, xx);
-      
       Mat<eT>& acc_fcov = access::rw(acc_fcovs).slice(g);
       
-      acc_fcov += norm_lhood * xx_outer;
+      // specialised version of acc_fcov += norm_lhood * (xx * xx.t());
+      
+      for(uword d=0; d < N_dims; ++d)
+        {
+        const uword dp1 = d+1;
+        
+        const eT xd = x[d];
+        
+        eT* acc_fcov_col_d = acc_fcov.colptr(d) + d;
+        eT* acc_fcov_row_d = &(acc_fcov.at(d,dp1));
+        
+        (*acc_fcov_col_d) += norm_lhood * (xd * xd);  acc_fcov_col_d++;
+        
+        for(uword e=dp1; e < N_dims; ++e)
+          {
+          const eT val = norm_lhood * (xd * x[e]);
+          
+          (*acc_fcov_col_d) += val;  acc_fcov_col_d++;
+          (*acc_fcov_row_d) += val;  acc_fcov_row_d += N_dims;
+          }
+        }
       }
     }
   
@@ -2707,41 +2611,6 @@ gmm_full<eT>::em_fix_params(const eT var_floor)
   if((heft_sum < (eT(1) - Datum<eT>::eps)) || (heft_sum > (eT(1) + Datum<eT>::eps)))  { access::rw(hefts) /= heft_sum; }
   }
 
-
-
-template<typename eT>
-inline
-void
-gmm_full<eT>::sym_outer_product(Mat<eT>& out, const Col<eT>& x) const
-  {
-  arma_extra_debug_sigprint();
-  
-  const eT* x_mem = x.memptr();
-  
-  const uword N = x.n_rows;
-  
-  out.set_size(N, N);
-  
-  for(uword i=0; i < N; ++i)
-    {
-    const uword ip1 = i+1;
-    
-    const eT xi = x_mem[i];
-    
-    eT* out_col_i = out.colptr(i) + i;
-    eT* out_row_i = &(out.at(i,ip1));
-    
-    (*out_col_i) = xi * xi;  out_col_i++;
-    
-    for(uword j=ip1; j < N; ++j)
-      {
-      const eT val = xi * x_mem[j];
-      
-      (*out_col_i) = val;  out_col_i++;
-      (*out_row_i) = val;  out_row_i += N;
-      }
-    }
-  }
 
 
 } // namespace gmm_priv

@@ -2509,25 +2509,68 @@ gmm_diag<eT>::em_update_params
   
   
   eT* hefts_mem = access::rw(hefts).memptr();
-    
+  
+  
+  //// update each component without sanity checking
+  //for(uword g=0; g < N_gaus; ++g)
+  //  {
+  //  const eT acc_norm_lhood = (std::max)( final_acc_norm_lhoods[g], std::numeric_limits<eT>::min() );
+  //  
+  //  eT* mean_mem = access::rw(means).colptr(g);
+  //  eT* dcov_mem = access::rw(dcovs).colptr(g);
+  //  
+  //  eT* acc_mean_mem = final_acc_means.colptr(g);
+  //  eT* acc_dcov_mem = final_acc_dcovs.colptr(g);
+  //  
+  //  hefts_mem[g] = acc_norm_lhood / eT(X.n_cols);
+  //  
+  //  for(uword d=0; d < N_dims; ++d)
+  //    {
+  //    const eT tmp = acc_mean_mem[d] / acc_norm_lhood;
+  //    
+  //    mean_mem[d] = tmp;
+  //    dcov_mem[d] = acc_dcov_mem[d] / acc_norm_lhood - tmp*tmp;
+  //    }
+  //  }
+  
+  
+  //// update each component only if the corresponding new covariance matrix is positive definite;
+  //// if only a subset of the hefts was updated, em_fix_params() will sanitise them
   for(uword g=0; g < N_gaus; ++g)
     {
-    eT* mean_mem = access::rw(means).colptr(g);
-    eT* dcov_mem = access::rw(dcovs).colptr(g);
+    const eT acc_norm_lhood = (std::max)( final_acc_norm_lhoods[g], std::numeric_limits<eT>::min() );
+    
+    if(arma_isfinite(acc_norm_lhood) == false)  { continue; }
     
     eT* acc_mean_mem = final_acc_means.colptr(g);
     eT* acc_dcov_mem = final_acc_dcovs.colptr(g);
     
-    const eT acc_norm_lhood = (std::max)( final_acc_norm_lhoods[g], std::numeric_limits<eT>::min() );
-    
-    hefts_mem[g] = acc_norm_lhood / eT(X.n_cols);
+    bool ok = true;
     
     for(uword d=0; d < N_dims; ++d)
       {
-      const eT tmp = acc_mean_mem[d] / acc_norm_lhood;
+      const eT tmp1 = acc_mean_mem[d] / acc_norm_lhood;
+            eT tmp2 = acc_dcov_mem[d] / acc_norm_lhood - tmp1*tmp1;
       
-      mean_mem[d] = tmp;
-      dcov_mem[d] = acc_dcov_mem[d] / acc_norm_lhood - tmp*tmp;
+      acc_mean_mem[d] = tmp1;
+      acc_dcov_mem[d] = tmp2;
+      
+      if( (tmp2 == eT(0)) || (arma_isfinite(tmp2) == false) )  { ok = false; }
+      }
+    
+    
+    if(ok)
+      {
+      hefts_mem[g] = acc_norm_lhood / eT(X.n_cols);
+      
+      eT* mean_mem = access::rw(means).colptr(g);
+      eT* dcov_mem = access::rw(dcovs).colptr(g);
+      
+      for(uword d=0; d < N_dims; ++d)
+        {
+        mean_mem[d] = acc_mean_mem[d];
+        dcov_mem[d] = acc_dcov_mem[d];
+        }
       }
     }
   }

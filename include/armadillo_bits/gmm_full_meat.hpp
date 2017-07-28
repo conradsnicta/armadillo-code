@@ -2578,6 +2578,8 @@ gmm_full<eT>::em_update_params
     {
     const eT acc_norm_lhood = (std::max)( final_acc_norm_lhoods[g], std::numeric_limits<eT>::min() );
     
+    if(arma_isfinite(acc_norm_lhood) == false)  { continue; }
+    
     eT* acc_mean_mem = final_acc_means.colptr(g);
     
     for(uword d=0; d < N_dims; ++d)
@@ -2611,7 +2613,6 @@ gmm_full<eT>::em_update_params
       
       fcov = acc_fcov;
       }
-    
     }
   }
 

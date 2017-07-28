@@ -502,6 +502,56 @@ template<typename eT>
 template<typename T1>
 inline
 eT
+gmm_diag<eT>::sum_log_p(const Base<eT,T1>& expr) const
+  {
+  arma_extra_debug_sigprint();
+  
+  if(is_subview<T1>::value)
+    {
+    const subview<eT>& X = reinterpret_cast< const subview<eT>& >( expr.get_ref() );
+    
+    return internal_sum_log_p(X);
+    }
+  else
+    {
+    const unwrap<T1>   tmp(expr.get_ref());
+    const Mat<eT>& X = tmp.M;
+    
+    return internal_sum_log_p(X);
+    }
+  }
+
+
+
+template<typename eT>
+template<typename T1>
+inline
+eT
+gmm_diag<eT>::sum_log_p(const Base<eT,T1>& expr, const uword gaus_id) const
+  {
+  arma_extra_debug_sigprint();
+  
+  if(is_subview<T1>::value)
+    {
+    const subview<eT>& X = reinterpret_cast< const subview<eT>& >( expr.get_ref() );
+    
+    return internal_sum_log_p(X, gaus_id);
+    }
+  else
+    {
+    const unwrap<T1>   tmp(expr.get_ref());
+    const Mat<eT>& X = tmp.M;
+    
+    return internal_sum_log_p(X, gaus_id);
+    }
+  }
+
+
+
+template<typename eT>
+template<typename T1>
+inline
+eT
 gmm_diag<eT>::avg_log_p(const Base<eT,T1>& expr) const
   {
   arma_extra_debug_sigprint();
@@ -1239,6 +1289,121 @@ gmm_diag<eT>::internal_vec_log_p(const T1& X, const uword gaus_id) const
     }
   
   return out;
+  }
+
+
+
+template<typename eT>
+template<typename T1>
+inline
+eT
+gmm_diag<eT>::internal_sum_log_p(const T1& X) const
+  {
+  arma_extra_debug_sigprint();
+  
+  arma_debug_check( (X.n_rows != means.n_rows), "gmm_diag::sum_log_p(): incompatible dimensions" );
+    
+  const uword N = X.n_cols;
+  
+  if(N == 0)  { return (-Datum<eT>::inf); }
+  
+  
+  #if defined(ARMA_USE_OPENMP)
+    {
+    const umat boundaries = internal_gen_boundaries(N);
+    
+    const uword n_threads = boundaries.n_cols;
+    
+    Col<eT> t_accs(n_threads, fill::zeros);
+    
+    #pragma omp parallel for schedule(static)
+    for(uword t=0; t < n_threads; ++t)
+      {
+      const uword start_index = boundaries.at(0,t);
+      const uword   end_index = boundaries.at(1,t);
+      
+      eT t_acc = eT(0);
+      
+      for(uword i=start_index; i <= end_index; ++i)
+        {
+        t_acc += internal_scalar_log_p( X.colptr(i) );
+        }
+      
+      t_accs[t] = t_acc;
+      }
+    
+    return eT(accu(t_accs));
+    }
+  #else
+    {
+    eT acc = eT(0);
+    
+    for(uword i=0; i<N; ++i)
+      {
+      acc += internal_scalar_log_p( X.colptr(i) );
+      }
+    
+    return acc;
+    }
+  #endif
+  }
+
+
+
+template<typename eT>
+template<typename T1>
+inline
+eT
+gmm_diag<eT>::internal_sum_log_p(const T1& X, const uword gaus_id) const
+  {
+  arma_extra_debug_sigprint();
+  
+  arma_debug_check( (X.n_rows != means.n_rows), "gmm_diag::sum_log_p(): incompatible dimensions"            );
+  arma_debug_check( (gaus_id  >= means.n_cols), "gmm_diag::sum_log_p(): specified gaussian is out of range" );
+    
+  const uword N = X.n_cols;
+  
+  if(N == 0)  { return (-Datum<eT>::inf); }
+  
+  
+  #if defined(ARMA_USE_OPENMP)
+    {
+    const umat boundaries = internal_gen_boundaries(N);
+    
+    const uword n_threads = boundaries.n_cols;
+    
+    Col<eT> t_accs(n_threads, fill::zeros);
+    
+    #pragma omp parallel for schedule(static)
+    for(uword t=0; t < n_threads; ++t)
+      {
+      const uword start_index = boundaries.at(0,t);
+      const uword   end_index = boundaries.at(1,t);
+      
+      eT t_acc = eT(0);
+      
+      for(uword i=start_index; i <= end_index; ++i)
+        {
+        t_acc += internal_scalar_log_p( X.colptr(i), gaus_id );
+        }
+      
+      t_accs[t] = t_acc;
+      }
+    
+    return eT(accu(t_accs));
+    }
+  #else
+    {
+    eT acc = eT(0);
+    
+    for(uword i=0; i<N; ++i)
+      {
+      acc += internal_scalar_log_p( X.colptr(i), gaus_id );
+      }
+    
+    return acc;
+    }
+  #endif
   }
 
 

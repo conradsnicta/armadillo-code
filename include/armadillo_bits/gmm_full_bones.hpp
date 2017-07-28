@@ -68,6 +68,9 @@ class gmm_full
   template<typename T1> inline Row<eT> log_p(const T1& expr, const gmm_empty_arg& junk1 = gmm_empty_arg(), typename enable_if<((is_arma_type<T1>::value) && (resolves_to_colvector<T1>::value == false))>::result* junk2 = 0) const;
   template<typename T1> inline Row<eT> log_p(const T1& expr, const uword gaus_id,                          typename enable_if<((is_arma_type<T1>::value) && (resolves_to_colvector<T1>::value == false))>::result* junk2 = 0) const;
   
+  template<typename T1> inline eT  sum_log_p(const Base<eT,T1>& expr)                      const;
+  template<typename T1> inline eT  sum_log_p(const Base<eT,T1>& expr, const uword gaus_id) const;
+  
   template<typename T1> inline eT  avg_log_p(const Base<eT,T1>& expr)                      const;
   template<typename T1> inline eT  avg_log_p(const Base<eT,T1>& expr, const uword gaus_id) const;
   
@@ -115,11 +118,14 @@ class gmm_full
   
   inline umat internal_gen_boundaries(const uword N) const;
   
-  inline eT internal_scalar_log_p(const eT* x)                      const;
+  inline eT internal_scalar_log_p(const eT* x                     ) const;
   inline eT internal_scalar_log_p(const eT* x, const uword gaus_id) const;
   
   template<typename T1> inline Row<eT> internal_vec_log_p(const T1& X                     ) const;
   template<typename T1> inline Row<eT> internal_vec_log_p(const T1& X, const uword gaus_id) const;
+  
+  template<typename T1> inline eT internal_sum_log_p(const T1& X                     ) const;
+  template<typename T1> inline eT internal_sum_log_p(const T1& X, const uword gaus_id) const;
   
   template<typename T1> inline eT internal_avg_log_p(const T1& X                     ) const;
   template<typename T1> inline eT internal_avg_log_p(const T1& X, const uword gaus_id) const;
@@ -147,7 +153,6 @@ class gmm_full
   inline void em_generate_acc(const Mat<eT>& X, const uword start_index, const uword end_index, Mat<eT>& acc_means, Cube<eT>& acc_fcovs, Col<eT>& acc_norm_lhoods, Col<eT>& gaus_log_lhoods, eT& progress_log_lhood) const;
   
   inline void em_fix_params(const eT var_floor);
-  
   };
 
 }

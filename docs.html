@@ -13291,6 +13291,31 @@ For an instance of <i>gmm_diag</i> or <i>gmm_full</i> named as <i>M</i>, the mem
     </tr>
     <tr>
       <td style="vertical-align: top;">
+      <b>M.sum_log_p(</b>X<b>)</b>
+      </td>
+      <td style="vertical-align: top;">&nbsp;<br>
+      </td>
+      <td style="vertical-align: top;">
+      return a scalar representing the sum of log-likelihoods for all column vectors in matrix <i>X</i> (of type <i>mat</i>)
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">
+      <b>M.sum_log_p(</b>X, g<b>)</b>
+      </td>
+      <td style="vertical-align: top;">&nbsp;<br>
+      </td>
+      <td style="vertical-align: top;">
+      return a scalar representing the sum of log-likelihoods for all column vectors in matrix <i>X</i> (of type <i>mat</i>), according to Gaussian with index <i>g</i>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">&nbsp;<br></td>
+      <td style="vertical-align: top;">&nbsp;<br></td>
+      <td style="vertical-align: top;">&nbsp;<br></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">
       <b>M.avg_log_p(</b>X<b>)</b>
       </td>
       <td style="vertical-align: top;">&nbsp;<br>
@@ -16338,6 +16363,7 @@ List of additions and changes for each version:
 <ul>
 <li>faster <a href="#randu_randn_standalone">randn()</a> when using OpenMP</li>
 <li>faster <a href="#gmm_diag">gmm_diag</a> class, for Gaussian mixture models with diagonal covariance matrices</li>
+<li>added <i>.sum_log_p()</i> to the <a href="#gmm_diag">gmm_diag</a> class</li>
 <li>added <a href="#gmm_full">gmm_full</a> class, for Gaussian mixture models with full covariance matrices</li>
 <li>expanded <a href="#each_slice">.each_slice()</a> to optionally use OpenMP for multi-threaded execution</li>
 </ul>

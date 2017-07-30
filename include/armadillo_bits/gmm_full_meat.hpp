@@ -2003,6 +2003,8 @@ gmm_full<eT>::generate_initial_params(const Mat<eT>& X, const eT var_floor)
   
   const uword X_n_cols = X.n_cols;
   
+  if(X_n_cols == 0)  { return; }
+  
   // as the covariances are calculated via accumulators,
   // the means also need to be calculated via accumulators to ensure numerical consistency
   

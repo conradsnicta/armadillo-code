@@ -2596,7 +2596,7 @@ gmm_full<eT>::em_update_params
     acc_fcov /= acc_norm_lhood;
     acc_fcov -= mean_outer;
     
-    const bool inv_ok = auxlib::inv_sympd(mean_outer, acc_fcov);  // mean_outer is used as a junk matrix
+    const bool inv_ok = acc_fcov.is_finite() ? bool(auxlib::inv_sympd(mean_outer, acc_fcov)) : bool(false);  // mean_outer is used as a junk matrix
     
     if(inv_ok)
       {

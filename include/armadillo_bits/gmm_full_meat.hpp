@@ -2456,7 +2456,7 @@ gmm_full<eT>::em_iterate(const Mat<eT>& X, const uword max_iter, const eT var_fl
       get_stream_err2().flush();
       }
     
-    if(is_finite(new_avg_log_p) == false)  { return false; }
+    if(arma_isnan(new_avg_log_p))  { break; }
     
     if(std::abs(old_avg_log_p - new_avg_log_p) <= Datum<eT>::eps)  { break; }
     

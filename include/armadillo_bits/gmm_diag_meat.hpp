@@ -1978,6 +1978,8 @@ gmm_diag<eT>::generate_initial_params(const Mat<eT>& X, const eT var_floor)
   
   const uword X_n_cols = X.n_cols;
   
+  if(X_n_cols == 0)  { return; }
+  
   // as the covariances are calculated via accumulators,
   // the means also need to be calculated via accumulators to ensure numerical consistency
   
@@ -2102,7 +2104,7 @@ gmm_diag<eT>::generate_initial_params(const Mat<eT>& X, const eT var_floor)
       const eT tmp = acc_mean[d] / eT(acc_heft);
       
       mean[d] = (acc_heft >= 1) ? tmp : eT(0);
-      dcov[d] = (acc_heft >= 2) ? eT((acc_dcov[d] / eT(acc_heft)) - (tmp*tmp)) : eT(1);
+      dcov[d] = (acc_heft >= 2) ? eT((acc_dcov[d] / eT(acc_heft)) - (tmp*tmp)) : eT(var_floor);
       }
     
     hefts_mem[g] = eT(acc_heft) / eT(X_n_cols);
@@ -2534,8 +2536,7 @@ gmm_diag<eT>::em_update_params
   //  }
   
   
-  //// update each component only if the corresponding new covariance matrix is positive definite;
-  //// if only a subset of the hefts was updated, em_fix_params() will sanitise them
+  // conditionally update each component;  if only a subset of the hefts was updated, em_fix_params() will sanitise them
   for(uword g=0; g < N_gaus; ++g)
     {
     const eT acc_norm_lhood = (std::max)( final_acc_norm_lhoods[g], std::numeric_limits<eT>::min() );
@@ -2555,7 +2556,7 @@ gmm_diag<eT>::em_update_params
       acc_mean_mem[d] = tmp1;
       acc_dcov_mem[d] = tmp2;
       
-      if( (tmp2 == eT(0)) || (arma_isfinite(tmp2) == false) )  { ok = false; }
+      if(arma_isfinite(tmp2) == false)  { ok = false; }
       }
     
     

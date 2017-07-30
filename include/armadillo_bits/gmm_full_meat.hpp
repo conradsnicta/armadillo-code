@@ -2129,7 +2129,7 @@ gmm_full<eT>::generate_initial_params(const Mat<eT>& X, const eT var_floor)
       const eT tmp = acc_mean[d] / eT(acc_heft);
       
       mean[d]      = (acc_heft >= 1) ? tmp : eT(0);
-      fcov.at(d,d) = (acc_heft >= 2) ? eT((acc_dcov[d] / eT(acc_heft)) - (tmp*tmp)) : eT(1);
+      fcov.at(d,d) = (acc_heft >= 2) ? eT((acc_dcov[d] / eT(acc_heft)) - (tmp*tmp)) : eT(var_floor);
       }
     
     hefts_mem[g] = eT(acc_heft) / eT(X_n_cols);
@@ -2572,8 +2572,7 @@ gmm_full<eT>::em_update_params
   //    }
   
   
-  //// update each component only if the corresponding new covariance matrix is positive definite;
-  //// if only a subset of the hefts was updated, em_fix_params() will sanitise them
+  // conditionally update each component; if only a subset of the hefts was updated, em_fix_params() will sanitise them
   for(uword g=0; g < N_gaus; ++g)
     {
     const eT acc_norm_lhood = (std::max)( final_acc_norm_lhoods[g], std::numeric_limits<eT>::min() );
@@ -2596,9 +2595,7 @@ gmm_full<eT>::em_update_params
     acc_fcov /= acc_norm_lhood;
     acc_fcov -= mean_outer;
     
-    const bool inv_ok = acc_fcov.is_finite() ? bool(auxlib::inv_sympd(mean_outer, acc_fcov)) : bool(false);  // mean_outer is used as a junk matrix
-    
-    if(inv_ok)
+    if(acc_fcov.is_finite())
       {
       hefts_mem[g] = acc_norm_lhood / eT(X.n_cols);
       

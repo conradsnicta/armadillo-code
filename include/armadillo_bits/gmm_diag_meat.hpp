@@ -2550,7 +2550,7 @@ gmm_diag<eT>::em_update_params
     for(uword d=0; d < N_dims; ++d)
       {
       const eT tmp1 = acc_mean_mem[d] / acc_norm_lhood;
-            eT tmp2 = acc_dcov_mem[d] / acc_norm_lhood - tmp1*tmp1;
+      const eT tmp2 = acc_dcov_mem[d] / acc_norm_lhood - tmp1*tmp1;
       
       acc_mean_mem[d] = tmp1;
       acc_dcov_mem[d] = tmp2;

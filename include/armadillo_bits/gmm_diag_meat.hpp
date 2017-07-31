@@ -2413,7 +2413,7 @@ gmm_diag<eT>::em_iterate(const Mat<eT>& X, const uword max_iter, const eT var_fl
     
     em_fix_params(var_floor);
     
-    const eT new_avg_log_p = mean(t_progress_log_lhood);
+    const eT new_avg_log_p = accu(t_progress_log_lhood) / eT(t_progress_log_lhood.n_elem);
     
     if(verbose)
       {

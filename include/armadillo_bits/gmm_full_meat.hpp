@@ -1006,7 +1006,7 @@ gmm_full<eT>::init_constants(const bool calc_chol)
     
     log_det(log_det_val, log_det_sign, fcov);
     
-    const bool log_det_ok = (log_det_sign > eT(0));
+    const bool log_det_ok = ( (arma_isfinite(log_det_val)) && (log_det_sign > eT(0)) );
     
     if(inv_ok && log_det_ok)
       {
@@ -2440,7 +2440,7 @@ gmm_full<eT>::em_iterate(const Mat<eT>& X, const uword max_iter, const eT var_fl
     
     em_fix_params(var_floor);
     
-    const eT new_avg_log_p = mean(t_progress_log_lhood);
+    const eT new_avg_log_p = accu(t_progress_log_lhood) / eT(t_progress_log_lhood.n_elem);
     
     if(verbose)
       {
@@ -2605,9 +2605,18 @@ gmm_full<eT>::em_update_params
       if(val < var_floor)  { val = var_floor; }
       }
     
-    const bool inv_ok = acc_fcov.is_finite() ? bool(auxlib::inv_sympd(mean_outer, acc_fcov)) : bool(false);
+    if(acc_fcov.is_finite() == false)  { continue; }
     
-    if(inv_ok)
+    eT log_det_val  = eT(0);
+    eT log_det_sign = eT(0);
+    
+    log_det(log_det_val, log_det_sign, acc_fcov);
+    
+    const bool log_det_ok = ( (arma_isfinite(log_det_val)) && (log_det_sign > eT(0)) );
+    
+    const bool inv_ok = (log_det_ok) ? bool(auxlib::inv_sympd(mean_outer, acc_fcov)) : bool(false);  // mean_outer is used as a junk matrix
+    
+    if(log_det_ok && inv_ok)
       {
       hefts_mem[g] = acc_norm_lhood / eT(X.n_cols);
       

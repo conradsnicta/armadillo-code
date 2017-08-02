@@ -3392,6 +3392,12 @@ SpMat<eT>::eye(const uword in_rows, const uword in_cols)
   
   for(uword i = 0; i <= N; ++i) { access::rw(col_ptrs[i])    = i; }
   
+  // take into account non-square matrices
+  for(uword i = (N+1); i <= in_cols; ++i)
+    {
+    access::rw(col_ptrs[i]) += col_ptrs[i - 1];
+    }
+    
   access::rw(n_nonzero) = N;
   
   return *this;

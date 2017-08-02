@@ -380,6 +380,8 @@ gmm_diag<eT>::generate(const uword N_vec) const
     {
     const eT* hefts_mem = hefts.memptr();
     
+    const Mat<eT> sqrt_dcovs = sqrt(dcovs);
+    
     for(uword i=0; i < N_vec; ++i)
       {
       const double val = randu<double>();
@@ -396,7 +398,7 @@ gmm_diag<eT>::generate(const uword N_vec) const
       
       subview_col<eT> out_col = out.col(i);
       
-      out_col %= sqrt(dcovs.col(gaus_id));
+      out_col %= sqrt_dcovs.col(gaus_id);
       out_col += means.col(gaus_id);
       }
     }

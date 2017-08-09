@@ -140,7 +140,7 @@ Col<eT>::operator=(const char* text)
   
   Mat<eT> tmp(text);
   
-  arma_debug_check( (tmp.is_vec() == false), "Mat::init(): requested size is not compatible with column vector layout" );
+  arma_debug_check( ((tmp.n_elem > 0) && (tmp.is_vec() == false)), "Mat::init(): requested size is not compatible with column vector layout" );
   
   access::rw(tmp.n_rows) = tmp.n_elem;
   access::rw(tmp.n_cols) = 1;
@@ -173,7 +173,7 @@ Col<eT>::operator=(const std::string& text)
   
   Mat<eT> tmp(text);
   
-  arma_debug_check( (tmp.is_vec() == false), "Mat::init(): requested size is not compatible with column vector layout" );
+  arma_debug_check( ((tmp.n_elem > 0) && (tmp.is_vec() == false)), "Mat::init(): requested size is not compatible with column vector layout" );
   
   access::rw(tmp.n_rows) = tmp.n_elem;
   access::rw(tmp.n_cols) = 1;
@@ -244,7 +244,7 @@ Col<eT>::operator=(const std::vector<eT>& x)
     
     Mat<eT> tmp(list);
     
-    arma_debug_check( (tmp.is_vec() == false), "Mat::init(): requested size is not compatible with column vector layout" );
+    arma_debug_check( ((tmp.n_elem > 0) && (tmp.is_vec() == false)), "Mat::init(): requested size is not compatible with column vector layout" );
     
     access::rw(tmp.n_rows) = tmp.n_elem;
     access::rw(tmp.n_cols) = 1;

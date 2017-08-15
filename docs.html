@@ -1759,6 +1759,10 @@ examples of omitted functions: <a href="#fill">.fill()</a>, <a href="#ones_membe
 </li>
 <br>
 <li>
+<b>NOTE:</b> using <a href="#element_access">element access operators</a> to set values in <i>sp_mat</i> is very inefficient; use batch insertion constructors instead
+</li>
+<br>
+<li>
 <a name="batch_constructors_sp_mat"></a>
 Batch insertion constructors:
 <ul>
@@ -1768,10 +1772,6 @@ Batch insertion constructors:
 <li>form&nbsp;4: <code>sp_mat(<i>rowind</i>, <i>colptr</i>, <i>values</i>, <i>n_rows</i>, <i>n_cols</i>)</code></li>
 <br>
 <ul>
-<li>
-Using batch insertion constructors is generally much faster than consecutively inserting values using <a href="#element_access">element access operators</a>
-</li>
-<br>
 <li>
 For forms&nbsp;1,&nbsp;2,&nbsp;3,
 <i>locations</i> is a dense matrix of type <i>umat</i>, with a size of <i>2</i>&nbsp;x&nbsp;<i>N</i>, where <i>N</i> is the number of values to be inserted;
@@ -1820,10 +1820,10 @@ If <i>check_for_zeros</i> is set to <i>false</i>, the <i>values</i> vector is as
 <li>
 <b>Caveats:</b>
 <ul>
-<li>support for sparse matrices in this version is <b>preliminary</b></li>
-<li>the following subset of operations currently works with sparse matrices:
+<li>support for sparse matrices in this version is <b>preliminary</b>;
+<br>
+the following subset of operations currently works with sparse matrices:
 <ul>
-<li><a href="#element_access">element access</a></li>
 <li>fundamental arithmetic <a href="#operators">operations</a> (such as addition and multiplication)</li>
 <li><a href="#submat">submatrix views</a> (contiguous forms only)</li>
 <li><a href="#diag">diagonal views</a></li>
@@ -2304,8 +2304,8 @@ For example: <code>for(uword&nbsp;i=0;&nbsp;i&lt;X.n_elem;&nbsp;++i)&nbsp;{&nbsp
 </li>
 <br>
 <li>
-<b>Caveat</b>: for <a href="#SpMat">sparse matrices</a>, using element access operators to insert values via loops can be inefficient;
-you may wish to use <a href="#batch_constructors_sp_mat">batch insertion constructors</a> instead
+<b>Caveat</b>: using element access operators to set values in <a href="#SpMat">sp_mat</a> is very inefficient;
+use <a href="#batch_constructors_sp_mat">batch insertion constructors</a> instead
 </li>
 <br>
 <li>

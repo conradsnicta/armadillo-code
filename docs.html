@@ -1846,17 +1846,10 @@ the following subset of operations currently works with sparse matrices:
 Examples:
 <ul>
 <pre>
-sp_mat A(5,6);
-sp_mat B(6,5);
-
-A(0,0) = 1;
-A(1,0) = 2;
-
-B(0,0) = 3;
-B(0,1) = 4;
+sp_mat A = sprandu(1000, 2000, 0.01);
+sp_mat B = sprandu(2000, 1000, 0.01);
 
 sp_mat C = 2*B;
-
 sp_mat D = A*C;
 
 

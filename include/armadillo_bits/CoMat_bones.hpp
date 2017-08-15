@@ -21,6 +21,7 @@
 
 template<typename eT> class CoMat;
 template<typename eT> class CoMat_val;
+template<typename eT> class CoMat_const_iterator;
 
 
 
@@ -74,10 +75,11 @@ class CoMat
   inline arma_warn_unused CoMat_val<eT> operator()(const uword in_row, const uword in_col);
   inline arma_warn_unused           eT  operator()(const uword in_row, const uword in_col) const;
   
-  
   inline void sprandu(const uword in_n_rows, const uword in_n_cols, const double density);
   
   inline void print(const std::string& extra_text) const;
+  
+  inline operator SpMat<eT>() const;
   
   
   private:
@@ -90,7 +92,11 @@ class CoMat
   arma_inline void   set_val(const uword index, const eT& in_val);
        inline void erase_val(const uword index);
   
+  inline arma_warn_unused CoMat_const_iterator<eT> begin() const;
+  inline arma_warn_unused CoMat_const_iterator<eT>   end() const;
+  
   friend class CoMat_val<eT>;
+  friend class CoMat_const_iterator<eT>;
   };
 
 
@@ -119,6 +125,35 @@ class CoMat_val
   inline void operator*=(const eT in_val);
   inline void operator/=(const eT in_val);
   // TODO: postfix and prefix versions of ++ and -- 
+  };
+
+
+
+template<typename eT>
+class CoMat_const_iterator
+  {
+  private:
+  
+  arma_aligned const CoMat<eT>& parent;
+  
+  arma_aligned uword index;
+  
+  arma_aligned typename CoMat<eT>::map_type::const_iterator it;
+  arma_aligned typename CoMat<eT>::map_type::const_iterator it_end;
+  
+  friend class CoMat<eT>;
+  
+  
+  public:
+  
+  inline CoMat_const_iterator(const CoMat<eT>& in_parent, const uword in_index);
+  
+  inline arma_warn_unused eT operator*() const;
+  
+  inline void operator++();
+  inline void operator++(int);
+  
+  inline bool operator!=(const CoMat_const_iterator<eT>& X) const;
   };
 
 

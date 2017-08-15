@@ -375,6 +375,56 @@ CoMat<eT>::print(const std::string& extra_text) const
 
 template<typename eT>
 inline
+CoMat<eT>::operator SpMat<eT>() const
+  {
+  arma_extra_debug_sigprint();
+  
+  const uword N = (*this).get_n_nonzero();
+  
+  umat    locations(2,N);
+  Col<eT> values(N);
+  
+  if(N > 0)
+    {
+    CoMat_const_iterator<eT> it     = (*this).begin();
+    CoMat_const_iterator<eT> it_end = (*this).end();
+    
+    uword row = 0;
+    uword col = 0;
+    
+    eT* values_mem = values.memptr();
+    
+    uword count = 0;
+    
+    for(; it != it_end; ++it)
+      {
+      const eT val = (*it);
+      
+      if(val != eT(0))
+        {
+        uword* locations_colptr = locations.colptr(count);
+        
+        locations_colptr[0] = row;
+        locations_colptr[1] = col;
+        
+        values_mem[count] = val;
+        
+        ++count;
+        }
+      
+      ++row;
+      
+      if(row >= n_rows)  { row = 0; col++; }
+      }
+    }
+  
+  return SpMat<eT>(locations, values, n_rows, n_cols, false, false);
+  }
+  
+  
+template<typename eT>
+inline
+void
 CoMat<eT>::init_cold()
   {
   arma_extra_debug_sigprint();
@@ -442,6 +492,28 @@ CoMat<eT>::init_warm(const uword in_n_rows, const uword in_n_cols)
 
 
 
+template<typename eT>
+inline
+arma_warn_unused
+CoMat_const_iterator<eT>
+CoMat<eT>::begin() const
+  {
+  return CoMat_const_iterator<eT>(*this, 0);
+  }
+
+
+
+template<typename eT>
+inline
+arma_warn_unused
+CoMat_const_iterator<eT>
+CoMat<eT>::end() const
+  {
+  return CoMat_const_iterator<eT>(*this, n_elem);
+  }
+
+
+
 
 
 
@@ -455,6 +527,7 @@ CoMat_val<eT>::CoMat_val(CoMat<eT>& in_parent, const uword in_index)
   : parent(in_parent)
   , index (in_index )
   {
+  arma_extra_debug_sigprint();
   }
 
 
@@ -463,6 +536,8 @@ template<typename eT>
 inline
 CoMat_val<eT>::operator eT() const
   {
+  arma_extra_debug_sigprint();
+  
   const CoMat<eT>& const_parent = parent;
   
   return const_parent.operator[](index);
@@ -475,6 +550,8 @@ inline
 void
 CoMat_val<eT>::operator=(const eT in_val)
   {
+  arma_extra_debug_sigprint();
+  
   parent.set_val(index, in_val);
   }
 
@@ -485,7 +562,9 @@ inline
 void
 CoMat_val<eT>::operator+=(const eT in_val)
   {
-  map_type& map_ref = *(parent.map_ptr);
+  arma_extra_debug_sigprint();
+  
+  typename CoMat<eT>::map_type& map_ref = *(parent.map_ptr);
   
   if(in_val != eT(0))
     {
@@ -504,7 +583,9 @@ inline
 void
 CoMat_val<eT>::operator-=(const eT in_val)
   {
-  map_type& map_ref = *(parent.map_ptr);
+  arma_extra_debug_sigprint();
+  
+  typename CoMat<eT>::map_type& map_ref = *(parent.map_ptr);
   
   if(in_val != eT(0))
     {
@@ -523,10 +604,12 @@ inline
 void
 CoMat_val<eT>::operator*=(const eT in_val)
   {
-  map_type& map_ref = *(parent.map_ptr);
+  arma_extra_debug_sigprint();
   
-  typename map_type::iterator it     = map_ref.find(index);
-  typename map_type::iterator it_end = map_ref.end();
+  typename CoMat<eT>::map_type& map_ref = *(parent.map_ptr);
+  
+  typename CoMat<eT>::map_type::iterator it     = map_ref.find(index);
+  typename CoMat<eT>::map_type::iterator it_end = map_ref.end();
   
   if(it != it_end)
     {
@@ -552,12 +635,14 @@ inline
 void
 CoMat_val<eT>::operator/=(const eT in_val)
   {
-  arma_check( (in_val == eT(0)), "CoMat_val::operator/=(): division by zero" );
+  arma_extra_debug_sigprint();
   
-  map_type& map_ref = *(parent.map_ptr);
+  arma_check( (in_val == eT(0)), "CoMat::operator(): division by zero" );
   
-  typename map_type::iterator it     = map_ref.find(index);
-  typename map_type::iterator it_end = map_ref.end();
+  typename CoMat<eT>::map_type& map_ref = *(parent.map_ptr);
+  
+  typename CoMat<eT>::map_type::iterator it     = map_ref.find(index);
+  typename CoMat<eT>::map_type::iterator it_end = map_ref.end();
   
   if(it != it_end)
     {
@@ -574,6 +659,95 @@ CoMat_val<eT>::operator/=(const eT in_val)
       map_ref.erase(it);
       }
     }
+  }
+
+
+
+
+
+
+// CoMat_const_iterator
+
+
+
+template<typename eT>
+inline
+CoMat_const_iterator<eT>::CoMat_const_iterator(const CoMat<eT>& in_parent, const uword in_index)
+  : parent(in_parent)
+  , index (in_index )
+  {
+  arma_extra_debug_sigprint();
+  
+  typename CoMat<eT>::map_type& map_ref = *(parent.map_ptr);
+  
+  it     = map_ref.begin();
+  it_end = map_ref.end();
+  }
+
+
+
+template<typename eT>
+inline
+arma_warn_unused
+eT
+CoMat_const_iterator<eT>::operator*() const
+  {
+  arma_extra_debug_sigprint();
+  
+  if(it != it_end)
+    {
+    const typename CoMat<eT>::map_type::value_type& it_deref = (*it);
+    
+    return (index < it_deref.first) ? eT(0) : eT(it_deref.second);
+    }
+  
+  return eT(0);
+  }
+
+
+
+template<typename eT>
+inline
+void
+CoMat_const_iterator<eT>::operator++()
+  {
+  arma_extra_debug_sigprint();
+  
+  ++index;
+  
+  if(it != it_end)
+    {
+    if(index > (*it).first)  { ++it; }
+    }
+  }
+
+
+
+template<typename eT>
+inline
+void
+CoMat_const_iterator<eT>::operator++(int)
+  {
+  arma_extra_debug_sigprint();
+  
+  ++index;
+  
+  if(it != it_end)
+    {
+    if(index > (*it).first)  { ++it; }
+    }
+  }
+
+
+
+template<typename eT>
+inline
+bool
+CoMat_const_iterator<eT>::operator!=(const CoMat_const_iterator<eT>& X) const
+  {
+  arma_extra_debug_sigprint();
+  
+  return ((*this).index != X.index);
   }
 
 

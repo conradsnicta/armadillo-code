@@ -161,7 +161,11 @@ CoMat<eT>::operator=(const SpMat<eT>& x)
       
       const uword index = (local_n_rows * col) + row;
       
-      map_ref.operator[](index) = val;
+      #if defined(ARMA_USE_CXX11)
+        map_ref.emplace_hint(map_ref.end(), index, val);
+      #else
+        map_ref.operator[](index) = val;
+      #endif
       }
     }
   }
@@ -345,7 +349,11 @@ CoMat<eT>::eye(const uword in_n_rows, const uword in_n_cols)
     {
     const uword index = (in_n_rows * i) + i;
     
-    map_ref.operator[](index) = eT(1);
+    #if defined(ARMA_USE_CXX11)
+      map_ref.emplace_hint(map_ref.end(), index, eT(1));
+    #else
+      map_ref.operator[](index) = eT(1);
+    #endif
     }
   }
 
@@ -541,9 +549,18 @@ CoMat<eT>::sprandu(const uword in_n_rows, const uword in_n_cols, const double de
   const eT*    vals_mem = vals.memptr();
   const uword* indx_mem = indx.memptr();
   
+  map_type& map_ref = (*map_ptr);
+  
   for(uword i=0; i < N; ++i)
     {
-    (*this).set_val( indx_mem[i], vals_mem[i] );
+    const uword index = indx_mem[i];
+    const eT    val   = vals_mem[i];
+    
+    #if defined(ARMA_USE_CXX11)
+      map_ref.emplace_hint(map_ref.end(), index, val);
+    #else
+      map_ref.operator[](index) = val;
+    #endif
     }
   }
 

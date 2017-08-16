@@ -162,7 +162,7 @@ CoMat<eT>::operator=(const SpMat<eT>& x)
       const uword index = (local_n_rows * col) + row;
       
       #if defined(ARMA_USE_CXX11)
-        map_ref.emplace_hint(map_ref.end(), index, val);
+        map_ref.emplace_hint(map_ref.cend(), index, val);
       #else
         map_ref.operator[](index) = val;
       #endif
@@ -350,7 +350,7 @@ CoMat<eT>::eye(const uword in_n_rows, const uword in_n_cols)
     const uword index = (in_n_rows * i) + i;
     
     #if defined(ARMA_USE_CXX11)
-      map_ref.emplace_hint(map_ref.end(), index, eT(1));
+      map_ref.emplace_hint(map_ref.cend(), index, eT(1));
     #else
       map_ref.operator[](index) = eT(1);
     #endif
@@ -557,7 +557,7 @@ CoMat<eT>::sprandu(const uword in_n_rows, const uword in_n_cols, const double de
     const eT    val   = vals_mem[i];
     
     #if defined(ARMA_USE_CXX11)
-      map_ref.emplace_hint(map_ref.end(), index, val);
+      map_ref.emplace_hint(map_ref.cend(), index, val);
     #else
       map_ref.operator[](index) = val;
     #endif
@@ -760,7 +760,24 @@ CoMat<eT>::set_val(const uword index, const eT& in_val)
   
   if(in_val != eT(0))
     {
-    (*map_ptr).operator[](index) = in_val;
+    #if defined(ARMA_USE_CXX11)
+      {
+      map_type& map_ref = (*map_ptr);
+      
+      if( (map_ref.empty() == false) && (index >= uword(map_ref.crbegin()->first)) )
+        {
+        map_ref.emplace_hint(map_ref.cend(), index, in_val);
+        }
+      else
+        {
+        map_ref.operator[](index) = in_val;
+        }
+      }
+    #else
+      {
+      (*map_ptr).operator[](index) = in_val;
+      }
+    #endif
     }
   else
     {
@@ -931,8 +948,6 @@ void
 CoMat_val<eT>::operator/=(const eT in_val)
   {
   arma_extra_debug_sigprint();
-  
-  arma_check( (in_val == eT(0)), "CoMat::operator(): division by zero" );
   
   typename CoMat<eT>::map_type& map_ref = *(parent.map_ptr);
   

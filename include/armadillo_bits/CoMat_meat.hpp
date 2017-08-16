@@ -531,6 +531,62 @@ CoMat<eT>::operator()(const uword in_row, const uword in_col) const
 
 
 
+template<typename eT>
+inline
+arma_warn_unused
+bool
+CoMat<eT>::is_empty() const
+  {
+  return (n_elem == 0);
+  }
+
+
+
+template<typename eT>
+inline
+arma_warn_unused
+bool
+CoMat<eT>::is_vec() const
+  {
+  return ( (n_rows == 1) || (n_cols == 1) );
+  }
+
+
+
+template<typename eT>
+inline
+arma_warn_unused
+bool
+CoMat<eT>::is_rowvec() const
+  {
+  return (n_rows == 1);
+  }
+
+
+
+//! returns true if the object can be interpreted as a column vector
+template<typename eT>
+inline
+arma_warn_unused
+bool
+CoMat<eT>::is_colvec() const
+  {
+  return (n_cols == 1);
+  }
+
+
+
+template<typename eT>
+inline
+arma_warn_unused
+bool
+CoMat<eT>::is_square() const
+  {
+  return (n_rows == n_cols);
+  }
+
+
+
 // this function is for debugging purposes only
 template<typename eT>
 inline

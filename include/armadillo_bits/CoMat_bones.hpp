@@ -90,6 +90,13 @@ class CoMat
   inline arma_warn_unused CoMat_val<eT> operator()(const uword in_row, const uword in_col);
   inline arma_warn_unused           eT  operator()(const uword in_row, const uword in_col) const;
   
+  inline arma_warn_unused bool is_empty()  const;
+  inline arma_warn_unused bool is_vec()    const;
+  inline arma_warn_unused bool is_rowvec() const;
+  inline arma_warn_unused bool is_colvec() const;
+  inline arma_warn_unused bool is_square() const;
+  
+  
   inline void sprandu(const uword in_n_rows, const uword in_n_cols, const double density);
   
   inline void print(const std::string& extra_text) const;

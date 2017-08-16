@@ -808,6 +808,76 @@ SpSubview<eT>::operator/=(const SpBase<eT, T1>& x)
 
 template<typename eT>
 inline
+const SpSubview<eT>&
+SpSubview<eT>::operator=(const CoMat<eT>& x)
+  {
+  arma_extra_debug_sigprint();
+  
+  const SpMat<eT> tmp(x);
+  
+  return (*this).operator=(tmp);
+  }
+
+
+
+template<typename eT>
+inline
+const SpSubview<eT>&
+SpSubview<eT>::operator+=(const CoMat<eT>& x)
+  {
+  arma_extra_debug_sigprint();
+  
+  const SpMat<eT> tmp(x);
+  
+  return (*this).operator+=(tmp);
+  }
+
+
+
+template<typename eT>
+inline
+const SpSubview<eT>&
+SpSubview<eT>::operator-=(const CoMat<eT>& x)
+  {
+  arma_extra_debug_sigprint();
+  
+  const SpMat<eT> tmp(x);
+  
+  return (*this).operator-=(tmp);
+  }
+
+
+
+template<typename eT>
+inline
+const SpSubview<eT>&
+SpSubview<eT>::operator*=(const CoMat<eT>& x)
+  {
+  arma_extra_debug_sigprint();
+  
+  const SpMat<eT> tmp(x);
+  
+  return (*this).operator*=(tmp);
+  }
+
+
+
+template<typename eT>
+inline
+const SpSubview<eT>&
+SpSubview<eT>::operator%=(const CoMat<eT>& x)
+  {
+  arma_extra_debug_sigprint();
+  
+  const SpMat<eT> tmp(x);
+  
+  return (*this).operator%=(tmp);
+  }
+
+
+
+template<typename eT>
+inline
 void
 SpSubview<eT>::replace(const eT old_val, const eT new_val)
   {

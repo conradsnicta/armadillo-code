@@ -25,16 +25,12 @@ CoMat<eT>::~CoMat()
   {
   arma_extra_debug_sigprint_this(this);
   
-  if(map_ptr)
-    {
-    delete map_ptr;
-    }
+  reset();
   
-  if(arma_config::debug == true)
-    {
-    // try to expose buggy user code that accesses deleted objects
-    map_ptr = NULL;
-    }
+  if(map_ptr)  { delete map_ptr; }
+  
+  // try to expose buggy user code that accesses deleted objects
+  if(arma_config::debug)  { map_ptr = NULL; }
   
   arma_type_check(( is_supported_elem_type<eT>::value == false ));
   }
@@ -73,12 +69,171 @@ CoMat<eT>::CoMat(const uword in_n_rows, const uword in_n_cols)
 
 template<typename eT>
 inline
-uword
-CoMat<eT>::get_n_nonzero() const
+CoMat<eT>::CoMat(const SizeMat& s)
+  : n_rows (s.n_rows)
+  , n_cols (s.n_cols)
+  , n_elem (s.n_rows * s.n_cols)
+  , map_ptr(NULL)
+  {
+  arma_extra_debug_sigprint_this(this);
+  
+  init_cold();
+  }
+
+
+
+template<typename eT>
+inline
+CoMat<eT>::CoMat(const CoMat<eT>& x)
+  : n_rows (0)
+  , n_cols (0)
+  , n_elem (0)
+  , map_ptr(NULL)
+  {
+  arma_extra_debug_sigprint_this(this);
+  
+  init_cold();
+  
+  (*this).operator=(x);
+  }
+
+
+
+template<typename eT>
+inline
+void
+CoMat<eT>::operator=(const CoMat<eT>& x)
   {
   arma_extra_debug_sigprint();
   
-  return uword((*map_ptr).size());
+  if(this == &x)  { return; }
+  
+  access::rw(n_rows) = x.n_rows;
+  access::rw(n_cols) = x.n_cols;
+  access::rw(n_elem) = x.n_elme;
+  
+  (*map_ptr) = *(x.map_ptr);
+  }
+
+
+
+template<typename eT>
+inline
+CoMat<eT>::CoMat(const SpMat<eT>& x)
+  : n_rows (0)
+  , n_cols (0)
+  , n_elem (0)
+  , map_ptr(NULL)
+  {
+  arma_extra_debug_sigprint_this(this);
+  
+  init_cold();
+  
+  (*this).operator=(x);
+  }
+
+
+
+template<typename eT>
+inline
+void
+CoMat<eT>::operator=(const SpMat<eT>& x)
+  {
+  arma_extra_debug_sigprint();
+  
+  (*this).zeros(x.n_rows, x.n_cols);
+  
+  typename SpMat<eT>::const_iterator it     = x.begin();
+  typename SpMat<eT>::const_iterator it_end = x.end();
+  
+  map_type& map_ref = (*map_ptr);
+  
+  const uword local_n_rows = n_rows;
+  
+  for(; it != it_end; ++it)
+    {
+    const eT val = (*it);
+    
+    if(val != eT(0))
+      {
+      const uword row = it.row();
+      const uword col = it.col();
+      
+      const uword index = (local_n_rows * col) + row;
+      
+      map_ref.operator[](index) = val;
+      }
+    }
+  }
+
+
+
+#if defined(ARMA_USE_CXX11)
+
+  template<typename eT>
+  inline
+  CoMat<eT>::CoMat(CoMat<eT>&& x)
+    : n_rows (x.n_rows )
+    , n_cols (x.n_cols )
+    , n_elem (x.n_elem )
+    , map_ptr(x.map_ptr)
+    {
+    arma_extra_debug_sigprint_this(this);
+    
+    access::rw(x.n_rows)  = 0;
+    access::rw(x.n_cols)  = 0;
+    access::rw(x.n_elem)  = 0;
+    access::rw(x.map_ptr) = NULL;
+    }
+  
+  
+  
+  template<typename eT>
+  inline
+  void
+  CoMat<eT>::operator=(CoMat<eT>&& x)
+    {
+    arma_extra_debug_sigprint();
+    
+    reset();
+    
+    if(map_ptr)  { delete map_ptr; }
+    
+    access::rw(n_rows)  = x.n_rows;
+    access::rw(n_cols)  = x.n_cols;
+    access::rw(n_elem)  = x.n_elem;
+    access::rw(map_ptr) = x.map_ptr;
+    
+    access::rw(x.n_rows)  = 0;
+    access::rw(x.n_cols)  = 0;
+    access::rw(x.n_elem)  = 0;
+    access::rw(x.map_ptr) = NULL;
+    }
+
+#endif
+
+
+
+template<typename eT>
+inline
+void
+CoMat<eT>::reset()
+  {
+  arma_extra_debug_sigprint();
+  
+  init_warm(0, 0);
+  }
+
+
+
+template<typename eT>
+inline
+void
+CoMat<eT>::set_size(const uword in_n_rows)
+  {
+  arma_extra_debug_sigprint();
+  
+  init_warm(in_n_rows, 1);
   }
 
 
@@ -98,9 +253,35 @@ CoMat<eT>::set_size(const uword in_n_rows, const uword in_n_cols)
 template<typename eT>
 inline
 void
+CoMat<eT>::set_size(const SizeMat& s)
+  {
+  arma_extra_debug_sigprint();
+  
+  init_warm(s.n_rows, s.n_cols);
+  }
+
+
+
+template<typename eT>
+inline
+void
 CoMat<eT>::zeros()
   {
   arma_extra_debug_sigprint();
+  
+  (*map_ptr).clear();
+  }
+
+
+
+template<typename eT>
+inline
+void
+CoMat<eT>::zeros(const uword in_n_rows)
+  {
+  arma_extra_debug_sigprint();
+  
+  init_warm(in_n_rows, 1);
   
   (*map_ptr).clear();
   }
@@ -122,31 +303,49 @@ CoMat<eT>::zeros(const uword in_n_rows, const uword in_n_cols)
 
 
 template<typename eT>
-arma_inline
+inline
 void
-CoMat<eT>::set_val_unsafe(const uword index, const eT& in_val)
+CoMat<eT>::zeros(const SizeMat& s)
   {
   arma_extra_debug_sigprint();
   
-  (*map_ptr).operator[](index) = in_val;
+  init_warm(s.n_rows, s.n_cols);
+  
+  (*map_ptr).clear();
   }
 
 
 
 template<typename eT>
-arma_inline
+inline
 void
-CoMat<eT>::set_val(const uword index, const eT& in_val)
+CoMat<eT>::eye()
   {
   arma_extra_debug_sigprint();
   
-  if(in_val != eT(0))
+  (*this).eye(n_rows, n_cols);
+  }
+
+
+
+template<typename eT>
+inline
+void
+CoMat<eT>::eye(const uword in_n_rows, const uword in_n_cols)
+  {
+  arma_extra_debug_sigprint();
+  
+  zeros(in_n_rows, in_n_cols);
+  
+  const uword N = (std::min)(in_n_rows, in_n_cols);
+  
+  map_type& map_ref = (*map_ptr);
+  
+  for(uword i=0; i<N; ++i)
     {
-    (*map_ptr).operator[](index) = in_val;
-    }
-  else
-    {
-    (*this).erase_val(index);
+    const uword index = (in_n_rows * i) + i;
+    
+    map_ref.operator[](index) = eT(1);
     }
   }
 
@@ -155,16 +354,47 @@ CoMat<eT>::set_val(const uword index, const eT& in_val)
 template<typename eT>
 inline
 void
-CoMat<eT>::erase_val(const uword index)
+CoMat<eT>::eye(const SizeMat& s)
   {
   arma_extra_debug_sigprint();
   
-  map_type& map_ref = (*map_ptr);
+  (*this).eye(s.n_rows, s.n_cols);
+  }
+
+
+
+template<typename eT>
+inline
+void
+CoMat<eT>::speye()
+  {
+  arma_extra_debug_sigprint();
   
-  typename map_type::iterator it     = map_ref.find(index);
-  typename map_type::iterator it_end = map_ref.end();
+  (*this).eye();
+  }
+
+
+
+template<typename eT>
+inline
+void
+CoMat<eT>::speye(const uword in_n_rows, const uword in_n_cols)
+  {
+  arma_extra_debug_sigprint();
   
-  if(it != it_end)  { map_ref.erase(it); }
+  (*this).eye(in_n_rows, in_n_cols);
+  }
+
+
+
+template<typename eT>
+inline
+void
+CoMat<eT>::speye(const SizeMat& s)
+  {
+  arma_extra_debug_sigprint();
+  
+  (*this).eye(s);
   }
 
 
@@ -305,15 +535,15 @@ CoMat<eT>::sprandu(const uword in_n_rows, const uword in_n_cols, const double de
   
   const uword N = uword(density * double(n_elem));
   
-  const Col<eT> values(N, fill::randu);
-  const eT* values_mem = values.memptr();
+  const Col<eT>    vals(N, fill::randu);
+  const Col<uword> indx = linspace< Col<uword> >(0, ((n_elem > 0) ? uword(n_elem-1) : uword(0)) , N);
   
-  const Col<uword> indices = linspace< Col<uword> >(0, ((n_elem > 0) ? uword(n_elem-1) : uword(0)) , N);
-  const uword* indices_mem = indices.memptr();
+  const eT*    vals_mem = vals.memptr();
+  const uword* indx_mem = indx.memptr();
   
   for(uword i=0; i < N; ++i)
     {
-    (*this).set_val( indices_mem[i], values_mem[i] );
+    (*this).set_val( indx_mem[i], vals_mem[i] );
     }
   }
 
@@ -375,14 +605,27 @@ CoMat<eT>::print(const std::string& extra_text) const
 
 template<typename eT>
 inline
-CoMat<eT>::operator SpMat<eT>() const
+uword
+CoMat<eT>::get_n_nonzero() const
+  {
+  arma_extra_debug_sigprint();
+  
+  return uword((*map_ptr).size());
+  }
+
+
+
+template<typename eT>
+inline
+void
+CoMat<eT>::get_locval_format(umat& locs, Col<eT>& vals) const
   {
   arma_extra_debug_sigprint();
   
   const uword N = (*this).get_n_nonzero();
   
-  umat    locations(2,N);
-  Col<eT> values(N);
+  locs.set_size(2,N);
+  vals.set_size(N);
   
   if(N > 0)
     {
@@ -392,7 +635,7 @@ CoMat<eT>::operator SpMat<eT>() const
     uword row = 0;
     uword col = 0;
     
-    eT* values_mem = values.memptr();
+    eT* vals_mem = vals.memptr();
     
     uword count = 0;
     
@@ -402,12 +645,12 @@ CoMat<eT>::operator SpMat<eT>() const
       
       if(val != eT(0))
         {
-        uword* locations_colptr = locations.colptr(count);
+        uword* locs_colptr = locs.colptr(count);
         
-        locations_colptr[0] = row;
-        locations_colptr[1] = col;
+        locs_colptr[0] = row;
+        locs_colptr[1] = col;
         
-        values_mem[count] = val;
+        vals_mem[count] = val;
         
         ++count;
         }
@@ -417,11 +660,10 @@ CoMat<eT>::operator SpMat<eT>() const
       if(row >= n_rows)  { row = 0; col++; }
       }
     }
-  
-  return SpMat<eT>(locations, values, n_rows, n_cols, false, false);
   }
-  
-  
+
+
+
 template<typename eT>
 inline
 void
@@ -488,6 +730,42 @@ CoMat<eT>::init_warm(const uword in_n_rows, const uword in_n_cols)
   access::rw(n_elem) = new_n_elem;
   
   if(new_n_elem == 0)  { (*map_ptr).clear(); }
+  }
+
+
+
+template<typename eT>
+arma_inline
+void
+CoMat<eT>::set_val(const uword index, const eT& in_val)
+  {
+  arma_extra_debug_sigprint();
+  
+  if(in_val != eT(0))
+    {
+    (*map_ptr).operator[](index) = in_val;
+    }
+  else
+    {
+    (*this).erase_val(index);
+    }
+  }
+
+
+
+template<typename eT>
+inline
+void
+CoMat<eT>::erase_val(const uword index)
+  {
+  arma_extra_debug_sigprint();
+  
+  map_type& map_ref = (*map_ptr);
+  
+  typename map_type::iterator it     = map_ref.find(index);
+  typename map_type::iterator it_end = map_ref.end();
+  
+  if(it != it_end)  { map_ref.erase(it); }
   }
 
 

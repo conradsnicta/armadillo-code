@@ -141,4 +141,16 @@ typedef SpCol <cx_double> sp_cx_colvec;
 typedef SpRow <cx_double> sp_cx_rowvec;
 
 
+
+typedef CoMat <uword>     co_umat;
+typedef CoMat <sword>     co_imat;
+typedef CoMat <float>     co_fmat;
+typedef CoMat <double>    co_dmat;
+typedef CoMat <double>    co_mat;
+typedef CoMat <cx_float>  co_cx_fmat;
+typedef CoMat <cx_double> co_cx_dmat;
+typedef CoMat <cx_double> co_cx_mat;
+
+
+
 //! @}

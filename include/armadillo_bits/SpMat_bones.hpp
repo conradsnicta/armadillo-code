@@ -90,6 +90,7 @@ class SpMat : public SpBase< eT, SpMat<eT> >
   inline            SpMat(const std::string& text);
   inline SpMat& operator=(const std::string& text);
   inline            SpMat(const SpMat<eT>&   x);
+  inline            SpMat(const CoMat<eT>&   x);
   
   
   #if defined(ARMA_USE_CXX11)
@@ -120,6 +121,12 @@ class SpMat : public SpBase< eT, SpMat<eT> >
   inline SpMat& operator*=(const SpMat& m);
   inline SpMat& operator%=(const SpMat& m);
   inline SpMat& operator/=(const SpMat& m);
+  
+  inline SpMat& operator= (const CoMat<eT>& x);
+  inline SpMat& operator+=(const CoMat<eT>& x);
+  inline SpMat& operator-=(const CoMat<eT>& x);
+  inline SpMat& operator*=(const CoMat<eT>& x);
+  inline SpMat& operator%=(const CoMat<eT>& x);
   
   template<typename T1> inline explicit    SpMat(const Base<eT, T1>& m);
   template<typename T1> inline SpMat&  operator=(const Base<eT, T1>& m);
@@ -558,7 +565,8 @@ class SpMat : public SpBase< eT, SpMat<eT> >
   
   inline void init(uword in_rows, uword in_cols);
   inline void init(const std::string& text);
-  inline void init(const SpMat& x);
+  inline void init(const SpMat<eT>& x);
+  inline void init(const CoMat<eT>& x);
   
   
   inline void init_batch_std(const Mat<uword>& locations, const Mat<eT>& values, const bool sort_locations);

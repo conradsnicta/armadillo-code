@@ -72,7 +72,13 @@ class SpSubview : public SpBase<eT, SpSubview<eT> >
   template<typename T1> inline const SpSubview& operator*=(const SpBase<eT, T1>& x);
   template<typename T1> inline const SpSubview& operator%=(const SpBase<eT, T1>& x);
   template<typename T1> inline const SpSubview& operator/=(const SpBase<eT, T1>& x);
-
+  
+  inline const SpSubview& operator= (const CoMat<eT>& x);
+  inline const SpSubview& operator+=(const CoMat<eT>& x);
+  inline const SpSubview& operator-=(const CoMat<eT>& x);
+  inline const SpSubview& operator*=(const CoMat<eT>& x);
+  inline const SpSubview& operator%=(const CoMat<eT>& x);
+  
   /*
   inline static void extract(SpMat<eT>& out, const SpSubview& in);
 

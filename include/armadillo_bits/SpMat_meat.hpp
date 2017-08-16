@@ -189,6 +189,25 @@ SpMat<eT>::SpMat(const SpMat<eT>& x)
 
 
 
+template<typename eT>
+inline
+SpMat<eT>::SpMat(const CoMat<eT>& x)
+  : n_rows(0)
+  , n_cols(0)
+  , n_elem(0)
+  , n_nonzero(0)
+  , vec_state(0)
+  , values(NULL)
+  , row_indices(NULL)
+  , col_ptrs(NULL)
+  {
+  arma_extra_debug_sigprint_this(this);
+
+  init(x);
+  }
+
+
+
 #if defined(ARMA_USE_CXX11)
   
   template<typename eT>
@@ -661,6 +680,101 @@ SpMat<eT>::operator%=(const SpMat<eT>& y)
 
 
 
+template<typename eT>
+inline
+SpMat<eT>&
+SpMat<eT>::operator/=(const SpMat<eT>& x)
+  {
+  arma_extra_debug_sigprint();
+  
+  arma_debug_assert_same_size(n_rows, n_cols, x.n_rows, x.n_cols, "element-wise division");
+  
+  // If you use this method, you are probably stupid or misguided,
+  // but for compatibility with Mat, we have implemented it anyway.
+  for(uword c = 0; c < n_cols; ++c)
+    {
+    for(uword r = 0; r < n_rows; ++r)
+      {
+      at(r, c) /= x.at(r, c);
+      }
+    }
+  
+  return *this;
+  }
+
+
+
+template<typename eT>
+inline
+SpMat<eT>&
+SpMat<eT>::operator=(const CoMat<eT>& x)
+  {
+  arma_extra_debug_sigprint();
+  
+  init(x);
+  
+  return *this;
+  }
+
+
+
+template<typename eT>
+inline
+SpMat<eT>&
+SpMat<eT>::operator+=(const CoMat<eT>& x)
+  {
+  arma_extra_debug_sigprint();
+  
+  const SpMat<eT> tmp(x);
+  
+  return (*this).operator+=(tmp);
+  }
+
+
+
+template<typename eT>
+inline
+SpMat<eT>&
+SpMat<eT>::operator-=(const CoMat<eT>& x)
+  {
+  arma_extra_debug_sigprint();
+  
+  const SpMat<eT> tmp(x);
+  
+  return (*this).operator-=(tmp);
+  }
+
+
+
+template<typename eT>
+inline
+SpMat<eT>&
+SpMat<eT>::operator*=(const CoMat<eT>& x)
+  {
+  arma_extra_debug_sigprint();
+  
+  const SpMat<eT> tmp(x);
+  
+  return (*this).operator*=(tmp);
+  }
+
+
+
+// in-place element-wise matrix multiplication
+template<typename eT>
+inline
+SpMat<eT>&
+SpMat<eT>::operator%=(const CoMat<eT>& x)
+  {
+  arma_extra_debug_sigprint();
+  
+  const SpMat<eT> tmp(x);
+  
+  return (*this).operator%=(tmp);
+  }
+
+
+
 // Construct a complex matrix out of two non-complex matrices
 template<typename eT>
 template<typename T1, typename T2>
@@ -754,30 +868,6 @@ SpMat<eT>::SpMat
     access::rw(col_ptrs[c]) += col_ptrs[c - 1];
     }
   
-  }
-
-
-
-template<typename eT>
-inline
-SpMat<eT>&
-SpMat<eT>::operator/=(const SpMat<eT>& x)
-  {
-  arma_extra_debug_sigprint();
-  
-  arma_debug_assert_same_size(n_rows, n_cols, x.n_rows, x.n_cols, "element-wise division");
-  
-  // If you use this method, you are probably stupid or misguided, but for compatibility with Mat, we have implemented it anyway.
-  // We have to loop over every element, which is not good.  In fact, it makes me physically sad to write this.
-  for(uword c = 0; c < n_cols; ++c)
-    {
-    for(uword r = 0; r < n_rows; ++r)
-      {
-      at(r, c) /= x.at(r, c);
-      }
-    }
-
-  return *this;
   }
 
 
@@ -4149,6 +4239,27 @@ SpMat<eT>::init(const SpMat<eT>& x)
     
     access::rw(n_nonzero) = x.n_nonzero;
     }
+  }
+
+
+
+template<typename eT>
+inline
+void
+SpMat<eT>::init(const CoMat<eT>& x)
+  {
+  arma_extra_debug_sigprint();
+  
+  umat    locs;
+  Col<eT> vals;
+  
+  x.get_locval_format(locs, vals);
+  
+  arma_debug_check( ((locs.n_rows != 2) || (locs.n_cols != vals.n_elem)), "SpMat::init(CoMat): inconsistent locval format" );
+  
+  init(x.n_rows, x.n_cols);
+  
+  init_batch_std(locs, vals, false);
   }
 
 

@@ -19,12 +19,6 @@
 
 
 
-template<typename eT> class CoMat;
-template<typename eT> class CoMat_val;
-template<typename eT> class CoMat_const_iterator;
-
-
-
 template<typename eT>
 class CoMat
   {
@@ -53,15 +47,36 @@ class CoMat
   inline ~CoMat();
   inline  CoMat();
   inline  CoMat(const uword in_n_rows, const uword in_n_cols);
+  inline  CoMat(const SizeMat& s);
   
-  inline uword get_n_nonzero() const;
+  inline          CoMat(const CoMat<eT>& x);
+  inline void operator=(const CoMat<eT>& x);
   
+  inline          CoMat(const SpMat<eT>& x);
+  inline void operator=(const SpMat<eT>& x);
+  
+  #if defined(ARMA_USE_CXX11)
+  inline          CoMat(CoMat<eT>&& x);
+  inline void operator=(CoMat<eT>&& x);
+  #endif
+  
+  inline void reset();
+  inline void set_size(const uword in_n_rows);
   inline void set_size(const uword in_n_rows, const uword in_n_cols);
+  inline void set_size(const SizeMat& s);
   
   inline void zeros();
+  inline void zeros(const uword in_n_rows);
   inline void zeros(const uword in_n_rows, const uword in_n_cols);
+  inline void zeros(const SizeMat& s);
   
+  inline void eye();
+  inline void eye(const uword in_n_rows, const uword in_n_cols);
+  inline void eye(const SizeMat& s);
   
+  inline void speye();
+  inline void speye(const uword in_n_rows, const uword in_n_cols);
+  inline void speye(const SizeMat& s);
   
   inline arma_warn_unused CoMat_val<eT> operator[](const uword index);
   inline arma_warn_unused           eT  operator[](const uword index) const;
@@ -79,15 +94,14 @@ class CoMat
   
   inline void print(const std::string& extra_text) const;
   
-  inline operator SpMat<eT>() const;
+  inline uword get_n_nonzero() const;
+  inline void  get_locval_format(umat& locs, Col<eT>& vals) const;
   
   
   private:
   
   inline void init_cold();
   inline void init_warm(const uword in_n_rows, const uword in_n_cols);
-  
-  arma_inline void set_val_unsafe(const uword index, const eT& in_val);
   
   arma_inline void   set_val(const uword index, const eT& in_val);
        inline void erase_val(const uword index);

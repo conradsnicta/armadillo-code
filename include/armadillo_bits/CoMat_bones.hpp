@@ -138,7 +138,12 @@ class CoMat_val
   inline void operator-=(const eT in_val);
   inline void operator*=(const eT in_val);
   inline void operator/=(const eT in_val);
-  // TODO: postfix and prefix versions of ++ and -- 
+  
+  inline void operator++();
+  inline void operator++(int);
+  
+  inline void operator--();
+  inline void operator--(int);
   };
 
 

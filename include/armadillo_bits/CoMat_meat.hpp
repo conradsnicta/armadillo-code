@@ -973,6 +973,66 @@ CoMat_val<eT>::operator/=(const eT in_val)
 
 
 
+template<typename eT>
+inline
+void
+CoMat_val<eT>::operator++()
+  {
+  arma_extra_debug_sigprint();
+  
+  typename CoMat<eT>::map_type& map_ref = *(parent.map_ptr);
+  
+  eT& val = map_ref.operator[](index);  // creates the element if it doesn't exist
+  
+  val += eT(1);  // can't use ++,  as eT can be std::complex
+  
+  if(val == eT(0))  { map_ref.erase(index); }
+  }
+
+
+
+template<typename eT>
+inline
+void
+CoMat_val<eT>::operator++(int)
+  {
+  arma_extra_debug_sigprint();
+  
+  (*this).operator++();
+  }
+
+
+
+template<typename eT>
+inline
+void
+CoMat_val<eT>::operator--()
+  {
+  arma_extra_debug_sigprint();
+  
+  typename CoMat<eT>::map_type& map_ref = *(parent.map_ptr);
+  
+  eT& val = map_ref.operator[](index);  // creates the element if it doesn't exist
+  
+  val -= eT(1);  // can't use --,  as eT can be std::complex
+  
+  if(val == eT(0))  { map_ref.erase(index); }
+  }
+
+
+
+template<typename eT>
+inline
+void
+CoMat_val<eT>::operator--(int)
+  {
+  arma_extra_debug_sigprint();
+  
+  (*this).operator--();
+  }
+
+
+
 
 
 

@@ -110,7 +110,7 @@ CoMat<eT>::operator=(const CoMat<eT>& x)
   
   access::rw(n_rows) = x.n_rows;
   access::rw(n_cols) = x.n_cols;
-  access::rw(n_elem) = x.n_elme;
+  access::rw(n_elem) = x.n_elem;
   
   (*map_ptr) = *(x.map_ptr);
   }

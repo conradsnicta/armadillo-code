@@ -29,11 +29,8 @@ Mat<eT>::~Mat()
     memory::release( access::rw(mem) );
     }
   
-  if(arma_config::debug == true)
-    {
-    // try to expose buggy user code that accesses deleted objects
-    access::rw(mem) = 0;
-    }
+  // try to expose buggy user code that accesses deleted objects
+  if(arma_config::debug)  { access::rw(mem) = 0; }
   
   arma_type_check(( is_supported_elem_type<eT>::value == false ));
   }

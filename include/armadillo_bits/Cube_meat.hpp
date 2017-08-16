@@ -31,9 +31,9 @@ Cube<eT>::~Cube()
     memory::release( access::rw(mem) );
     }
   
-  if(arma_config::debug == true)
+  // try to expose buggy user code that accesses deleted objects
+  if(arma_config::debug)
     {
-    // try to expose buggy user code that accesses deleted objects
     access::rw(mem)      = 0;
     access::rw(mat_ptrs) = 0;
     }

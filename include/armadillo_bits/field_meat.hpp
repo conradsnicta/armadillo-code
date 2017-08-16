@@ -26,16 +26,10 @@ field<oT>::~field()
   
   delete_objects();
   
-  if(n_elem > field_prealloc_n_elem::val)
-    {
-    delete [] mem;
-    }
+  if(n_elem > field_prealloc_n_elem::val)  { delete [] mem; }
   
-  if(arma_config::debug == true)
-    {
-    // try to expose buggy user code that accesses deleted objects
-    mem = 0;
-    }
+  // try to expose buggy user code that accesses deleted objects
+  if(arma_config::debug)  { mem = 0; }
   }
 
 

@@ -470,9 +470,6 @@ Octave/Matlab with C++ code that uses Armadillo matrices.
   
 * SigPack: C++ signal processing library using Armadillo
   https://sourceforge.net/projects/sigpack/
-
-* libpca: C++ library for principal component analysis
-  https://sourceforge.net/projects/libpca/
   
 * matlab2cpp: conversion of Matlab code to Armadillo based C++ code
   https://github.com/emc2norway/m2cpp

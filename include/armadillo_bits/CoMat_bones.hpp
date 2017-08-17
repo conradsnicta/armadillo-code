@@ -119,6 +119,7 @@ class CoMat
   
   friend class CoMat_val<eT>;
   friend class CoMat_const_iterator<eT>;
+  friend class SpMat<eT>;
   };
 
 
@@ -169,6 +170,7 @@ class CoMat_const_iterator
   arma_aligned typename CoMat<eT>::map_type::const_iterator it_end;
   
   friend class CoMat<eT>;
+  friend class SpMat<eT>;
   
   
   public:

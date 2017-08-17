@@ -4250,16 +4250,60 @@ SpMat<eT>::init(const CoMat<eT>& x)
   {
   arma_extra_debug_sigprint();
   
-  umat    locs;
-  Col<eT> vals;
+  // umat    locs;
+  // Col<eT> vals;
+  // 
+  // x.get_locval_format(locs, vals);
+  // 
+  // arma_debug_check( ((locs.n_rows != 2) || (locs.n_cols != vals.n_elem)), "SpMat::init(CoMat): inconsistent locval format" );
+  // 
+  // init(x.n_rows, x.n_cols);
+  // 
+  // init_batch_std(locs, vals, false);
   
-  x.get_locval_format(locs, vals);
   
-  arma_debug_check( ((locs.n_rows != 2) || (locs.n_cols != vals.n_elem)), "SpMat::init(CoMat): inconsistent locval format" );
+  const uword x_n_rows = x.n_rows;
+  const uword x_n_cols = x.n_cols;
+  const uword x_n_nz   = x.get_n_nonzero();
   
-  init(x.n_rows, x.n_cols);
+  init(x_n_rows, x_n_cols);
   
-  init_batch_std(locs, vals, false);
+  mem_resize(x_n_nz);
+  
+  arrayops::inplace_set(access::rwp(col_ptrs), uword(0), x_n_cols + 1);
+  
+  uword x_row = 0;
+  uword x_col = 0;
+  
+  CoMat_const_iterator<eT> x_it     = x.begin();
+  CoMat_const_iterator<eT> x_it_end = x.end();
+  
+  uword count = 0;
+  
+  for(; x_it != x_it_end; ++x_it)
+    {
+    const eT x_val = (*x_it);
+    
+    if(x_val != eT(0))
+      {
+      access::rw(values[count])      = x_val;
+      access::rw(row_indices[count]) = x_row;
+      
+      access::rw(col_ptrs[ x_col + 1 ])++;
+      
+      ++count;
+      }
+    
+    ++x_row;
+    
+    if(x_row >= x_n_rows)  { x_row = 0; ++x_col; }
+    }
+  
+  
+  for(uword i = 0; i < x_n_cols; ++i)
+    {
+    access::rw(col_ptrs[i + 1]) += col_ptrs[i];
+    }
   }
 
 

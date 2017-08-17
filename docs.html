@@ -238,7 +238,7 @@ Conrad Sanderson and Ryan Curtin.
 <tr><td><a href="#Cube">Cube&lt;<i>type</i>&gt;, cube, cx_cube</a></td><td>&nbsp;</td><td>dense cube class ("3D matrix")</td></tr>
 <tr><td><a href="#field">field&lt;<i>object&nbsp;type</i>&gt;</a></td><td>&nbsp;</td><td>class for storing arbitrary objects in matrix-like or cube-like layouts</td></tr>
 <tr><td><a href="#SpMat">SpMat&lt;<i>type</i>&gt;, sp_mat, sp_cx_mat</a></td><td>&nbsp;</td><td>sparse matrix class (compressed sparse column format)</td></tr>
-<tr><td><a href="#CoMat">CoMat&lt;<i>type</i>&gt;, co_mat, co_cx_mat</a></td><td>&nbsp;</td><td>sparse matrix class (co-ordinate list format)</td></tr>
+<tr><td><a href="#CoMat">CoMat&lt;<i>type</i>&gt;, co_mat, co_cx_mat</a></td><td>&nbsp;</td><td>helper class for incrementally constructing sparse matrices</td></tr>
 <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
 <tr><td><a href="#operators">operators</a></td><td>&nbsp;</td><td><code><big>+</big>&nbsp; <big>-</big>&nbsp; <big>*</big>&nbsp; /&nbsp; %&nbsp; ==&nbsp; !=&nbsp; &lt;=&nbsp; &gt;=&nbsp; &lt;&nbsp; &gt;</code></td></tr>
 </tbody>
@@ -818,7 +818,6 @@ See also:
 <li><a href="#Row">Row class</a></li>
 <li><a href="#Cube">Cube class</a></li>
 <li><a href="#SpMat">SpMat class</a> (sparse matrix with compressed sparse column format)</li>
-<li><a href="#CoMat">CoMat class</a> (sparse matrix with co-ordinate list format)</li>
 <li><a href="#config_hpp">config.hpp</a></li>
 </ul>
 </li>
@@ -1657,6 +1656,18 @@ The root sparse matrix class is <b>SpMat&lt;</b><i>type</i><b>&gt;</b>, where <i
 </li>
 <br>
 <li>
+This class behaves in a similar manner to the <a href="#Mat">Mat</a> class;
+however, member functions which set all elements to non-zero values (and hence do not make sense for sparse matrices) have been deliberately omitted;
+examples of omitted functions: <a href="#fill">.fill()</a>, <a href="#ones_member">.ones()</a>, +=&nbsp;scalar, etc.
+</li>
+<br>
+<li>
+<b>NOTE:</b>
+incrementally populating <i>SpMat</i> via <a href="#element_access">element access operators</a> is very inefficient due to the compressed storage format;
+instead, it's strongly recommended to first construct a <a href="#CoMat">CoMat</a> sparse matrix and then convert it to <i>SpMat</i>
+</li>
+<br>
+<li>
 For convenience the following typedefs have been defined:
 <ul>
 <table style="text-align: left;" border="0" cellpadding="2" cellspacing="2">
@@ -1752,20 +1763,6 @@ Constructors:
 <br>
 <li>
 All elements are treated as zero by default (ie. the matrix is initialised to contain zeros)
-</li>
-<br>
-<li>
-This class behaves in a similar manner to the <a href="#Mat">Mat</a> class,
-however, member functions which set all elements to non-zero values (and hence do not make sense for sparse matrices) have been deliberately omitted;
-examples of omitted functions: <a href="#fill">.fill()</a>, <a href="#ones_member">.ones()</a>, +=&nbsp;scalar, etc.
-</li>
-<br>
-<li>
-<b>NOTE:</b>
-<ul>
-<li>using <a href="#element_access">element access operators</a> to set values in <i>sp_mat</i> is very inefficient due to the compressed storage format</li>
-<li>it's strongly recommended to first construct a <a href="#CoMat">co_mat</a> sparse matrix and then convert it to <i>sp_mat</i></li>
-</ul>
 </li>
 <br>
 <li>
@@ -1890,7 +1887,7 @@ See also:
 -->
 <li><a href="http://en.wikipedia.org/wiki/Sparse_matrix">Sparse Matrix in Wikipedia</a></li>
 <li><a href="#Mat">Mat class</a> (dense matrix)</li>
-<li><a href="#CoMat">CoMat class</a> (sparse matrix with co-ordinate list storage)</li>
+<li><a href="#CoMat">CoMat class</a> (helper class for incrementally constructing sparse matrices)</li>
 </ul>
 </li>
 <br>
@@ -1902,16 +1899,21 @@ See also:
 <br><b>co_cx_mat</b>
 <ul>
 <li>
-Classes for sparse matrices, with elements stored in <a href="http://en.wikipedia.org/wiki/Sparse_matrix">co-ordinate list format</a>
+Helper classes for incrementally creating sparse matrices
 </li>
 <br>
 <li>
-Specifically intended for creating sparse matrices via <a href="#element_access">element access operators</a>,
-followed by converting the matrices into <a href="#SpMat">sp_mat</a>
+Specifically intended for fast creation of sparse matrices via <a href="#element_access">element access operators</a>,
+followed by conversion to <a href="#SpMat">sp_mat</a> sparse matrices
 </li>
 <br>
 <li>
-The root sparse matrix class is <b>CoMat&lt;</b><i>type</i><b>&gt;</b>, where <i>type</i> is one of:
+These classes <b>do not support any arithmetic operations</b> (eg. there is no matrix addition);
+the only supported operations are <a href="#element_access">element access</a> and conversion to/from <a href="#SpMat">SpMat</a>
+</li>
+<br>
+<li>
+The root helper class is <b>CoMat&lt;</b><i>type</i><b>&gt;</b>, where <i>type</i> is one of:
 <ul>
 <li>
 <i>float</i>, <i>double</i>, <i>std::complex&lt;float&gt;</i>, <i>std::complex&lt;double&gt;</i>,
@@ -2014,10 +2016,6 @@ Constructors:
 <br>
 <li>
 All elements are treated as zero by default (ie. the matrix is initialised to contain zeros)
-</li>
-<br>
-<li>
-The only supported operations are <a href="#element_access">element access</a> and conversion to/from <a href="#SpMat">sp_mat</a>
 </li>
 <br>
 <li>
@@ -16520,7 +16518,7 @@ List of additions and changes for each version:
 <a name="version_TODO"></a>
 <li>Version x.xxx:
 <ul>
-<li>added <a href="#CoMat">co_mat</a> matrix class, designed for fast element-wise construction of sparse matrices</li>
+<li>added <a href="#CoMat">CoMat</a> matrix class, designed for fast incremental construction of sparse matrices</li>
 </ul>
 </li>
 <br>

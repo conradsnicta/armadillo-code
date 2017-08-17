@@ -1646,6 +1646,10 @@ Classes for sparse matrices, with elements stored in <a href="http://en.wikipedi
 </li>
 <br>
 <li>
+Specifically intended for large matrices where only a small minority of the elements are non-zero
+</li>
+<br>
+<li>
 The root sparse matrix class is <b>SpMat&lt;</b><i>type</i><b>&gt;</b>, where <i>type</i> is one of:
 <ul>
 <li>
@@ -1664,7 +1668,7 @@ examples of omitted functions: <a href="#fill">.fill()</a>, <a href="#ones_membe
 <li>
 <b>NOTE:</b>
 incrementally populating <i>SpMat</i> via <a href="#element_access">element access operators</a> is very inefficient due to the compressed storage format;
-instead, it's strongly recommended to first construct a <a href="#CoMat">CoMat</a> sparse matrix and then convert it to <i>SpMat</i>
+instead, it's much faster to first incrementally construct a <a href="#CoMat">CoMat</a> sparse matrix and then convert it to <i>SpMat</i>
 </li>
 <br>
 <li>

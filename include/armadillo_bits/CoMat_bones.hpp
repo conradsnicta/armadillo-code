@@ -46,8 +46,9 @@ class CoMat
   
   inline ~CoMat();
   inline  CoMat();
-  inline  CoMat(const uword in_n_rows, const uword in_n_cols);
-  inline  CoMat(const SizeMat& s);
+  
+  inline explicit CoMat(const uword in_n_rows, const uword in_n_cols);
+  inline explicit CoMat(const SizeMat& s);
   
   inline          CoMat(const CoMat<eT>& x);
   inline void operator=(const CoMat<eT>& x);

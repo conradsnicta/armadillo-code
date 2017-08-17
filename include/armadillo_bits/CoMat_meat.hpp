@@ -649,8 +649,8 @@ CoMat<eT>::print(const std::string& extra_text) const
   
   if(n_nonzero > 0)
     {
-    CoMat_const_iterator<eT> it     = (*this).begin();
-    CoMat_const_iterator<eT> it_end = (*this).end();
+    CoMat_dense_iterator<eT> it     = (*this).begin();
+    CoMat_dense_iterator<eT> it_end = (*this).end();
     
     uword row = 0;
     uword col = 0;
@@ -702,8 +702,8 @@ CoMat<eT>::get_locval_format(umat& locs, Col<eT>& vals) const
   
   if(N > 0)
     {
-    CoMat_const_iterator<eT> it     = (*this).begin();
-    CoMat_const_iterator<eT> it_end = (*this).end();
+    CoMat_dense_iterator<eT> it     = (*this).begin();
+    CoMat_dense_iterator<eT> it_end = (*this).end();
     
     uword row = 0;
     uword col = 0;
@@ -863,10 +863,10 @@ CoMat<eT>::erase_val(const uword index)
 template<typename eT>
 inline
 arma_warn_unused
-CoMat_const_iterator<eT>
+CoMat_dense_iterator<eT>
 CoMat<eT>::begin() const
   {
-  return CoMat_const_iterator<eT>(*this, 0);
+  return CoMat_dense_iterator<eT>(*this, 0);
   }
 
 
@@ -874,10 +874,10 @@ CoMat<eT>::begin() const
 template<typename eT>
 inline
 arma_warn_unused
-CoMat_const_iterator<eT>
+CoMat_dense_iterator<eT>
 CoMat<eT>::end() const
   {
-  return CoMat_const_iterator<eT>(*this, n_elem);
+  return CoMat_dense_iterator<eT>(*this, n_elem);
   }
 
 
@@ -1092,13 +1092,13 @@ CoMat_val<eT>::operator--(int)
 
 
 
-// CoMat_const_iterator
+// CoMat_dense_iterator
 
 
 
 template<typename eT>
 inline
-CoMat_const_iterator<eT>::CoMat_const_iterator(const CoMat<eT>& in_parent, const uword in_index)
+CoMat_dense_iterator<eT>::CoMat_dense_iterator(const CoMat<eT>& in_parent, const uword in_index)
   : parent(in_parent)
   , index (in_index )
   {
@@ -1116,7 +1116,7 @@ template<typename eT>
 inline
 arma_warn_unused
 eT
-CoMat_const_iterator<eT>::operator*() const
+CoMat_dense_iterator<eT>::operator*() const
   {
   arma_extra_debug_sigprint();
   
@@ -1135,7 +1135,7 @@ CoMat_const_iterator<eT>::operator*() const
 template<typename eT>
 inline
 void
-CoMat_const_iterator<eT>::operator++()
+CoMat_dense_iterator<eT>::operator++()
   {
   arma_extra_debug_sigprint();
   
@@ -1152,7 +1152,7 @@ CoMat_const_iterator<eT>::operator++()
 template<typename eT>
 inline
 void
-CoMat_const_iterator<eT>::operator++(int)
+CoMat_dense_iterator<eT>::operator++(int)
   {
   arma_extra_debug_sigprint();
   
@@ -1169,7 +1169,7 @@ CoMat_const_iterator<eT>::operator++(int)
 template<typename eT>
 inline
 bool
-CoMat_const_iterator<eT>::operator!=(const CoMat_const_iterator<eT>& X) const
+CoMat_dense_iterator<eT>::operator!=(const CoMat_dense_iterator<eT>& X) const
   {
   arma_extra_debug_sigprint();
   

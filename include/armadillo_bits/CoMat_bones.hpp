@@ -114,11 +114,11 @@ class CoMat
   arma_inline void   set_val(const uword index, const eT& in_val);
        inline void erase_val(const uword index);
   
-  inline arma_warn_unused CoMat_const_iterator<eT> begin() const;
-  inline arma_warn_unused CoMat_const_iterator<eT>   end() const;
+  inline arma_warn_unused CoMat_dense_iterator<eT> begin() const;
+  inline arma_warn_unused CoMat_dense_iterator<eT>   end() const;
   
   friend class CoMat_val<eT>;
-  friend class CoMat_const_iterator<eT>;
+  friend class CoMat_dense_iterator<eT>;
   friend class SpMat<eT>;
   };
 
@@ -158,7 +158,7 @@ class CoMat_val
 
 
 template<typename eT>
-class CoMat_const_iterator
+class CoMat_dense_iterator
   {
   private:
   
@@ -175,14 +175,14 @@ class CoMat_const_iterator
   
   public:
   
-  inline CoMat_const_iterator(const CoMat<eT>& in_parent, const uword in_index);
+  inline CoMat_dense_iterator(const CoMat<eT>& in_parent, const uword in_index);
   
   inline arma_warn_unused eT operator*() const;
   
   inline void operator++();
   inline void operator++(int);
   
-  inline bool operator!=(const CoMat_const_iterator<eT>& X) const;
+  inline bool operator!=(const CoMat_dense_iterator<eT>& X) const;
   };
 
 

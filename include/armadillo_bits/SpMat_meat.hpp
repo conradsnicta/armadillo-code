@@ -4275,8 +4275,8 @@ SpMat<eT>::init(const CoMat<eT>& x)
   uword x_row = 0;
   uword x_col = 0;
   
-  CoMat_const_iterator<eT> x_it     = x.begin();
-  CoMat_const_iterator<eT> x_it_end = x.end();
+  CoMat_dense_iterator<eT> x_it     = x.begin();
+  CoMat_dense_iterator<eT> x_it_end = x.end();
   
   uword count = 0;
   

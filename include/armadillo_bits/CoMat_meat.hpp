@@ -649,8 +649,8 @@ CoMat<eT>::print(const std::string& extra_text) const
   
   if(n_nonzero > 0)
     {
-    CoMat_dense_iterator<eT> it     = (*this).begin();
-    CoMat_dense_iterator<eT> it_end = (*this).end();
+    CoMat_dense_iterator<eT> it     = (*this).dense_begin();
+    CoMat_dense_iterator<eT> it_end = (*this).dense_end();
     
     uword row = 0;
     uword col = 0;
@@ -702,8 +702,8 @@ CoMat<eT>::get_locval_format(umat& locs, Col<eT>& vals) const
   
   if(N > 0)
     {
-    CoMat_dense_iterator<eT> it     = (*this).begin();
-    CoMat_dense_iterator<eT> it_end = (*this).end();
+    CoMat_dense_iterator<eT> it     = (*this).dense_begin();
+    CoMat_dense_iterator<eT> it_end = (*this).dense_end();
     
     uword row = 0;
     uword col = 0;
@@ -864,7 +864,7 @@ template<typename eT>
 inline
 arma_warn_unused
 CoMat_dense_iterator<eT>
-CoMat<eT>::begin() const
+CoMat<eT>::dense_begin() const
   {
   return CoMat_dense_iterator<eT>(*this, 0);
   }
@@ -875,7 +875,7 @@ template<typename eT>
 inline
 arma_warn_unused
 CoMat_dense_iterator<eT>
-CoMat<eT>::end() const
+CoMat<eT>::dense_end() const
   {
   return CoMat_dense_iterator<eT>(*this, n_elem);
   }

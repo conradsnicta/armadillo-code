@@ -114,8 +114,8 @@ class CoMat
   arma_inline void   set_val(const uword index, const eT& in_val);
        inline void erase_val(const uword index);
   
-  inline arma_warn_unused CoMat_dense_iterator<eT> begin() const;
-  inline arma_warn_unused CoMat_dense_iterator<eT>   end() const;
+  inline arma_warn_unused CoMat_dense_iterator<eT> dense_begin() const;
+  inline arma_warn_unused CoMat_dense_iterator<eT> dense_end()   const;
   
   friend class CoMat_val<eT>;
   friend class CoMat_dense_iterator<eT>;

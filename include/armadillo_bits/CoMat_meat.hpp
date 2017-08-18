@@ -409,6 +409,28 @@ CoMat<eT>::speye(const SizeMat& s)
 
 template<typename eT>
 inline
+CoMat_elem<eT>
+CoMat<eT>::elem(const uword index, uword& sync_state, uword& n_nonzero)
+  {
+  return CoMat_elem<eT>(*this, index, sync_state, n_nonzero);
+  }
+
+
+
+template<typename eT>
+inline
+CoMat_elem<eT>
+CoMat<eT>::elem(const uword in_row, const uword in_col, uword& sync_state, uword& n_nonzero)
+  {
+  const uword index = (n_rows * in_col) + in_row;
+  
+  return CoMat_elem<eT>(*this, index, sync_state, n_nonzero);
+  }
+
+
+
+template<typename eT>
+inline
 arma_warn_unused
 CoMat_val<eT>
 CoMat<eT>::operator[](const uword index)
@@ -802,7 +824,7 @@ CoMat<eT>::init_warm(const uword in_n_rows, const uword in_n_cols)
   access::rw(n_cols) = in_n_cols;
   access::rw(n_elem) = new_n_elem;
   
-  if(new_n_elem == 0)  { (*map_ptr).clear(); }
+  if( (new_n_elem == 0) && ((*map_ptr).empty() == false) )  { (*map_ptr).clear(); }
   }
 
 
@@ -901,7 +923,7 @@ CoMat_val<eT>::CoMat_val(CoMat<eT>& in_parent, const uword in_index)
 
 
 template<typename eT>
-inline
+arma_inline
 CoMat_val<eT>::operator eT() const
   {
   arma_extra_debug_sigprint();
@@ -1081,6 +1103,235 @@ template<typename eT>
 inline
 void
 CoMat_val<eT>::operator--(int)
+  {
+  arma_extra_debug_sigprint();
+  
+  (*this).operator--();
+  }
+
+
+
+
+
+// CoMat_elem
+
+
+
+template<typename eT>
+inline
+CoMat_elem<eT>::CoMat_elem(CoMat<eT>& in_parent, const uword in_index, uword& in_sync_state, uword& in_n_nonzero)
+  : parent    (in_parent    )
+  , index     (in_index     )
+  , sync_state(in_sync_state)
+  , n_nonzero (in_n_nonzero )
+  {
+  arma_extra_debug_sigprint();
+  }
+
+
+
+template<typename eT>
+arma_inline
+CoMat_elem<eT>::operator eT() const
+  {
+  arma_extra_debug_sigprint();
+  
+  const CoMat<eT>& const_parent = parent;
+  
+  return const_parent.operator[](index);
+  }
+
+
+
+template<typename eT>
+inline
+void
+CoMat_elem<eT>::operator=(const eT in_val)
+  {
+  arma_extra_debug_sigprint();
+  
+  parent.set_val(index, in_val);
+  
+  sync_state = 1;
+  n_nonzero  = parent.get_n_nonzero();
+  }
+
+
+
+template<typename eT>
+inline
+void
+CoMat_elem<eT>::operator+=(const eT in_val)
+  {
+  arma_extra_debug_sigprint();
+  
+  typename CoMat<eT>::map_type& map_ref = *(parent.map_ptr);
+  
+  if(in_val != eT(0))
+    {
+    eT& val = map_ref.operator[](index);  // creates the element if it doesn't exist
+    
+    val += in_val;
+    
+    if(val == eT(0))  { map_ref.erase(index); }
+    
+    sync_state = 1;
+    n_nonzero  = parent.get_n_nonzero();
+    }
+  }
+
+
+
+template<typename eT>
+inline
+void
+CoMat_elem<eT>::operator-=(const eT in_val)
+  {
+  arma_extra_debug_sigprint();
+  
+  typename CoMat<eT>::map_type& map_ref = *(parent.map_ptr);
+  
+  if(in_val != eT(0))
+    {
+    eT& val = map_ref.operator[](index);  // creates the element if it doesn't exist
+    
+    val -= in_val;
+    
+    if(val == eT(0))  { map_ref.erase(index); }
+    
+    sync_state = 1;
+    n_nonzero  = parent.get_n_nonzero();
+    }
+  }
+
+
+
+template<typename eT>
+inline
+void
+CoMat_elem<eT>::operator*=(const eT in_val)
+  {
+  arma_extra_debug_sigprint();
+  
+  typename CoMat<eT>::map_type& map_ref = *(parent.map_ptr);
+  
+  typename CoMat<eT>::map_type::iterator it     = map_ref.find(index);
+  typename CoMat<eT>::map_type::iterator it_end = map_ref.end();
+  
+  if(it != it_end)
+    {
+    if(in_val != eT(0))
+      {
+      eT& val = (*it).second;
+      
+      val *= in_val;
+      
+      if(val == eT(0))  { map_ref.erase(it); }
+      }
+    else
+      {
+      map_ref.erase(it);
+      }
+    
+    sync_state = 1;
+    n_nonzero  = parent.get_n_nonzero();
+    }
+  }
+
+
+
+template<typename eT>
+inline
+void
+CoMat_elem<eT>::operator/=(const eT in_val)
+  {
+  arma_extra_debug_sigprint();
+  
+  typename CoMat<eT>::map_type& map_ref = *(parent.map_ptr);
+  
+  typename CoMat<eT>::map_type::iterator it     = map_ref.find(index);
+  typename CoMat<eT>::map_type::iterator it_end = map_ref.end();
+  
+  if(it != it_end)
+    {
+    if(in_val != eT(0))
+      {
+      eT& val = (*it).second;
+      
+      val /= in_val;
+      
+      if(val == eT(0))  { map_ref.erase(it); }
+      }
+    else
+      {
+      map_ref.erase(it);
+      }
+    
+    sync_state = 1;
+    n_nonzero  = parent.get_n_nonzero();
+    }
+  }
+
+
+
+template<typename eT>
+inline
+void
+CoMat_elem<eT>::operator++()
+  {
+  arma_extra_debug_sigprint();
+  
+  typename CoMat<eT>::map_type& map_ref = *(parent.map_ptr);
+  
+  eT& val = map_ref.operator[](index);  // creates the element if it doesn't exist
+  
+  val += eT(1);  // can't use ++,  as eT can be std::complex
+  
+  if(val == eT(0))  { map_ref.erase(index); }
+  
+  sync_state = 1;
+  n_nonzero  = parent.get_n_nonzero();
+  }
+
+
+
+template<typename eT>
+inline
+void
+CoMat_elem<eT>::operator++(int)
+  {
+  arma_extra_debug_sigprint();
+  
+  (*this).operator++();
+  }
+
+
+
+template<typename eT>
+inline
+void
+CoMat_elem<eT>::operator--()
+  {
+  arma_extra_debug_sigprint();
+  
+  typename CoMat<eT>::map_type& map_ref = *(parent.map_ptr);
+  
+  eT& val = map_ref.operator[](index);  // creates the element if it doesn't exist
+  
+  val -= eT(1);  // can't use --,  as eT can be std::complex
+  
+  if(val == eT(0))  { map_ref.erase(index); }
+  
+  sync_state = 1;
+  n_nonzero  = parent.get_n_nonzero();
+  }
+
+
+
+template<typename eT>
+inline
+void
+CoMat_elem<eT>::operator--(int)
   {
   arma_extra_debug_sigprint();
   

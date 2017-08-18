@@ -31,6 +31,8 @@ SpSubview<eT>::SpSubview(const SpMat<eT>& in_m, const uword in_row1, const uword
   {
   arma_extra_debug_sigprint();
   
+  m.sync();
+  
   // There must be a O(1) way to do this
   uword lend     = m.col_ptrs[in_col1 + in_n_cols];
   uword lend_row = in_row1 + in_n_rows;
@@ -62,6 +64,8 @@ SpSubview<eT>::SpSubview(SpMat<eT>& in_m, const uword in_row1, const uword in_co
   , n_nonzero(0)
   {
   arma_extra_debug_sigprint();
+  
+  m.sync();
   
   // There must be a O(1) way to do this
   uword lend     = m.col_ptrs[in_col1 + in_n_cols];

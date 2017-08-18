@@ -48,6 +48,8 @@ struct unwrap_spmat< SpMat<eT> >
     : M(A)
     {
     arma_extra_debug_sigprint();
+    
+    M.sync();
     }
   
   const SpMat<eT>& M;
@@ -65,6 +67,8 @@ struct unwrap_spmat< SpRow<eT> >
     : M(A)
     {
     arma_extra_debug_sigprint();
+    
+    M.sync();
     }
   
   const SpRow<eT>& M;
@@ -82,6 +86,8 @@ struct unwrap_spmat< SpCol<eT> >
     : M(A)
     {
     arma_extra_debug_sigprint();
+    
+    M.sync();
     }
   
   const SpCol<eT>& M;

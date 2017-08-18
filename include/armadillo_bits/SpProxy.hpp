@@ -43,6 +43,7 @@ class SpProxy< SpMat<eT> >
     : Q(A)
     {
     arma_extra_debug_sigprint();
+    Q.sync();
     }
 
   arma_inline uword get_n_rows()    const { return Q.n_rows;    }
@@ -95,6 +96,7 @@ class SpProxy< SpCol<eT> >
     : Q(A)
     {
     arma_extra_debug_sigprint();
+    Q.sync();
     }
   
   arma_inline uword get_n_rows()    const { return Q.n_rows;    }
@@ -147,6 +149,7 @@ class SpProxy< SpRow<eT> >
     : Q(A)
     {
     arma_extra_debug_sigprint();
+    Q.sync();
     }
   
   arma_inline uword get_n_rows()    const { return 1;           }
@@ -199,6 +202,7 @@ class SpProxy< SpSubview<eT> >
     : Q(A)
     {
     arma_extra_debug_sigprint();
+    Q.m.sync();
     }
 
   arma_inline uword get_n_rows()    const { return Q.n_rows;    }

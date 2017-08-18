@@ -52,6 +52,7 @@ template<typename eT> class spdiagview;
 
 template<typename eT> class CoMat;
 template<typename eT> class CoMat_val;
+template<typename eT> class CoMat_elem;
 template<typename eT> class CoMat_dense_iterator;
 
 template<typename eT, typename T1>              class subview_elem1;

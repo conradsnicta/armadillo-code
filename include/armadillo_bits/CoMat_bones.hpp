@@ -79,6 +79,9 @@ class CoMat
   inline void speye(const uword in_n_rows, const uword in_n_cols);
   inline void speye(const SizeMat& s);
   
+  inline CoMat_elem<eT> elem(const uword index,                      uword& sync_state, uword& n_nonzero);
+  inline CoMat_elem<eT> elem(const uword in_row, const uword in_col, uword& sync_state, uword& n_nonzero);
+  
   inline arma_warn_unused CoMat_val<eT> operator[](const uword index);
   inline arma_warn_unused           eT  operator[](const uword index) const;
   
@@ -111,13 +114,16 @@ class CoMat
   inline void init_cold();
   inline void init_warm(const uword in_n_rows, const uword in_n_cols);
   
+  arma_inline eT    set_elem(const uword index, const eT& in_val);
   arma_inline void   set_val(const uword index, const eT& in_val);
        inline void erase_val(const uword index);
+  
   
   inline arma_warn_unused CoMat_dense_iterator<eT> dense_begin() const;
   inline arma_warn_unused CoMat_dense_iterator<eT> dense_end()   const;
   
   friend class CoMat_val<eT>;
+  friend class CoMat_elem<eT>;
   friend class CoMat_dense_iterator<eT>;
   friend class SpMat<eT>;
   };
@@ -140,7 +146,42 @@ class CoMat_val
   
   public:
   
-  inline operator eT() const;
+  arma_inline operator eT() const;
+  
+  inline void operator= (const eT in_val);
+  inline void operator+=(const eT in_val);
+  inline void operator-=(const eT in_val);
+  inline void operator*=(const eT in_val);
+  inline void operator/=(const eT in_val);
+  
+  inline void operator++();
+  inline void operator++(int);
+  
+  inline void operator--();
+  inline void operator--(int);
+  };
+
+
+
+template<typename eT>
+class CoMat_elem
+  {
+  private:
+  
+  arma_aligned CoMat<eT>& parent;
+  
+  arma_aligned const uword  index;
+  arma_aligned       uword& sync_state;
+  arma_aligned       uword& n_nonzero;
+  
+  inline CoMat_elem(CoMat<eT>& in_parent, const uword in_index, uword& in_sync_state, uword& in_n_nonzero);
+  
+  friend class CoMat<eT>;
+  
+  
+  public:
+  
+  arma_inline operator eT() const;
   
   inline void operator= (const eT in_val);
   inline void operator+=(const eT in_val);

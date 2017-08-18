@@ -114,7 +114,6 @@ class CoMat
   inline void init_cold();
   inline void init_warm(const uword in_n_rows, const uword in_n_cols);
   
-  arma_inline eT    set_elem(const uword index, const eT& in_val);
   arma_inline void   set_val(const uword index, const eT& in_val);
        inline void erase_val(const uword index);
   

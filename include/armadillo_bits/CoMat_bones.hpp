@@ -79,20 +79,20 @@ class CoMat
   inline void speye(const uword in_n_rows, const uword in_n_cols);
   inline void speye(const SizeMat& s);
   
-  inline CoMat_elem<eT> elem(const uword index,                      uword& sync_state, uword& n_nonzero);
-  inline CoMat_elem<eT> elem(const uword in_row, const uword in_col, uword& sync_state, uword& n_nonzero);
+  arma_inline CoMat_elem<eT> elem(const uword index,                      uword& sync_state, uword& n_nonzero);
+  arma_inline CoMat_elem<eT> elem(const uword in_row, const uword in_col, uword& sync_state, uword& n_nonzero);
   
-  inline arma_warn_unused CoMat_val<eT> operator[](const uword index);
-  inline arma_warn_unused           eT  operator[](const uword index) const;
+  arma_inline arma_warn_unused CoMat_val<eT> operator[](const uword index);
+  arma_inline arma_warn_unused           eT  operator[](const uword index) const;
   
-  inline arma_warn_unused CoMat_val<eT> operator()(const uword index);
-  inline arma_warn_unused           eT  operator()(const uword index) const;
+  arma_inline arma_warn_unused CoMat_val<eT> operator()(const uword index);
+  arma_inline arma_warn_unused           eT  operator()(const uword index) const;
   
-  inline arma_warn_unused CoMat_val<eT>         at(const uword in_row, const uword in_col);
-  inline arma_warn_unused           eT          at(const uword in_row, const uword in_col) const;
+  arma_inline arma_warn_unused CoMat_val<eT>         at(const uword in_row, const uword in_col);
+  arma_inline arma_warn_unused           eT          at(const uword in_row, const uword in_col) const;
   
-  inline arma_warn_unused CoMat_val<eT> operator()(const uword in_row, const uword in_col);
-  inline arma_warn_unused           eT  operator()(const uword in_row, const uword in_col) const;
+  arma_inline arma_warn_unused CoMat_val<eT> operator()(const uword in_row, const uword in_col);
+  arma_inline arma_warn_unused           eT  operator()(const uword in_row, const uword in_col) const;
   
   inline arma_warn_unused bool is_empty()  const;
   inline arma_warn_unused bool is_vec()    const;
@@ -147,17 +147,17 @@ class CoMat_val
   
   arma_inline operator eT() const;
   
-  inline void operator= (const eT in_val);
-  inline void operator+=(const eT in_val);
-  inline void operator-=(const eT in_val);
-  inline void operator*=(const eT in_val);
-  inline void operator/=(const eT in_val);
+  arma_inline void operator= (const eT in_val);
+  arma_inline void operator+=(const eT in_val);
+  arma_inline void operator-=(const eT in_val);
+  arma_inline void operator*=(const eT in_val);
+  arma_inline void operator/=(const eT in_val);
   
-  inline void operator++();
-  inline void operator++(int);
+  arma_inline void operator++();
+  arma_inline void operator++(int);
   
-  inline void operator--();
-  inline void operator--(int);
+  arma_inline void operator--();
+  arma_inline void operator--(int);
   };
 
 
@@ -182,17 +182,17 @@ class CoMat_elem
   
   arma_inline operator eT() const;
   
-  inline void operator= (const eT in_val);
-  inline void operator+=(const eT in_val);
-  inline void operator-=(const eT in_val);
-  inline void operator*=(const eT in_val);
-  inline void operator/=(const eT in_val);
+  arma_inline void operator= (const eT in_val);
+  arma_inline void operator+=(const eT in_val);
+  arma_inline void operator-=(const eT in_val);
+  arma_inline void operator*=(const eT in_val);
+  arma_inline void operator/=(const eT in_val);
   
-  inline void operator++();
-  inline void operator++(int);
+  arma_inline void operator++();
+  arma_inline void operator++(int);
   
-  inline void operator--();
-  inline void operator--(int);
+  arma_inline void operator--();
+  arma_inline void operator--(int);
   };
 
 

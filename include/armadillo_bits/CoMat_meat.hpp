@@ -408,7 +408,7 @@ CoMat<eT>::speye(const SizeMat& s)
 
 
 template<typename eT>
-inline
+arma_inline
 CoMat_elem<eT>
 CoMat<eT>::elem(const uword index, uword& sync_state, uword& n_nonzero)
   {
@@ -418,7 +418,7 @@ CoMat<eT>::elem(const uword index, uword& sync_state, uword& n_nonzero)
 
 
 template<typename eT>
-inline
+arma_inline
 CoMat_elem<eT>
 CoMat<eT>::elem(const uword in_row, const uword in_col, uword& sync_state, uword& n_nonzero)
   {
@@ -430,7 +430,7 @@ CoMat<eT>::elem(const uword in_row, const uword in_col, uword& sync_state, uword
 
 
 template<typename eT>
-inline
+arma_inline
 arma_warn_unused
 CoMat_val<eT>
 CoMat<eT>::operator[](const uword index)
@@ -441,7 +441,7 @@ CoMat<eT>::operator[](const uword index)
 
 
 template<typename eT>
-inline
+arma_inline
 arma_warn_unused
 eT
 CoMat<eT>::operator[](const uword index) const
@@ -457,7 +457,7 @@ CoMat<eT>::operator[](const uword index) const
 
 
 template<typename eT>
-inline
+arma_inline
 arma_warn_unused
 CoMat_val<eT>
 CoMat<eT>::operator()(const uword index)
@@ -470,7 +470,7 @@ CoMat<eT>::operator()(const uword index)
 
 
 template<typename eT>
-inline
+arma_inline
 arma_warn_unused
 eT
 CoMat<eT>::operator()(const uword index) const
@@ -488,7 +488,7 @@ CoMat<eT>::operator()(const uword index) const
 
 
 template<typename eT>
-inline
+arma_inline
 arma_warn_unused
 CoMat_val<eT>
 CoMat<eT>::at(const uword in_row, const uword in_col)
@@ -501,7 +501,7 @@ CoMat<eT>::at(const uword in_row, const uword in_col)
 
 
 template<typename eT>
-inline
+arma_inline
 arma_warn_unused
 eT
 CoMat<eT>::at(const uword in_row, const uword in_col) const
@@ -519,7 +519,7 @@ CoMat<eT>::at(const uword in_row, const uword in_col) const
 
 
 template<typename eT>
-inline
+arma_inline
 arma_warn_unused
 CoMat_val<eT>
 CoMat<eT>::operator()(const uword in_row, const uword in_col)
@@ -534,7 +534,7 @@ CoMat<eT>::operator()(const uword in_row, const uword in_col)
 
 
 template<typename eT>
-inline
+arma_inline
 arma_warn_unused
 eT
 CoMat<eT>::operator()(const uword in_row, const uword in_col) const
@@ -912,7 +912,7 @@ CoMat<eT>::dense_end() const
 
 
 template<typename eT>
-inline
+arma_inline
 CoMat_val<eT>::CoMat_val(CoMat<eT>& in_parent, const uword in_index)
   : parent(in_parent)
   , index (in_index )
@@ -936,7 +936,7 @@ CoMat_val<eT>::operator eT() const
 
 
 template<typename eT>
-inline
+arma_inline
 void
 CoMat_val<eT>::operator=(const eT in_val)
   {
@@ -948,7 +948,7 @@ CoMat_val<eT>::operator=(const eT in_val)
 
 
 template<typename eT>
-inline
+arma_inline
 void
 CoMat_val<eT>::operator+=(const eT in_val)
   {
@@ -969,7 +969,7 @@ CoMat_val<eT>::operator+=(const eT in_val)
 
 
 template<typename eT>
-inline
+arma_inline
 void
 CoMat_val<eT>::operator-=(const eT in_val)
   {
@@ -990,7 +990,7 @@ CoMat_val<eT>::operator-=(const eT in_val)
 
 
 template<typename eT>
-inline
+arma_inline
 void
 CoMat_val<eT>::operator*=(const eT in_val)
   {
@@ -1021,7 +1021,7 @@ CoMat_val<eT>::operator*=(const eT in_val)
 
 
 template<typename eT>
-inline
+arma_inline
 void
 CoMat_val<eT>::operator/=(const eT in_val)
   {
@@ -1052,7 +1052,7 @@ CoMat_val<eT>::operator/=(const eT in_val)
 
 
 template<typename eT>
-inline
+arma_inline
 void
 CoMat_val<eT>::operator++()
   {
@@ -1070,7 +1070,7 @@ CoMat_val<eT>::operator++()
 
 
 template<typename eT>
-inline
+arma_inline
 void
 CoMat_val<eT>::operator++(int)
   {
@@ -1082,7 +1082,7 @@ CoMat_val<eT>::operator++(int)
 
 
 template<typename eT>
-inline
+arma_inline
 void
 CoMat_val<eT>::operator--()
   {
@@ -1100,7 +1100,7 @@ CoMat_val<eT>::operator--()
 
 
 template<typename eT>
-inline
+arma_inline
 void
 CoMat_val<eT>::operator--(int)
   {
@@ -1118,7 +1118,7 @@ CoMat_val<eT>::operator--(int)
 
 
 template<typename eT>
-inline
+arma_inline
 CoMat_elem<eT>::CoMat_elem(CoMat<eT>& in_parent, const uword in_index, uword& in_sync_state, uword& in_n_nonzero)
   : parent    (in_parent    )
   , index     (in_index     )
@@ -1144,7 +1144,7 @@ CoMat_elem<eT>::operator eT() const
 
 
 template<typename eT>
-inline
+arma_inline
 void
 CoMat_elem<eT>::operator=(const eT in_val)
   {
@@ -1159,7 +1159,7 @@ CoMat_elem<eT>::operator=(const eT in_val)
 
 
 template<typename eT>
-inline
+arma_inline
 void
 CoMat_elem<eT>::operator+=(const eT in_val)
   {
@@ -1183,7 +1183,7 @@ CoMat_elem<eT>::operator+=(const eT in_val)
 
 
 template<typename eT>
-inline
+arma_inline
 void
 CoMat_elem<eT>::operator-=(const eT in_val)
   {
@@ -1207,7 +1207,7 @@ CoMat_elem<eT>::operator-=(const eT in_val)
 
 
 template<typename eT>
-inline
+arma_inline
 void
 CoMat_elem<eT>::operator*=(const eT in_val)
   {
@@ -1241,7 +1241,7 @@ CoMat_elem<eT>::operator*=(const eT in_val)
 
 
 template<typename eT>
-inline
+arma_inline
 void
 CoMat_elem<eT>::operator/=(const eT in_val)
   {
@@ -1275,7 +1275,7 @@ CoMat_elem<eT>::operator/=(const eT in_val)
 
 
 template<typename eT>
-inline
+arma_inline
 void
 CoMat_elem<eT>::operator++()
   {
@@ -1296,7 +1296,7 @@ CoMat_elem<eT>::operator++()
 
 
 template<typename eT>
-inline
+arma_inline
 void
 CoMat_elem<eT>::operator++(int)
   {
@@ -1308,7 +1308,7 @@ CoMat_elem<eT>::operator++(int)
 
 
 template<typename eT>
-inline
+arma_inline
 void
 CoMat_elem<eT>::operator--()
   {
@@ -1329,7 +1329,7 @@ CoMat_elem<eT>::operator--()
 
 
 template<typename eT>
-inline
+arma_inline
 void
 CoMat_elem<eT>::operator--(int)
   {

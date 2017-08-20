@@ -574,9 +574,22 @@ SpMat<eT>::operator*=(const eT val)
     
     invalidate_cache();
     
-    arrayops::inplace_mul( access::rwp(values), val, n_nonzero );
+    const uword n_nz = n_nonzero;
     
-    remove_zeros();
+    eT* vals = access::rwp(values);
+    
+    bool has_zero = false;
+    
+    for(uword i=0; i<n_nz; ++i)
+      {
+      eT& vals_i = vals[i];
+      
+      vals_i *= val;
+      
+      if(vals_i == eT(0))  { has_zero = true; }
+      }
+    
+    if(has_zero)  { remove_zeros(); }
     }
   else
     {
@@ -602,9 +615,22 @@ SpMat<eT>::operator/=(const eT val)
   
   invalidate_cache();
   
-  arrayops::inplace_div( access::rwp(values), val, n_nonzero );
+  const uword n_nz = n_nonzero;
   
-  remove_zeros();
+  eT* vals = access::rwp(values);
+  
+  bool has_zero = false;
+  
+  for(uword i=0; i<n_nz; ++i)
+    {
+    eT& vals_i = vals[i];
+    
+    vals_i /= val;
+    
+    if(vals_i == eT(0))  { has_zero = true; }
+    }
+  
+  if(has_zero)  { remove_zeros(); }
   
   return *this;
   }
@@ -4951,12 +4977,18 @@ SpMat<eT>::init_xform(const SpBase<eT,T1>& A, const Functor& func)
     
     eT* t_values = access::rwp(values);
     
+    bool has_zero = false;
+    
     for(uword i=0; i < nnz; ++i)
       {
-      t_values[i] = func(t_values[i]);
+      eT& t_values_i = t_values[i];
+      
+      t_values_i = func(t_values_i);
+      
+      if(t_values_i == eT(0))  { has_zero = true; }
       }
     
-    remove_zeros();
+    if(has_zero)  { remove_zeros(); }
     }
   else
     {
@@ -5013,10 +5045,18 @@ SpMat<eT>::init_xform_mt(const SpBase<eT2,T1>& A, const Functor& func)
     const eT2* x_values = x.values;
           eT*  t_values = access::rwp(values);
     
+    bool has_zero = false;
+    
     for(uword i=0; i < nnz; ++i)
       {
-      t_values[i] = func(x_values[i]);   // NOTE: func() must produce a value of type eT (ie. act as a convertor between eT2 and eT)
+      eT& t_values_i = t_values[i];
+      
+      t_values_i = func(x_values[i]);   // NOTE: func() must produce a value of type eT (ie. act as a convertor between eT2 and eT)
+      
+      if(t_values_i == eT(0))  { has_zero = true; } 
       }
+    
+    if(has_zero)  { remove_zeros(); }
     }
   else
     {
@@ -5027,10 +5067,16 @@ SpMat<eT>::init_xform_mt(const SpBase<eT2,T1>& A, const Functor& func)
     typename SpProxy<T1>::const_iterator_type it     = P.begin();
     typename SpProxy<T1>::const_iterator_type it_end = P.end();
     
+    bool has_zero = false;
+    
     while(it != it_end)
       {
+      const eT val = func(*it);   // NOTE: func() must produce a value of type eT (ie. act as a convertor between eT2 and eT)
+      
+      if(val == eT(0))  { has_zero = true; }
+      
       access::rw(row_indices[it.pos()]) = it.row();
-      access::rw(values[it.pos()]) = func(*it);   // NOTE: func() must produce a value of type eT (ie. act as a convertor between eT2 and eT)
+      access::rw(values[it.pos()]) = val;
       ++access::rw(col_ptrs[it.col() + 1]);
       ++it;
       }
@@ -5040,9 +5086,9 @@ SpMat<eT>::init_xform_mt(const SpBase<eT2,T1>& A, const Functor& func)
       {
       access::rw(col_ptrs[c]) += col_ptrs[c - 1];
       }
+    
+    if(has_zero)  { remove_zeros(); }
     }
-  
-  remove_zeros();
   }
 
 

@@ -153,6 +153,8 @@ SpSubview<eT>::operator*=(const eT val)
   const uword* m_row_indices = m.row_indices;
         eT*    m_values      = access::rwp(m.values);
   
+  bool has_zero = false;
+  
   for(uword c = lstart_col; c < lend_col; ++c)
     {
     const uword r_start = m.col_ptrs[c    ];
@@ -164,18 +166,25 @@ SpSubview<eT>::operator*=(const eT val)
       
       if( (m_row_indices_r >= lstart_row) && (m_row_indices_r < lend_row) )
         {
-        m_values[r] *= val;
+        eT& m_values_r = m_values[r];
+        
+        m_values_r *= val;
+        
+        if(m_values_r == eT(0))  { has_zero = true; }
         }
       }
     }
   
-  const uword old_m_n_nonzero = m.n_nonzero;
-  
-  access::rw(m).remove_zeros();
-  
-  if(m.n_nonzero != old_m_n_nonzero)
+  if(has_zero)
     {
-    access::rw(n_nonzero) = n_nonzero - (old_m_n_nonzero - m.n_nonzero); 
+    const uword old_m_n_nonzero = m.n_nonzero;
+    
+    access::rw(m).remove_zeros();
+    
+    if(m.n_nonzero != old_m_n_nonzero)
+      {
+      access::rw(n_nonzero) = n_nonzero - (old_m_n_nonzero - m.n_nonzero); 
+      }
     }
   
   return *this;
@@ -201,6 +210,8 @@ SpSubview<eT>::operator/=(const eT val)
   const uword* m_row_indices = m.row_indices;
         eT*    m_values      = access::rwp(m.values);
   
+  bool has_zero = false;
+  
   for(uword c = lstart_col; c < lend_col; ++c)
     {
     const uword r_start = m.col_ptrs[c    ];
@@ -212,18 +223,25 @@ SpSubview<eT>::operator/=(const eT val)
       
       if( (m_row_indices_r >= lstart_row) && (m_row_indices_r < lend_row) )
         {
-        m_values[r] /= val;
+        eT& m_values_r = m_values[r];
+        
+        m_values_r /= val;
+        
+        if(m_values_r == eT(0))  { has_zero = true; }
         }
       }
     }
   
-  const uword old_m_n_nonzero = m.n_nonzero;
-  
-  access::rw(m).remove_zeros();
-  
-  if(m.n_nonzero != old_m_n_nonzero)
+  if(has_zero)
     {
-    access::rw(n_nonzero) = n_nonzero - (old_m_n_nonzero - m.n_nonzero); 
+    const uword old_m_n_nonzero = m.n_nonzero;
+    
+    access::rw(m).remove_zeros();
+    
+    if(m.n_nonzero != old_m_n_nonzero)
+      {
+      access::rw(n_nonzero) = n_nonzero - (old_m_n_nonzero - m.n_nonzero); 
+      }
     }
   
   return *this;

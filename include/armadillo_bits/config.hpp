@@ -159,9 +159,24 @@
 //// This is mainly useful for debugging of the library.
 
 
-#if !defined(ARMA_DEFAULT_OSTREAM)
-  #define ARMA_DEFAULT_OSTREAM std::cout
+#if !defined(ARMA_COUT_STREAM)
+  #if defined(ARMA_DEFAULT_OSTREAM)
+    // for compatibility with earlier versions of Armadillo
+    #define ARMA_COUT_STREAM ARMA_DEFAULT_OSTREAM
+  #else
+    #define ARMA_COUT_STREAM std::cout
+  #endif
 #endif
+
+#if !defined(ARMA_CERR_STREAM)
+  #if defined(ARMA_DEFAULT_OSTREAM)
+    // for compatibility with earlier versions of Armadillo
+    #define ARMA_CERR_STREAM ARMA_DEFAULT_OSTREAM
+  #else
+    #define ARMA_CERR_STREAM std::cerr
+  #endif
+#endif
+
 
 #if !defined(ARMA_PRINT_ERRORS)
 #define ARMA_PRINT_ERRORS

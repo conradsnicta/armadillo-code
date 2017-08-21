@@ -3011,10 +3011,10 @@ Cube<eT>::impl_print(const std::string& extra_text) const
   
   if(extra_text.length() != 0)
     {
-    ARMA_DEFAULT_OSTREAM << extra_text << '\n';
+    ARMA_COUT_STREAM << extra_text << '\n';
     }
   
-  arma_ostream::print(ARMA_DEFAULT_OSTREAM, *this, true);
+  arma_ostream::print(ARMA_COUT_STREAM, *this, true);
   }
 
 
@@ -3052,10 +3052,10 @@ Cube<eT>::impl_raw_print(const std::string& extra_text) const
   
   if(extra_text.length() != 0)
     {
-    ARMA_DEFAULT_OSTREAM << extra_text << '\n';
+    ARMA_COUT_STREAM << extra_text << '\n';
     }
   
-  arma_ostream::print(ARMA_DEFAULT_OSTREAM, *this, false);
+  arma_ostream::print(ARMA_COUT_STREAM, *this, false);
   }
 
 

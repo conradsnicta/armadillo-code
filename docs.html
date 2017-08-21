@@ -14461,7 +14461,8 @@ cout &lt;&lt; "number of seconds: " &lt;&lt; n &lt;&lt; endl;
 <br>
 <ul>
 <li>
-By default, warnings and messages associated with exceptions are printed to the <i>std::cout</i> stream
+In Armadillo 8.x, warnings and messages associated with exceptions are printed to the <i>std::cerr</i> stream;
+in Armadillo 7.x and earlier, the <i>std::cout</i> stream is used
 <ul>
 <li>the printing can be disabled by defining <a href="#config_hpp">ARMA_DONT_PRINT_ERRORS</a> before including the armadillo header</li>
 <li>detailed information about errors is always reported via the base <i>std::exception</i> class</li>
@@ -16159,15 +16160,39 @@ If you mainly use lots of very small vectors (eg.&nbsp;&le;&nbsp;4&nbsp;elements
   </tr>
   <tr>
     <td style="vertical-align: top;">
-<code>ARMA_DEFAULT_OSTREAM</code>
+<code>ARMA_COUT_STREAM</code>
     </td>
     <td style="vertical-align: top;">
       &nbsp;
     </td>
     <td style="vertical-align: top;">
-The default stream used for printing <a href="#logging">error messages</a> and by <a href="#print">.print()</a>.
+The default stream used for printing by <a href="#print">.print()</a>.
 Must be always enabled.
 By default defined to <i>std::cout</i>
+    </td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">
+      &nbsp;
+    </td>
+    <td style="vertical-align: top;">
+      &nbsp;
+    </td>
+    <td style="vertical-align: top;">
+      &nbsp;
+    </td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">
+<code>ARMA_CERR_STREAM</code>
+    </td>
+    <td style="vertical-align: top;">
+      &nbsp;
+    </td>
+    <td style="vertical-align: top;">
+The default stream used for printing <a href="#logging">error messages and warnings</a>.
+Must be always enabled.
+By default defined to <i>std::cerr</i>
     </td>
   </tr>
   <tr>
@@ -16365,6 +16390,8 @@ List of additions and changes for each version:
 <li>Version 8.xxx:
 <ul>
 <li>faster incremental construction of <a href="#SpMat">sparse matrices</a> via element access operators, through an internal caching mechanism</li>
+<li>warnings and errors are now printed by default to the <i>std::cerr</i> stream</li>
+<li>new <a href="#config_hpp">configuration</a> options ARMA_COUT_STREAM and ARMA_CERR_STREAM replace ARMA_DEFAULT_OSTREAM</li>
 </ul>
 </li>
 <br>

@@ -654,11 +654,11 @@ CoMat<eT>::print(const std::string& extra_text) const
   
   if(extra_text.length() != 0)
     {
-    const std::streamsize orig_width = ARMA_DEFAULT_OSTREAM.width();
+    const std::streamsize orig_width = ARMA_COUT_STREAM.width();
     
-    ARMA_DEFAULT_OSTREAM << extra_text << '\n';
+    ARMA_COUT_STREAM << extra_text << '\n';
     
-    ARMA_DEFAULT_OSTREAM.width(orig_width);
+    ARMA_COUT_STREAM.width(orig_width);
     }
   
   map_type& map_ref = (*map_ptr);
@@ -667,7 +667,7 @@ CoMat<eT>::print(const std::string& extra_text) const
   
   const double density = (n_elem > 0) ? ((double(n_nonzero) / double(n_elem))*double(100)) : double(0);
   
-  ARMA_DEFAULT_OSTREAM
+  ARMA_COUT_STREAM
     << "[matrix size: " << n_rows << 'x' << n_cols << "; n_nonzero: " << n_nonzero
     << "; density: " << density << "%]\n\n";
   
@@ -685,14 +685,14 @@ CoMat<eT>::print(const std::string& extra_text) const
       const uword row = index % n_rows;
       const uword col = index / n_rows;
       
-      ARMA_DEFAULT_OSTREAM << '(' << row << ", " << col << ") ";
-      ARMA_DEFAULT_OSTREAM << val << '\n';
+      ARMA_COUT_STREAM << '(' << row << ", " << col << ") ";
+      ARMA_COUT_STREAM << val << '\n';
       
       ++it;
       }
     }
   
-  ARMA_DEFAULT_OSTREAM.flush();
+  ARMA_COUT_STREAM.flush();
   }
 
 

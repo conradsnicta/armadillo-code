@@ -40,8 +40,8 @@ lu
   
   if(status == false)
     {
-    L.reset();
-    U.reset();
+    L.soft_reset();
+    U.soft_reset();
     arma_debug_warn("lu(): decomposition failed");
     }
   
@@ -72,9 +72,9 @@ lu
   
   if(status == false)
     {
-    L.reset();
-    U.reset();
-    P.reset();
+    L.soft_reset();
+    U.soft_reset();
+    P.soft_reset();
     arma_debug_warn("lu(): decomposition failed");
     }
   

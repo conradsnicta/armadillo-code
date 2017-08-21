@@ -85,7 +85,7 @@ op_pinv::apply_direct(Mat<typename T1::elem_type>& out, const Base<typename T1::
   
   if(status == false)
     {
-    out.reset();
+    out.soft_reset();
     return false;
     }
   

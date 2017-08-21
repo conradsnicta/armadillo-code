@@ -60,7 +60,7 @@ chol
   
   if(status == false)
     {
-    out.reset();
+    out.soft_reset();
     arma_debug_warn("chol(): decomposition failed");
     }
   

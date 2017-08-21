@@ -102,7 +102,7 @@ glue_times_redirect2_helper<true>::apply(Mat<typename T1::elem_type>& out, const
     
     if(status == false)
       {
-      out.reset();
+      out.soft_reset();
       arma_stop_runtime_error("matrix multiplication: inverse of singular matrix; suggest to use solve() instead");
       }
     
@@ -221,7 +221,7 @@ glue_times_redirect3_helper<true>::apply(Mat<typename T1::elem_type>& out, const
     
     if(status == false)
       {
-      out.reset();
+      out.soft_reset();
       arma_stop_runtime_error("matrix multiplication: inverse of singular matrix; suggest to use solve() instead");
       }
     
@@ -252,7 +252,7 @@ glue_times_redirect3_helper<true>::apply(Mat<typename T1::elem_type>& out, const
     
     if(status == false)
       {
-      out.reset();
+      out.soft_reset();
       arma_stop_runtime_error("matrix multiplication: inverse of singular matrix; suggest to use solve() instead");
       return;
       }

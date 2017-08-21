@@ -46,7 +46,7 @@ kmeans
     }
   else
     {
-    means.reset();
+    means.soft_reset();
     }
   
   return status;

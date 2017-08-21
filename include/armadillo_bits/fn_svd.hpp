@@ -38,7 +38,7 @@ svd
   
   if(status == false)
     {
-    S.reset();
+    S.soft_reset();
     arma_debug_warn("svd(): decomposition failed");
     }
   
@@ -66,7 +66,7 @@ svd
   
   if(status == false)
     {
-    out.reset();
+    out.soft_reset();
     arma_stop_runtime_error("svd(): decomposition failed");
     }
   
@@ -106,9 +106,9 @@ svd
   
   if(status == false)
     {
-    U.reset();
-    S.reset();
-    V.reset();
+    U.soft_reset();
+    S.soft_reset();
+    V.soft_reset();
     arma_debug_warn("svd(): decomposition failed");
     }
   
@@ -154,9 +154,9 @@ svd_econ
   
   if(status == false)
     {
-    U.reset();
-    S.reset();
-    V.reset();
+    U.soft_reset();
+    S.soft_reset();
+    V.soft_reset();
     arma_debug_warn("svd(): decomposition failed");
     }
   

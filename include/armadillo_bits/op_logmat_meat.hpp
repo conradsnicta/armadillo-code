@@ -36,7 +36,7 @@ op_logmat::apply(Mat< std::complex<typename T1::elem_type> >& out, const mtOp<st
   
   if(status == false)
     {
-    out.reset();
+    out.soft_reset();
     arma_stop_runtime_error("logmat(): transformation failed");
     }
   }
@@ -136,7 +136,7 @@ op_logmat_cx::apply(Mat<typename T1::elem_type>& out, const Op<T1,op_logmat_cx>&
   
   if(status == false)
     {
-    out.reset();
+    out.soft_reset();
     arma_stop_runtime_error("logmat(): transformation failed");
     }
   }
@@ -363,7 +363,7 @@ op_logmat_sympd::apply(Mat<typename T1::elem_type>& out, const Op<T1,op_logmat_s
   
   if(status == false)
     {
-    out.reset();
+    out.soft_reset();
     arma_stop_runtime_error("logmat_sympd(): transformation failed");
     }
   }

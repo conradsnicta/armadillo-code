@@ -40,8 +40,8 @@ qr
   
   if(status == false)
     {
-    Q.reset();
-    R.reset();
+    Q.soft_reset();
+    R.soft_reset();
     arma_debug_warn("qr(): decomposition failed");
     }
   
@@ -71,8 +71,8 @@ qr_econ
   
   if(status == false)
     {
-    Q.reset();
-    R.reset();
+    Q.soft_reset();
+    R.soft_reset();
     arma_debug_warn("qr_econ(): decomposition failed");
     }
   

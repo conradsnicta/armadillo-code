@@ -285,7 +285,7 @@ auxlib::inv_inplace_lapack(Mat<eT>& out)
     }
   #else
     {
-    out.reset();
+    out.soft_reset();
     arma_stop_logic_error("inv(): use of ATLAS or LAPACK must be enabled");
     return false;
     }

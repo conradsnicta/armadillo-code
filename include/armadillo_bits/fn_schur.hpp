@@ -39,7 +39,7 @@ schur
   
   if(status == false)
     {
-    S.reset();
+    S.soft_reset();
     arma_debug_warn("schur(): decomposition failed");
     }
   
@@ -70,7 +70,7 @@ schur
   
   if(status == false)
     {
-    S.reset();
+    S.soft_reset();
     arma_stop_runtime_error("schur(): decomposition failed");
     }
   
@@ -99,8 +99,8 @@ schur
   
   if(status == false)
     {
-    U.reset();
-    S.reset();
+    U.soft_reset();
+    S.soft_reset();
     arma_debug_warn("schur(): decomposition failed");
     }
   

@@ -124,7 +124,7 @@ glue_solve_gen::apply(Mat<eT>& out, const Base<eT,T1>& A_expr, const Base<eT,T2>
     }
   
   
-  if(status == false)  { out.reset(); }
+  if(status == false)  { out.soft_reset(); }
   
   return status;
   }
@@ -198,7 +198,7 @@ glue_solve_tri::apply(Mat<eT>& out, const Base<eT,T1>& A_expr, const Base<eT,T2>
     }
   
   
-  if(status == false)  { out.reset(); }
+  if(status == false)  { out.soft_reset(); }
   
   return status;
   }

@@ -58,7 +58,7 @@ op_unique::apply_helper(Mat<typename T1::elem_type>& out, const Proxy<T1>& P)
       {
       const eT val = Pea[i];
       
-      if(arma_isnan(val))  { out.reset(); return false; }
+      if(arma_isnan(val))  { out.soft_reset(); return false; }
       
       X_mem[i] = val;
       }
@@ -70,7 +70,7 @@ op_unique::apply_helper(Mat<typename T1::elem_type>& out, const Proxy<T1>& P)
       {
       const eT val = P.at(row,col);
       
-      if(arma_isnan(val))  { out.reset(); return false; }
+      if(arma_isnan(val))  { out.soft_reset(); return false; }
       
       (*X_mem) = val;  X_mem++;
       }

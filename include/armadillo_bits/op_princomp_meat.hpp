@@ -605,7 +605,7 @@ op_princomp::apply
   
   if(status == false)
     {
-    out.reset();
+    out.soft_reset();
     
     arma_stop_runtime_error("princomp(): decomposition failed");
     }

@@ -34,7 +34,7 @@ op_inv::apply(Mat<eT>& out, const Mat<eT>& A)
   
   if(status == false)
     {
-    out.reset();
+    out.soft_reset();
     arma_stop_runtime_error("inv(): matrix seems singular");
     }
   }
@@ -64,7 +64,7 @@ op_inv::apply(Mat<typename T1::elem_type>& out, const Op<T1,op_inv>& X)
     
   if(status == false)
     {
-    out.reset();
+    out.soft_reset();
     arma_stop_runtime_error("inv(): matrix seems singular");
     }
   }
@@ -134,7 +134,7 @@ op_inv_tr::apply(Mat<typename T1::elem_type>& out, const Op<T1,op_inv_tr>& X)
   
   if(status == false)
     {
-    out.reset();
+    out.soft_reset();
     arma_stop_runtime_error("inv(): matrix seems singular");
     }
   }
@@ -153,7 +153,7 @@ op_inv_sympd::apply(Mat<typename T1::elem_type>& out, const Op<T1,op_inv_sympd>&
   
   if(status == false)
     {
-    out.reset();
+    out.soft_reset();
     arma_stop_runtime_error("inv_sympd(): matrix is singular or not positive definite");
     }
   }

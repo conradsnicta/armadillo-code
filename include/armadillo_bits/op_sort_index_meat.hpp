@@ -40,7 +40,7 @@ arma_sort_index_helper(Mat<uword>& out, const Proxy<T1>& P, const uword sort_typ
       {
       const eT val = P[i];
       
-      if(arma_isnan(val))  { out.reset(); return false; }
+      if(arma_isnan(val))  { out.soft_reset(); return false; }
       
       packet_vec[i].val   = val;
       packet_vec[i].index = i;
@@ -58,7 +58,7 @@ arma_sort_index_helper(Mat<uword>& out, const Proxy<T1>& P, const uword sort_typ
       {
       const eT val = P.at(row,col);
       
-      if(arma_isnan(val))  { out.reset(); return false; }
+      if(arma_isnan(val))  { out.soft_reset(); return false; }
       
       packet_vec[i].val   = val;
       packet_vec[i].index = i;

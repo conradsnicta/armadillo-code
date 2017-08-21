@@ -44,7 +44,7 @@ eigs_gen
   
   if(status == false)
     {
-    eigval.reset();
+    eigval.soft_reset();
     arma_stop_runtime_error("eigs_gen(): decomposition failed");
     }
   
@@ -78,7 +78,7 @@ eigs_gen
   
   if(status == false)
     {
-    eigval.reset();
+    eigval.soft_reset();
     arma_debug_warn("eigs_gen(): decomposition failed");
     }
   
@@ -111,8 +111,8 @@ eigs_gen
   
   if(status == false)
     {
-    eigval.reset();
-    eigvec.reset();
+    eigval.soft_reset();
+    eigvec.soft_reset();
     arma_debug_warn("eigs_gen(): decomposition failed");
     }
   

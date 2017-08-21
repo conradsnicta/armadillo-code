@@ -6726,6 +6726,26 @@ Mat<eT>::reset()
 
 
 template<typename eT>
+inline
+void
+Mat<eT>::soft_reset()
+  {
+  arma_extra_debug_sigprint();
+  
+  // don't change the size if the matrix has a fixed size or is a cube slice
+  if(mem_state <= 1)
+    {
+    reset();
+    }
+  else
+    {
+    fill(Datum<eT>::nan);
+    }
+  }
+
+
+
+template<typename eT>
 template<typename T1>
 inline
 void

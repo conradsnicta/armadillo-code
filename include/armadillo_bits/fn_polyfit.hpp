@@ -35,7 +35,7 @@ polyfit(Mat<typename T1::elem_type>& out, const Base<typename T1::elem_type, T1>
   
   if(status == false)
     {
-    out.reset();
+    out.soft_reset();
     arma_debug_warn("polyfit(): failed");
     }
   

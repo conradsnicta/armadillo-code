@@ -474,7 +474,8 @@ class Mat : public Base< eT, Mat<eT> >
   inline const Mat& eye(const uword in_rows, const uword in_cols);
   inline const Mat& eye(const SizeMat& s);
   
-  inline void reset();
+  inline void      reset();
+  inline void soft_reset();
   
   
   template<typename T1> inline void set_real(const Base<pod_type,T1>& X);

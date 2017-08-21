@@ -45,10 +45,10 @@ princomp
   
   if(status == false)
     {
-    coeff_out.reset();
-    score_out.reset();
-    latent_out.reset();
-    tsquared_out.reset();
+    coeff_out.soft_reset();
+    score_out.soft_reset();
+    latent_out.soft_reset();
+    tsquared_out.soft_reset();
     
     arma_debug_warn("princomp(): decomposition failed");
     }
@@ -82,9 +82,9 @@ princomp
   
   if(status == false)
     {
-    coeff_out.reset();
-    score_out.reset();
-    latent_out.reset();
+    coeff_out.soft_reset();
+    score_out.soft_reset();
+    latent_out.soft_reset();
     
     arma_debug_warn("princomp(): decomposition failed");
     }
@@ -116,8 +116,8 @@ princomp
   
   if(status == false)
     {
-    coeff_out.reset();
-    score_out.reset();
+    coeff_out.soft_reset();
+    score_out.soft_reset();
     
     arma_debug_warn("princomp(): decomposition failed");
     }
@@ -147,7 +147,7 @@ princomp
   
   if(status == false)
     {
-    coeff_out.reset();
+    coeff_out.soft_reset();
     
     arma_debug_warn("princomp(): decomposition failed");
     }

@@ -64,7 +64,7 @@ op_orth::apply_direct(Mat<typename T1::elem_type>& out, const Base<typename T1::
   
   V.reset();
   
-  if(status == false)  { out.reset(); return false; }
+  if(status == false)  { out.soft_reset(); return false; }
   
   if(s.is_empty())  { out.reset(); return true; }
   
@@ -140,7 +140,7 @@ op_null::apply_direct(Mat<typename T1::elem_type>& out, const Base<typename T1::
   
   U.reset();
   
-  if(status == false)  { out.reset(); return false; }
+  if(status == false)  { out.soft_reset(); return false; }
   
   if(s.is_empty())  { out.reset(); return true; }
   

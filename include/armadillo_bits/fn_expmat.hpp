@@ -53,7 +53,7 @@ expmat(Mat<typename T1::elem_type>& B, const Base<typename T1::elem_type,T1>& A)
   if(status == false)
     {
     arma_debug_warn("expmat(): given matrix appears ill-conditioned");
-    B.reset();
+    B.soft_reset();
     return false;
     }
   

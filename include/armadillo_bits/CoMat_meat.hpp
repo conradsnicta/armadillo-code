@@ -1147,26 +1147,6 @@ CoMat_elem<eT>::operator=(const CoMat_elem<eT>& x)
 
 
 template<typename eT>
-template<typename eT2>
-arma_inline
-CoMat_elem<eT>&
-CoMat_elem<eT>::operator=(const CoMat_elem<eT2>& x)
-  {
-  arma_extra_debug_sigprint();
-  
-  const eT in_val = eT(eT2(x));
-  
-  parent.set_val(index, in_val);
-  
-  sync_state = 1;
-  n_nonzero  = parent.get_n_nonzero();
-  
-  return *this;
-  }
-
-
-
-template<typename eT>
 arma_inline
 CoMat_elem<eT>&
 CoMat_elem<eT>::operator=(const eT in_val)

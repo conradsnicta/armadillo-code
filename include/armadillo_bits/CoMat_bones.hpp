@@ -182,10 +182,7 @@ class CoMat_elem
   
   arma_inline CoMat_elem<eT>& operator= (const CoMat_elem<eT>&  x);
   
-  template<typename eT2>
-  arma_inline CoMat_elem<eT>& operator= (const CoMat_elem<eT2>& x);
-
-
+  
   arma_inline CoMat_elem<eT>& operator= (const eT in_val);
   arma_inline CoMat_elem<eT>& operator+=(const eT in_val);
   arma_inline CoMat_elem<eT>& operator-=(const eT in_val);

@@ -1129,7 +1129,7 @@ CoMat_elem<eT>::operator eT() const
 
 template<typename eT>
 arma_inline
-void
+CoMat_elem<eT>&
 CoMat_elem<eT>::operator=(const CoMat_elem<eT>& x)
   {
   arma_extra_debug_sigprint();
@@ -1140,13 +1140,35 @@ CoMat_elem<eT>::operator=(const CoMat_elem<eT>& x)
   
   sync_state = 1;
   n_nonzero  = parent.get_n_nonzero();
+  
+  return *this;
+  }
+
+
+
+template<typename eT>
+template<typename eT2>
+arma_inline
+CoMat_elem<eT>&
+CoMat_elem<eT>::operator=(const CoMat_elem<eT2>& x)
+  {
+  arma_extra_debug_sigprint();
+  
+  const eT in_val = eT(eT2(x));
+  
+  parent.set_val(index, in_val);
+  
+  sync_state = 1;
+  n_nonzero  = parent.get_n_nonzero();
+  
+  return *this;
   }
 
 
 
 template<typename eT>
 arma_inline
-void
+CoMat_elem<eT>&
 CoMat_elem<eT>::operator=(const eT in_val)
   {
   arma_extra_debug_sigprint();
@@ -1155,13 +1177,15 @@ CoMat_elem<eT>::operator=(const eT in_val)
   
   sync_state = 1;
   n_nonzero  = parent.get_n_nonzero();
+  
+  return *this;
   }
 
 
 
 template<typename eT>
 arma_inline
-void
+CoMat_elem<eT>&
 CoMat_elem<eT>::operator+=(const eT in_val)
   {
   arma_extra_debug_sigprint();
@@ -1179,13 +1203,15 @@ CoMat_elem<eT>::operator+=(const eT in_val)
     sync_state = 1;
     n_nonzero  = parent.get_n_nonzero();
     }
+  
+  return *this;
   }
 
 
 
 template<typename eT>
 arma_inline
-void
+CoMat_elem<eT>&
 CoMat_elem<eT>::operator-=(const eT in_val)
   {
   arma_extra_debug_sigprint();
@@ -1203,13 +1229,15 @@ CoMat_elem<eT>::operator-=(const eT in_val)
     sync_state = 1;
     n_nonzero  = parent.get_n_nonzero();
     }
+  
+  return *this;
   }
 
 
 
 template<typename eT>
 arma_inline
-void
+CoMat_elem<eT>&
 CoMat_elem<eT>::operator*=(const eT in_val)
   {
   arma_extra_debug_sigprint();
@@ -1237,13 +1265,15 @@ CoMat_elem<eT>::operator*=(const eT in_val)
     sync_state = 1;
     n_nonzero  = parent.get_n_nonzero();
     }
+  
+  return *this;
   }
 
 
 
 template<typename eT>
 arma_inline
-void
+CoMat_elem<eT>&
 CoMat_elem<eT>::operator/=(const eT in_val)
   {
   arma_extra_debug_sigprint();
@@ -1278,13 +1308,15 @@ CoMat_elem<eT>::operator/=(const eT in_val)
       n_nonzero  = parent.get_n_nonzero();
       }
     }
+  
+  return *this;
   }
 
 
 
 template<typename eT>
 arma_inline
-void
+CoMat_elem<eT>&
 CoMat_elem<eT>::operator++()
   {
   arma_extra_debug_sigprint();
@@ -1299,25 +1331,40 @@ CoMat_elem<eT>::operator++()
   
   sync_state = 1;
   n_nonzero  = parent.get_n_nonzero();
+  
+  return *this;
   }
 
 
 
 template<typename eT>
 arma_inline
-void
+eT
 CoMat_elem<eT>::operator++(int)
   {
   arma_extra_debug_sigprint();
   
-  (*this).operator++();
+  typename CoMat<eT>::map_type& map_ref = *(parent.map_ptr);
+  
+  eT& val = map_ref.operator[](index);  // creates the element if it doesn't exist
+  
+  const eT old_val = val;
+  
+  val += eT(1);  // can't use ++,  as eT can be std::complex
+  
+  if(val == eT(0))  { map_ref.erase(index); }
+  
+  sync_state = 1;
+  n_nonzero  = parent.get_n_nonzero();
+  
+  return old_val;
   }
 
 
 
 template<typename eT>
 arma_inline
-void
+CoMat_elem<eT>&
 CoMat_elem<eT>::operator--()
   {
   arma_extra_debug_sigprint();
@@ -1332,18 +1379,33 @@ CoMat_elem<eT>::operator--()
   
   sync_state = 1;
   n_nonzero  = parent.get_n_nonzero();
+  
+  return *this;
   }
 
 
 
 template<typename eT>
 arma_inline
-void
+eT
 CoMat_elem<eT>::operator--(int)
   {
   arma_extra_debug_sigprint();
   
-  (*this).operator--();
+  typename CoMat<eT>::map_type& map_ref = *(parent.map_ptr);
+  
+  eT& val = map_ref.operator[](index);  // creates the element if it doesn't exist
+  
+  const eT old_val = val;
+  
+  val -= eT(1);  // can't use --,  as eT can be std::complex
+  
+  if(val == eT(0))  { map_ref.erase(index); }
+  
+  sync_state = 1;
+  n_nonzero  = parent.get_n_nonzero();
+  
+  return old_val;
   }
 
 

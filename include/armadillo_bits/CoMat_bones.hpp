@@ -19,6 +19,7 @@
 
 
 
+// this class is for internal use only; subject to change and/or removal without notice
 template<typename eT>
 class CoMat
   {
@@ -179,18 +180,23 @@ class CoMat_elem
   
   arma_inline operator eT() const;
   
-  arma_inline void operator= (const CoMat_elem<eT>& x);
-  arma_inline void operator= (const eT in_val);
-  arma_inline void operator+=(const eT in_val);
-  arma_inline void operator-=(const eT in_val);
-  arma_inline void operator*=(const eT in_val);
-  arma_inline void operator/=(const eT in_val);
+  arma_inline CoMat_elem<eT>& operator= (const CoMat_elem<eT>&  x);
   
-  arma_inline void operator++();
-  arma_inline void operator++(int);
+  template<typename eT2>
+  arma_inline CoMat_elem<eT>& operator= (const CoMat_elem<eT2>& x);
+
+
+  arma_inline CoMat_elem<eT>& operator= (const eT in_val);
+  arma_inline CoMat_elem<eT>& operator+=(const eT in_val);
+  arma_inline CoMat_elem<eT>& operator-=(const eT in_val);
+  arma_inline CoMat_elem<eT>& operator*=(const eT in_val);
+  arma_inline CoMat_elem<eT>& operator/=(const eT in_val);
   
-  arma_inline void operator--();
-  arma_inline void operator--(int);
+  arma_inline CoMat_elem<eT>& operator++();
+  arma_inline eT              operator++(int);
+  
+  arma_inline CoMat_elem<eT>& operator--();
+  arma_inline eT              operator--(int);
   };
 
 

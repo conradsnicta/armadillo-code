@@ -96,13 +96,14 @@ class SpMat : public SpBase< eT, SpMat<eT> >
   inline            SpMat(const std::string& text);
   inline SpMat& operator=(const std::string& text);
   inline            SpMat(const SpMat<eT>&   x);
-  inline            SpMat(const CoMat<eT>&   x);
-  
   
   #if defined(ARMA_USE_CXX11)
   inline            SpMat(SpMat&& m);
   inline SpMat& operator=(SpMat&& m);
   #endif
+  
+  inline explicit    SpMat(const CoMat<eT>& x);
+  inline SpMat&  operator=(const CoMat<eT>& x);
   
   template<typename T1, typename T2, typename T3>
   inline SpMat(const Base<uword,T1>& rowind, const Base<uword,T2>& colptr, const Base<eT,T3>& values, const uword n_rows, const uword n_cols);
@@ -127,12 +128,6 @@ class SpMat : public SpBase< eT, SpMat<eT> >
   inline SpMat& operator*=(const SpMat& m);
   inline SpMat& operator%=(const SpMat& m);
   inline SpMat& operator/=(const SpMat& m);
-  
-  inline SpMat& operator= (const CoMat<eT>& x);
-  inline SpMat& operator+=(const CoMat<eT>& x);
-  inline SpMat& operator-=(const CoMat<eT>& x);
-  inline SpMat& operator*=(const CoMat<eT>& x);
-  inline SpMat& operator%=(const CoMat<eT>& x);
   
   template<typename T1> inline explicit    SpMat(const Base<eT, T1>& m);
   template<typename T1> inline SpMat&  operator=(const Base<eT, T1>& m);

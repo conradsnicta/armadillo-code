@@ -661,7 +661,9 @@ CoMat<eT>::print(const std::string& extra_text) const
     ARMA_DEFAULT_OSTREAM.width(orig_width);
     }
   
-  const uword n_nonzero = (*map_ptr).size();
+  map_type& map_ref = (*map_ptr);
+  
+  const uword n_nonzero = uword(map_ref.size());
   
   const double density = (n_elem > 0) ? ((double(n_nonzero) / double(n_elem))*double(100)) : double(0);
   
@@ -671,25 +673,22 @@ CoMat<eT>::print(const std::string& extra_text) const
   
   if(n_nonzero > 0)
     {
-    CoMat_dense_iterator<eT> it     = (*this).dense_begin();
-    CoMat_dense_iterator<eT> it_end = (*this).dense_end();
-    
-    uword row = 0;
-    uword col = 0;
-    
-    for(; it != it_end; ++it)
+    typename map_type::const_iterator it = map_ref.begin();
+
+    for(uword i=0; i < n_nonzero; ++i)
       {
-      const eT val = (*it);
+      const std::pair<uword, eT>& entry = (*it);
       
-      if(val != eT(0))
-        {
-        ARMA_DEFAULT_OSTREAM << '(' << row << ", " << col << ") ";
-        ARMA_DEFAULT_OSTREAM << val << '\n';
-        }
+      const uword index = entry.first;
+      const eT    val   = entry.second;
       
-      ++row;
+      const uword row = index % n_rows;
+      const uword col = index / n_rows;
       
-      if(row >= n_rows)  { row = 0; col++; }
+      ARMA_DEFAULT_OSTREAM << '(' << row << ", " << col << ") ";
+      ARMA_DEFAULT_OSTREAM << val << '\n';
+      
+      ++it;
       }
     }
   
@@ -717,43 +716,35 @@ CoMat<eT>::get_locval_format(umat& locs, Col<eT>& vals) const
   {
   arma_extra_debug_sigprint();
   
-  const uword N = (*this).get_n_nonzero();
+  map_type& map_ref = (*map_ptr);
+  
+  typename map_type::const_iterator it = map_ref.begin();
+  
+  const uword N = uword(map_ref.size());
   
   locs.set_size(2,N);
   vals.set_size(N);
   
-  if(N > 0)
+  eT* vals_mem = vals.memptr();
+  
+  for(uword i=0; i<N; ++i)
     {
-    CoMat_dense_iterator<eT> it     = (*this).dense_begin();
-    CoMat_dense_iterator<eT> it_end = (*this).dense_end();
+    const std::pair<uword, eT>& entry = (*it);
     
-    uword row = 0;
-    uword col = 0;
+    const uword index = entry.first;
+    const eT    val   = entry.second;
     
-    eT* vals_mem = vals.memptr();
+    const uword row = index % n_rows;
+    const uword col = index / n_rows;
     
-    uword count = 0;
+    uword* locs_colptr = locs.colptr(i);
     
-    for(; it != it_end; ++it)
-      {
-      const eT val = (*it);
-      
-      if(val != eT(0))
-        {
-        uword* locs_colptr = locs.colptr(count);
-        
-        locs_colptr[0] = row;
-        locs_colptr[1] = col;
-        
-        vals_mem[count] = val;
-        
-        ++count;
-        }
-      
-      ++row;
-      
-      if(row >= n_rows)  { row = 0; col++; }
-      }
+    locs_colptr[0] = row;
+    locs_colptr[1] = col;
+    
+    vals_mem[i] = val;
+    
+    ++it;
     }
   }
 
@@ -878,28 +869,6 @@ CoMat<eT>::erase_val(const uword index)
   typename map_type::iterator it_end = map_ref.end();
   
   if(it != it_end)  { map_ref.erase(it); }
-  }
-
-
-
-template<typename eT>
-inline
-arma_warn_unused
-CoMat_dense_iterator<eT>
-CoMat<eT>::dense_begin() const
-  {
-  return CoMat_dense_iterator<eT>(*this, 0);
-  }
-
-
-
-template<typename eT>
-inline
-arma_warn_unused
-CoMat_dense_iterator<eT>
-CoMat<eT>::dense_end() const
-  {
-  return CoMat_dense_iterator<eT>(*this, n_elem);
   }
 
 
@@ -1336,95 +1305,6 @@ CoMat_elem<eT>::operator--(int)
   arma_extra_debug_sigprint();
   
   (*this).operator--();
-  }
-
-
-
-
-
-
-// CoMat_dense_iterator
-
-
-
-template<typename eT>
-inline
-CoMat_dense_iterator<eT>::CoMat_dense_iterator(const CoMat<eT>& in_parent, const uword in_index)
-  : parent(in_parent)
-  , index (in_index )
-  {
-  arma_extra_debug_sigprint();
-  
-  typename CoMat<eT>::map_type& map_ref = *(parent.map_ptr);
-  
-  it     = map_ref.begin();
-  it_end = map_ref.end();
-  }
-
-
-
-template<typename eT>
-inline
-arma_warn_unused
-eT
-CoMat_dense_iterator<eT>::operator*() const
-  {
-  arma_extra_debug_sigprint();
-  
-  if(it != it_end)
-    {
-    const typename CoMat<eT>::map_type::value_type& it_deref = (*it);
-    
-    return (index < it_deref.first) ? eT(0) : eT(it_deref.second);
-    }
-  
-  return eT(0);
-  }
-
-
-
-template<typename eT>
-inline
-void
-CoMat_dense_iterator<eT>::operator++()
-  {
-  arma_extra_debug_sigprint();
-  
-  ++index;
-  
-  if(it != it_end)
-    {
-    if(index > (*it).first)  { ++it; }
-    }
-  }
-
-
-
-template<typename eT>
-inline
-void
-CoMat_dense_iterator<eT>::operator++(int)
-  {
-  arma_extra_debug_sigprint();
-  
-  ++index;
-  
-  if(it != it_end)
-    {
-    if(index > (*it).first)  { ++it; }
-    }
-  }
-
-
-
-template<typename eT>
-inline
-bool
-CoMat_dense_iterator<eT>::operator!=(const CoMat_dense_iterator<eT>& X) const
-  {
-  arma_extra_debug_sigprint();
-  
-  return ((*this).index != X.index);
   }
 
 

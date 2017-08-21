@@ -191,25 +191,6 @@ SpMat<eT>::SpMat(const SpMat<eT>& x)
 
 
 
-template<typename eT>
-inline
-SpMat<eT>::SpMat(const CoMat<eT>& x)
-  : n_rows(0)
-  , n_cols(0)
-  , n_elem(0)
-  , n_nonzero(0)
-  , vec_state(0)
-  , values(NULL)
-  , row_indices(NULL)
-  , col_ptrs(NULL)
-  {
-  arma_extra_debug_sigprint_this(this);
-
-  init(x);
-  }
-
-
-
 #if defined(ARMA_USE_CXX11)
   
   template<typename eT>
@@ -245,6 +226,39 @@ SpMat<eT>::SpMat(const CoMat<eT>& x)
     }
   
 #endif
+
+
+
+template<typename eT>
+inline
+SpMat<eT>::SpMat(const CoMat<eT>& x)
+  : n_rows(0)
+  , n_cols(0)
+  , n_elem(0)
+  , n_nonzero(0)
+  , vec_state(0)
+  , values(NULL)
+  , row_indices(NULL)
+  , col_ptrs(NULL)
+  {
+  arma_extra_debug_sigprint_this(this);
+  
+  init(x);
+  }
+
+
+
+template<typename eT>
+inline
+SpMat<eT>&
+SpMat<eT>::operator=(const CoMat<eT>& x)
+  {
+  arma_extra_debug_sigprint();
+  
+  init(x);
+  
+  return *this;
+  }
 
 
 
@@ -744,85 +758,6 @@ SpMat<eT>::operator/=(const SpMat<eT>& x)
     }
   
   return *this;
-  }
-
-
-
-template<typename eT>
-inline
-SpMat<eT>&
-SpMat<eT>::operator=(const CoMat<eT>& x)
-  {
-  arma_extra_debug_sigprint();
-  
-  init(x);
-  
-  return *this;
-  }
-
-
-
-template<typename eT>
-inline
-SpMat<eT>&
-SpMat<eT>::operator+=(const CoMat<eT>& x)
-  {
-  arma_extra_debug_sigprint();
-  
-  sync_csc();
-  
-  const SpMat<eT> tmp(x);
-  
-  return (*this).operator+=(tmp);
-  }
-
-
-
-template<typename eT>
-inline
-SpMat<eT>&
-SpMat<eT>::operator-=(const CoMat<eT>& x)
-  {
-  arma_extra_debug_sigprint();
-  
-  sync_csc();
-  
-  const SpMat<eT> tmp(x);
-  
-  return (*this).operator-=(tmp);
-  }
-
-
-
-template<typename eT>
-inline
-SpMat<eT>&
-SpMat<eT>::operator*=(const CoMat<eT>& x)
-  {
-  arma_extra_debug_sigprint();
-  
-  sync_csc();
-  
-  const SpMat<eT> tmp(x);
-  
-  return (*this).operator*=(tmp);
-  }
-
-
-
-// in-place element-wise matrix multiplication
-template<typename eT>
-inline
-SpMat<eT>&
-SpMat<eT>::operator%=(const CoMat<eT>& x)
-  {
-  arma_extra_debug_sigprint();
-  
-  sync_csc();
-  
-  const SpMat<eT> tmp(x);
-  
-  return (*this).operator%=(tmp);
   }
 
 

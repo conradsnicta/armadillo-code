@@ -53,7 +53,7 @@ class CoMat
   inline          CoMat(const CoMat<eT>& x);
   inline void operator=(const CoMat<eT>& x);
   
-  inline          CoMat(const SpMat<eT>& x);
+  inline explicit CoMat(const SpMat<eT>& x);
   inline void operator=(const SpMat<eT>& x);
   
   #if defined(ARMA_USE_CXX11)
@@ -118,12 +118,8 @@ class CoMat
        inline void erase_val(const uword index);
   
   
-  inline arma_warn_unused CoMat_dense_iterator<eT> dense_begin() const;
-  inline arma_warn_unused CoMat_dense_iterator<eT> dense_end()   const;
-  
   friend class CoMat_val<eT>;
   friend class CoMat_elem<eT>;
-  friend class CoMat_dense_iterator<eT>;
   friend class SpMat<eT>;
   };
 
@@ -193,36 +189,6 @@ class CoMat_elem
   
   arma_inline void operator--();
   arma_inline void operator--(int);
-  };
-
-
-
-template<typename eT>
-class CoMat_dense_iterator
-  {
-  private:
-  
-  arma_aligned const CoMat<eT>& parent;
-  
-  arma_aligned uword index;
-  
-  arma_aligned typename CoMat<eT>::map_type::const_iterator it;
-  arma_aligned typename CoMat<eT>::map_type::const_iterator it_end;
-  
-  friend class CoMat<eT>;
-  friend class SpMat<eT>;
-  
-  
-  public:
-  
-  inline CoMat_dense_iterator(const CoMat<eT>& in_parent, const uword in_index);
-  
-  inline arma_warn_unused eT operator*() const;
-  
-  inline void operator++();
-  inline void operator++(int);
-  
-  inline bool operator!=(const CoMat_dense_iterator<eT>& X) const;
   };
 
 

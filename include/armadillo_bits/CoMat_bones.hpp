@@ -143,6 +143,7 @@ class CoMat_val
   
   arma_inline operator eT() const;
   
+  arma_inline void operator= (const CoMat_val<eT>& x);
   arma_inline void operator= (const eT in_val);
   arma_inline void operator+=(const eT in_val);
   arma_inline void operator-=(const eT in_val);
@@ -178,6 +179,7 @@ class CoMat_elem
   
   arma_inline operator eT() const;
   
+  arma_inline void operator= (const CoMat_elem<eT>& x);
   arma_inline void operator= (const eT in_val);
   arma_inline void operator+=(const eT in_val);
   arma_inline void operator-=(const eT in_val);

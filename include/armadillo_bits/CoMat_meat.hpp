@@ -907,6 +907,20 @@ CoMat_val<eT>::operator eT() const
 template<typename eT>
 arma_inline
 void
+CoMat_val<eT>::operator=(const CoMat_val<eT>& x)
+  {
+  arma_extra_debug_sigprint();
+  
+  const eT in_val = eT(x);
+  
+  parent.set_val(index, in_val);
+  }
+
+
+
+template<typename eT>
+arma_inline
+void
 CoMat_val<eT>::operator=(const eT in_val)
   {
   arma_extra_debug_sigprint();
@@ -1108,6 +1122,23 @@ CoMat_elem<eT>::operator eT() const
   const CoMat<eT>& const_parent = parent;
   
   return const_parent.operator[](index);
+  }
+
+
+
+template<typename eT>
+arma_inline
+void
+CoMat_elem<eT>::operator=(const CoMat_elem<eT>& x)
+  {
+  arma_extra_debug_sigprint();
+  
+  const eT in_val = eT(x);
+  
+  parent.set_val(index, in_val);
+  
+  sync_state = 1;
+  n_nonzero  = parent.get_n_nonzero();
   }
 
 

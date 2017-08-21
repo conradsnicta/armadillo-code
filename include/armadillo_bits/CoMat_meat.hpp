@@ -833,7 +833,7 @@ CoMat<eT>::set_val(const uword index, const eT& in_val)
       {
       map_type& map_ref = (*map_ptr);
       
-      if( (map_ref.empty() == false) && (index >= uword(map_ref.crbegin()->first)) )
+      if( (map_ref.empty() == false) && (index > uword(map_ref.crbegin()->first)) )
         {
         map_ref.emplace_hint(map_ref.cend(), index, in_val);
         }
@@ -1017,18 +1017,19 @@ CoMat_val<eT>::operator/=(const eT in_val)
   
   if(it != it_end)
     {
-    if(in_val != eT(0))
-      {
-      eT& val = (*it).second;
-      
-      val /= in_val;
-      
-      if(val == eT(0))  { map_ref.erase(it); }
-      }
-    else
-      {
-      map_ref.erase(it);
-      }
+    eT& val = (*it).second;
+    
+    val /= in_val;
+    
+    if(val == eT(0))  { map_ref.erase(it); }
+    }
+  else
+    {
+    // silly operation, but included for completness
+    
+    const eT val = eT(0) / in_val;
+    
+    if(val != eT(0))  { parent.set_val(index, val); }
     }
   }
 
@@ -1254,21 +1255,28 @@ CoMat_elem<eT>::operator/=(const eT in_val)
   
   if(it != it_end)
     {
-    if(in_val != eT(0))
-      {
-      eT& val = (*it).second;
-      
-      val /= in_val;
-      
-      if(val == eT(0))  { map_ref.erase(it); }
-      }
-    else
-      {
-      map_ref.erase(it);
-      }
+    eT& val = (*it).second;
+    
+    val /= in_val;
+    
+    if(val == eT(0))  { map_ref.erase(it); }
     
     sync_state = 1;
     n_nonzero  = parent.get_n_nonzero();
+    }
+  else
+    {
+    // silly operation, but included for completness
+    
+    const eT val = eT(0) / in_val;
+    
+    if(val != eT(0))
+      {
+      parent.set_val(index, val);
+      
+      sync_state = 1;
+      n_nonzero  = parent.get_n_nonzero();
+      }
     }
   }
 

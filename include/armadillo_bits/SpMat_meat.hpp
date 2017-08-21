@@ -1329,7 +1329,8 @@ SpMat<eT>::SpMat(const SpOp<T1, spop_type>& X)
   
   spop_type::apply(*this, X);
   
-  invalidate_cache();
+  sync_csc();          // in case apply() used element accessors
+  invalidate_cache();  // in case apply() modified the CSC representation
   }
 
 
@@ -1346,7 +1347,8 @@ SpMat<eT>::operator=(const SpOp<T1, spop_type>& X)
   
   spop_type::apply(*this, X);
   
-  invalidate_cache();
+  sync_csc();          // in case apply() used element accessors
+  invalidate_cache();  // in case apply() modified the CSC representation
   
   return *this;
   }
@@ -1467,7 +1469,8 @@ SpMat<eT>::SpMat(const SpGlue<T1, T2, spglue_type>& X)
   
   spglue_type::apply(*this, X);
   
-  invalidate_cache();
+  sync_csc();          // in case apply() used element accessors
+  invalidate_cache();  // in case apply() modified the CSC representation
   }
 
 
@@ -1489,7 +1492,8 @@ SpMat<eT>::SpMat(const mtSpOp<eT, T1, spop_type>& X)
 
   spop_type::apply(*this, X);
   
-  invalidate_cache();
+  sync_csc();          // in case apply() used element accessors
+  invalidate_cache();  // in case apply() modified the CSC representation
   }
 
 
@@ -1504,7 +1508,8 @@ SpMat<eT>::operator=(const mtSpOp<eT, T1, spop_type>& X)
 
   spop_type::apply(*this, X);
   
-  invalidate_cache();
+  sync_csc();          // in case apply() used element accessors
+  invalidate_cache();  // in case apply() modified the CSC representation
 
   return *this;
   }
@@ -1608,7 +1613,8 @@ SpMat<eT>::operator=(const SpGlue<T1, T2, spglue_type>& X)
   
   spglue_type::apply(*this, X);
   
-  invalidate_cache();
+  sync_csc();          // in case apply() used element accessors
+  invalidate_cache();  // in case apply() modified the CSC representation
   
   return *this;
   }

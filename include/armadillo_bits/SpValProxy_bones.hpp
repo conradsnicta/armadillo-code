@@ -68,12 +68,12 @@ class SpValProxy
   // Deletes the element if it is zero.  Does not check if val_ptr == NULL!
   arma_inline arma_hot void check_zero();
   
-  uword row;
-  uword col;
+  arma_aligned const uword row;
+  arma_aligned const uword col;
   
-  eT* val_ptr;
+  arma_aligned eT* val_ptr;
   
-  T1& parent; // We will call this object if we need to insert or delete an element.
+  arma_aligned T1& parent; // We will call this object if we need to insert or delete an element.
   };
 
 

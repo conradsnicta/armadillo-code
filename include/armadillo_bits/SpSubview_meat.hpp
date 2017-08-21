@@ -144,6 +144,8 @@ SpSubview<eT>::operator*=(const eT val)
   {
   arma_extra_debug_sigprint();
   
+  m.invalidate_cache();
+  
   const uword lstart_row = aux_row1;
   const uword lend_row   = aux_row1 + n_rows;
   
@@ -200,6 +202,8 @@ SpSubview<eT>::operator/=(const eT val)
   arma_extra_debug_sigprint();
   
   arma_debug_check( (val == eT(0)), "element-wise division: division by zero" );
+  
+  m.invalidate_cache();
   
   const uword lstart_row = aux_row1;
   const uword lend_row   = aux_row1 + n_rows;
@@ -840,6 +844,8 @@ SpSubview<eT>::replace(const eT old_val, const eT new_val)
     arma_debug_warn("SpSubview::replace(): replacement not done, as old_val = 0");
     return;
     }
+  
+  m.invalidate_cache();
   
   const uword lstart_row = aux_row1;
   const uword lend_row   = aux_row1 + n_rows;

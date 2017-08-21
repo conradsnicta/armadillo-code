@@ -2479,8 +2479,6 @@ SpMat<eT>::shed_row(const uword row_num)
   
   arma_debug_check (row_num >= n_rows, "SpMat::shed_row(): out of bounds");
 
-  sync_csc();
-  
   shed_rows (row_num, row_num);
   }
 
@@ -2495,8 +2493,6 @@ SpMat<eT>::shed_col(const uword col_num)
   
   arma_debug_check (col_num >= n_cols, "SpMat::shed_col(): out of bounds");
 
-  sync_csc();
-  
   shed_cols(col_num, col_num);
   }
 

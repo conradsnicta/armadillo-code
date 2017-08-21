@@ -234,6 +234,8 @@ SpRow<eT>::shed_cols(const uword in_col1, const uword in_col2)
     "SpRow::shed_cols(): indices out of bounds or incorrectly used"
     );
   
+  SpMat<eT>::sync_csc();
+  
   const uword diff = (in_col2 - in_col1 + 1);
 
   // This is doubleplus easy because we have all the column pointers stored.
@@ -293,6 +295,8 @@ SpRow<eT>::shed_cols(const uword in_col1, const uword in_col2)
 
   access::rw(SpMat<eT>::n_cols) -= diff;
   access::rw(SpMat<eT>::n_elem) -= diff;
+  
+  SpMat<eT>::invalidate_cache();
   }
 
 

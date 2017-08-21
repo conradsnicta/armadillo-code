@@ -36,10 +36,6 @@ class SpMat : public SpBase< eT, SpMat<eT> >
   const uword n_nonzero; //!< number of nonzero elements (read-only)
   const uword vec_state; //!< 0: matrix; 1: column vector; 2: row vector
   
-  // so that SpValProxy can call add_element() and delete_element()
-  friend class SpValProxy<SpMat<eT> >;
-  friend class SpSubview<eT>;
-  
   /**
    * The memory used to store the values of the matrix.
    * In accordance with the CSC format, this stores only the actual values.
@@ -616,6 +612,14 @@ class SpMat : public SpBase< eT, SpMat<eT> >
   
   arma_inline void sync_cache() const;
   arma_inline void sync_csc()   const;
+  
+  
+  // so that SpValProxy can call add_element() and delete_element()
+  friend class SpValProxy< SpMat<eT> >;
+  friend class SpSubview<eT>;
+  friend class SpRow<eT>;
+  friend class SpCol<eT>;
+  
   
   public:
     

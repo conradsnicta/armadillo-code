@@ -243,6 +243,8 @@ SpCol<eT>::shed_rows(const uword in_row1, const uword in_row2)
     "SpCol::shed_rows(): indices out of bounds or incorrectly used"
     );
   
+  SpMat<eT>::sync_csc();
+  
   const uword diff = (in_row2 - in_row1 + 1);
 
   // This is easy because everything is in one column.
@@ -306,6 +308,8 @@ SpCol<eT>::shed_rows(const uword in_row1, const uword in_row2)
 
   access::rw(SpMat<eT>::n_rows) -= diff;
   access::rw(SpMat<eT>::n_elem) -= diff;
+  
+  SpMat<eT>::invalidate_cache();
   }
 
 

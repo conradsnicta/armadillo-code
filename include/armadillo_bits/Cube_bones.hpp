@@ -315,7 +315,8 @@ class Cube : public BaseCube< eT, Cube<eT> >
   inline const Cube& randn(const uword in_rows, const uword in_cols, const uword in_slices);
   inline const Cube& randn(const SizeCube& s);
   
-  inline void reset();
+  inline void      reset();
+  inline void soft_reset();
   
   
   template<typename T1> inline void set_real(const BaseCube<pod_type,T1>& X);

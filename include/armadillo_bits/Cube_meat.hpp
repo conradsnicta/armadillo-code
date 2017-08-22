@@ -3516,6 +3516,26 @@ Cube<eT>::reset()
 
 
 template<typename eT>
+inline
+void
+Cube<eT>::soft_reset()
+  {
+  arma_extra_debug_sigprint();
+  
+  // don't change the size if the cube has a fixed size
+  if(mem_state <= 1)
+    {
+    reset();
+    }
+  else
+    {
+    fill(Datum<eT>::nan);
+    }
+  }
+
+
+
+template<typename eT>
 template<typename T1>
 inline
 void

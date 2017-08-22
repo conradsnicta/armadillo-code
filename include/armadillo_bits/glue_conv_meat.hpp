@@ -19,6 +19,7 @@
 
 
 
+// TODO: this implementation of conv() is rudimentary; replace with faster version
 template<typename eT>
 inline
 void
@@ -217,6 +218,7 @@ glue_conv::apply(Mat<typename T1::elem_type>& out, const Glue<T1,T2,glue_conv>& 
 
 
 
+// TODO: this implementation of conv2() is rudimentary; replace with faster version
 template<typename eT>
 inline
 void

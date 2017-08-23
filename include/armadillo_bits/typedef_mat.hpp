@@ -141,7 +141,7 @@ typedef SpCol <cx_double> sp_cx_colvec;
 typedef SpRow <cx_double> sp_cx_rowvec;
 
 
-
+// internal use only; subject to change or removal without notice
 typedef CoMat <uword>     co_umat;
 typedef CoMat <sword>     co_imat;
 typedef CoMat <float>     co_fmat;

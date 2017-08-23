@@ -42,7 +42,7 @@ eigs_sym
   
   if(status == false)
     {
-    eigval.reset();
+    eigval.soft_reset();
     arma_stop_runtime_error("eigs_sym(): decomposition failed");
     }
   
@@ -74,7 +74,7 @@ eigs_sym
   
   if(status == false)
     {
-    eigval.reset();
+    eigval.soft_reset();
     arma_debug_warn("eigs_sym(): decomposition failed");
     }
   
@@ -107,7 +107,8 @@ eigs_sym
   
   if(status == false)
     {
-    eigval.reset();
+    eigval.soft_reset();
+    eigvec.soft_reset();
     arma_debug_warn("eigs_sym(): decomposition failed");
     }
   

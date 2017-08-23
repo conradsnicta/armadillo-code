@@ -14461,7 +14461,7 @@ cout &lt;&lt; "number of seconds: " &lt;&lt; n &lt;&lt; endl;
 <br>
 <ul>
 <li>
-In Armadillo 8.x, warnings and messages associated with exceptions are printed to the <i>std::cerr</i> stream;
+In Armadillo 8.x, warnings and exception messages are printed to the <i>std::cerr</i> stream;
 in Armadillo 7.x and earlier, the <i>std::cout</i> stream is used
 <ul>
 <li>the printing can be disabled by defining <a href="#config_hpp">ARMA_DONT_PRINT_ERRORS</a> before including the armadillo header</li>
@@ -14469,9 +14469,18 @@ in Armadillo 7.x and earlier, the <i>std::cout</i> stream is used
 </ul>
 </li>
 <br>
-<li><b>set_stream_err1()</b>: change the stream for messages associated with <i>std::logic_error</i> exceptions (eg. out of bounds accesses)</li>
+<li><b>set_stream_err1()</b>:
+<ul>
+<li>change the stream for messages associated with <i>std::logic_error</i> exceptions (eg. out of bounds accesses)</li>
+<li>in Armadillo 8.x, the stream can also be changed via the ARMA_CERR_STREAM define; see <a href="#config_hpp">config.hpp</a></li>
+</ul>
+</li>
 <br>
-<li><b>set_stream_err2()</b>: change the stream for warnings and messages associated with <i>std::runtime_error</i> and <i>std::bad_alloc</i> exceptions (eg. failed decompositions, out of memory)</li>
+<li><b>set_stream_err2()</b>:
+<ul>
+<li>change the stream for warnings and messages associated with <i>std::runtime_error</i> and <i>std::bad_alloc</i> exceptions (eg. failed decompositions, out of memory)</li>
+<li>in Armadillo 8.x, the stream can also be changed via the ARMA_CERR_STREAM define; see <a href="#config_hpp">config.hpp</a></li>
+</ul>
 <br>
 <li><b>get_stream_err1()</b>: get a reference to the stream for messages associated with <i>std::logic_error</i> exceptions</li>
 <br>
@@ -16389,7 +16398,7 @@ List of additions and changes for each version:
 <a name="version_8100"></a>
 <li>Version 8.xxx:
 <ul>
-<li>faster incremental construction of <a href="#SpMat">sparse matrices</a> via element access operators, through an internal caching mechanism</li>
+<li>faster incremental construction of <a href="#SpMat">sparse matrices</a> via element access operators</li>
 <li>warnings and errors are now printed by default to the <i>std::cerr</i> stream</li>
 <li>new <a href="#config_hpp">configuration</a> options ARMA_COUT_STREAM and ARMA_CERR_STREAM replace ARMA_DEFAULT_OSTREAM</li>
 </ul>

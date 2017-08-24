@@ -1838,7 +1838,7 @@ the following subset of operations currently works with sparse matrices:
 <li>fundamental arithmetic <a href="#operators">operations</a> (such as addition and multiplication)</li>
 <li><a href="#submat">submatrix views</a> (contiguous forms only)</li>
 <li><a href="#diag">diagonal views</a></li>
-<li><a href="#save_load_mat">saving and loading</a> (using <i>arma_binary</i> format only)</li>
+<li><a href="#save_load_mat">saving and loading</a> (using <i>arma_binary</i> and <i>coord_ascii</i> formats only)</li>
 <li>element-wise functions: <a href="#abs">abs()</a>, <a href="#imag_real">imag()</a>, <a href="#imag_real">real()</a>, <a href="#conj">conj()</a>, <a href="#misc_fns">sqrt()</a>, <a href="#misc_fns">square()</a>, <a href="#misc_fns">floor()</a>, <a href="#misc_fns">ceil()</a>, <a href="#misc_fns">round()</a>, <a href="#misc_fns">trunc()</a>, <a href="#misc_fns">sign()</a></li>
 <li>scalar functions of matrices: <a href="#accu">accu()</a>, <a href="#as_scalar">as_scalar()</a>, <a href="#dot">dot()</a>, <a href="#norm">norm()</a>, <a href="#trace">trace()</a></li>
 <li>vector valued functions of matrices: <a href="#min_and_max">min()</a>, <a href="#min_and_max">max()</a>, <a href="#nonzeros">nonzeros()</a>, <a href="#sum">sum()</a>, <a href="#stats_fns">mean()</a>, <a href="#stats_fns">var()</a></li>
@@ -5907,6 +5907,17 @@ the <i>hdf5.h</i> header file must be available on your system and you will need
                         </td>
                         <td style="vertical-align: top;">
 As per <i>hdf5_binary</i>, but save/load the data with columns transposed to rows (and vice versa)
+<br>
+<br>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="vertical-align: top;"><b>coord_ascii</b></td>
+                        <td style="vertical-align: top;"><br>
+                        </td>
+                        <td style="vertical-align: top;">
+Numerical data stored in coordinate list format, without a header.
+Applicable only to sparse matrices (<a href="#SpMat">SpMat</a>).
 <br>
 <br>
                         </td>
@@ -16400,6 +16411,7 @@ List of additions and changes for each version:
 <ul>
 <li>faster incremental construction of <a href="#SpMat">sparse matrices</a> via element access operators</li>
 <li>faster <a href="#diag">diagonal views</a> in <a href="#SpMat">sparse matrices</a></li>
+<li>expanded <a href="#SpMat">SpMat</a> to save/load sparse matrices in <a href="#save_load_mat">coord format</a></li>
 <li>warnings and errors are now printed by default to the <i>std::cerr</i> stream</li>
 <li>new <a href="#config_hpp">configuration</a> options ARMA_COUT_STREAM and ARMA_CERR_STREAM (replaces previous ARMA_DEFAULT_OSTREAM option)</li>
 </ul>

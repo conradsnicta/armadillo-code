@@ -799,6 +799,7 @@ diskio::save_raw_ascii(const Mat<eT>& x, std::ostream& f)
   
   if(is_real<eT>::value)
     {
+    f.unsetf(ios::fixed);
     f.setf(ios::scientific);
     f.precision(14);
     cell_width = 22;
@@ -806,6 +807,7 @@ diskio::save_raw_ascii(const Mat<eT>& x, std::ostream& f)
   
   if(is_cx<eT>::value)
     {
+    f.unsetf(ios::fixed);
     f.setf(ios::scientific);
     f.precision(14);
     }
@@ -929,6 +931,7 @@ diskio::save_arma_ascii(const Mat<eT>& x, std::ostream& f)
   
   if(is_real<eT>::value)
     {
+    f.unsetf(ios::fixed);
     f.setf(ios::scientific);
     f.precision(14);
     cell_width = 22;
@@ -936,6 +939,7 @@ diskio::save_arma_ascii(const Mat<eT>& x, std::ostream& f)
   
   if(is_cx<eT>::value)
     {
+    f.unsetf(ios::fixed);
     f.setf(ios::scientific);
     f.precision(14);
     }
@@ -1010,6 +1014,7 @@ diskio::save_csv_ascii(const Mat<eT>& x, std::ostream& f)
   
   if( (is_float<eT>::value) || (is_double<eT>::value) )
     {
+    f.unsetf(ios::fixed);
     f.setf(ios::scientific);
     f.precision(14);
     }
@@ -1052,6 +1057,7 @@ diskio::save_csv_ascii(const Mat< std::complex<T> >& x, std::ostream& f)
   
   if( (is_float<T>::value) || (is_double<T>::value) )
     {
+    f.unsetf(ios::fixed);
     f.setf(ios::scientific);
     f.precision(14);
     }
@@ -2561,10 +2567,9 @@ diskio::save_coord_ascii(const SpMat<eT>& x, std::ostream& f)
   
   const ios::fmtflags orig_flags = f.flags();
   
-  f.unsetf(ios::fixed);
-  
   if( (is_float<eT>::value) || (is_double<eT>::value) )
     {
+    f.unsetf(ios::fixed);
     f.setf(ios::scientific);
     f.precision(14);
     }
@@ -2611,10 +2616,9 @@ diskio::save_coord_ascii(const SpMat< std::complex<T> >& x, std::ostream& f)
   
   const ios::fmtflags orig_flags = f.flags();
   
-  f.unsetf(ios::fixed);
-  
   if( (is_float<T>::value) || (is_double<T>::value) )
     {
+    f.unsetf(ios::fixed);
     f.setf(ios::scientific);
     f.precision(14);
     }
@@ -2756,8 +2760,6 @@ diskio::load_coord_ascii(SpMat<eT>& x, std::istream& f, std::string& err_msg)
   while( (f.good() == true) && (load_okay == true) )
     {
     std::getline(f, line_string);
-    
-    cout << "line_string: " << line_string << endl;
     
     if(line_string.size() == 0)  { break; }
     
@@ -3176,6 +3178,7 @@ diskio::save_raw_ascii(const Cube<eT>& x, std::ostream& f)
   
   if(is_real<eT>::value)
     {
+    f.unsetf(ios::fixed);
     f.setf(ios::scientific);
     f.precision(14);
     cell_width = 22;
@@ -3183,6 +3186,7 @@ diskio::save_raw_ascii(const Cube<eT>& x, std::ostream& f)
   
   if(is_cx<eT>::value)
     {
+    f.unsetf(ios::fixed);
     f.setf(ios::scientific);
     f.precision(14);
     }
@@ -3309,6 +3313,7 @@ diskio::save_arma_ascii(const Cube<eT>& x, std::ostream& f)
   
   if(is_real<eT>::value)
     {
+    f.unsetf(ios::fixed);
     f.setf(ios::scientific);
     f.precision(14);
     cell_width = 22;
@@ -3316,6 +3321,7 @@ diskio::save_arma_ascii(const Cube<eT>& x, std::ostream& f)
   
   if(is_cx<eT>::value)
     {
+    f.unsetf(ios::fixed);
     f.setf(ios::scientific);
     f.precision(14);
     }

@@ -2561,22 +2561,20 @@ diskio::save_coord_ascii(const SpMat<eT>& x, std::ostream& f)
   
   const ios::fmtflags orig_flags = f.flags();
   
+  f.unsetf(ios::fixed);
+  
+  if( (is_float<eT>::value) || (is_double<eT>::value) )
+    {
+    f.setf(ios::scientific);
+    f.precision(14);
+    }
+    
   typename SpMat<eT>::const_iterator iter     = x.begin();
   typename SpMat<eT>::const_iterator iter_end = x.end();
   
   for(; iter != iter_end; ++iter)
     {
-    f.setf(ios::fixed);
-    
-    f << iter.row() << ' ' << iter.col() << ' ';
-    
-    if( (is_float<eT>::value) || (is_double<eT>::value) )
-      {
-      f.setf(ios::scientific);
-      f.precision(14);
-      }
-    
-    f << (*iter) << '\n';
+    f << iter.row() << ' ' << iter.col() << ' ' << (*iter) << '\n';
     }
   
   
@@ -2588,8 +2586,6 @@ diskio::save_coord_ascii(const SpMat<eT>& x, std::ostream& f)
     
     if( x.at(max_row, max_col) == eT(0) )
       {
-      f.setf(ios::fixed);
-      
       f << max_row << ' ' << max_col << " 0\n";
       }
     }
@@ -2611,28 +2607,26 @@ diskio::save_coord_ascii(const SpMat< std::complex<T> >& x, std::ostream& f)
   {
   arma_extra_debug_sigprint();
   
+  typedef typename std::complex<T> eT;
+  
   const ios::fmtflags orig_flags = f.flags();
   
-  typedef typename std::complex<T> eT;
+  f.unsetf(ios::fixed);
+  
+  if( (is_float<T>::value) || (is_double<T>::value) )
+    {
+    f.setf(ios::scientific);
+    f.precision(14);
+    }
   
   typename SpMat<eT>::const_iterator iter     = x.begin();
   typename SpMat<eT>::const_iterator iter_end = x.end();
   
   for(; iter != iter_end; ++iter)
     {
-    f.setf(ios::fixed);
-    
-    f << iter.row() << ' ' << iter.col() << ' ';
-    
-    if( (is_float<T>::value) || (is_double<T>::value) )
-      {
-      f.setf(ios::scientific);
-      f.precision(14);
-      }
-    
     const eT val = (*iter);
     
-    f << val.real() << ' ' << val.imag() << '\n';
+    f << iter.row() << ' ' << iter.col() << ' ' << val.real() << ' ' << val.imag() << '\n';
     }
   
   // make sure it's possible to figure out the matrix size later
@@ -2643,8 +2637,6 @@ diskio::save_coord_ascii(const SpMat< std::complex<T> >& x, std::ostream& f)
     
     if( x.at(max_row, max_col) == eT(0) )
       {
-      f.setf(ios::fixed);
-      
       f << max_row << ' ' << max_col << " 0 0\n";
       }
     }
@@ -2764,6 +2756,8 @@ diskio::load_coord_ascii(SpMat<eT>& x, std::istream& f, std::string& err_msg)
   while( (f.good() == true) && (load_okay == true) )
     {
     std::getline(f, line_string);
+    
+    cout << "line_string: " << line_string << endl;
     
     if(line_string.size() == 0)  { break; }
     

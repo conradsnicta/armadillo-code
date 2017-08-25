@@ -2793,7 +2793,7 @@ diskio::load_coord_ascii(SpMat<eT>& x, std::istream& f, std::string& err_msg)
     f.clear();
     f.seekg(pos1);
     
-    CoMat<eT> tmp(f_n_rows, f_n_cols);
+    MapMat<eT> tmp(f_n_rows, f_n_cols);
     
     while(f.good())
       {
@@ -2911,7 +2911,7 @@ diskio::load_coord_ascii(SpMat< std::complex<T> >& x, std::istream& f, std::stri
     f.clear();
     f.seekg(pos1);
     
-    CoMat< std::complex<T> > tmp(f_n_rows, f_n_cols);
+    MapMat< std::complex<T> > tmp(f_n_rows, f_n_cols);
     
     while(f.good())
       {

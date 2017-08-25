@@ -98,8 +98,8 @@ class SpMat : public SpBase< eT, SpMat<eT> >
   inline SpMat& operator=(SpMat&& m);
   #endif
   
-  inline explicit    SpMat(const CoMat<eT>& x);
-  inline SpMat&  operator=(const CoMat<eT>& x);
+  inline explicit    SpMat(const MapMat<eT>& x);
+  inline SpMat&  operator=(const MapMat<eT>& x);
   
   template<typename T1, typename T2, typename T3>
   inline SpMat(const Base<uword,T1>& rowind, const Base<uword,T2>& colptr, const Base<eT,T3>& values, const uword n_rows, const uword n_cols);
@@ -236,18 +236,18 @@ class SpMat : public SpBase< eT, SpMat<eT> >
   
   
   // access the i-th element; if there is nothing at element i, 0 is returned
-  arma_inline arma_warn_unused CoMat_elem<eT> operator[] (const uword i);
-  arma_inline arma_warn_unused eT             operator[] (const uword i) const;
-  arma_inline arma_warn_unused CoMat_elem<eT> at         (const uword i);
-  arma_inline arma_warn_unused eT             at         (const uword i) const;
-  arma_inline arma_warn_unused CoMat_elem<eT> operator() (const uword i);
-  arma_inline arma_warn_unused eT             operator() (const uword i) const;
+  arma_inline arma_warn_unused MapMat_elem<eT> operator[] (const uword i);
+  arma_inline arma_warn_unused eT              operator[] (const uword i) const;
+  arma_inline arma_warn_unused MapMat_elem<eT> at         (const uword i);
+  arma_inline arma_warn_unused eT              at         (const uword i) const;
+  arma_inline arma_warn_unused MapMat_elem<eT> operator() (const uword i);
+  arma_inline arma_warn_unused eT              operator() (const uword i) const;
   
   // access the element at the given row and column; if there is nothing at that position, 0 is returned
-  arma_inline arma_warn_unused CoMat_elem<eT> at         (const uword in_row, const uword in_col);
-  arma_inline arma_warn_unused eT             at         (const uword in_row, const uword in_col) const;
-  arma_inline arma_warn_unused CoMat_elem<eT> operator() (const uword in_row, const uword in_col);
-  arma_inline arma_warn_unused eT             operator() (const uword in_row, const uword in_col) const;
+  arma_inline arma_warn_unused MapMat_elem<eT> at         (const uword in_row, const uword in_col);
+  arma_inline arma_warn_unused eT              at         (const uword in_row, const uword in_col) const;
+  arma_inline arma_warn_unused MapMat_elem<eT> operator() (const uword in_row, const uword in_col);
+  arma_inline arma_warn_unused eT              operator() (const uword in_row, const uword in_col) const;
   
   
   arma_inline arma_warn_unused bool is_empty()  const;
@@ -568,8 +568,8 @@ class SpMat : public SpBase< eT, SpMat<eT> >
   
   inline void init(uword in_rows, uword in_cols);
   inline void init(const std::string& text);
-  inline void init(const SpMat<eT>& x);
-  inline void init(const CoMat<eT>& x);
+  inline void init(const  SpMat<eT>& x);
+  inline void init(const MapMat<eT>& x);
   
   
   inline void init_batch_std(const Mat<uword>& locations, const Mat<eT>& values, const bool sort_locations);
@@ -601,8 +601,8 @@ class SpMat : public SpBase< eT, SpMat<eT> >
   
   // cache related
   
-  arma_aligned mutable CoMat<eT> cache;
-  arma_aligned mutable uword     sync_state;
+  arma_aligned mutable MapMat<eT> cache;
+  arma_aligned mutable uword      sync_state;
   // 0: cache needs to be updated from CSC
   // 1: CSC needs to be updated from cache
   // 2: no update required

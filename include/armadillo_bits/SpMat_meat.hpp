@@ -231,7 +231,7 @@ SpMat<eT>::SpMat(const SpMat<eT>& x)
 
 template<typename eT>
 inline
-SpMat<eT>::SpMat(const CoMat<eT>& x)
+SpMat<eT>::SpMat(const MapMat<eT>& x)
   : n_rows(0)
   , n_cols(0)
   , n_elem(0)
@@ -251,7 +251,7 @@ SpMat<eT>::SpMat(const CoMat<eT>& x)
 template<typename eT>
 inline
 SpMat<eT>&
-SpMat<eT>::operator=(const CoMat<eT>& x)
+SpMat<eT>::operator=(const MapMat<eT>& x)
   {
   arma_extra_debug_sigprint();
   
@@ -2680,7 +2680,7 @@ SpMat<eT>::shed_cols(const uword in_col1, const uword in_col2)
 template<typename eT>
 arma_inline
 arma_warn_unused
-CoMat_elem<eT>
+MapMat_elem<eT>
 SpMat<eT>::operator[](const uword i)
   {
   sync_cache();
@@ -2704,7 +2704,7 @@ SpMat<eT>::operator[](const uword i) const
 template<typename eT>
 arma_inline
 arma_warn_unused
-CoMat_elem<eT>
+MapMat_elem<eT>
 SpMat<eT>::at(const uword i)
   {
   sync_cache();
@@ -2728,7 +2728,7 @@ SpMat<eT>::at(const uword i) const
 template<typename eT>
 arma_inline
 arma_warn_unused
-CoMat_elem<eT>
+MapMat_elem<eT>
 SpMat<eT>::operator()(const uword i)
   {
   arma_debug_check( (i >= n_elem), "SpMat::operator(): out of bounds");
@@ -2761,7 +2761,7 @@ SpMat<eT>::operator()(const uword i) const
 template<typename eT>
 arma_inline
 arma_warn_unused
-CoMat_elem<eT>
+MapMat_elem<eT>
 SpMat<eT>::at(const uword in_row, const uword in_col)
   {
   sync_cache();
@@ -2785,7 +2785,7 @@ SpMat<eT>::at(const uword in_row, const uword in_col) const
 template<typename eT>
 arma_inline
 arma_warn_unused
-CoMat_elem<eT>
+MapMat_elem<eT>
 SpMat<eT>::operator()(const uword in_row, const uword in_col)
   {
   arma_debug_check( ((in_row >= n_rows) || (in_col >= n_cols)), "SpMat::operator(): out of bounds");
@@ -4379,7 +4379,7 @@ SpMat<eT>::init(const SpMat<eT>& x)
 template<typename eT>
 inline
 void
-SpMat<eT>::init(const CoMat<eT>& x)
+SpMat<eT>::init(const MapMat<eT>& x)
   {
   arma_extra_debug_sigprint();
   
@@ -4393,9 +4393,9 @@ SpMat<eT>::init(const CoMat<eT>& x)
   
   arrayops::inplace_set(access::rwp(col_ptrs), uword(0), x_n_cols + 1);
   
-  typename CoMat<eT>::map_type& x_map_ref = *(x.map_ptr);
+  typename MapMat<eT>::map_type& x_map_ref = *(x.map_ptr);
   
-  typename CoMat<eT>::map_type::const_iterator x_it = x_map_ref.begin();
+  typename MapMat<eT>::map_type::const_iterator x_it = x_map_ref.begin();
   
   for(uword i=0; i < x_n_nz; ++i)
     {

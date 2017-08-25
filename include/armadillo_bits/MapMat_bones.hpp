@@ -14,14 +14,14 @@
 // ------------------------------------------------------------------------
 
 
-//! \addtogroup CoMat
+//! \addtogroup MapMat
 //! @{
 
 
 
 // this class is for internal use only; subject to change and/or removal without notice
 template<typename eT>
-class CoMat
+class MapMat
   {
   public:
   
@@ -45,21 +45,21 @@ class CoMat
   
   public:
   
-  inline ~CoMat();
-  inline  CoMat();
+  inline ~MapMat();
+  inline  MapMat();
   
-  inline explicit CoMat(const uword in_n_rows, const uword in_n_cols);
-  inline explicit CoMat(const SizeMat& s);
+  inline explicit MapMat(const uword in_n_rows, const uword in_n_cols);
+  inline explicit MapMat(const SizeMat& s);
   
-  inline          CoMat(const CoMat<eT>& x);
-  inline void operator=(const CoMat<eT>& x);
+  inline          MapMat(const MapMat<eT>& x);
+  inline void  operator=(const MapMat<eT>& x);
   
-  inline explicit CoMat(const SpMat<eT>& x);
-  inline void operator=(const SpMat<eT>& x);
+  inline explicit MapMat(const SpMat<eT>& x);
+  inline void  operator=(const SpMat<eT>& x);
   
   #if defined(ARMA_USE_CXX11)
-  inline          CoMat(CoMat<eT>&& x);
-  inline void operator=(CoMat<eT>&& x);
+  inline          MapMat(MapMat<eT>&& x);
+  inline void  operator=(MapMat<eT>&& x);
   #endif
   
   inline void reset();
@@ -80,20 +80,20 @@ class CoMat
   inline void speye(const uword in_n_rows, const uword in_n_cols);
   inline void speye(const SizeMat& s);
   
-  arma_inline CoMat_elem<eT> elem(const uword index,                      uword& sync_state, uword& n_nonzero);
-  arma_inline CoMat_elem<eT> elem(const uword in_row, const uword in_col, uword& sync_state, uword& n_nonzero);
+  arma_inline MapMat_elem<eT> elem(const uword index,                      uword& sync_state, uword& n_nonzero);
+  arma_inline MapMat_elem<eT> elem(const uword in_row, const uword in_col, uword& sync_state, uword& n_nonzero);
   
-  arma_inline arma_warn_unused CoMat_val<eT> operator[](const uword index);
-  arma_inline arma_warn_unused           eT  operator[](const uword index) const;
+  arma_inline arma_warn_unused MapMat_val<eT> operator[](const uword index);
+  arma_inline arma_warn_unused            eT  operator[](const uword index) const;
   
-  arma_inline arma_warn_unused CoMat_val<eT> operator()(const uword index);
-  arma_inline arma_warn_unused           eT  operator()(const uword index) const;
+  arma_inline arma_warn_unused MapMat_val<eT> operator()(const uword index);
+  arma_inline arma_warn_unused            eT  operator()(const uword index) const;
   
-  arma_inline arma_warn_unused CoMat_val<eT>         at(const uword in_row, const uword in_col);
-  arma_inline arma_warn_unused           eT          at(const uword in_row, const uword in_col) const;
+  arma_inline arma_warn_unused MapMat_val<eT>         at(const uword in_row, const uword in_col);
+  arma_inline arma_warn_unused            eT          at(const uword in_row, const uword in_col) const;
   
-  arma_inline arma_warn_unused CoMat_val<eT> operator()(const uword in_row, const uword in_col);
-  arma_inline arma_warn_unused           eT  operator()(const uword in_row, const uword in_col) const;
+  arma_inline arma_warn_unused MapMat_val<eT> operator()(const uword in_row, const uword in_col);
+  arma_inline arma_warn_unused            eT  operator()(const uword in_row, const uword in_col) const;
   
   inline arma_warn_unused bool is_empty()  const;
   inline arma_warn_unused bool is_vec()    const;
@@ -119,32 +119,32 @@ class CoMat
        inline void erase_val(const uword index);
   
   
-  friend class CoMat_val<eT>;
-  friend class CoMat_elem<eT>;
+  friend class MapMat_val<eT>;
+  friend class MapMat_elem<eT>;
   friend class SpMat<eT>;
   };
 
 
 
 template<typename eT>
-class CoMat_val
+class MapMat_val
   {
   private:
   
-  arma_aligned CoMat<eT>& parent;
+  arma_aligned MapMat<eT>& parent;
   
   arma_aligned const uword index;
   
-  inline CoMat_val(CoMat<eT>& in_parent, const uword in_index);
+  inline MapMat_val(MapMat<eT>& in_parent, const uword in_index);
   
-  friend class CoMat<eT>;
+  friend class MapMat<eT>;
   
   
   public:
   
   arma_inline operator eT() const;
   
-  arma_inline void operator= (const CoMat_val<eT>& x);
+  arma_inline void operator= (const MapMat_val<eT>& x);
   arma_inline void operator= (const eT in_val);
   arma_inline void operator+=(const eT in_val);
   arma_inline void operator-=(const eT in_val);
@@ -161,39 +161,39 @@ class CoMat_val
 
 
 template<typename eT>
-class CoMat_elem
+class MapMat_elem
   {
   private:
   
-  arma_aligned CoMat<eT>& parent;
+  arma_aligned MapMat<eT>& parent;
   
   arma_aligned const uword  index;
   arma_aligned       uword& sync_state;
   arma_aligned       uword& n_nonzero;
   
-  inline CoMat_elem(CoMat<eT>& in_parent, const uword in_index, uword& in_sync_state, uword& in_n_nonzero);
+  inline MapMat_elem(MapMat<eT>& in_parent, const uword in_index, uword& in_sync_state, uword& in_n_nonzero);
   
-  friend class CoMat<eT>;
+  friend class MapMat<eT>;
   
   
   public:
   
   arma_inline operator eT() const;
   
-  arma_inline CoMat_elem<eT>& operator= (const CoMat_elem<eT>&  x);
+  arma_inline MapMat_elem<eT>& operator= (const MapMat_elem<eT>&  x);
   
   
-  arma_inline CoMat_elem<eT>& operator= (const eT in_val);
-  arma_inline CoMat_elem<eT>& operator+=(const eT in_val);
-  arma_inline CoMat_elem<eT>& operator-=(const eT in_val);
-  arma_inline CoMat_elem<eT>& operator*=(const eT in_val);
-  arma_inline CoMat_elem<eT>& operator/=(const eT in_val);
+  arma_inline MapMat_elem<eT>& operator= (const eT in_val);
+  arma_inline MapMat_elem<eT>& operator+=(const eT in_val);
+  arma_inline MapMat_elem<eT>& operator-=(const eT in_val);
+  arma_inline MapMat_elem<eT>& operator*=(const eT in_val);
+  arma_inline MapMat_elem<eT>& operator/=(const eT in_val);
   
-  arma_inline CoMat_elem<eT>& operator++();
-  arma_inline eT              operator++(int);
+  arma_inline MapMat_elem<eT>& operator++();
+  arma_inline eT               operator++(int);
   
-  arma_inline CoMat_elem<eT>& operator--();
-  arma_inline eT              operator--(int);
+  arma_inline MapMat_elem<eT>& operator--();
+  arma_inline eT               operator--(int);
   };
 
 

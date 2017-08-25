@@ -50,9 +50,9 @@ template<typename eT> class SpSubview;
 template<typename eT> class diagview;
 template<typename eT> class spdiagview;
 
-template<typename eT> class CoMat;
-template<typename eT> class CoMat_val;
-template<typename eT> class CoMat_elem;
+template<typename eT> class MapMat;
+template<typename eT> class MapMat_val;
+template<typename eT> class MapMat_elem;
 
 template<typename eT, typename T1>              class subview_elem1;
 template<typename eT, typename T1, typename T2> class subview_elem2;

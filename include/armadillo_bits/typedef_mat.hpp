@@ -142,14 +142,14 @@ typedef SpRow <cx_double> sp_cx_rowvec;
 
 
 // internal use only; subject to change or removal without notice
-typedef CoMat <uword>     co_umat;
-typedef CoMat <sword>     co_imat;
-typedef CoMat <float>     co_fmat;
-typedef CoMat <double>    co_dmat;
-typedef CoMat <double>    co_mat;
-typedef CoMat <cx_float>  co_cx_fmat;
-typedef CoMat <cx_double> co_cx_dmat;
-typedef CoMat <cx_double> co_cx_mat;
+typedef MapMat <uword>     map_umat;
+typedef MapMat <sword>     map_imat;
+typedef MapMat <float>     map_fmat;
+typedef MapMat <double>    map_dmat;
+typedef MapMat <double>    map_mat;
+typedef MapMat <cx_float>  map_cx_fmat;
+typedef MapMat <cx_double> map_cx_dmat;
+typedef MapMat <cx_double> map_cx_mat;
 
 
 

@@ -750,6 +750,94 @@ MapMat<eT>::get_locval_format(umat& locs, Col<eT>& vals) const
 
 
 
+// for experimental purposes only
+template<typename eT>
+inline
+void
+MapMat<eT>::add(const MapMat<eT>& A, const MapMat<eT>& B)
+  {
+  arma_extra_debug_sigprint();
+  
+  arma_debug_assert_same_size(A.n_rows, A.n_cols, B.n_rows, B.n_cols, "addition");
+  
+  // WARNING: potential aliasing not taken into account
+  
+  (*this).zeros(A.n_rows, A.n_cols);
+  
+  map_type& A_map_ref = *(A.map_ptr);
+  map_type& B_map_ref = *(B.map_ptr);
+  
+  typename map_type::const_iterator A_it  = A_map_ref.begin();
+  typename map_type::const_iterator A_end = A_map_ref.end();
+  
+  typename map_type::const_iterator B_it  = B_map_ref.begin();
+  typename map_type::const_iterator B_end = B_map_ref.end();
+  
+  while( (A_it != A_end) && (B_it != B_end) )
+    {
+    const std::pair<uword, eT>& A_it_deref = (*A_it);
+    const std::pair<uword, eT>& B_it_deref = (*B_it);
+    
+    const uword A_index = A_it_deref.first;
+    const uword B_index = B_it_deref.first;
+    
+    if(A_index == B_index)
+      {
+      const eT val = A_it_deref.second + B_it_deref.second;
+      
+      if(val != eT(0))  { (*this).set_val(A_index, val); }
+      
+      ++A_it;
+      ++B_it;
+      }
+    else
+      {
+      if(A_index < B_index) // if B is closer to the end
+        {
+        const eT val = A_it_deref.second;
+        
+        if(val != eT(0))  { (*this).set_val(A_index, val); }
+        
+        ++A_it;
+        }
+      else
+        {
+        const eT val = B_it_deref.second;
+        
+        if(val != eT(0))  { (*this).set_val(B_index, val); }
+        
+        ++B_it;
+        }
+      }
+    }
+  
+  while(A_it != A_end)
+    {
+    const std::pair<uword, eT>& A_it_deref = (*A_it);
+    
+    const uword index = A_it_deref.first;
+    const eT    val   = A_it_deref.second;
+    
+    if(val != eT(0))  { (*this).set_val(index, val); }
+    
+    ++A_it;
+    }
+  
+  while(B_it != B_end)
+    {
+    const std::pair<uword, eT>& B_it_deref = (*B_it);
+    
+    const uword index = B_it_deref.first;
+    const eT    val   = B_it_deref.second;
+    
+    if(val != eT(0))  { (*this).set_val(index, val); }
+    
+    ++B_it;
+    }
+  }
+
+
+
 template<typename eT>
 inline
 void

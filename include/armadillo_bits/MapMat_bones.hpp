@@ -109,6 +109,9 @@ class MapMat
   inline uword get_n_nonzero() const;
   inline void  get_locval_format(umat& locs, Col<eT>& vals) const;
   
+  // for experimental purposes only
+  inline void add(const MapMat<eT>& A, const MapMat<eT>& B);
+  
   
   private:
   

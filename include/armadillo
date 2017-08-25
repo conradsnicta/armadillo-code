@@ -169,7 +169,7 @@ namespace arma
   #include "armadillo_bits/SpRow_bones.hpp"
   #include "armadillo_bits/SpSubview_bones.hpp"
   #include "armadillo_bits/spdiagview_bones.hpp"
-  #include "armadillo_bits/CoMat_bones.hpp"
+  #include "armadillo_bits/MapMat_bones.hpp"
   
   #include "armadillo_bits/typedef_mat_fixed.hpp"
   
@@ -586,7 +586,7 @@ namespace arma
   #include "armadillo_bits/SpSubview_meat.hpp"
   #include "armadillo_bits/SpSubview_iterators_meat.hpp"
   #include "armadillo_bits/spdiagview_meat.hpp"
-  #include "armadillo_bits/CoMat_meat.hpp"
+  #include "armadillo_bits/MapMat_meat.hpp"
   
   #include "armadillo_bits/diskio_meat.hpp"
   #include "armadillo_bits/wall_clock_meat.hpp"

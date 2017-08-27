@@ -5759,19 +5759,25 @@ A.raw_print(cout, "A:");
 <tbody>
 <tr>
 <td>
-<b>.save( name )</b>
-<br><b>.save( name, file_type )</b>
+<b>.save(</b> filename <b>)</b>
+<br><b>.save(</b> filename<b>,</b> file_type <b>)</b>
 <br>
-<br><b>.save( stream )</b>
-<br><b>.save( stream, file_type )</b>
+<br><b>.save(</b> stream <b>)</b>
+<br><b>.save(</b> stream<b>,</b> file_type <b>)</b>
+<br>
+<br><b>.save( hdf5_name(</b>filename<b>,</b> dataset<b>) )</b>
+<br><b>.save( hdf5_name(</b>filename<b>,</b> dataset<b>),</b> file_type <b>)</b>
 </td>
 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 <td>
-<b>.load( name )</b>
-<br><b>.load( name, file_type )</b>
+<b>.load(</b> filename <b>)</b>
+<br><b>.load(</b> filename<b>,</b> file_type <b>)</b>
 <br>
-<br><b>.load( stream )</b>
-<br><b>.load( stream, file_type )</b>
+<br><b>.load(</b> stream <b>)</b>
+<br><b>.load(</b> stream<b>,</b> file_type <b>)</b>
+<br>
+<br><b>.load( hdf5_name(</b>filename<b>,</b> dataset<b>) )</b>
+<br><b>.load( hdf5_name(</b>filename<b>,</b> dataset<b>),</b> file_type <b>)</b>
 </td>
 </tr>
 </tbody>
@@ -5802,6 +5808,10 @@ The default <i>file_type</i> for <i>.load()</i> is <i>auto_detect</i> (see below
 <li>
 <i>.load()</i> will return a <i>bool</i> set to <i>false</i> if the loading process fails;
 additionally, the object will be reset so it has no elements
+</li>
+<br>
+<li>
+Forms of <i>.save()</i> and <i>.load()</i> with the <i>hdf5_name()</i> argument allow explicit specification of the dataset name within a HDF5 file
 </li>
 <br>
 <li>
@@ -5892,12 +5902,19 @@ Applicable to <i>Mat</i> only.
                         <td style="vertical-align: top;"><br>
                         </td>
                         <td style="vertical-align: top;">
-Numerical data stored in portable HDF5 binary format.
-<br>
-<b>Caveat</b>:
+Numerical data stored in portable <a href="https://en.wikipedia.org/wiki/Hierarchical_Data_Format">HDF5</a> binary format.
+<ul>
+<li>For saving, the default dataset name within the HDF5 file is "dataset" unless explicitly specified via the <i>hdf5_name()</i> argument</li>
+<li>For loading, if the dataset has not been specified via the <i>hdf5_name()</i> argument,
+the order of operations is:
+(1) try loading a dataset named "dataset",
+(2) try loading a dataset named "value",
+(3) try loading the first available dataset</li>
+<li><b>Caveat</b>:
 support for HDF5 must be enabled within Armadillo's <a href="#config_hpp">configuration</a>;
 the <i>hdf5.h</i> header file must be available on your system and you will need to link with the hdf5 library (eg. -lhdf5)
-<br>
+</li>
+</ul>
 <br>
                         </td>
                       </tr>
@@ -5958,26 +5975,29 @@ Examples:
 <pre>
 mat A = randu&lt;mat&gt;(5,5);
 
-A.save("A1.mat");  // default save format is arma_binary
+// default save format is arma_binary
+A.save("A.bin");
 
-A.save("A2.mat", arma_ascii);  // force saving in arma_ascii format
+// force saving in arma_ascii format
+A.save("A.txt", arma_ascii);
 
+// save in HDF5 format with internal dataset named as "my_data"
+A.save(hdf5_name("A.h5", "my_data"));
+
+// automatically detect format type while loading
 mat B;
-B.load("A1.mat");  // automatically detect format type
+B.load("A.bin");
 
+// force loading in arma_ascii format
 mat C;
-C.load("A2.mat", arma_ascii);  // force loading in arma_ascii format
+C.load("A.txt", arma_ascii);
 
 
 // example of testing for success
 mat D;
-bool status = D.load("A2.mat");
+bool ok = D.load("A.bin");
 
-if(status == true)
-  {
-  cout &lt;&lt; "loaded okay" &lt;&lt; endl;
-  }
-else
+if(ok == false)
   {
   cout &lt;&lt; "problem with loading" &lt;&lt; endl;
   }
@@ -5987,6 +6007,7 @@ else
 <br>
 <li>See also:
 <ul>
+<li><a href="https://en.wikipedia.org/wiki/Hierarchical_Data_Format">HDF</a> in Wikipedia</li>
 <li><a href="#save_load_field">saving/loading fields</a></li>
 </ul>
 </li>

@@ -1252,7 +1252,7 @@ diskio::save_pgm_binary(const Mat< std::complex<T> >& x, std::ostream& f)
 template<typename eT>
 inline 
 bool 
-diskio::save_hdf5_binary(const Mat<eT>& x, const std::string& final_name)
+diskio::save_hdf5_binary(const Mat<eT>& x, const hdf5_name& spec)
   {
   arma_extra_debug_sigprint();
   
@@ -1267,7 +1267,7 @@ diskio::save_hdf5_binary(const Mat<eT>& x, const std::string& final_name)
     
     bool save_okay = false;
     
-    const std::string tmp_name = diskio::gen_tmp_name(final_name);
+    const std::string tmp_name = diskio::gen_tmp_name(spec.filename);
     
     // Set up the file according to HDF5's preferences  
     hid_t file = arma_H5Fcreate(tmp_name.c_str(), H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
@@ -1283,10 +1283,13 @@ diskio::save_hdf5_binary(const Mat<eT>& x, const std::string& final_name)
     // If this returned something invalid, well, it's time to crash.
     arma_check(datatype == -1, "Mat::save(): unknown datatype for HDF5");
     
-    // MATLAB forces the users to specify a name at save time for HDF5; Octave
-    // will use the default of 'dataset' unless otherwise specified, so we will
-    // use that.
-    hid_t dataset = arma_H5Dcreate(file, "dataset", datatype, dataspace, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+    // MATLAB forces the users to specify a name at save time for HDF5;
+    // Octave will use the default of 'dataset' unless otherwise specified.
+    // If the user hasn't specified a dataset name, we will use 'dataset'
+    
+    const std::string dataset_name = (spec.dsname.empty() == false) ? spec.dsname : std::string("dataset");
+    
+    hid_t dataset = arma_H5Dcreate(file, dataset_name.c_str(), datatype, dataspace, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
     
     // H5Dwrite does not make a distinction between row-major and column-major;
     // it just writes the memory.  MATLAB and Octave store HDF5 matrices as
@@ -1300,14 +1303,14 @@ diskio::save_hdf5_binary(const Mat<eT>& x, const std::string& final_name)
     arma_H5Sclose(dataspace);
     arma_H5Fclose(file);
     
-    if(save_okay == true) { save_okay = diskio::safe_rename(tmp_name, final_name); }
+    if(save_okay == true) { save_okay = diskio::safe_rename(tmp_name, spec.filename); }
     
     return save_okay;
     }
   #else
     {
     arma_ignore(x);
-    arma_ignore(final_name);
+    arma_ignore(spec);
     
     arma_stop_logic_error("Mat::save(): use of HDF5 needs to be enabled");
     
@@ -2290,13 +2293,12 @@ diskio::load_pgm_binary(Mat< std::complex<T> >& x, std::istream& is, std::string
 template<typename eT>
 inline
 bool
-diskio::load_hdf5_binary(Mat<eT>& x, const std::string& name, std::string& err_msg)
+diskio::load_hdf5_binary(Mat<eT>& x, const hdf5_name& spec, std::string& err_msg)
   {
   arma_extra_debug_sigprint();
   
   #if defined(ARMA_USE_HDF5)
     {
-
     // These may be necessary to store the error handler (if we need to).
     herr_t (*old_func)(hid_t, void*);
     void *old_client_data;
@@ -2313,19 +2315,31 @@ diskio::load_hdf5_binary(Mat<eT>& x, const std::string& name, std::string& err_m
 
     bool load_okay = false;
     
-    hid_t fid = arma_H5Fopen(name.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
+    hid_t fid = arma_H5Fopen(spec.filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
     
     if(fid >= 0)
       {
       // MATLAB HDF5 dataset names are user-specified;
       // Octave tends to store the datasets in a group, with the actual dataset being referred to as "value".
-      // So we will search for "dataset" and "value", and if those are not found we will take the first dataset we do find.
-      std::vector<std::string> searchNames;
-      searchNames.push_back("dataset");
-      searchNames.push_back("value");
+      // If the user hasn't specified a dataset, we will search for "dataset" and "value",
+      // and if those are not found we will take the first dataset we do find.
       
-      hid_t dataset = hdf5_misc::search_hdf5_file(searchNames, fid, 2, false);
-
+      std::vector<std::string> searchNames;
+      
+      const bool exact = (spec.dsname.empty() == false);
+      
+      if(exact)
+        {
+        searchNames.push_back(spec.dsname);
+        }
+      else
+        {
+        searchNames.push_back("dataset");
+        searchNames.push_back("value"  );
+        }
+      
+      hid_t dataset = hdf5_misc::search_hdf5_file(searchNames, fid, 2, exact);
+      
       if(dataset >= 0)
         {
         hid_t filespace = arma_H5Dget_space(dataset);
@@ -2411,7 +2425,7 @@ diskio::load_hdf5_binary(Mat<eT>& x, const std::string& name, std::string& err_m
   #else
     {
     arma_ignore(x);
-    arma_ignore(name);
+    arma_ignore(spec);
     arma_ignore(err_msg);
 
     arma_stop_logic_error("Mat::load(): use of HDF5 needs to be enabled");
@@ -3411,7 +3425,7 @@ diskio::save_arma_binary(const Cube<eT>& x, std::ostream& f)
 template<typename eT>
 inline
 bool
-diskio::save_hdf5_binary(const Cube<eT>& x, const std::string& final_name)
+diskio::save_hdf5_binary(const Cube<eT>& x, const hdf5_name& spec)
   {
   arma_extra_debug_sigprint();
 
@@ -3426,7 +3440,7 @@ diskio::save_hdf5_binary(const Cube<eT>& x, const std::string& final_name)
 
     bool save_okay = false;
 
-    const std::string tmp_name = diskio::gen_tmp_name(final_name);
+    const std::string tmp_name = diskio::gen_tmp_name(spec.filename);
 
     // Set up the file according to HDF5's preferences
     hid_t file = arma_H5Fcreate(tmp_name.c_str(), H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
@@ -3443,10 +3457,13 @@ diskio::save_hdf5_binary(const Cube<eT>& x, const std::string& final_name)
     // If this returned something invalid, well, it's time to crash.
     arma_check(datatype == -1, "Cube::save(): unknown datatype for HDF5");
 
-    // MATLAB forces the users to specify a name at save time for HDF5; Octave
-    // will use the default of 'dataset' unless otherwise specified, so we will
-    // use that.
-    hid_t dataset = arma_H5Dcreate(file, "dataset", datatype, dataspace, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+    // MATLAB forces the users to specify a name at save time for HDF5;
+    // Octave will use the default of 'dataset' unless otherwise specified.
+    // If the user hasn't specified a dataset name, we will use 'dataset'
+    
+    const std::string dataset_name = (spec.dsname.empty() == false) ? spec.dsname : std::string("dataset");
+    
+    hid_t dataset = arma_H5Dcreate(file, dataset_name.c_str(), datatype, dataspace, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 
     herr_t status = arma_H5Dwrite(dataset, datatype, H5S_ALL, H5S_ALL, H5P_DEFAULT, x.mem);
     save_okay = (status >= 0);
@@ -3456,14 +3473,14 @@ diskio::save_hdf5_binary(const Cube<eT>& x, const std::string& final_name)
     arma_H5Sclose(dataspace);
     arma_H5Fclose(file);
 
-    if(save_okay == true) { save_okay = diskio::safe_rename(tmp_name, final_name); }
+    if(save_okay == true) { save_okay = diskio::safe_rename(tmp_name, spec.filename); }
 
     return save_okay;
     }
   #else
     {
     arma_ignore(x);
-    arma_ignore(final_name);
+    arma_ignore(spec);
 
     arma_stop_logic_error("Cube::save(): use of HDF5 needs to be enabled");
 
@@ -3804,13 +3821,12 @@ diskio::load_arma_binary(Cube<eT>& x, std::istream& f, std::string& err_msg)
 template<typename eT>
 inline
 bool
-diskio::load_hdf5_binary(Cube<eT>& x, const std::string& name, std::string& err_msg)
+diskio::load_hdf5_binary(Cube<eT>& x, const hdf5_name& spec, std::string& err_msg)
   {
   arma_extra_debug_sigprint();
 
   #if defined(ARMA_USE_HDF5)
     {
-
     // These may be necessary to store the error handler (if we need to).
     herr_t (*old_func)(hid_t, void*);
     void *old_client_data;
@@ -3827,19 +3843,31 @@ diskio::load_hdf5_binary(Cube<eT>& x, const std::string& name, std::string& err_
 
     bool load_okay = false;
 
-    hid_t fid = arma_H5Fopen(name.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
+    hid_t fid = arma_H5Fopen(spec.filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
 
     if(fid >= 0)
       {
       // MATLAB HDF5 dataset names are user-specified;
       // Octave tends to store the datasets in a group, with the actual dataset being referred to as "value".
-      // So we will search for "dataset" and "value", and if those are not found we will take the first dataset we do find.
+      // If the user hasn't specified a dataset, we will search for "dataset" and "value",
+      // and if those are not found we will take the first dataset we do find.
+      
       std::vector<std::string> searchNames;
-      searchNames.push_back("dataset");
-      searchNames.push_back("value");
-
-      hid_t dataset = hdf5_misc::search_hdf5_file(searchNames, fid, 3, false);
-
+      
+      const bool exact = (spec.dsname.empty() == false);
+      
+      if(exact)
+        {
+        searchNames.push_back(spec.dsname);
+        }
+      else
+        {
+        searchNames.push_back("dataset");
+        searchNames.push_back("value"  );
+        }
+      
+      hid_t dataset = hdf5_misc::search_hdf5_file(searchNames, fid, 3, exact);
+      
       if(dataset >= 0)
         {
         hid_t filespace = arma_H5Dget_space(dataset);
@@ -3926,7 +3954,7 @@ diskio::load_hdf5_binary(Cube<eT>& x, const std::string& name, std::string& err_
   #else
     {
     arma_ignore(x);
-    arma_ignore(name);
+    arma_ignore(spec);
     arma_ignore(err_msg);
 
     arma_stop_logic_error("Cube::load(): use of HDF5 needs to be enabled");

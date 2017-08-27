@@ -271,6 +271,24 @@ enum file_type
   };
 
 
+struct hdf5_name
+  {
+  const std::string filename;
+  const std::string dsname;
+  
+  inline
+  hdf5_name(const std::string& in_filename)
+    : filename(in_filename)
+    {}
+  
+  inline
+  hdf5_name(const std::string& in_filename, const std::string& in_dsname)
+    : filename(in_filename)
+    , dsname  (in_dsname  )
+    {}
+  };
+
+
 //! @}
 
 

@@ -3746,7 +3746,7 @@ Cube<eT>::save(const std::string name, const file_type type, const bool print_st
       break;
 
     case hdf5_binary:
-      save_okay = diskio::save_hdf5_binary(*this, name);
+      save_okay = diskio::save_hdf5_binary(*this, hdf5_name(name));
       break;
     
     case hdf5_binary_trans:
@@ -3755,7 +3755,7 @@ Cube<eT>::save(const std::string name, const file_type type, const bool print_st
       
       op_strans_cube::apply_noalias(tmp, (*this));
       
-      save_okay = diskio::save_hdf5_binary(tmp, name);
+      save_okay = diskio::save_hdf5_binary(tmp, hdf5_name(name));
       }
       break;
     
@@ -3765,6 +3765,43 @@ Cube<eT>::save(const std::string name, const file_type type, const bool print_st
     }
   
   if(print_status && (save_okay == false))  { arma_debug_warn("Cube::save(): couldn't write to ", name); }
+  
+  return save_okay;
+  }
+
+
+
+template<typename eT>
+inline
+bool
+Cube<eT>::save(const hdf5_name& spec, const file_type type, const bool print_status) const
+  {
+  arma_extra_debug_sigprint();
+  
+  bool save_okay;
+  
+  switch(type)
+    {
+    case hdf5_binary:
+      save_okay = diskio::save_hdf5_binary(*this, spec);
+      break;
+    
+    case hdf5_binary_trans:
+      {
+      Cube<eT> tmp;
+      
+      op_strans_cube::apply_noalias(tmp, (*this));
+      
+      save_okay = diskio::save_hdf5_binary(tmp, spec);
+      }
+      break;
+    
+    default:
+      if(print_status)  { arma_debug_warn("Cube::save(): unsupported file type"); }
+      save_okay = false;
+    }
+  
+  if(print_status && (save_okay == false))  { arma_debug_warn("Cube::save(): couldn't write to ", spec.filename); }
   
   return save_okay;
   }
@@ -3853,14 +3890,14 @@ Cube<eT>::load(const std::string name, const file_type type, const bool print_st
       break;
 
     case hdf5_binary:
-      load_okay = diskio::load_hdf5_binary(*this, name, err_msg);
+      load_okay = diskio::load_hdf5_binary(*this, hdf5_name(name), err_msg);
       break;
     
     case hdf5_binary_trans:
       {
       Cube<eT> tmp;
       
-      load_okay = diskio::load_hdf5_binary(tmp, name, err_msg);
+      load_okay = diskio::load_hdf5_binary(tmp, hdf5_name(name), err_msg);
       
       if(load_okay)  { op_strans_cube::apply_noalias((*this), tmp); }
       }
@@ -3880,6 +3917,59 @@ Cube<eT>::load(const std::string name, const file_type type, const bool print_st
     else
       {
       arma_debug_warn("Cube::load(): couldn't read ", name);
+      }
+    }
+  
+  if(load_okay == false)
+    {
+    (*this).reset();
+    }
+    
+  return load_okay;
+  }
+
+
+
+template<typename eT>
+inline
+bool
+Cube<eT>::load(const hdf5_name& spec, const file_type type, const bool print_status)
+  {
+  arma_extra_debug_sigprint();
+  
+  bool load_okay;
+  std::string err_msg;
+  
+  switch(type)
+    {
+    case hdf5_binary:
+      load_okay = diskio::load_hdf5_binary(*this, spec, err_msg);
+      break;
+    
+    case hdf5_binary_trans:
+      {
+      Cube<eT> tmp;
+      
+      load_okay = diskio::load_hdf5_binary(tmp, spec, err_msg);
+      
+      if(load_okay)  { op_strans_cube::apply_noalias((*this), tmp); }
+      }
+      break;
+    
+    default:
+      if(print_status)  { arma_debug_warn("Cube::load(): unsupported file type"); }
+      load_okay = false;
+    }
+  
+  if( (print_status == true) && (load_okay == false) )
+    {
+    if(err_msg.length() > 0)
+      {
+      arma_debug_warn("Cube::load(): ", err_msg, spec.filename);
+      }
+    else
+      {
+      arma_debug_warn("Cube::load(): couldn't read ", spec.filename);
       }
     }
   
@@ -3971,6 +4061,18 @@ Cube<eT>::quiet_save(const std::string name, const file_type type) const
 
 
 
+template<typename eT>
+inline
+bool
+Cube<eT>::quiet_save(const hdf5_name& spec, const file_type type) const
+  {
+  arma_extra_debug_sigprint();
+  
+  return (*this).save(spec, type, false);
+  }
+
+
+
 //! save the cube to a stream, without printing any error messages
 template<typename eT>
 inline
@@ -3993,6 +4095,18 @@ Cube<eT>::quiet_load(const std::string name, const file_type type)
   arma_extra_debug_sigprint();
   
   return (*this).load(name, type, false);
+  }
+
+
+
+template<typename eT>
+inline
+bool
+Cube<eT>::quiet_load(const hdf5_name& spec, const file_type type)
+  {
+  arma_extra_debug_sigprint();
+  
+  return (*this).load(spec, type, false);
   }
 
 

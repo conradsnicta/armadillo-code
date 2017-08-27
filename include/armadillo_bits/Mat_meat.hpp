@@ -6948,7 +6948,7 @@ Mat<eT>::save(const std::string name, const file_type type, const bool print_sta
       break;
     
     case hdf5_binary:
-      save_okay = diskio::save_hdf5_binary(*this, name);
+      save_okay = diskio::save_hdf5_binary(*this, hdf5_name(name));
       break;
     
     case hdf5_binary_trans:
@@ -6957,7 +6957,7 @@ Mat<eT>::save(const std::string name, const file_type type, const bool print_sta
       
       op_strans::apply_mat_noalias(tmp, *this);
       
-      save_okay = diskio::save_hdf5_binary(tmp, name);
+      save_okay = diskio::save_hdf5_binary(tmp, hdf5_name(name));
       }
       break;
     
@@ -6967,6 +6967,43 @@ Mat<eT>::save(const std::string name, const file_type type, const bool print_sta
     }
   
   if(print_status && (save_okay == false))  { arma_debug_warn("Mat::save(): couldn't write to ", name); }
+  
+  return save_okay;
+  }
+
+
+
+template<typename eT>
+inline
+bool
+Mat<eT>::save(const hdf5_name& spec, const file_type type, const bool print_status) const
+  {
+  arma_extra_debug_sigprint();
+  
+  bool save_okay;
+  
+  switch(type)
+    {
+    case hdf5_binary:
+      save_okay = diskio::save_hdf5_binary(*this, spec);
+      break;
+    
+    case hdf5_binary_trans:
+      {
+      Mat<eT> tmp;
+      
+      op_strans::apply_mat_noalias(tmp, *this);
+      
+      save_okay = diskio::save_hdf5_binary(tmp, spec);
+      }
+      break;
+    
+    default:
+      if(print_status)  { arma_debug_warn("Mat::save(): unsupported file type"); }
+      save_okay = false;
+    }
+  
+  if(print_status && (save_okay == false))  { arma_debug_warn("Mat::save(): couldn't write to ", spec.filename); }
   
   return save_okay;
   }
@@ -7063,14 +7100,14 @@ Mat<eT>::load(const std::string name, const file_type type, const bool print_sta
       break;
     
     case hdf5_binary:
-      load_okay = diskio::load_hdf5_binary(*this, name, err_msg);
+      load_okay = diskio::load_hdf5_binary(*this, hdf5_name(name), err_msg);
       break;
 
     case hdf5_binary_trans:
       {
       Mat<eT> tmp;
       
-      load_okay = diskio::load_hdf5_binary(tmp, name, err_msg);
+      load_okay = diskio::load_hdf5_binary(tmp, hdf5_name(name), err_msg);
       
       if(load_okay)  { op_strans::apply_mat_noalias(*this, tmp); }
       }
@@ -7090,6 +7127,59 @@ Mat<eT>::load(const std::string name, const file_type type, const bool print_sta
     else
       {
       arma_debug_warn("Mat::load(): couldn't read ", name);
+      }
+    }
+  
+  if(load_okay == false)
+    {
+    (*this).reset();
+    }
+    
+  return load_okay;
+  }
+
+
+
+template<typename eT>
+inline
+bool
+Mat<eT>::load(const hdf5_name& spec, const file_type type, const bool print_status)
+  {
+  arma_extra_debug_sigprint();
+  
+  bool load_okay;
+  std::string err_msg;
+  
+  switch(type)
+    {
+    case hdf5_binary:
+      load_okay = diskio::load_hdf5_binary(*this, spec, err_msg);
+      break;
+
+    case hdf5_binary_trans:
+      {
+      Mat<eT> tmp;
+      
+      load_okay = diskio::load_hdf5_binary(tmp, spec, err_msg);
+      
+      if(load_okay)  { op_strans::apply_mat_noalias(*this, tmp); }
+      }
+      break;
+
+    default:
+      if(print_status)  { arma_debug_warn("Mat::load(): unsupported file type"); }
+      load_okay = false;
+    }
+  
+  if( (print_status == true) && (load_okay == false) )
+    {
+    if(err_msg.length() > 0)
+      {
+      arma_debug_warn("Mat::load(): ", err_msg, spec.filename);
+      }
+    else
+      {
+      arma_debug_warn("Mat::load(): couldn't read ", spec.filename);
       }
     }
   
@@ -7185,6 +7275,18 @@ Mat<eT>::quiet_save(const std::string name, const file_type type) const
 
 
 
+template<typename eT>
+inline
+bool
+Mat<eT>::quiet_save(const hdf5_name& spec, const file_type type) const
+  {
+  arma_extra_debug_sigprint();
+  
+  return (*this).save(spec, type, false);
+  }
+
+
+
 //! save the matrix to a stream, without printing any error messages
 template<typename eT>
 inline
@@ -7207,6 +7309,18 @@ Mat<eT>::quiet_load(const std::string name, const file_type type)
   arma_extra_debug_sigprint();
   
   return (*this).load(name, type, false);
+  }
+
+
+
+template<typename eT>
+inline
+bool
+Mat<eT>::quiet_load(const hdf5_name& spec, const file_type type)
+  {
+  arma_extra_debug_sigprint();
+  
+  return (*this).load(spec, type, false);
   }
 
 

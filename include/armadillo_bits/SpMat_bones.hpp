@@ -57,7 +57,8 @@ class SpMat : public SpBase< eT, SpMat<eT> >
   // The final value row_indices[n_nonzero] must be zero to ensure integrity of iterators.
   // Use mem_resize(new_n_nonzero) to resize this array.
   // 
-  // WARNING: the 'row_indices' array is only valid after sync() is called
+  // WARNING: the 'row_indices' array is only valid after sync() is called;
+  // WARNING: there is a separate cache for fast element insertion
   
   arma_aligned const uword* const row_indices;
   
@@ -73,7 +74,8 @@ class SpMat : public SpBase< eT, SpMat<eT> >
   // The col_ptrs array is set by the init() function
   // (which is called by constructors, set_size() and other functions that change the matrix size).
   // 
-  // WARNING: the 'col_ptrs' array is only valid after sync() is called
+  // WARNING: the 'col_ptrs' array is only valid after sync() is called;
+  // WARNING: there is a separate cache for fast element insertion
   
   arma_aligned const uword* const col_ptrs;
   

@@ -3922,7 +3922,7 @@ Cube<eT>::load(const std::string name, const file_type type, const bool print_st
   
   if(load_okay == false)
     {
-    (*this).reset();
+    (*this).soft_reset();
     }
     
   return load_okay;
@@ -3975,7 +3975,7 @@ Cube<eT>::load(const hdf5_name& spec, const file_type type, const bool print_sta
   
   if(load_okay == false)
     {
-    (*this).reset();
+    (*this).soft_reset();
     }
     
   return load_okay;
@@ -4040,7 +4040,7 @@ Cube<eT>::load(std::istream& is, const file_type type, const bool print_status)
   
   if(load_okay == false)
     {
-    (*this).reset();
+    (*this).soft_reset();
     }
     
   return load_okay;

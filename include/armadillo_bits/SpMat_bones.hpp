@@ -36,49 +36,45 @@ class SpMat : public SpBase< eT, SpMat<eT> >
   const uword n_nonzero; //!< number of nonzero elements (read-only)
   const uword vec_state; //!< 0: matrix; 1: column vector; 2: row vector
   
-  /**
-   * The memory used to store the values of the matrix.
-   * In accordance with the CSC format, this stores only the actual values.
-   * The correct locations of the values are assembled from the row indices
-   * and the column pointers.
-   * 
-   * The length of this array is (n_nonzero + 1); the final value ensures
-   * the integrity of iterators.  If you are planning on resizing this vector,
-   * it's probably best to use mem_resize() instead, which automatically sets
-   * the length to (n_nonzero + 1).  If you need to allocate the memory yourself
-   * for some reason, be sure to set values[n_nonzero] to 0.
-   *
-   * WARNING: the 'values' array is only valid after sync() is called
-   */
+  
+  // The memory used to store the values of the matrix.
+  // In accordance with the CSC format, this stores only the actual values.
+  // The correct locations of the values are assembled from the row indices and column pointers.
+  // 
+  // The length of this array is (n_nonzero + 1).
+  // The final value values[n_nonzero] must be zero to ensure integrity of iterators.
+  // Use mem_resize(new_n_nonzero) to resize this array.
+  // 
+  // WARNING: the 'values' array is only valid after sync() is called;
+  // WARNING: there is a separate cache for fast element insertion
+  
   arma_aligned const eT* const values;
   
-  /**
-   * The row indices of each value.  row_indices[i] is the row of values[i].
-   * 
-   * The length of this array is (n_nonzero + 1); the final value ensures
-   * the integrity of iterators.  If you are planning on resizing this vector,
-   * it's probably best to use mem_resize() instead.  If you need to allocate
-   * the memory yourself for some reason, be sure to set row_indices[n_nonzero] to 0.
-   * 
-   * WARNING: the 'row_indices' array is only valid after sync() is called
-   */
+  
+  // The row indices of each value.  row_indices[i] is the row of values[i].
+  // 
+  // The length of this array is (n_nonzero + 1).
+  // The final value row_indices[n_nonzero] must be zero to ensure integrity of iterators.
+  // Use mem_resize(new_n_nonzero) to resize this array.
+  // 
+  // WARNING: the 'row_indices' array is only valid after sync() is called
+  
   arma_aligned const uword* const row_indices;
   
-  /**
-   * The column pointers.  This stores the index of the first item in column i.
-   * That is, values[col_ptrs[i]] is the first value in column i, and it is in
-   * the row indicated by row_indices[col_ptrs[i]].
-   * 
-   * This array is of length (n_cols + 2); the element col_ptrs[n_cols] should
-   * be equal to n_nonzero, and the element col_ptrs[n_cols + 1] is an invalid
-   * very large value that ensures the integrity of iterators.
-   * 
-   * The col_ptrs array is set by the init() function (which is called by the
-   * constructors and set_size() and other functions that set the size of the
-   * matrix), so allocating col_ptrs by hand should not be necessary.
-   * 
-   * WARNING: the 'col_ptrs' array is only valid after sync() is called
-   */
+  
+  // The column pointers.  This stores the index of the first item in column i.
+  // That is, values[col_ptrs[i]] is the first value in column i,
+  // and it is in the row indicated by row_indices[col_ptrs[i]].
+  // 
+  // The length of this array is (n_cols + 2).
+  // The element col_ptrs[n_cols] must be equal to n_nonzero.
+  // The element col_ptrs[n_cols + 1] must be an invalid very large value to ensure integrity of iterators.
+  // 
+  // The col_ptrs array is set by the init() function
+  // (which is called by constructors, set_size() and other functions that change the matrix size).
+  // 
+  // WARNING: the 'col_ptrs' array is only valid after sync() is called
+  
   arma_aligned const uword* const col_ptrs;
   
   inline  SpMat();
@@ -327,6 +323,7 @@ class SpMat : public SpBase< eT, SpMat<eT> >
   
   
   // saving and loading
+  // TODO: implement auto_detect for sparse matrices
   
   inline bool save(const std::string   name, const file_type type = arma_binary, const bool print_status = true) const;
   inline bool save(      std::ostream& os,   const file_type type = arma_binary, const bool print_status = true) const;
@@ -340,9 +337,6 @@ class SpMat : public SpBase< eT, SpMat<eT> >
   inline bool quiet_load(const std::string   name, const file_type type = arma_binary);
   inline bool quiet_load(      std::istream& is,   const file_type type = arma_binary);
   
-  // TODO: speed up loading of sparse matrices stored as text files (ie. raw_ascii and coord_ascii)
-  // TODO: implement auto_detect for sparse matrices
-  // TODO: modify docs to specify which formats are not applicable to sparse matrices
   
   
   // necessary forward declarations

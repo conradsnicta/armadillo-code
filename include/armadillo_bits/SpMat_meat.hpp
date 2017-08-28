@@ -4727,7 +4727,7 @@ SpMat<eT>::mem_resize(const uword new_n_nonzero)
       }
     else
       {
-      // Figure out the actual amount of memory currently allocated
+      // Figure out the actual amount of memory currently allocated.
       // NOTE: this relies on memory::acquire_chunked() being used for the 'values' and 'row_indices' arrays
       const uword n_alloc = memory::enlarge_to_mult_of_chunksize(n_nonzero);
       
@@ -4751,9 +4751,9 @@ SpMat<eT>::mem_resize(const uword new_n_nonzero)
         access::rw(values)      = new_values;
         access::rw(row_indices) = new_row_indices;
         }
-        
-      // Set the "fake end" of the matrix by setting the last value and row
-      // index to 0.  This helps the iterators work correctly.
+      
+      // Set the "fake end" of the matrix by setting the last value and row index to 0.
+      // This helps the iterators work correctly.
       access::rw(     values[new_n_nonzero]) = 0;
       access::rw(row_indices[new_n_nonzero]) = 0;
       }

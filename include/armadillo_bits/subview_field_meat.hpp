@@ -412,14 +412,14 @@ subview_field<oT>::print(const std::string extra_text) const
   
   if(extra_text.length() != 0)
     {
-    const std::streamsize orig_width = ARMA_COUT_STREAM.width();
+    const std::streamsize orig_width = get_cout_stream().width();
     
-    ARMA_COUT_STREAM << extra_text << '\n';
-  
-    ARMA_COUT_STREAM.width(orig_width);
+    get_cout_stream() << extra_text << '\n';
+    
+    get_cout_stream().width(orig_width);
     }
   
-  arma_ostream::print(ARMA_COUT_STREAM, *this);
+  arma_ostream::print(get_cout_stream(), *this);
   }
 
 
@@ -436,7 +436,7 @@ subview_field<oT>::print(std::ostream& user_stream, const std::string extra_text
     const std::streamsize orig_width = user_stream.width();
     
     user_stream << extra_text << '\n';
-  
+    
     user_stream.width(orig_width);
     }
   

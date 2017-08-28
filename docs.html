@@ -14483,67 +14483,64 @@ cout &lt;&lt; "number of seconds: " &lt;&lt; n &lt;&lt; endl;
 <a name="logging"></a>
 <b>logging of warnings and errors</b>
 <br>
+<br><b>set_cerr_stream( user_stream )</b>
+<br><b>set_cout_stream( user_stream )</b>
 <br>
-<b>set_stream_err1( user_stream )</b><br>
-<b>set_stream_err2( user_stream )</b><br>
-<br>
-<b>std::ostream&amp; x = get_stream_err1()</b>
-<br>
-<b>std::ostream&amp; x = get_stream_err2()</b>
+<br><b>std::ostream&amp; x = get_cerr_stream()</b>
+<br><b>std::ostream&amp; x = get_cout_stream()</b>
 <br>
 <ul>
 <li>
-In Armadillo 8.x, warnings and exception messages are printed to the <i>std::cerr</i> stream;
+In Armadillo 8.x, warnings and errors are printed by default to the <i>std::cerr</i> stream;
 in Armadillo 7.x and earlier, the <i>std::cout</i> stream is used
 <ul>
-<li>the printing can be disabled by defining <a href="#config_hpp">ARMA_DONT_PRINT_ERRORS</a> before including the armadillo header</li>
+<li>the printing can be disabled by placing <i>#define <a href="#config_hpp">ARMA_DONT_PRINT_ERRORS</a></i> before <i>#include&nbsp;&lt;armadillo&gt;</i></li>
 <li>detailed information about errors is always reported via the base <i>std::exception</i> class</li>
 </ul>
 </li>
 <br>
-<li><b>set_stream_err1()</b>:
+<li><b>set_cerr_stream()</b>:
 <ul>
-<li>change the stream for messages associated with <i>std::logic_error</i> exceptions (eg. out of bounds accesses)</li>
-<li>in Armadillo 8.x, the stream can also be changed via the ARMA_CERR_STREAM define; see <a href="#config_hpp">config.hpp</a></li>
+<li>change the stream for printing warnings and errors involving out of bounds accesses, failed decompositions and out of memory conditions</li>
+<li>the stream can also be changed via the ARMA_CERR_STREAM define; see <a href="#config_hpp">config.hpp</a></li>
 </ul>
 </li>
 <br>
-<li><b>set_stream_err2()</b>:
+<li><b>set_cout_stream()</b>:
 <ul>
-<li>change the stream for warnings and messages associated with <i>std::runtime_error</i> and <i>std::bad_alloc</i> exceptions (eg. failed decompositions, out of memory)</li>
-<li>in Armadillo 8.x, the stream can also be changed via the ARMA_CERR_STREAM define; see <a href="#config_hpp">config.hpp</a></li>
+<li>change the default stream for printing matrices and cubes with <a href="#print">.print()</a> and <a href="#raw_print">.raw_print()</a></li>
+<li>the stream can also be changed via the ARMA_COUT_STREAM define; see <a href="#config_hpp">config.hpp</a></li>
+</ul>
+</li>
+<br>
+<li><b>get_cerr_stream()</b>:
+<ul>
+<li>get a reference to the stream for printing warnings and errors</li>
 </ul>
 <br>
-<li><b>get_stream_err1()</b>: get a reference to the stream for messages associated with <i>std::logic_error</i> exceptions</li>
-<br>
-<li><b>get_stream_err2()</b>: get a reference to the stream for warnings and messages associated with <i>std::runtime_error</i> exceptions</li>
+<li><b>get_cout_stream()</b>:
+<ul>
+<li>get a reference to the stream for printing matrices and cubes</li>
+</ul>
 <br>
 <li>
 Examples:
 <ul>
 <pre>
-// print "hello" to the current err1 stream
-get_stream_err1() &lt;&lt; "hello" &lt;&lt; endl;
-
-// change the err2 stream to be a file
+// print error messages to a log file
 ofstream f("my_log.txt");
-set_stream_err2(f);
+set_cerr_stream(f);
 
 // trying to invert a singular matrix
-// will print a message to the err2 stream
-// and throw an exception
+// will print an error message and throw an exception
 mat X = zeros&lt;mat&gt;(5,5);
 mat Y = inv(X);
 
-// disable messages being printed to the err2 stream
+// disable printing of error messages
 std::ostream nullstream(0);
-set_stream_err2(nullstream);
+set_cerr_stream(nullstream);
 </pre>
 </ul>
-</li>
-<br>
-<li>
-<b>Caveat</b>: set_stream_err1() and set_stream_err2() will not change the stream used by .print()
 </li>
 <br>
 <li>
@@ -14553,9 +14550,7 @@ See also:
 <li><a href="#print">.print()</a></li>
 <li><a href="http://cplusplus.com/reference/iostream/cout/">std::cout</a></li>
 <li><a href="http://cplusplus.com/reference/iostream/ostream/">std::ostream</a></li>
-<li><a href="http://www.cplusplus.com/reference/exception/exception/">std::exception</a></li>
-<li><a href="http://cplusplus.com/reference/std/stdexcept/logic_error/">std::logic_error</a></li>
-<li><a href="http://cplusplus.com/reference/std/stdexcept/runtime_error/">std::runtime_error</a></li>
+<li><a href="http://cplusplus.com/reference/exception/exception/">std::exception</a></li>
 <li><a href="http://cplusplus.com/doc/tutorial/exceptions/">tutorial on exceptions</a></li>
 </ul>
 </li>
@@ -16435,6 +16430,7 @@ List of additions and changes for each version:
 <li>expanded <a href="#SpMat">SpMat</a> to save/load sparse matrices in <a href="#save_load_mat">coord format</a></li>
 <li>expanded <a href="#save_load_mat">.save()/.load()</a> to allow specification of datasets within HDF5 files</li>
 <li>warnings and errors are now printed by default to the <i>std::cerr</i> stream</li>
+<li>added <a href="#logging">set_cerr_stream()</a> and <a href="#logging">get_cerr_stream()</a> to replace <i>set_stream_err1()</i>, <i>set_stream_err2()</i>, <i>get_stream_err1()</i>, <i>get_stream_err2()</i></li>
 <li>new <a href="#config_hpp">configuration</a> options ARMA_COUT_STREAM and ARMA_CERR_STREAM</li>
 </ul>
 </li>

@@ -112,6 +112,8 @@ class MapMat
   // for experimental purposes only
   inline void add(const MapMat<eT>& A, const MapMat<eT>& B);
   
+  // for experimental purposes only
+  inline void mul(const MapMat<eT>& A, const MapMat<eT>& B);
   
   private:
   

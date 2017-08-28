@@ -654,11 +654,11 @@ MapMat<eT>::print(const std::string& extra_text) const
   
   if(extra_text.length() != 0)
     {
-    const std::streamsize orig_width = ARMA_COUT_STREAM.width();
+    const std::streamsize orig_width = get_cout_stream().width();
     
-    ARMA_COUT_STREAM << extra_text << '\n';
+    get_cout_stream() << extra_text << '\n';
     
-    ARMA_COUT_STREAM.width(orig_width);
+    get_cout_stream().width(orig_width);
     }
   
   map_type& map_ref = (*map_ptr);
@@ -667,7 +667,7 @@ MapMat<eT>::print(const std::string& extra_text) const
   
   const double density = (n_elem > 0) ? ((double(n_nonzero) / double(n_elem))*double(100)) : double(0);
   
-  ARMA_COUT_STREAM
+  get_cout_stream()
     << "[matrix size: " << n_rows << 'x' << n_cols << "; n_nonzero: " << n_nonzero
     << "; density: " << density << "%]\n\n";
   
@@ -685,14 +685,14 @@ MapMat<eT>::print(const std::string& extra_text) const
       const uword row = index % n_rows;
       const uword col = index / n_rows;
       
-      ARMA_COUT_STREAM << '(' << row << ", " << col << ") ";
-      ARMA_COUT_STREAM << val << '\n';
+      get_cout_stream() << '(' << row << ", " << col << ") ";
+      get_cout_stream() << val << '\n';
       
       ++it;
       }
     }
   
-  ARMA_COUT_STREAM.flush();
+  get_cout_stream().flush();
   }
 
 
@@ -763,6 +763,94 @@ MapMat<eT>::add(const MapMat<eT>& A, const MapMat<eT>& B)
   // WARNING: potential aliasing not taken into account
   
   (*this).zeros(A.n_rows, A.n_cols);
+  
+  map_type& A_map_ref = *(A.map_ptr);
+  map_type& B_map_ref = *(B.map_ptr);
+  
+  typename map_type::const_iterator A_it  = A_map_ref.begin();
+  typename map_type::const_iterator A_end = A_map_ref.end();
+  
+  typename map_type::const_iterator B_it  = B_map_ref.begin();
+  typename map_type::const_iterator B_end = B_map_ref.end();
+  
+  while( (A_it != A_end) && (B_it != B_end) )
+    {
+    const std::pair<uword, eT>& A_it_deref = (*A_it);
+    const std::pair<uword, eT>& B_it_deref = (*B_it);
+    
+    const uword A_index = A_it_deref.first;
+    const uword B_index = B_it_deref.first;
+    
+    if(A_index == B_index)
+      {
+      const eT val = A_it_deref.second + B_it_deref.second;
+      
+      if(val != eT(0))  { (*this).set_val(A_index, val); }
+      
+      ++A_it;
+      ++B_it;
+      }
+    else
+      {
+      if(A_index < B_index) // if B is closer to the end
+        {
+        const eT val = A_it_deref.second;
+        
+        if(val != eT(0))  { (*this).set_val(A_index, val); }
+        
+        ++A_it;
+        }
+      else
+        {
+        const eT val = B_it_deref.second;
+        
+        if(val != eT(0))  { (*this).set_val(B_index, val); }
+        
+        ++B_it;
+        }
+      }
+    }
+  
+  while(A_it != A_end)
+    {
+    const std::pair<uword, eT>& A_it_deref = (*A_it);
+    
+    const uword index = A_it_deref.first;
+    const eT    val   = A_it_deref.second;
+    
+    if(val != eT(0))  { (*this).set_val(index, val); }
+    
+    ++A_it;
+    }
+  
+  while(B_it != B_end)
+    {
+    const std::pair<uword, eT>& B_it_deref = (*B_it);
+    
+    const uword index = B_it_deref.first;
+    const eT    val   = B_it_deref.second;
+    
+    if(val != eT(0))  { (*this).set_val(index, val); }
+    
+    ++B_it;
+    }
+  }
+
+
+
+// for experimental purposes only
+template<typename eT>
+inline
+void
+MapMat<eT>::mul(const MapMat<eT>& A, const MapMat<eT>& B)
+  {
+  arma_extra_debug_sigprint();
+  
+  arma_debug_assert_mul_size(A.n_rows, A.n_cols, B.n_rows, B.n_cols, "multiplication");
+  
+  // WARNING: potential aliasing not taken into account
+  
+  (*this).zeros(A.n_rows, B.n_cols);
   
   map_type& A_map_ref = *(A.map_ptr);
   map_type& B_map_ref = *(B.map_ptr);

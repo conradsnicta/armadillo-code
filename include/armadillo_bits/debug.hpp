@@ -22,13 +22,13 @@
 template<typename T>
 inline
 std::ostream&
-arma_stream_err1(std::ostream* user_stream)
+arma_cout_stream(std::ostream* user_stream)
   {
-  static std::ostream* stream_err1 = &(ARMA_CERR_STREAM);
+  static std::ostream* cout_stream = &(ARMA_COUT_STREAM);
   
-  if(user_stream != NULL)  { stream_err1 = user_stream; }
+  if(user_stream != NULL)  { cout_stream = user_stream; }
   
-  return *stream_err1;
+  return (*cout_stream);
   }
 
 
@@ -36,54 +36,98 @@ arma_stream_err1(std::ostream* user_stream)
 template<typename T>
 inline
 std::ostream&
-arma_stream_err2(std::ostream* user_stream)
+arma_cerr_stream(std::ostream* user_stream)
   {
-  static std::ostream* stream_err2 = &(ARMA_CERR_STREAM);
+  static std::ostream* cerr_stream = &(ARMA_CERR_STREAM);
   
-  if(user_stream != NULL)  { stream_err2 = user_stream; }
+  if(user_stream != NULL)  { cerr_stream = user_stream; }
   
-  return *stream_err2;
+  return (*cerr_stream);
   }
 
 
 
 inline
+void
+set_cout_stream(std::ostream& user_stream)
+  {
+  arma_cout_stream<char>(&user_stream);
+  }
+
+
+
+inline
+void
+set_cerr_stream(std::ostream& user_stream)
+  {
+  arma_cerr_stream<char>(&user_stream);
+  }
+
+
+
+inline
+std::ostream&
+get_cout_stream()
+  {
+  return arma_cout_stream<char>(NULL);
+  }
+
+
+
+inline
+std::ostream&
+get_cerr_stream()
+  {
+  return arma_cerr_stream<char>(NULL);
+  }
+
+
+
+//! do not use this function - it's deprecated and will be removed
+inline
+arma_deprecated
 void
 set_stream_err1(std::ostream& user_stream)
   {
-  arma_stream_err1<char>(&user_stream);
+  set_cerr_stream(user_stream);
   }
 
 
 
+//! do not use this function - it's deprecated and will be removed
 inline
+arma_deprecated
 void
 set_stream_err2(std::ostream& user_stream)
   {
-  arma_stream_err2<char>(&user_stream);
+  set_cerr_stream(user_stream);
   }
 
 
 
+//! do not use this function - it's deprecated and will be removed
 inline
+arma_deprecated
 std::ostream&
 get_stream_err1()
   {
-  return arma_stream_err1<char>(NULL);
+  return get_cerr_stream();
   }
 
 
 
+//! do not use this function - it's deprecated and will be removed
 inline
+arma_deprecated
 std::ostream&
 get_stream_err2()
   {
-  return arma_stream_err2<char>(NULL);
+  return get_cerr_stream();
   }
 
 
 
-//! print a message to get_stream_err1() and throw logic_error exception
+//! print a message to get_cerr_stream() and throw logic_error exception
 template<typename T1>
 arma_cold
 arma_noinline
@@ -93,7 +137,7 @@ arma_stop_logic_error(const T1& x)
   {
   #if defined(ARMA_PRINT_ERRORS)
     {
-    get_stream_err1() << "\nerror: " << x << std::endl;
+    get_cerr_stream() << "\nerror: " << x << std::endl;
     }
   #endif
   
@@ -102,7 +146,7 @@ arma_stop_logic_error(const T1& x)
 
 
 
-//! print a message to get_stream_err2() and throw bad_alloc exception
+//! print a message to get_cerr_stream() and throw bad_alloc exception
 template<typename T1>
 arma_cold
 arma_noinline
@@ -112,7 +156,7 @@ arma_stop_bad_alloc(const T1& x)
   {
   #if defined(ARMA_PRINT_ERRORS)
     {
-    get_stream_err2() << "\nerror: " << x << std::endl;
+    get_cerr_stream() << "\nerror: " << x << std::endl;
     }
   #else
     {
@@ -125,7 +169,7 @@ arma_stop_bad_alloc(const T1& x)
 
 
 
-//! print a message to get_stream_err2() and throw runtime_error exception
+//! print a message to get_cerr_stream() and throw runtime_error exception
 template<typename T1>
 arma_cold
 arma_noinline
@@ -135,7 +179,7 @@ arma_stop_runtime_error(const T1& x)
   {
   #if defined(ARMA_PRINT_ERRORS)
     {
-    get_stream_err2() << "\nerror: " << x << std::endl;
+    get_cerr_stream() << "\nerror: " << x << std::endl;
     }
   #endif
   
@@ -153,7 +197,7 @@ inline
 void
 arma_print()
   {
-  get_stream_err1() << std::endl;
+  get_cerr_stream() << std::endl;
   }
 
 
@@ -164,7 +208,7 @@ static
 void
 arma_print(const T1& x)
   {
-  get_stream_err1() << x << std::endl;
+  get_cerr_stream() << x << std::endl;
   }
 
 
@@ -176,7 +220,7 @@ static
 void
 arma_print(const T1& x, const T2& y)
   {
-  get_stream_err1() << x << y << std::endl;
+  get_cerr_stream() << x << y << std::endl;
   }
 
 
@@ -188,7 +232,7 @@ static
 void
 arma_print(const T1& x, const T2& y, const T3& z)
   {
-  get_stream_err1() << x << y << z << std::endl;
+  get_cerr_stream() << x << y << z << std::endl;
   }
 
 
@@ -207,7 +251,7 @@ inline
 void
 arma_sigprint(const char* x)
   {
-  get_stream_err1() << "@ " << x;
+  get_cerr_stream() << "@ " << x;
   }
 
 
@@ -220,7 +264,7 @@ inline
 void
 arma_bktprint()
   {
-  get_stream_err1() << std::endl;
+  get_cerr_stream() << std::endl;
   }
 
 
@@ -229,7 +273,7 @@ inline
 void
 arma_bktprint(const T1& x)
   {
-  get_stream_err1() << " [" << x << ']' << std::endl;
+  get_cerr_stream() << " [" << x << ']' << std::endl;
   }
 
 
@@ -239,7 +283,7 @@ inline
 void
 arma_bktprint(const T1& x, const T2& y)
   {
-  get_stream_err1() << " [" << x << y << ']' << std::endl;
+  get_cerr_stream() << " [" << x << y << ']' << std::endl;
   }
 
 
@@ -254,7 +298,7 @@ inline
 void
 arma_thisprint(const void* this_ptr)
   {
-  get_stream_err1() << " [this = " << this_ptr << ']' << std::endl;
+  get_cerr_stream() << " [this = " << this_ptr << ']' << std::endl;
   }
 
 
@@ -273,7 +317,7 @@ arma_warn(const T1& x)
   {
   #if defined(ARMA_PRINT_ERRORS)
     {
-    get_stream_err2() << "\nwarning: " << x << '\n';
+    get_cerr_stream() << "\nwarning: " << x << '\n';
     }
   #else
     {
@@ -292,7 +336,7 @@ arma_warn(const T1& x, const T2& y)
   {
   #if defined(ARMA_PRINT_ERRORS)
     {
-    get_stream_err2() << "\nwarning: " << x << y << '\n';
+    get_cerr_stream() << "\nwarning: " << x << y << '\n';
     }
   #else
     {
@@ -312,7 +356,7 @@ arma_warn(const T1& x, const T2& y, const T3& z)
   {
   #if defined(ARMA_PRINT_ERRORS)
     {
-    get_stream_err2() << "\nwarning: " << x << y << z << '\n';
+    get_cerr_stream() << "\nwarning: " << x << y << z << '\n';
     }
   #else
     {
@@ -1265,7 +1309,7 @@ arma_assert_atlas_size(const T1& A, const T2& B)
         const bool  little_endian = (endian_test.b[0] == 1);
         const char* nickname      = ARMA_VERSION_NAME;
         
-        std::ostream& out = get_stream_err1();
+        std::ostream& out = get_cerr_stream();
         
         out << "@ ---" << '\n';
         out << "@ Armadillo "

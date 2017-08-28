@@ -3065,14 +3065,14 @@ SpMat<eT>::impl_print(const std::string& extra_text) const
   
   if(extra_text.length() != 0)
     {
-    const std::streamsize orig_width = ARMA_COUT_STREAM.width();
-
-    ARMA_COUT_STREAM << extra_text << '\n';
-
-    ARMA_COUT_STREAM.width(orig_width);
+    const std::streamsize orig_width = get_cout_stream().width();
+    
+    get_cout_stream() << extra_text << '\n';
+    
+    get_cout_stream().width(orig_width);
     }
-
-  arma_ostream::print(ARMA_COUT_STREAM, *this, true);
+  
+  arma_ostream::print(get_cout_stream(), *this, true);
   }
 
 
@@ -3111,14 +3111,14 @@ SpMat<eT>::impl_raw_print(const std::string& extra_text) const
   
   if(extra_text.length() != 0)
     {
-    const std::streamsize orig_width = ARMA_COUT_STREAM.width();
+    const std::streamsize orig_width = get_cout_stream().width();
 
-    ARMA_COUT_STREAM << extra_text << '\n';
+    get_cout_stream() << extra_text << '\n';
 
-    ARMA_COUT_STREAM.width(orig_width);
+    get_cout_stream().width(orig_width);
     }
 
-  arma_ostream::print(ARMA_COUT_STREAM, *this, false);
+  arma_ostream::print(get_cout_stream(), *this, false);
   }
 
 
@@ -3160,14 +3160,14 @@ SpMat<eT>::impl_print_dense(const std::string& extra_text) const
   
   if(extra_text.length() != 0)
     {
-    const std::streamsize orig_width = ARMA_COUT_STREAM.width();
+    const std::streamsize orig_width = get_cout_stream().width();
 
-    ARMA_COUT_STREAM << extra_text << '\n';
+    get_cout_stream() << extra_text << '\n';
 
-    ARMA_COUT_STREAM.width(orig_width);
+    get_cout_stream().width(orig_width);
     }
 
-  arma_ostream::print_dense(ARMA_COUT_STREAM, *this, true);
+  arma_ostream::print_dense(get_cout_stream(), *this, true);
   }
 
 
@@ -3206,14 +3206,14 @@ SpMat<eT>::impl_raw_print_dense(const std::string& extra_text) const
   
   if(extra_text.length() != 0)
     {
-    const std::streamsize orig_width = ARMA_COUT_STREAM.width();
+    const std::streamsize orig_width = get_cout_stream().width();
 
-    ARMA_COUT_STREAM << extra_text << '\n';
+    get_cout_stream() << extra_text << '\n';
 
-    ARMA_COUT_STREAM.width(orig_width);
+    get_cout_stream().width(orig_width);
     }
 
-  arma_ostream::print_dense(ARMA_COUT_STREAM, *this, false);
+  arma_ostream::print_dense(get_cout_stream(), *this, false);
   }
 
 

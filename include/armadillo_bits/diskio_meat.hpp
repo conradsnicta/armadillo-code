@@ -1293,7 +1293,6 @@ diskio::save_hdf5_binary(const Mat<eT>& x, const hdf5_name& spec)
     while ((loc = full_name.find("/")) != std::string::npos)
       {
       // Create another group...
-      std::cout << full_name << ", loc " << loc << "\n";
       if (loc != 0) // Ignore the first /, if there is a leading /.
         {
         hid_t gid = arma_H5Gcreate((groups.size() == 0) ? file : groups[groups.size() - 1], full_name.substr(0, loc).c_str(), H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);

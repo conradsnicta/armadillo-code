@@ -330,7 +330,6 @@ hdf5_search_callback
       // So if we count the number of forward slashes in names[string_pos],
       // and then simply take the last substring of name containing that number of slashes,
       // we can do the comparison.
-      std::cout << "search for '" << search_info->names[string_pos] << "' in '" << name << "'\n";
       
       // Count the number of forward slashes in names[string_pos].
       uword name_count = 0;
@@ -346,7 +345,6 @@ hdf5_search_callback
         {
         if (str[i] == '/') { ++count; }
         }
-      std::cout << "slash counts: " << count << ", in name " << name_count << "\n";
 
       // Is the full string the same?
       if (str == search_info->names[string_pos])
@@ -400,8 +398,6 @@ hdf5_search_callback
 
         // Now take the substring (this may end up being the full string).
         const std::string substring = str.substr(start_pos);
-
-        std::cout << "start_pos: " << start_pos << ", substring " << substring << "\n";
 
         // Are they the same?
         if (substring == search_info->names[string_pos])

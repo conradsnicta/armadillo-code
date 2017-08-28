@@ -141,7 +141,7 @@ typedef SpCol <cx_double> sp_cx_colvec;
 typedef SpRow <cx_double> sp_cx_rowvec;
 
 
-// internal use only; subject to change or removal without notice
+// internal use only; subject to change and/or removal without notice
 typedef MapMat <uword>     map_umat;
 typedef MapMat <sword>     map_imat;
 typedef MapMat <float>     map_fmat;

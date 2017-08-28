@@ -535,15 +535,13 @@ class SpMat : public SpBase< eT, SpMat<eT> >
   inline bool  empty() const;
   inline uword size()  const;
   
-  /**
-   * Resize memory.
-   * You are responsible for updating the column pointers and filling the new memory (if the new size is larger).
-   * If the new size is smaller, the first new_n_nonzero elements will be copied.
-   * n_nonzero is updated.
-   */
+  // Resize memory.
+  // If the new size is larger, the column pointers and new memory still need to be correctly set.
+  // If the new size is smaller, the first new_n_nonzero elements will be copied.
+  // n_nonzero is updated.
   inline void mem_resize(const uword new_n_nonzero);
   
-  // synchronise CSC from cache
+  //! synchronise CSC from cache
   inline void sync() const;
   
   //! don't use this unless you're writing internal Armadillo code

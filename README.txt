@@ -139,7 +139,7 @@ For example, for GCC and Clang compilers use -O2 or -O3
   On Mac OS X this is not necessary.
   
   For better performance, we recommend installing the OpenBLAS library.
-  See http://xianyi.github.com/OpenBLAS/
+  See http://www.openblas.net/
   
   If you are using sparse matrices, also install ARPACK and SuperLU.
   Caveat: only SuperLU version 5.2 can be used!
@@ -260,7 +260,7 @@ The compiled versions of LAPACK and BLAS were obtained from:
   http://ylzhao.blogspot.com.au/2013/10/blas-lapack-precompiled-binaries-for.html
 
 Faster and/or alternative implementations of BLAS and LAPACK are available:
-  http://xianyi.github.com/OpenBLAS/
+  http://www.openblas.net/
   http://icl.cs.utk.edu/lapack-for-windows/lapack/
   http://software.intel.com/en-us/intel-mkl/
 

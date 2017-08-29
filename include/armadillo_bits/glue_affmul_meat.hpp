@@ -26,6 +26,8 @@ glue_affmul::apply(Mat<typename T1::elem_type>& out, const Glue<T1,T2,glue_affmu
   {
   arma_extra_debug_sigprint();
   
+  typedef typename T1::elem_type eT;
+  
   const quasi_unwrap<T1> U1(X.A);
   const quasi_unwrap<T2> U2(X.B);
   
@@ -33,13 +35,13 @@ glue_affmul::apply(Mat<typename T1::elem_type>& out, const Glue<T1,T2,glue_affmu
   
   if(is_alias == false)
     {
-    glue_affmul::apply_noalias(out, A, B);
+    glue_affmul::apply_noalias(out, U1.M, U2.M);
     }
   else
     {
     Mat<eT> tmp;
     
-    glue_affmul::apply_noalias(tmp, A, B);
+    glue_affmul::apply_noalias(tmp, U1.M, U2.M);
     
     out.steal_mem(tmp);
     }
@@ -47,12 +49,14 @@ glue_affmul::apply(Mat<typename T1::elem_type>& out, const Glue<T1,T2,glue_affmu
 
 
 
-template<typename T1>
+template<typename T1, typename T2>
 inline
 void
 glue_affmul::apply_noalias(Mat<typename T1::elem_type>& out, const T1& A, const T2& B)
   {
   arma_extra_debug_sigprint();
+  
+  typedef typename T1::elem_type eT;
   
   const uword N = A.n_rows;
   
@@ -67,31 +71,48 @@ glue_affmul::apply_noalias(Mat<typename T1::elem_type>& out, const T1& A, const 
   
   const eT* A_mem = A.memptr();
   
-  if(B_n_cols == 1)
+  switch(N)
     {
-    const eT*   B_mem =   B.memptr();
-          eT* out_mem = out.memptr();
+    case 0:
+      break;
     
-    switch(N)
+    case 1:
+      out.zeros();
+      break;
+    
+    case 2:
       {
-      case 0:
-        break;
-        
-      case 1:
-        out_mem[0] = eT(0);
-        break;
-        
-      case 2:
+      if(B_n_cols == 1)
         {
+        const eT*   B_mem =   B.memptr();
+              eT* out_mem = out.memptr();
+        
         const eT x = B_mem[0];
         
         out_mem[0] = A_mem[0]*x + A_mem[3];
         out_mem[1] = A_mem[1]*x + A_mem[4];
         }
-        break;
-      
-      case 3:
+      else
+      for(uword col=0; col < B_n_cols; ++col)
         {
+        const eT*   B_mem =   B.colptr(col);
+              eT* out_mem = out.colptr(col);
+        
+        const eT x = B_mem[0];
+        
+        out_mem[0] = A_mem[0]*x + A_mem[3];
+        out_mem[1] = A_mem[1]*x + A_mem[4];
+        }
+      }
+      break;
+    
+    case 3:
+      {
+      if(B_n_cols == 1)
+        {
+        const eT*   B_mem =   B.memptr();
+              eT* out_mem = out.memptr();
+        
         const eT x = B_mem[0];
         const eT y = B_mem[1];
         
@@ -99,10 +120,29 @@ glue_affmul::apply_noalias(Mat<typename T1::elem_type>& out, const T1& A, const 
         out_mem[1] = A_mem[1]*x + A_mem[4]*y + A_mem[7];
         out_mem[2] = A_mem[2]*x + A_mem[5]*y + A_mem[8];
         }
-        break;
-      
-      case 4:
+      else
+      for(uword col=0; col < B_n_cols; ++col)
         {
+        const eT*   B_mem =   B.colptr(col);
+              eT* out_mem = out.colptr(col);
+        
+        const eT x = B_mem[0];
+        const eT y = B_mem[1];
+        
+        out_mem[0] = A_mem[0]*x + A_mem[3]*y + A_mem[6];
+        out_mem[1] = A_mem[1]*x + A_mem[4]*y + A_mem[7];
+        out_mem[2] = A_mem[2]*x + A_mem[5]*y + A_mem[8];
+        }
+      }
+      break;
+    
+    case 4:
+      {
+      if(B_n_cols == 1)
+        {
+        const eT*   B_mem =   B.memptr();
+              eT* out_mem = out.memptr();
+        
         const eT x = B_mem[0];
         const eT y = B_mem[1];
         const eT z = B_mem[2];
@@ -112,83 +152,38 @@ glue_affmul::apply_noalias(Mat<typename T1::elem_type>& out, const T1& A, const 
         out_mem[2] = A_mem[ 2]*x + A_mem[ 6]*y + A_mem[10]*z + A_mem[14];
         out_mem[3] = A_mem[ 3]*x + A_mem[ 7]*y + A_mem[11]*z + A_mem[15];
         }
-        break;
-      
-      default:
+      else
+      for(uword col=0; col < B_n_cols; ++col)
+        {
+        const eT*   B_mem =   B.colptr(col);
+              eT* out_mem = out.colptr(col);
+        
+        const eT x = B_mem[0];
+        const eT y = B_mem[1];
+        const eT z = B_mem[2];
+        
+        out_mem[0] = A_mem[ 0]*x + A_mem[ 4]*y + A_mem[ 8]*z + A_mem[12];
+        out_mem[1] = A_mem[ 1]*x + A_mem[ 5]*y + A_mem[ 9]*z + A_mem[13];
+        out_mem[2] = A_mem[ 2]*x + A_mem[ 6]*y + A_mem[10]*z + A_mem[14];
+        out_mem[3] = A_mem[ 3]*x + A_mem[ 7]*y + A_mem[11]*z + A_mem[15];
+        }
+      }
+      break;
+    
+    default:
+      {
+      if(B_n_cols == 1)
         {
         Col<eT> tmp(N);
         eT*     tmp_mem = tmp.memptr();
         
-        arrayops::copy(tmp_mem, B_mem, N-1);
+        arrayops::copy(tmp_mem, B.memptr(), N-1);
         
         tmp_mem[N-1] = eT(1);
         
         out = A * tmp;
         }
-      }
-    }
-  else
-    {
-    switch(N)
-      {
-      case 0:
-        break;
-        
-      case 1:
-        out.zeros();
-        break;
-        
-      case 2:
-        {
-        for(uword col=0; col < B_n_cols; ++col)
-          {
-          const eT*   B_mem =   B.colptr(col);
-                eT* out_mem = out.memptr(col);
-          
-          const eT x = B_mem[0];
-          
-          out_mem[0] = A_mem[0]*x + A_mem[3];
-          out_mem[1] = A_mem[1]*x + A_mem[4];
-          }
-        break;
-      
-      case 3:
-        {
-        for(uword col=0; col < B_n_cols; ++col)
-          {
-          const eT*   B_mem =   B.colptr(col);
-                eT* out_mem = out.memptr(col);
-          
-          const eT x = B_mem[0];
-          const eT y = B_mem[1];
-          
-          out_mem[0] = A_mem[0]*x + A_mem[3]*y + A_mem[6];
-          out_mem[1] = A_mem[1]*x + A_mem[4]*y + A_mem[7];
-          out_mem[2] = A_mem[2]*x + A_mem[5]*y + A_mem[8];
-          }
-        }
-        break;
-      
-      case 4:
-        {
-        for(uword col=0; col < B_n_cols; ++col)
-          {
-          const eT*   B_mem =   B.colptr(col);
-                eT* out_mem = out.memptr(col);
-          
-          const eT x = B_mem[0];
-          const eT y = B_mem[1];
-          const eT z = B_mem[2];
-          
-          out_mem[0] = A_mem[ 0]*x + A_mem[ 4]*y + A_mem[ 8]*z + A_mem[12];
-          out_mem[1] = A_mem[ 1]*x + A_mem[ 5]*y + A_mem[ 9]*z + A_mem[13];
-          out_mem[2] = A_mem[ 2]*x + A_mem[ 6]*y + A_mem[10]*z + A_mem[14];
-          out_mem[3] = A_mem[ 3]*x + A_mem[ 7]*y + A_mem[11]*z + A_mem[15];
-          }
-        }
-        break;
-      
-      default:
+      else
         {
         Mat<eT> tmp(N, B.n_cols);
         

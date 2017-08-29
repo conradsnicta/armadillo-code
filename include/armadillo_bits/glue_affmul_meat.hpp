@@ -77,7 +77,7 @@ glue_affmul::apply_noalias(Mat<typename T1::elem_type>& out, const T1& A, const 
       break;
     
     case 1:
-      out.zeros();
+      out.fill(A_mem[0]);
       break;
     
     case 2:
@@ -89,8 +89,8 @@ glue_affmul::apply_noalias(Mat<typename T1::elem_type>& out, const T1& A, const 
         
         const eT x = B_mem[0];
         
-        out_mem[0] = A_mem[0]*x + A_mem[3];
-        out_mem[1] = A_mem[1]*x + A_mem[4];
+        out_mem[0] = A_mem[0]*x + A_mem[2];
+        out_mem[1] = A_mem[1]*x + A_mem[3];
         }
       else
       for(uword col=0; col < B_n_cols; ++col)
@@ -100,8 +100,8 @@ glue_affmul::apply_noalias(Mat<typename T1::elem_type>& out, const T1& A, const 
         
         const eT x = B_mem[0];
         
-        out_mem[0] = A_mem[0]*x + A_mem[3];
-        out_mem[1] = A_mem[1]*x + A_mem[4];
+        out_mem[0] = A_mem[0]*x + A_mem[2];
+        out_mem[1] = A_mem[1]*x + A_mem[3];
         }
       }
       break;
@@ -170,6 +170,44 @@ glue_affmul::apply_noalias(Mat<typename T1::elem_type>& out, const T1& A, const 
       }
       break;
     
+    case 5:
+      {
+      if(B_n_cols == 1)
+        {
+        const eT*   B_mem =   B.memptr();
+              eT* out_mem = out.memptr();
+        
+        const eT x = B_mem[0];
+        const eT y = B_mem[1];
+        const eT z = B_mem[2];
+        const eT w = B_mem[3];
+        
+        out_mem[0] = A_mem[ 0]*x + A_mem[ 5]*y + A_mem[10]*z + A_mem[15]*w + A_mem[20];
+        out_mem[1] = A_mem[ 1]*x + A_mem[ 6]*y + A_mem[11]*z + A_mem[16]*w + A_mem[21];
+        out_mem[2] = A_mem[ 2]*x + A_mem[ 7]*y + A_mem[12]*z + A_mem[17]*w + A_mem[22];
+        out_mem[3] = A_mem[ 3]*x + A_mem[ 8]*y + A_mem[13]*z + A_mem[18]*w + A_mem[23];
+        out_mem[4] = A_mem[ 4]*x + A_mem[ 9]*y + A_mem[14]*z + A_mem[19]*w + A_mem[24];
+        }
+      else
+      for(uword col=0; col < B_n_cols; ++col)
+        {
+        const eT*   B_mem =   B.colptr(col);
+              eT* out_mem = out.colptr(col);
+        
+        const eT x = B_mem[0];
+        const eT y = B_mem[1];
+        const eT z = B_mem[2];
+        const eT w = B_mem[3];
+        
+        out_mem[0] = A_mem[ 0]*x + A_mem[ 5]*y + A_mem[10]*z + A_mem[15]*w + A_mem[20];
+        out_mem[1] = A_mem[ 1]*x + A_mem[ 6]*y + A_mem[11]*z + A_mem[16]*w + A_mem[21];
+        out_mem[2] = A_mem[ 2]*x + A_mem[ 7]*y + A_mem[12]*z + A_mem[17]*w + A_mem[22];
+        out_mem[3] = A_mem[ 3]*x + A_mem[ 8]*y + A_mem[13]*z + A_mem[18]*w + A_mem[23];
+        out_mem[4] = A_mem[ 4]*x + A_mem[ 9]*y + A_mem[14]*z + A_mem[19]*w + A_mem[24];
+        }
+      }
+      break;
+    
     default:
       {
       if(B_n_cols == 1)
@@ -185,11 +223,17 @@ glue_affmul::apply_noalias(Mat<typename T1::elem_type>& out, const T1& A, const 
         }
       else
         {
-        Mat<eT> tmp(N, B.n_cols);
+        Mat<eT> tmp(N, B_n_cols);
         
-        tmp.submat(0,0,N-2,B.n_cols-1) = B;
-        
-        tmp.row(N-1).ones();
+        for(uword col=0; col < B_n_cols; ++col)
+          {
+          const eT*   B_mem =   B.colptr(col);
+                eT* tmp_mem = tmp.colptr(col);
+          
+          arrayops::copy(tmp_mem, B_mem, N-1);
+          
+          tmp_mem[N-1] = eT(1);
+          }
         
         out = A * tmp;
         }

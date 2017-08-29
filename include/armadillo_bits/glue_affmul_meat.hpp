@@ -1,0 +1,207 @@
+// Copyright 2008-2016 Conrad Sanderson (http://conradsanderson.id.au)
+// Copyright 2008-2016 National ICT Australia (NICTA)
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+// ------------------------------------------------------------------------
+
+
+//! \addtogroup glue_affmul
+//! @{
+
+
+
+template<typename T1, typename T2>
+inline
+void
+glue_affmul::apply(Mat<typename T1::elem_type>& out, const Glue<T1,T2,glue_affmul>& X)
+  {
+  arma_extra_debug_sigprint();
+  
+  const quasi_unwrap<T1> U1(X.A);
+  const quasi_unwrap<T2> U2(X.B);
+  
+  const bool is_alias = (U1.is_alias(out) || U2.is_alias(out));
+  
+  if(is_alias == false)
+    {
+    glue_affmul::apply_noalias(out, A, B);
+    }
+  else
+    {
+    Mat<eT> tmp;
+    
+    glue_affmul::apply_noalias(tmp, A, B);
+    
+    out.steal_mem(tmp);
+    }
+  }
+
+
+
+template<typename T1>
+inline
+void
+glue_affmul::apply_noalias(Mat<typename T1::elem_type>& out, const T1& A, const T2& B)
+  {
+  arma_extra_debug_sigprint();
+  
+  const uword N = A.n_rows;
+  
+  arma_debug_check( (N != A.n_cols),   "affmul(): first object must be a square matrix" );
+  arma_debug_check( (B.n_rows+1 != N), "affmul(): size mismatch"                        );
+  
+  const uword B_n_cols = B.n_cols;
+  
+  out.set_size(N, B_n_cols);
+  
+  if(out.n_elem == 0)  { return; }
+  
+  const eT* A_mem = A.memptr();
+  
+  if(B_n_cols == 1)
+    {
+    const eT*   B_mem =   B.memptr();
+          eT* out_mem = out.memptr();
+    
+    switch(N)
+      {
+      case 0:
+        break;
+        
+      case 1:
+        out_mem[0] = eT(0);
+        break;
+        
+      case 2:
+        {
+        const eT x = B_mem[0];
+        
+        out_mem[0] = A_mem[0]*x + A_mem[3];
+        out_mem[1] = A_mem[1]*x + A_mem[4];
+        }
+        break;
+      
+      case 3:
+        {
+        const eT x = B_mem[0];
+        const eT y = B_mem[1];
+        
+        out_mem[0] = A_mem[0]*x + A_mem[3]*y + A_mem[6];
+        out_mem[1] = A_mem[1]*x + A_mem[4]*y + A_mem[7];
+        out_mem[2] = A_mem[2]*x + A_mem[5]*y + A_mem[8];
+        }
+        break;
+      
+      case 4:
+        {
+        const eT x = B_mem[0];
+        const eT y = B_mem[1];
+        const eT z = B_mem[2];
+        
+        out_mem[0] = A_mem[ 0]*x + A_mem[ 4]*y + A_mem[ 8]*z + A_mem[12];
+        out_mem[1] = A_mem[ 1]*x + A_mem[ 5]*y + A_mem[ 9]*z + A_mem[13];
+        out_mem[2] = A_mem[ 2]*x + A_mem[ 6]*y + A_mem[10]*z + A_mem[14];
+        out_mem[3] = A_mem[ 3]*x + A_mem[ 7]*y + A_mem[11]*z + A_mem[15];
+        }
+        break;
+      
+      default:
+        {
+        Col<eT> tmp(N);
+        eT*     tmp_mem = tmp.memptr();
+        
+        arrayops::copy(tmp_mem, B_mem, N-1);
+        
+        tmp_mem[N-1] = eT(1);
+        
+        out = A * tmp;
+        }
+      }
+    }
+  else
+    {
+    switch(N)
+      {
+      case 0:
+        break;
+        
+      case 1:
+        out.zeros();
+        break;
+        
+      case 2:
+        {
+        for(uword col=0; col < B_n_cols; ++col)
+          {
+          const eT*   B_mem =   B.colptr(col);
+                eT* out_mem = out.memptr(col);
+          
+          const eT x = B_mem[0];
+          
+          out_mem[0] = A_mem[0]*x + A_mem[3];
+          out_mem[1] = A_mem[1]*x + A_mem[4];
+          }
+        break;
+      
+      case 3:
+        {
+        for(uword col=0; col < B_n_cols; ++col)
+          {
+          const eT*   B_mem =   B.colptr(col);
+                eT* out_mem = out.memptr(col);
+          
+          const eT x = B_mem[0];
+          const eT y = B_mem[1];
+          
+          out_mem[0] = A_mem[0]*x + A_mem[3]*y + A_mem[6];
+          out_mem[1] = A_mem[1]*x + A_mem[4]*y + A_mem[7];
+          out_mem[2] = A_mem[2]*x + A_mem[5]*y + A_mem[8];
+          }
+        }
+        break;
+      
+      case 4:
+        {
+        for(uword col=0; col < B_n_cols; ++col)
+          {
+          const eT*   B_mem =   B.colptr(col);
+                eT* out_mem = out.memptr(col);
+          
+          const eT x = B_mem[0];
+          const eT y = B_mem[1];
+          const eT z = B_mem[2];
+          
+          out_mem[0] = A_mem[ 0]*x + A_mem[ 4]*y + A_mem[ 8]*z + A_mem[12];
+          out_mem[1] = A_mem[ 1]*x + A_mem[ 5]*y + A_mem[ 9]*z + A_mem[13];
+          out_mem[2] = A_mem[ 2]*x + A_mem[ 6]*y + A_mem[10]*z + A_mem[14];
+          out_mem[3] = A_mem[ 3]*x + A_mem[ 7]*y + A_mem[11]*z + A_mem[15];
+          }
+        }
+        break;
+      
+      default:
+        {
+        Mat<eT> tmp(N, B.n_cols);
+        
+        tmp.submat(0,0,N-2,B.n_cols-1) = B;
+        
+        tmp.row(N-1).ones();
+        
+        out = A * tmp;
+        }
+      }
+    }
+  }
+
+
+
+//! @}

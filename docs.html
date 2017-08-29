@@ -5904,18 +5904,23 @@ Applicable to <i>Mat</i> only.
                         <td style="vertical-align: top;">
 Numerical data stored in portable <a href="https://en.wikipedia.org/wiki/Hierarchical_Data_Format">HDF5</a> binary format.
 <ul>
-<li>For saving, the default dataset name within the HDF5 file is "dataset"
-unless explicitly specified via the <i>hdf5_name()</i> argument; an HDF5 dataset
-name (e.g. <i>"dataset"</i>) or full
-path may be specified (e.g. <i>"/group_name/dataset"</i>)</li>
-<li>For loading, if the dataset has not been specified via the <i>hdf5_name()</i> argument,
+<li>
+For saving, the default dataset name within the HDF5 file is "dataset"
+unless explicitly specified via the <i>hdf5_name()</i> argument;
+an HDF5 dataset name (e.g. <i>"dataset"</i>)
+or full path may be specified (eg. <i>"/group_name/dataset"</i>)
+</li>
+<li>
+For loading, if the dataset has not been specified via the <i>hdf5_name()</i> argument,
 the order of operations is:
 (1) try loading a dataset named "dataset",
 (2) try loading a dataset named "value",
-(3) try loading the first available dataset</li>
-<li><b>Caveat</b>:
+(3) try loading the first available dataset
+</li>
+<li>
+<b>Caveat</b>:
 support for HDF5 must be enabled within Armadillo's <a href="#config_hpp">configuration</a>;
-the <i>hdf5.h</i> header file must be available on your system and you will need to link with the hdf5 library (eg. -lhdf5) if <i>ARMA_USE_WRAPPER</i> is not specified.
+the <i>hdf5.h</i> header file must be available on your system and you will need to link with the hdf5 library (eg. -lhdf5)
 </li>
 </ul>
 <br>

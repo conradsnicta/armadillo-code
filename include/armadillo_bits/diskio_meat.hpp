@@ -1269,7 +1269,7 @@ diskio::save_hdf5_binary(const Mat<eT>& x, const hdf5_name& spec)
     
     const std::string tmp_name = diskio::gen_tmp_name(spec.filename);
     
-    // Set up the file according to HDF5's preferences  
+    // Set up the file according to HDF5's preferences
     hid_t file = arma_H5Fcreate(tmp_name.c_str(), H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
     
     // We need to create a dataset, datatype, and dataspace
@@ -1286,10 +1286,25 @@ diskio::save_hdf5_binary(const Mat<eT>& x, const hdf5_name& spec)
     // MATLAB forces the users to specify a name at save time for HDF5;
     // Octave will use the default of 'dataset' unless otherwise specified.
     // If the user hasn't specified a dataset name, we will use 'dataset'
+    // We may have to split out the group name from the dataset name.
+    std::vector<hid_t> groups;
+    std::string full_name = spec.dsname;
+    size_t loc;
+    while ((loc = full_name.find("/")) != std::string::npos)
+      {
+      // Create another group...
+      if (loc != 0) // Ignore the first /, if there is a leading /.
+        {
+        hid_t gid = arma_H5Gcreate((groups.size() == 0) ? file : groups[groups.size() - 1], full_name.substr(0, loc).c_str(), H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+        groups.push_back(gid);
+        }
+
+      full_name = full_name.substr(loc + 1);
+      }
     
-    const std::string dataset_name = (spec.dsname.empty() == false) ? spec.dsname : std::string("dataset");
-    
-    hid_t dataset = arma_H5Dcreate(file, dataset_name.c_str(), datatype, dataspace, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+    const std::string dataset_name = (full_name.empty() == false) ? full_name : std::string("dataset");
+
+    hid_t dataset = arma_H5Dcreate(groups.size() == 0 ? file : groups[groups.size() - 1], dataset_name.c_str(), datatype, dataspace, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
     
     // H5Dwrite does not make a distinction between row-major and column-major;
     // it just writes the memory.  MATLAB and Octave store HDF5 matrices as
@@ -1301,6 +1316,10 @@ diskio::save_hdf5_binary(const Mat<eT>& x, const hdf5_name& spec)
     arma_H5Dclose(dataset);
     arma_H5Tclose(datatype);
     arma_H5Sclose(dataspace);
+    for (size_t i = 0; i < groups.size(); ++i)
+      {
+      arma_H5Gclose(groups[i]);
+      }
     arma_H5Fclose(file);
     
     if(save_okay == true) { save_okay = diskio::safe_rename(tmp_name, spec.filename); }

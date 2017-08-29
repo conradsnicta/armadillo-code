@@ -332,18 +332,51 @@ hdf5_search_callback
       // we can do the comparison.
       
       // Count the number of forward slashes in names[string_pos].
-      uword count = 0;
+      uword name_count = 0;
       for (uword i = 0; i < search_info->names[string_pos].length(); ++i)
         {
-        if ((search_info->names[string_pos])[i] == '/') { ++count; }
+        if ((search_info->names[string_pos])[i] == '/') { ++name_count; }
         }
 
       // Count the number of forward slashes in the full name.
-      uword name_count = 0;
+      uword count = 0;
       const std::string str = std::string(name);
       for (uword i = 0; i < str.length(); ++i)
         {
         if (str[i] == '/') { ++count; }
+        }
+
+      // Is the full string the same?
+      if (str == search_info->names[string_pos])
+        {
+        // We found it exactly.
+        hid_t match_candidate = arma_H5Dopen(loc_id, name, H5P_DEFAULT);
+
+        if (match_candidate < 0)
+          {
+          return -1;
+          }
+
+        // Ensure that the dataset is valid and of the correct dimensionality.
+        hid_t filespace = arma_H5Dget_space(match_candidate);
+        int num_dims = arma_H5Sget_simple_extent_ndims(filespace);
+        
+        if (num_dims <= search_info->num_dims)
+          {
+          // Valid dataset -- we'll keep it.
+          // If we already have an existing match we have to close it.
+          if (search_info->best_match != -1)
+            {
+            arma_H5Dclose(search_info->best_match);
+            }
+
+          search_info->best_match_position = string_pos;
+          search_info->best_match          = match_candidate;
+          }
+        
+        arma_H5Sclose(filespace);
+        // There is no possibility of anything better, so terminate the search.
+        return 1;
         }
 
       // If we are asking for more slashes than we have, this can't be a match.

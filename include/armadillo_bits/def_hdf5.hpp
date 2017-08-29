@@ -49,6 +49,9 @@
   #define arma_H5Fclose     H5Fclose
   #define arma_H5Fis_hdf5   H5Fis_hdf5
 
+  #define arma_H5Gcreate    H5Gcreate
+  #define arma_H5Gclose     H5Gclose
+
   #define arma_H5T_NATIVE_UCHAR   H5T_NATIVE_UCHAR
   #define arma_H5T_NATIVE_CHAR    H5T_NATIVE_CHAR
   #define arma_H5T_NATIVE_SHORT   H5T_NATIVE_SHORT
@@ -97,6 +100,9 @@ extern "C"
   hid_t  arma_H5Fcreate(const char* name, unsigned flags, hid_t fcpl_id, hid_t fapl_id);
   herr_t arma_H5Fclose(hid_t file_id);
   htri_t arma_H5Fis_hdf5(const char* name);
+
+  hid_t  arma_H5Gcreate(hid_t loc_id, const char* name, hid_t lcpl_id, hid_t gcpl_id, hid_t gapl_id);
+  herr_t arma_H5Gclose(hid_t group_id);
   
   // Wrapper variables that represent the hid_t values for the H5T_NATIVE_*
   // types.  Note that H5T_NATIVE_UCHAR itself is a macro that resolves to about

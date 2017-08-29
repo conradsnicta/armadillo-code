@@ -60,8 +60,8 @@ glue_affmul::apply_noalias(Mat<typename T1::elem_type>& out, const T1& A, const 
   
   const uword N = A.n_rows;
   
-  arma_debug_check( (N != A.n_cols),   "affmul(): first object must be a square matrix" );
-  arma_debug_check( (B.n_rows+1 != N), "affmul(): size mismatch"                        );
+  arma_debug_check( (N != A.n_cols  ), "affmul(): first object must be a square matrix" );
+  arma_debug_check( (N != B.n_rows+1), "affmul(): size mismatch"                        );
   
   const uword B_n_cols = B.n_cols;
   

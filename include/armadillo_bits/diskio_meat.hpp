@@ -3479,10 +3479,25 @@ diskio::save_hdf5_binary(const Cube<eT>& x, const hdf5_name& spec)
     // MATLAB forces the users to specify a name at save time for HDF5;
     // Octave will use the default of 'dataset' unless otherwise specified.
     // If the user hasn't specified a dataset name, we will use 'dataset'
+    // We may have to split out the group name from the dataset name.
+    std::vector<hid_t> groups;
+    std::string full_name = spec.dsname;
+    size_t loc;
+    while ((loc = full_name.find("/")) != std::string::npos)
+      {
+      // Create another group...
+      if (loc != 0) // Ignore the first /, if there is a leading /.
+        {
+        hid_t gid = arma_H5Gcreate((groups.size() == 0) ? file : groups[groups.size() - 1], full_name.substr(0, loc).c_str(), H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+        groups.push_back(gid);
+        }
+
+      full_name = full_name.substr(loc + 1);
+      }
     
-    const std::string dataset_name = (spec.dsname.empty() == false) ? spec.dsname : std::string("dataset");
+    const std::string dataset_name = (full_name.empty() == false) ? full_name : std::string("dataset");
     
-    hid_t dataset = arma_H5Dcreate(file, dataset_name.c_str(), datatype, dataspace, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+    hid_t dataset = arma_H5Dcreate(groups.size() == 0 ? file : groups[groups.size() - 1], dataset_name.c_str(), datatype, dataspace, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 
     herr_t status = arma_H5Dwrite(dataset, datatype, H5S_ALL, H5S_ALL, H5P_DEFAULT, x.mem);
     save_okay = (status >= 0);

@@ -119,7 +119,7 @@ else()
   option(BUILD_SHARED_LIBS "build shared library" ON)
 endif()
 
-option(DETECT_HDF5 "Detect HDF5 and include HDF5 support, if found" OFF)
+option(DETECT_HDF5 "Detect HDF5 and include HDF5 support, if found" ON)
 
 
 if(WIN32)
@@ -287,11 +287,11 @@ endif()
 find_package(PkgConfig)
 
 
-# set(DETECT_HDF5 true)
+# set(DETECT_HDF5 false)
 
-## uncomment the above line to enable the detection of the HDF5 library;
-## you can also enable HDF5 detection directly on the command line:
-## cmake -D DETECT_HDF5=true .
+## uncomment the above line to disable the detection of the HDF5 library;
+## you can also disable HDF5 detection directly on the command line:
+## cmake -D DETECT_HDF5=false .
 
 if(DETECT_HDF5)
   find_package(HDF5 QUIET COMPONENTS C)
@@ -327,7 +327,12 @@ if(DETECT_HDF5)
     # can use the first element in the list.  Issue a status message, too, just
     # for good measure.
     list(GET HDF5_INCLUDE_DIRS 0 ARMA_HDF5_INCLUDE_DIR)
-    message(STATUS "Set ARMA_HDF5_INCLUDE_DIR to ${ARMA_HDF5_INCLUDE_DIR}")
+    message(STATUS "ARMA_HDF5_INCLUDE_DIR = ${ARMA_HDF5_INCLUDE_DIR}")
+    message(STATUS "")
+    message(STATUS "*** If use of HDF5 is causing problems,")
+    message(STATUS "*** rerun cmake with HDF5 detection disabled:")
+    message(STATUS "*** cmake -D DETECT_HDF5=false .")
+    message(STATUS "")
   endif()
 endif()
 

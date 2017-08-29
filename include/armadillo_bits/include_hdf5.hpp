@@ -33,5 +33,6 @@
   #if defined(H5_USE_16_API_DEFAULT) || defined(H5_USE_16_API)
     #pragma message ("WARNING: disabling use of HDF5 due to its incompatible configuration")
     #undef ARMA_USE_HDF5
+    #undef ARMA_USE_HDF5_ALT
   #endif
 #endif

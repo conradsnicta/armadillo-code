@@ -251,6 +251,7 @@
 
 #if defined(ARMA_DONT_USE_HDF5)
   #undef ARMA_USE_HDF5
+  #undef ARMA_USE_HDF5_ALT
 #endif
 
 #if defined(ARMA_DONT_PRINT_ERRORS)

@@ -616,8 +616,7 @@ class SpMat : public SpBase< eT, SpMat<eT> >
   arma_inline void sync_csc()   const;
   
   
-  // so that SpValProxy can call add_element() and delete_element()
-  friend class SpValProxy< SpMat<eT> >;
+  friend class SpValProxy< SpMat<eT> >;  // so that SpValProxy can call add_element() and delete_element()
   friend class SpSubview<eT>;
   friend class SpRow<eT>;
   friend class SpCol<eT>;

@@ -31,7 +31,7 @@ SpSubview<eT>::SpSubview(const SpMat<eT>& in_m, const uword in_row1, const uword
   {
   arma_extra_debug_sigprint();
   
-  m.sync();
+  m.sync_csc();
   
   // There must be a O(1) way to do this
   uword lend     = m.col_ptrs[in_col1 + in_n_cols];
@@ -65,7 +65,7 @@ SpSubview<eT>::SpSubview(SpMat<eT>& in_m, const uword in_row1, const uword in_co
   {
   arma_extra_debug_sigprint();
   
-  m.sync();
+  m.sync_csc();
   
   // There must be a O(1) way to do this
   uword lend     = m.col_ptrs[in_col1 + in_n_cols];
@@ -144,6 +144,7 @@ SpSubview<eT>::operator*=(const eT val)
   {
   arma_extra_debug_sigprint();
   
+  m.sync_csc();
   m.invalidate_cache();
   
   const uword lstart_row = aux_row1;
@@ -203,6 +204,7 @@ SpSubview<eT>::operator/=(const eT val)
   
   arma_debug_check( (val == eT(0)), "element-wise division: division by zero" );
   
+  m.sync_csc();
   m.invalidate_cache();
   
   const uword lstart_row = aux_row1;
@@ -845,6 +847,7 @@ SpSubview<eT>::replace(const eT old_val, const eT new_val)
     return;
     }
   
+  m.sync_csc();
   m.invalidate_cache();
   
   const uword lstart_row = aux_row1;
@@ -968,7 +971,7 @@ SpSubview<eT>::eye()
 template<typename eT>
 arma_hot
 inline
-SpValProxy<SpSubview<eT> >
+MapMat_svel<eT>
 SpSubview<eT>::operator[](const uword i)
   {
   const uword lrow = i % n_rows;
@@ -996,7 +999,7 @@ SpSubview<eT>::operator[](const uword i) const
 template<typename eT>
 arma_hot
 inline
-SpValProxy< SpSubview<eT> >
+MapMat_svel<eT>
 SpSubview<eT>::operator()(const uword i)
   {
   arma_debug_check( (i >= n_elem), "SpSubview::operator(): index out of bounds");
@@ -1028,7 +1031,7 @@ SpSubview<eT>::operator()(const uword i) const
 template<typename eT>
 arma_hot
 inline
-SpValProxy< SpSubview<eT> >
+MapMat_svel<eT>
 SpSubview<eT>::operator()(const uword in_row, const uword in_col)
   {
   arma_debug_check( (in_row >= n_rows) || (in_col >= n_cols), "SpSubview::operator(): index out of bounds");
@@ -1054,7 +1057,7 @@ SpSubview<eT>::operator()(const uword in_row, const uword in_col) const
 template<typename eT>
 arma_hot
 inline
-SpValProxy< SpSubview<eT> >
+MapMat_svel<eT>
 SpSubview<eT>::at(const uword i)
   {
   const uword lrow = i % n_rows;
@@ -1082,32 +1085,12 @@ SpSubview<eT>::at(const uword i) const
 template<typename eT>
 arma_hot
 inline
-SpValProxy< SpSubview<eT> >
+MapMat_svel<eT>
 SpSubview<eT>::at(const uword in_row, const uword in_col)
   {
-  m.invalidate_cache();
+  m.sync_cache();
   
-  const uword colptr      = m.col_ptrs[in_col + aux_col1];
-  const uword next_colptr = m.col_ptrs[in_col + aux_col1 + 1];
-
-  // Step through the row indices to see if our element exists.
-  for(uword i = colptr; i < next_colptr; ++i)
-    {
-    // First check that we have not stepped past it.
-    if((in_row + aux_row1) < m.row_indices[i])
-      {
-      return SpValProxy<SpSubview<eT> >(in_row, in_col, *this); // Proxy for a zero value.
-      }
-
-    // Now check if we are at the correct place.
-    if((in_row + aux_row1) == m.row_indices[i]) // If we are, return a reference to the value.
-      {
-      return SpValProxy<SpSubview<eT> >(in_row, in_col, *this, &access::rw(m.values[i]));
-      }
-    }
-
-  // We did not find it, so it does not exist.
-  return SpValProxy<SpSubview<eT> >(in_row, in_col, *this);
+  return m.cache.svel(aux_row1 + in_row, aux_col1 + in_col, m.sync_state, access::rw(m.n_nonzero), access::rw(n_nonzero));
   }
 
 
@@ -1527,6 +1510,8 @@ inline
 typename SpSubview<eT>::const_iterator
 SpSubview<eT>::begin() const
   {
+  m.sync_csc();
+  
   return const_iterator(*this);
   }
 
@@ -1537,6 +1522,8 @@ inline
 typename SpSubview<eT>::iterator
 SpSubview<eT>::begin_col(const uword col_num)
   {
+  m.sync_csc();
+  
   return iterator(*this, 0, col_num);
   }
 
@@ -1546,6 +1533,8 @@ inline
 typename SpSubview<eT>::const_iterator
 SpSubview<eT>::begin_col(const uword col_num) const
   {
+  m.sync_csc();
+  
   return const_iterator(*this, 0, col_num);
   }
 
@@ -1556,6 +1545,8 @@ inline
 typename SpSubview<eT>::row_iterator
 SpSubview<eT>::begin_row(const uword row_num)
   {
+  m.sync_csc();
+  
   return row_iterator(*this, row_num, 0);
   }
 
@@ -1566,6 +1557,8 @@ inline
 typename SpSubview<eT>::const_row_iterator
 SpSubview<eT>::begin_row(const uword row_num) const
   {
+  m.sync_csc();
+  
   return const_row_iterator(*this, row_num, 0);
   }
 
@@ -1576,6 +1569,8 @@ inline
 typename SpSubview<eT>::iterator
 SpSubview<eT>::end()
   {
+  m.sync_csc();
+  
   return iterator(*this, 0, n_cols, n_nonzero, m.n_nonzero - n_nonzero);
   }
 
@@ -1586,6 +1581,8 @@ inline
 typename SpSubview<eT>::const_iterator
 SpSubview<eT>::end() const
   {
+  m.sync_csc();
+  
   return const_iterator(*this, 0, n_cols, n_nonzero, m.n_nonzero - n_nonzero);
   }
 
@@ -1596,6 +1593,8 @@ inline
 typename SpSubview<eT>::row_iterator
 SpSubview<eT>::end_row()
   {
+  m.sync_csc();
+  
   return row_iterator(*this, n_nonzero);
   }
 
@@ -1606,6 +1605,8 @@ inline
 typename SpSubview<eT>::const_row_iterator
 SpSubview<eT>::end_row() const
   {
+  m.sync_csc();
+  
   return const_row_iterator(*this, n_nonzero);
   }
 
@@ -1616,6 +1617,8 @@ inline
 typename SpSubview<eT>::row_iterator
 SpSubview<eT>::end_row(const uword row_num)
   {
+  m.sync_csc();
+  
   return row_iterator(*this, row_num + 1, 0);
   }
 
@@ -1626,6 +1629,8 @@ inline
 typename SpSubview<eT>::const_row_iterator
 SpSubview<eT>::end_row(const uword row_num) const
   {
+  m.sync_csc();
+  
   return const_row_iterator(*this, row_num + 1, 0);
   }
 

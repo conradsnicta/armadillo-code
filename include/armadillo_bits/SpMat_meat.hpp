@@ -585,7 +585,6 @@ SpMat<eT>::operator*=(const eT val)
   if(val != eT(0))
     {
     sync_csc();
-    
     invalidate_cache();
     
     const uword n_nz = n_nonzero;
@@ -626,7 +625,6 @@ SpMat<eT>::operator/=(const eT val)
   arma_debug_check( (val == eT(0)), "element-wise division: division by zero" );
   
   sync_csc();
-  
   invalidate_cache();
   
   const uword n_nz = n_nonzero;
@@ -1174,6 +1172,8 @@ SpMat<eT>&
 SpMat<eT>::operator=(const SpSubview<eT>& X)
   {
   arma_extra_debug_sigprint();
+  
+  X.m.sync_csc();
   
   const uword in_n_cols = X.n_cols;
   const uword in_n_rows = X.n_rows;
@@ -2454,8 +2454,6 @@ SpMat<eT>::swap_rows(const uword in_row1, const uword in_row2)
   {
   arma_extra_debug_sigprint();
   
-  sync_csc();
-  
   arma_debug_check
     (
     (in_row1 >= n_rows) || (in_row2 >= n_rows),
@@ -2468,6 +2466,7 @@ SpMat<eT>::swap_rows(const uword in_row1, const uword in_row2)
     return;
     }
   
+  sync_csc();
   invalidate_cache();
   
   // The easier way to do this, instead of collecting all the elements in one row and then swapping with the other, will be
@@ -2707,6 +2706,7 @@ SpMat<eT>::shed_cols(const uword in_col1, const uword in_col2)
     );
   
   sync_csc();
+  invalidate_cache();
   
   // First we find the locations in values and row_indices for the column entries.
   uword col_beg = col_ptrs[in_col1];
@@ -2769,8 +2769,6 @@ SpMat<eT>::shed_cols(const uword in_col1, const uword in_col2)
   // We update the element and column counts, and we're done.
   access::rw(n_cols) = new_n_cols;
   access::rw(n_elem) = n_cols * n_rows;
-  
-  invalidate_cache();
   }
 
 
@@ -3483,7 +3481,6 @@ SpMat<eT>::reshape(const uword in_rows, const uword in_cols)
   if( (n_rows == in_rows) && (n_cols == in_cols) )  { return; }
   
   sync_csc();
-  
   invalidate_cache();
   
   // We have to modify all of the relevant row indices and the relevant column pointers.
@@ -3587,10 +3584,9 @@ SpMat<eT>::replace(const eT old_val, const eT new_val)
   else
     {
     sync_csc();
+    invalidate_cache();
     
     arrayops::replace(access::rwp(values), n_nonzero, old_val, new_val);
-    
-    invalidate_cache();
     
     if(new_val == eT(0))  { remove_zeros(); }
     }
@@ -4203,8 +4199,6 @@ SpMat<eT>::quiet_save(const std::string name, const file_type type) const
   {
   arma_extra_debug_sigprint();
   
-  sync_csc();
-  
   return (*this).save(name, type, false);
   }
 
@@ -4217,8 +4211,6 @@ bool
 SpMat<eT>::quiet_save(std::ostream& os, const file_type type) const
   {
   arma_extra_debug_sigprint();
-  
-  sync_csc();
   
   return (*this).save(os, type, false);
   }
@@ -4233,8 +4225,6 @@ SpMat<eT>::quiet_load(const std::string name, const file_type type)
   {
   arma_extra_debug_sigprint();
   
-  invalidate_cache();
-  
   return (*this).load(name, type, false);
   }
 
@@ -4247,8 +4237,6 @@ bool
 SpMat<eT>::quiet_load(std::istream& is, const file_type type)
   {
   arma_extra_debug_sigprint();
-  
-  invalidate_cache();
   
   return (*this).load(is, type, false);
   }
@@ -5540,7 +5528,6 @@ SpMat<eT>::add_element(const uword in_row, const uword in_col, const eT val)
   arma_extra_debug_sigprint();
   
   sync_csc();
-  
   invalidate_cache();
   
   // We will assume the new element does not exist and begin the search for
@@ -5652,7 +5639,6 @@ SpMat<eT>::delete_element(const uword in_row, const uword in_col)
   arma_extra_debug_sigprint();
   
   sync_csc();
-  
   invalidate_cache();
   
   // We assume the element exists (although... it may not) and look for its

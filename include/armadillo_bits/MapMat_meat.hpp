@@ -143,6 +143,8 @@ MapMat<eT>::operator=(const SpMat<eT>& x)
   
   (*this).zeros(x.n_rows, x.n_cols);
   
+  if(x.n_nonzero == 0)  { return; }
+  
   typename SpMat<eT>::const_iterator it     = x.begin();
   typename SpMat<eT>::const_iterator it_end = x.end();
   
@@ -425,6 +427,18 @@ MapMat<eT>::elem(const uword in_row, const uword in_col, uword& sync_state, uwor
   const uword index = (n_rows * in_col) + in_row;
   
   return MapMat_elem<eT>(*this, index, sync_state, n_nonzero);
+  }
+
+
+
+template<typename eT>
+arma_inline
+MapMat_svel<eT>
+MapMat<eT>::svel(const uword in_row, const uword in_col, uword& sync_state, uword& n_nonzero, uword& sv_n_nonzero)
+  {
+  const uword index = (n_rows * in_col) + in_row;
+  
+  return MapMat_svel<eT>(*this, index, sync_state, n_nonzero, sv_n_nonzero);
   }
 
 
@@ -1580,6 +1594,319 @@ MapMat_elem<eT>::operator--(int)
   
   sync_state = 1;
   n_nonzero  = parent.get_n_nonzero();
+  
+  return old_val;
+  }
+
+
+
+
+
+// MapMat_svel
+
+
+
+template<typename eT>
+arma_inline
+MapMat_svel<eT>::MapMat_svel(MapMat<eT>& in_parent, const uword in_index, uword& in_sync_state, uword& in_n_nonzero, uword& in_sv_n_nonzero)
+  : parent      (in_parent      )
+  , index       (in_index       )
+  , sync_state  (in_sync_state  )
+  , n_nonzero   (in_n_nonzero   )
+  , sv_n_nonzero(in_sv_n_nonzero)
+  {
+  arma_extra_debug_sigprint();
+  }
+
+
+
+template<typename eT>
+arma_inline
+void
+MapMat_svel<eT>::update_n_nonzeros()
+  {
+  arma_extra_debug_sigprint();
+  
+  const uword old_n_nonzero = n_nonzero;
+  
+  n_nonzero = parent.get_n_nonzero();
+  
+       if(n_nonzero > old_n_nonzero)  { ++sv_n_nonzero; }
+  else if(n_nonzero < old_n_nonzero)  { --sv_n_nonzero; }
+  }
+
+
+
+template<typename eT>
+arma_inline
+MapMat_svel<eT>::operator eT() const
+  {
+  arma_extra_debug_sigprint();
+  
+  const MapMat<eT>& const_parent = parent;
+  
+  return const_parent.operator[](index);
+  }
+
+
+
+template<typename eT>
+arma_inline
+MapMat_svel<eT>&
+MapMat_svel<eT>::operator=(const MapMat_svel<eT>& x)
+  {
+  arma_extra_debug_sigprint();
+  
+  const eT in_val = eT(x);
+  
+  parent.set_val(index, in_val);
+  
+  sync_state = 1;
+  update_n_nonzeros();
+  
+  return *this;
+  }
+
+
+
+template<typename eT>
+arma_inline
+MapMat_svel<eT>&
+MapMat_svel<eT>::operator=(const eT in_val)
+  {
+  arma_extra_debug_sigprint();
+  
+  parent.set_val(index, in_val);
+  
+  sync_state = 1;
+  update_n_nonzeros();
+  
+  return *this;
+  }
+
+
+
+template<typename eT>
+arma_inline
+MapMat_svel<eT>&
+MapMat_svel<eT>::operator+=(const eT in_val)
+  {
+  arma_extra_debug_sigprint();
+  
+  typename MapMat<eT>::map_type& map_ref = *(parent.map_ptr);
+  
+  if(in_val != eT(0))
+    {
+    eT& val = map_ref.operator[](index);  // creates the element if it doesn't exist
+    
+    val += in_val;
+    
+    if(val == eT(0))  { map_ref.erase(index); }
+    
+    sync_state = 1;
+    update_n_nonzeros();
+    }
+  
+  return *this;
+  }
+
+
+
+template<typename eT>
+arma_inline
+MapMat_svel<eT>&
+MapMat_svel<eT>::operator-=(const eT in_val)
+  {
+  arma_extra_debug_sigprint();
+  
+  typename MapMat<eT>::map_type& map_ref = *(parent.map_ptr);
+  
+  if(in_val != eT(0))
+    {
+    eT& val = map_ref.operator[](index);  // creates the element if it doesn't exist
+    
+    val -= in_val;
+    
+    if(val == eT(0))  { map_ref.erase(index); }
+    
+    sync_state = 1;
+    update_n_nonzeros();
+    }
+  
+  return *this;
+  }
+
+
+
+template<typename eT>
+arma_inline
+MapMat_svel<eT>&
+MapMat_svel<eT>::operator*=(const eT in_val)
+  {
+  arma_extra_debug_sigprint();
+  
+  typename MapMat<eT>::map_type& map_ref = *(parent.map_ptr);
+  
+  typename MapMat<eT>::map_type::iterator it     = map_ref.find(index);
+  typename MapMat<eT>::map_type::iterator it_end = map_ref.end();
+  
+  if(it != it_end)
+    {
+    if(in_val != eT(0))
+      {
+      eT& val = (*it).second;
+      
+      val *= in_val;
+      
+      if(val == eT(0))  { map_ref.erase(it); }
+      }
+    else
+      {
+      map_ref.erase(it);
+      }
+    
+    sync_state = 1;
+    update_n_nonzeros();
+    }
+  
+  return *this;
+  }
+
+
+
+template<typename eT>
+arma_inline
+MapMat_svel<eT>&
+MapMat_svel<eT>::operator/=(const eT in_val)
+  {
+  arma_extra_debug_sigprint();
+  
+  typename MapMat<eT>::map_type& map_ref = *(parent.map_ptr);
+  
+  typename MapMat<eT>::map_type::iterator it     = map_ref.find(index);
+  typename MapMat<eT>::map_type::iterator it_end = map_ref.end();
+  
+  if(it != it_end)
+    {
+    eT& val = (*it).second;
+    
+    val /= in_val;
+    
+    if(val == eT(0))  { map_ref.erase(it); }
+    
+    sync_state = 1;
+    update_n_nonzeros();
+    }
+  else
+    {
+    // silly operation, but included for completness
+    
+    const eT val = eT(0) / in_val;
+    
+    if(val != eT(0))
+      {
+      parent.set_val(index, val);
+      
+      sync_state = 1;
+      update_n_nonzeros();
+      }
+    }
+  
+  return *this;
+  }
+
+
+
+template<typename eT>
+arma_inline
+MapMat_svel<eT>&
+MapMat_svel<eT>::operator++()
+  {
+  arma_extra_debug_sigprint();
+  
+  typename MapMat<eT>::map_type& map_ref = *(parent.map_ptr);
+  
+  eT& val = map_ref.operator[](index);  // creates the element if it doesn't exist
+  
+  val += eT(1);  // can't use ++,  as eT can be std::complex
+  
+  if(val == eT(0))  { map_ref.erase(index); }
+  
+  sync_state = 1;
+  update_n_nonzeros();
+  
+  return *this;
+  }
+
+
+
+template<typename eT>
+arma_inline
+eT
+MapMat_svel<eT>::operator++(int)
+  {
+  arma_extra_debug_sigprint();
+  
+  typename MapMat<eT>::map_type& map_ref = *(parent.map_ptr);
+  
+  eT& val = map_ref.operator[](index);  // creates the element if it doesn't exist
+  
+  const eT old_val = val;
+  
+  val += eT(1);  // can't use ++,  as eT can be std::complex
+  
+  if(val == eT(0))  { map_ref.erase(index); }
+  
+  sync_state = 1;
+  update_n_nonzeros();
+  
+  return old_val;
+  }
+
+
+
+template<typename eT>
+arma_inline
+MapMat_svel<eT>&
+MapMat_svel<eT>::operator--()
+  {
+  arma_extra_debug_sigprint();
+  
+  typename MapMat<eT>::map_type& map_ref = *(parent.map_ptr);
+  
+  eT& val = map_ref.operator[](index);  // creates the element if it doesn't exist
+  
+  val -= eT(1);  // can't use --,  as eT can be std::complex
+  
+  if(val == eT(0))  { map_ref.erase(index); }
+  
+  sync_state = 1;
+  update_n_nonzeros();
+  
+  return *this;
+  }
+
+
+
+template<typename eT>
+arma_inline
+eT
+MapMat_svel<eT>::operator--(int)
+  {
+  arma_extra_debug_sigprint();
+  
+  typename MapMat<eT>::map_type& map_ref = *(parent.map_ptr);
+  
+  eT& val = map_ref.operator[](index);  // creates the element if it doesn't exist
+  
+  const eT old_val = val;
+  
+  val -= eT(1);  // can't use --,  as eT can be std::complex
+  
+  if(val == eT(0))  { map_ref.erase(index); }
+  
+  sync_state = 1;
+  update_n_nonzeros();
   
   return old_val;
   }

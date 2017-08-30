@@ -82,6 +82,7 @@ class MapMat
   
   arma_inline MapMat_elem<eT> elem(const uword index,                      uword& sync_state, uword& n_nonzero);
   arma_inline MapMat_elem<eT> elem(const uword in_row, const uword in_col, uword& sync_state, uword& n_nonzero);
+  arma_inline MapMat_svel<eT> svel(const uword in_row, const uword in_col, uword& sync_state, uword& n_nonzero, uword& sv_n_nonzero);
   
   arma_inline arma_warn_unused MapMat_val<eT> operator[](const uword index);
   arma_inline arma_warn_unused            eT  operator[](const uword index) const;
@@ -126,6 +127,7 @@ class MapMat
   
   friend class MapMat_val<eT>;
   friend class MapMat_elem<eT>;
+  friend class MapMat_svel<eT>;
   friend class SpMat<eT>;
   };
 
@@ -185,8 +187,7 @@ class MapMat_elem
   
   arma_inline operator eT() const;
   
-  arma_inline MapMat_elem<eT>& operator= (const MapMat_elem<eT>&  x);
-  
+  arma_inline MapMat_elem<eT>& operator= (const MapMat_elem<eT>& x);
   
   arma_inline MapMat_elem<eT>& operator= (const eT in_val);
   arma_inline MapMat_elem<eT>& operator+=(const eT in_val);
@@ -198,6 +199,46 @@ class MapMat_elem
   arma_inline eT               operator++(int);
   
   arma_inline MapMat_elem<eT>& operator--();
+  arma_inline eT               operator--(int);
+  };
+
+
+
+template<typename eT>
+class MapMat_svel
+  {
+  private:
+  
+  arma_aligned MapMat<eT>& parent;
+  
+  arma_aligned const uword  index;
+  arma_aligned       uword& sync_state;
+  arma_aligned       uword& n_nonzero;
+  arma_aligned       uword& sv_n_nonzero;
+  
+  inline MapMat_svel(MapMat<eT>& in_parent, const uword in_index, uword& in_sync_state, uword& in_n_nonzero, uword& in_sv_n_nonzero);
+  
+  arma_inline void update_n_nonzeros();
+  
+  friend class MapMat<eT>;
+  
+  
+  public:
+  
+  arma_inline operator eT() const;
+  
+  arma_inline MapMat_svel<eT>& operator= (const MapMat_svel<eT>& x);
+  
+  arma_inline MapMat_svel<eT>& operator= (const eT in_val);
+  arma_inline MapMat_svel<eT>& operator+=(const eT in_val);
+  arma_inline MapMat_svel<eT>& operator-=(const eT in_val);
+  arma_inline MapMat_svel<eT>& operator*=(const eT in_val);
+  arma_inline MapMat_svel<eT>& operator/=(const eT in_val);
+  
+  arma_inline MapMat_svel<eT>& operator++();
+  arma_inline eT               operator++(int);
+  
+  arma_inline MapMat_svel<eT>& operator--();
   arma_inline eT               operator--(int);
   };
 

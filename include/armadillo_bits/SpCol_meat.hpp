@@ -350,6 +350,8 @@ SpCol<eT>::begin_row(const uword row_num)
   
   arma_debug_check( (row_num >= SpMat<eT>::n_rows), "SpCol::begin_row(): index out of bounds");
   
+  SpMat<eT>::sync_csc();
+  
   return row_iterator(*this, row_num, 0);
   }
 
@@ -363,6 +365,8 @@ SpCol<eT>::begin_row(const uword row_num) const
   arma_extra_debug_sigprint();
   
   arma_debug_check( (row_num >= SpMat<eT>::n_rows), "SpCol::begin_row(): index out of bounds");
+  
+  SpMat<eT>::sync_csc();
   
   return const_row_iterator(*this, row_num, 0);
   }
@@ -378,6 +382,8 @@ SpCol<eT>::end_row(const uword row_num)
   
   arma_debug_check( (row_num >= SpMat<eT>::n_rows), "SpCol::end_row(): index out of bounds");
   
+  SpMat<eT>::sync_csc();
+  
   return row_iterator(*this, row_num + 1, 0);
   }
 
@@ -391,6 +397,8 @@ SpCol<eT>::end_row(const uword row_num) const
   arma_extra_debug_sigprint();
   
   arma_debug_check( (row_num >= SpMat<eT>::n_rows), "SpCol::end_row(): index out of bounds");
+  
+  SpMat<eT>::sync_csc();
   
   return const_row_iterator(*this, row_num + 1, 0);
   }

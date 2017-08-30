@@ -278,7 +278,7 @@ class SpProxy< spdiagview<eT> >
   arma_inline const_row_iterator_type end_row(const uword row_num) const { return Q.end_row(row_num); }
   
   template<typename eT2>
-  arma_inline bool is_alias(const SpMat<eT2>& X) const { return false; }
+  arma_inline bool is_alias(const SpMat<eT2>&) const { return false; }
   };
 
 

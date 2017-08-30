@@ -343,7 +343,6 @@ class SpProxy< mtSpOp<out_eT, T1, spop_type> >
   public:
   
   typedef          out_eT                          elem_type;
-  typedef typename T1::elem_type                   eT;
   typedef typename get_pod_type<elem_type>::result pod_type;
   typedef SpMat<out_eT>                            stored_type;
   
@@ -372,9 +371,9 @@ class SpProxy< mtSpOp<out_eT, T1, spop_type> >
   arma_inline elem_type operator[](const uword i)                    const { return Q[i];           }
   arma_inline elem_type at        (const uword row, const uword col) const { return Q.at(row, col); }
   
-  arma_inline const eT*    get_values()      const { return Q.values;      }
-  arma_inline const uword* get_row_indices() const { return Q.row_indices; }
-  arma_inline const uword* get_col_ptrs()    const { return Q.col_ptrs;    }
+  arma_inline const out_eT* get_values()      const { return Q.values;      }
+  arma_inline const uword*  get_row_indices() const { return Q.row_indices; }
+  arma_inline const uword*  get_col_ptrs()    const { return Q.col_ptrs;    }
   
   arma_inline const_iterator_type     begin()                            const { return Q.begin();            }
   arma_inline const_iterator_type     begin_col(const uword col_num)     const { return Q.begin_col(col_num); }

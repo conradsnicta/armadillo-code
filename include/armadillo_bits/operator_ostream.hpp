@@ -67,6 +67,34 @@ operator<< (std::ostream& o, const SpValProxy<T1>& X)
 
 
 
+template<typename eT>
+inline
+std::ostream&
+operator<< (std::ostream& o, const MapMat_val<eT>& X)
+  {
+  arma_extra_debug_sigprint();
+  
+  o << eT(X);
+  
+  return o;
+  }
+
+
+
+template<typename eT>
+inline
+std::ostream&
+operator<< (std::ostream& o, const MapMat_elem<eT>& X)
+  {
+  arma_extra_debug_sigprint();
+  
+  o << eT(X);
+  
+  return o;
+  }
+
+
+
 template<typename T1>
 inline
 std::ostream&

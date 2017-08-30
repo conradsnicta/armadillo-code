@@ -1085,6 +1085,8 @@ inline
 SpValProxy< SpSubview<eT> >
 SpSubview<eT>::at(const uword in_row, const uword in_col)
   {
+  m.invalidate_cache();
+  
   const uword colptr      = m.col_ptrs[in_col + aux_col1];
   const uword next_colptr = m.col_ptrs[in_col + aux_col1 + 1];
 

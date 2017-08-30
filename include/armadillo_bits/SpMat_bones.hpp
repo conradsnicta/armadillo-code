@@ -365,7 +365,7 @@ class SpMat : public SpBase< eT, SpMat<eT> >
     inline iterator_base(const SpMat& in_M);
     inline iterator_base(const SpMat& in_M, const uword col, const uword pos);
     
-    inline arma_hot eT operator*() const;
+    arma_inline eT operator*() const;
     
     // don't hold location internally; call "dummy" methods to get that information
     arma_inline uword row() const { return M->row_indices[internal_pos]; }

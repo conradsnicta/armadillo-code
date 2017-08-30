@@ -49,7 +49,7 @@ SpSubview<eT>::iterator_base::iterator_base(const SpSubview<eT>& in_M, const uwo
 
 
 template<typename eT>
-inline
+arma_inline
 eT
 SpSubview<eT>::iterator_base::operator*() const
   {

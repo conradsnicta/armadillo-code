@@ -60,8 +60,7 @@ SpMat<eT>::iterator_base::iterator_base(const SpMat<eT>& in_M, const uword in_co
 
 
 template<typename eT>
-inline
-arma_hot
+arma_inline
 eT
 SpMat<eT>::iterator_base::operator*() const
   {

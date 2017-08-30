@@ -154,7 +154,7 @@ class SpSubview : public SpBase<eT, SpSubview<eT> >
     inline iterator_base(const SpSubview& in_M);
     inline iterator_base(const SpSubview& in_M, const uword col, const uword pos, const uword skip_pos);
 
-    inline eT operator*() const;
+    arma_inline eT operator*() const;
 
     // Don't hold location internally; call "dummy" methods to get that information.
     arma_inline uword row() const { return M.m.row_indices[internal_pos + skip_pos] - M.aux_row1; }

@@ -1480,8 +1480,8 @@ SpSubview<eT>::swap_rows(const uword in_row1, const uword in_row2)
 
   for(uword c = lstart_col; c < lend_col; ++c)
     {
-    eT val = m.at(in_row1 + aux_row1, c);
-    access::rw(m).at(in_row2 + aux_row1, c) = m.at(in_row1 + aux_row1, c);
+    const eT val = access::rw(m).at(in_row1 + aux_row1, c);
+    access::rw(m).at(in_row2 + aux_row1, c) = eT( access::rw(m).at(in_row1 + aux_row1, c) );
     access::rw(m).at(in_row1 + aux_row1, c) = val;
     }
   }
@@ -1502,8 +1502,8 @@ SpSubview<eT>::swap_cols(const uword in_col1, const uword in_col2)
 
   for(uword r = lstart_row; r < lend_row; ++r)
     {
-    eT val = m.at(r, in_col1 + aux_col1);
-    access::rw(m).at(r, in_col1 + aux_col1) = m.at(r, in_col2 + aux_col1);
+    const eT val = access::rw(m).at(r, in_col1 + aux_col1);
+    access::rw(m).at(r, in_col1 + aux_col1) = eT( access::rw(m).at(r, in_col2 + aux_col1) );
     access::rw(m).at(r, in_col2 + aux_col1) = val;
     }
   }

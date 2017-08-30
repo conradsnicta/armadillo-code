@@ -2571,8 +2571,8 @@ SpMat<eT>::swap_cols(const uword in_col1, const uword in_col2)
   // slow but works
   for(uword lrow = 0; lrow < n_rows; ++lrow)
     {
-    eT tmp = at(lrow, in_col1);
-    at(lrow, in_col1) = at(lrow, in_col2);
+    const eT tmp = at(lrow, in_col1);
+    at(lrow, in_col1) = eT( at(lrow, in_col2) );
     at(lrow, in_col2) = tmp;
     }
   }
@@ -4352,8 +4352,6 @@ SpMat<eT>::init(const std::string& text)
   {
   arma_extra_debug_sigprint();
   
-  invalidate_cache(); // placed here, as init() is used during matrix modification
-  
   // Figure out the size first.
   uword t_n_rows = 0;
   uword t_n_cols = 0;
@@ -4425,12 +4423,8 @@ SpMat<eT>::init(const std::string& text)
 
     while (line_stream >> val)
       {
-      // Only add nonzero elements.
-      if (val != eT(0))
-        {
-        get_value(lrow, lcol) = val;
-        }
-
+      if(val != eT(0))  { at(lrow, lcol) = val; }
+      
       ++lcol;
       }
 

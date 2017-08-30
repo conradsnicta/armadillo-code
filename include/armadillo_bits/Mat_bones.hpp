@@ -143,14 +143,6 @@ class Mat : public Base< eT, Mat<eT> >
   inline Mat& operator%=(const diagview<eT>& X);
   inline Mat& operator/=(const diagview<eT>& X);
   
-  inline             Mat(const spdiagview<eT>& X);
-  inline Mat&  operator=(const spdiagview<eT>& X);
-  inline Mat& operator+=(const spdiagview<eT>& X);
-  inline Mat& operator-=(const spdiagview<eT>& X);
-  inline Mat& operator*=(const spdiagview<eT>& X);
-  inline Mat& operator%=(const spdiagview<eT>& X);
-  inline Mat& operator/=(const spdiagview<eT>& X);
-  
   template<typename T1> inline             Mat(const subview_elem1<eT,T1>& X);
   template<typename T1> inline Mat& operator= (const subview_elem1<eT,T1>& X);
   template<typename T1> inline Mat& operator+=(const subview_elem1<eT,T1>& X);
@@ -175,6 +167,15 @@ class Mat : public Base< eT, Mat<eT> >
   template<typename T1> inline Mat& operator*=(const SpBase<eT, T1>& m);
   template<typename T1> inline Mat& operator%=(const SpBase<eT, T1>& m);
   template<typename T1> inline Mat& operator/=(const SpBase<eT, T1>& m);
+  
+  inline explicit    Mat(const spdiagview<eT>& X);
+  inline Mat&  operator=(const spdiagview<eT>& X);
+  inline Mat& operator+=(const spdiagview<eT>& X);
+  inline Mat& operator-=(const spdiagview<eT>& X);
+  inline Mat& operator*=(const spdiagview<eT>& X);
+  inline Mat& operator%=(const spdiagview<eT>& X);
+  inline Mat& operator/=(const spdiagview<eT>& X);
+  
   
   inline mat_injector<Mat> operator<<(const eT val);
   inline mat_injector<Mat> operator<<(const injector_end_of_row<>& x);

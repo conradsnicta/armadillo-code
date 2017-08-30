@@ -680,6 +680,70 @@ spdiagview<eT>::operator/=(const SpBase<eT,T1>& o)
 
 
 
+template<typename eT>
+inline
+void
+spdiagview<eT>::extract(SpMat<eT>& out, const spdiagview<eT>& d)
+  {
+  arma_extra_debug_sigprint();
+  
+  const SpMat<eT>& d_m = d.m;
+  
+  // handle aliasing
+  if(&out == &d_m)
+    {
+    SpMat<eT> tmp;
+    
+    spdiagview<eT>::extract(tmp, d);
+    
+    out.steal_mem(tmp);
+    
+    return;
+    }
+  
+  const uword d_n_elem     = d.n_elem;
+  const uword d_row_offset = d.row_offset;
+  const uword d_col_offset = d.col_offset;
+  
+  d_m.sync();
+  
+  Col<eT> cache(d_n_elem);
+  eT* cache_mem = cache.memptr();
+  
+  uword d_n_nonzero = 0;
+  
+  for(uword i=0; i < d_n_elem; ++i)
+    {
+    const eT val = d_m.at(i + d_row_offset, i + d_col_offset);
+    
+    cache_mem[i] = val;
+    
+    d_n_nonzero += ( val != eT(0)) ? uword(1) : uword(0);
+    }
+  
+  out.set_size(d_n_elem, 1);
+  
+  out.mem_resize(d_n_nonzero);
+  
+  uword count = 0;
+  for(uword i=0; i < d_n_elem; ++i)
+    {
+    const eT val = cache_mem[i];
+    
+    if(val != eT(0))
+      {
+      access::rw(out.row_indices[count]) = i;
+      access::rw(out.values[count])      = val;
+      ++count;
+      }
+    }
+  
+  access::rw(out.col_ptrs[0]) = 0;
+  access::rw(out.col_ptrs[1]) = d_n_nonzero;
+  }
+
+
+
 //! extract a diagonal and store it as a dense column vector
 template<typename eT>
 inline
@@ -697,6 +761,8 @@ spdiagview<eT>::extract(Mat<eT>& out, const spdiagview<eT>& in)
   const uword in_row_offset = in.row_offset;
   const uword in_col_offset = in.col_offset;
   
+  in_m.sync();
+  
   eT* out_mem = out.memptr();
   
   for(uword i=0; i < in_n_elem; ++i)
@@ -709,17 +775,7 @@ spdiagview<eT>::extract(Mat<eT>& out, const spdiagview<eT>& in)
 
 template<typename eT>
 inline
-eT
-spdiagview<eT>::at_alt(const uword i) const
-  {
-  return m.at(i+row_offset, i+col_offset);
-  }
-
-
-
-template<typename eT>
-inline
-SpValProxy< SpMat<eT> >
+MapMat_elem<eT>
 spdiagview<eT>::operator[](const uword i)
   {
   return (const_cast< SpMat<eT>& >(m)).at(i+row_offset, i+col_offset);
@@ -739,7 +795,7 @@ spdiagview<eT>::operator[](const uword i) const
 
 template<typename eT>
 inline
-SpValProxy< SpMat<eT> >
+MapMat_elem<eT>
 spdiagview<eT>::at(const uword i)
   {
   return (const_cast< SpMat<eT>& >(m)).at(i+row_offset, i+col_offset);
@@ -759,7 +815,7 @@ spdiagview<eT>::at(const uword i) const
 
 template<typename eT>
 inline
-SpValProxy< SpMat<eT> >
+MapMat_elem<eT>
 spdiagview<eT>::operator()(const uword i)
   {
   arma_debug_check( (i >= n_elem), "spdiagview::operator(): out of bounds" );
@@ -783,7 +839,7 @@ spdiagview<eT>::operator()(const uword i) const
 
 template<typename eT>
 inline
-SpValProxy< SpMat<eT> >
+MapMat_elem<eT>
 spdiagview<eT>::at(const uword row, const uword)
   {
   return (const_cast< SpMat<eT>& >(m)).at(row+row_offset, row+col_offset);
@@ -803,7 +859,7 @@ spdiagview<eT>::at(const uword row, const uword) const
 
 template<typename eT>
 inline
-SpValProxy< SpMat<eT> >
+MapMat_elem<eT>
 spdiagview<eT>::operator()(const uword row, const uword col)
   {
   arma_debug_check( ((row >= n_elem) || (col > 0)), "spdiagview::operator(): out of bounds" );

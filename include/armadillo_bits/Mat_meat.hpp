@@ -2276,121 +2276,6 @@ Mat<eT>::operator/=(const diagview<eT>& X)
 
 
 template<typename eT>
-inline
-Mat<eT>::Mat(const spdiagview<eT>& X)
-  : n_rows(X.n_rows)
-  , n_cols(X.n_cols)
-  , n_elem(X.n_elem)
-  , vec_state(0)
-  , mem_state(0)
-  , mem()
-  {
-  arma_extra_debug_sigprint_this(this);
-  
-  init_cold();
-  
-  spdiagview<eT>::extract(*this, X);
-  }
-
-
-
-template<typename eT>
-inline
-Mat<eT>&
-Mat<eT>::operator=(const spdiagview<eT>& X)
-  {
-  arma_extra_debug_sigprint();
-  
-  init_warm(X.n_rows, X.n_cols);
-  
-  spdiagview<eT>::extract(*this, X);
-  
-  return *this;
-  }
-
-
-
-template<typename eT>
-inline
-Mat<eT>&
-Mat<eT>::operator+=(const spdiagview<eT>& X)
-  {
-  arma_extra_debug_sigprint();
-  
-  const Mat<eT> tmp(X);
-  
-  (*this).operator+=(tmp);
-  
-  return *this;
-  }
-
-
-
-template<typename eT>
-inline
-Mat<eT>&
-Mat<eT>::operator-=(const spdiagview<eT>& X)
-  {
-  arma_extra_debug_sigprint();
-  
-  const Mat<eT> tmp(X);
-  
-  (*this).operator-=(tmp);
-  
-  return *this;
-  }
-
-
-
-template<typename eT>
-inline
-Mat<eT>&
-Mat<eT>::operator*=(const spdiagview<eT>& X)
-  {
-  arma_extra_debug_sigprint();
-  
-  const Mat<eT> tmp(X);
-  
-  (*this).operator*=(tmp);
-  
-  return *this;
-  }
-
-
-
-template<typename eT>
-inline
-Mat<eT>&
-Mat<eT>::operator%=(const spdiagview<eT>& X)
-  {
-  arma_extra_debug_sigprint();
-  
-  const Mat<eT> tmp(X);
-  
-  (*this).operator%=(tmp);
-  
-  return *this;
-  }
-
-
-
-template<typename eT>
-inline
-Mat<eT>&
-Mat<eT>::operator/=(const spdiagview<eT>& X)
-  {
-  arma_extra_debug_sigprint();
-  
-  const Mat<eT> tmp(X);
-  
-  (*this).operator/=(tmp);
-  
-  return *this;
-  }
-
-
-
-template<typename eT>
 template<typename T1>
 inline
 Mat<eT>::Mat(const subview_elem1<eT,T1>& X)
@@ -2795,6 +2680,121 @@ Mat<eT>::operator/=(const SpBase<eT, T1>& m)
     {
     at(r, c) /= p.at(r, c);
     }
+  
+  return *this;
+  }
+
+
+
+template<typename eT>
+inline
+Mat<eT>::Mat(const spdiagview<eT>& X)
+  : n_rows(X.n_rows)
+  , n_cols(X.n_cols)
+  , n_elem(X.n_elem)
+  , vec_state(0)
+  , mem_state(0)
+  , mem()
+  {
+  arma_extra_debug_sigprint_this(this);
+  
+  init_cold();
+  
+  spdiagview<eT>::extract(*this, X);
+  }
+
+
+
+template<typename eT>
+inline
+Mat<eT>&
+Mat<eT>::operator=(const spdiagview<eT>& X)
+  {
+  arma_extra_debug_sigprint();
+  
+  init_warm(X.n_rows, X.n_cols);
+  
+  spdiagview<eT>::extract(*this, X);
+  
+  return *this;
+  }
+
+
+
+template<typename eT>
+inline
+Mat<eT>&
+Mat<eT>::operator+=(const spdiagview<eT>& X)
+  {
+  arma_extra_debug_sigprint();
+  
+  const Mat<eT> tmp(X);
+  
+  (*this).operator+=(tmp);
+  
+  return *this;
+  }
+
+
+
+template<typename eT>
+inline
+Mat<eT>&
+Mat<eT>::operator-=(const spdiagview<eT>& X)
+  {
+  arma_extra_debug_sigprint();
+  
+  const Mat<eT> tmp(X);
+  
+  (*this).operator-=(tmp);
+  
+  return *this;
+  }
+
+
+
+template<typename eT>
+inline
+Mat<eT>&
+Mat<eT>::operator*=(const spdiagview<eT>& X)
+  {
+  arma_extra_debug_sigprint();
+  
+  const Mat<eT> tmp(X);
+  
+  (*this).operator*=(tmp);
+  
+  return *this;
+  }
+
+
+
+template<typename eT>
+inline
+Mat<eT>&
+Mat<eT>::operator%=(const spdiagview<eT>& X)
+  {
+  arma_extra_debug_sigprint();
+  
+  const Mat<eT> tmp(X);
+  
+  (*this).operator%=(tmp);
+  
+  return *this;
+  }
+
+
+
+template<typename eT>
+inline
+Mat<eT>&
+Mat<eT>::operator/=(const spdiagview<eT>& X)
+  {
+  arma_extra_debug_sigprint();
+  
+  const Mat<eT> tmp(X);
+  
+  (*this).operator/=(tmp);
   
   return *this;
   }

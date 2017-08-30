@@ -1311,6 +1311,109 @@ SpMat<eT>::operator/=(const SpSubview<eT>& x)
 
 
 template<typename eT>
+inline
+SpMat<eT>::SpMat(const spdiagview<eT>& X)
+  : n_rows(0)
+  , n_cols(0)
+  , n_elem(0)
+  , n_nonzero(0)
+  , vec_state(0)
+  , values(NULL) // extra element added when mem_resize is called
+  , row_indices(NULL)
+  , col_ptrs(NULL)
+  {
+  arma_extra_debug_sigprint_this(this);
+
+  spdiagview<eT>::extract(*this, X);
+  }
+
+
+
+template<typename eT>
+inline
+SpMat<eT>&
+SpMat<eT>::operator=(const spdiagview<eT>& X)
+  {
+  arma_extra_debug_sigprint();
+  
+  spdiagview<eT>::extract(*this, X);
+  
+  return *this;
+  }
+
+
+
+template<typename eT>
+inline
+SpMat<eT>&
+SpMat<eT>::operator+=(const spdiagview<eT>& X)
+  {
+  arma_extra_debug_sigprint();
+  
+  const SpMat<eT> tmp(X);
+  
+  return (*this).operator+=(tmp);
+  }
+
+
+
+template<typename eT>
+inline
+SpMat<eT>&
+SpMat<eT>::operator-=(const spdiagview<eT>& X)
+  {
+  arma_extra_debug_sigprint();
+  
+  const SpMat<eT> tmp(X);
+  
+  return (*this).operator-=(tmp);
+  }
+
+
+
+template<typename eT>
+inline
+SpMat<eT>&
+SpMat<eT>::operator*=(const spdiagview<eT>& X)
+  {
+  arma_extra_debug_sigprint();
+  
+  const SpMat<eT> tmp(X);
+  
+  return (*this).operator*=(tmp);
+  }
+
+
+
+template<typename eT>
+inline
+SpMat<eT>&
+SpMat<eT>::operator%=(const spdiagview<eT>& X)
+  {
+  arma_extra_debug_sigprint();
+  
+  const SpMat<eT> tmp(X);
+  
+  return (*this).operator%=(tmp);
+  }
+
+
+
+template<typename eT>
+inline
+SpMat<eT>&
+SpMat<eT>::operator/=(const spdiagview<eT>& X)
+  {
+  arma_extra_debug_sigprint();
+  
+  const SpMat<eT> tmp(X);
+  
+  return (*this).operator/=(tmp);
+  }
+
+
+
+template<typename eT>
 template<typename T1, typename spop_type>
 inline
 SpMat<eT>::SpMat(const SpOp<T1, spop_type>& X)

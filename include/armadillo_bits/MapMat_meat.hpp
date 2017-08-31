@@ -145,24 +145,22 @@ MapMat<eT>::operator=(const SpMat<eT>& x)
   
   if(x.n_nonzero == 0)  { return; }
   
-  typename SpMat<eT>::const_iterator it     = x.begin();
-  typename SpMat<eT>::const_iterator it_end = x.end();
-  
-  map_type& map_ref = (*map_ptr);
-  
   const uword local_n_rows = n_rows;
-  
-  for(; it != it_end; ++it)
+
+  map_type& map_ref = (*map_ptr);
+
+  for(uword c = 0; c < x.n_cols; ++c)
     {
-    const eT val = (*it);
-    
-    if(val != eT(0))
+    const uword start = x.col_ptrs[c];
+    const uword end = x.col_ptrs[c + 1];
+
+    for(uword i = start; i < end; ++i)
       {
-      const uword row = it.row();
-      const uword col = it.col();
-      
-      const uword index = (local_n_rows * col) + row;
-      
+      const uword row = x.row_indices[i];
+      const eT val = x.values[i];
+
+      const uword index = (local_n_rows * c) + row;
+
       #if defined(ARMA_USE_CXX11)
         map_ref.emplace_hint(map_ref.cend(), index, val);
       #else

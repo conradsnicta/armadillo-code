@@ -268,13 +268,9 @@ The OpenBLAS and Intel MKL libraries are generally the fastest.
 
 Caveat: for any serious and/or performance critical work,
 we recommend using either Mac OS X or a Linux based operating system:
-  Ubuntu                    http://www.ubuntu.com/
-  Debian                    http://www.debian.org/
-  OpenSUSE                  http://www.opensuse.org/
-  Fedora                    http://fedoraproject.org/
-  Scientific Linux          http://www.scientificlinux.org/
-  CentOS                    http://centos.org/
-  Red Hat Enterprise Linux  http://www.redhat.com/
+  Fedora  http://fedoraproject.org/
+  Ubuntu  http://www.ubuntu.com/
+  CentOS  http://centos.org/
 
 
 

@@ -843,7 +843,15 @@ SpSubview<eT>::replace(const eT old_val, const eT new_val)
   
   if(old_val == eT(0))
     {
-    arma_debug_warn("SpSubview::replace(): replacement not done, as old_val = 0");
+    if(new_val != eT(0))
+      {
+      Mat<eT> tmp(*this);
+      
+      tmp.replace(old_val, new_val);
+      
+      (*this).operator=(tmp);
+      }
+    
     return;
     }
   

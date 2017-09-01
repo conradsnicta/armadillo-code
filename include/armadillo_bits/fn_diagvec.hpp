@@ -32,4 +32,8 @@ diagvec(const Base<typename T1::elem_type,T1>& X, const sword diag_id = 0)
 
 
 
+// TODO: implement diagvec() for sparse matrices
+
+
+
 //! @}

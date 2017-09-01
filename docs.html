@@ -3748,6 +3748,11 @@ vec c = X.diag(-2);
 X.diag()  = randu&lt;vec&gt;(5);
 X.diag() += 6;
 X.diag().ones();
+
+
+sp_mat S = sprandu&lt;sp_mat&gt;(10,10,0.1);
+
+vec v(S.diag());  // convert sparse diagonal view to dense column vector
 </pre>
 </ul>
 </li>

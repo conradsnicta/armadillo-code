@@ -57,13 +57,14 @@ class Row : public Mat<eT>
   inline Row& operator=(Row&& m);
   #endif
   
-  inline explicit Row(const SpRow<eT>& X);
-  
   inline Row& operator=(const eT val);
   inline Row& operator=(const Row& X);
   
   template<typename T1> inline             Row(const Base<eT,T1>& X);
   template<typename T1> inline Row&  operator=(const Base<eT,T1>& X);
+  
+  template<typename T1> inline explicit    Row(const SpBase<eT,T1>& X);
+  template<typename T1> inline Row&  operator=(const SpBase<eT,T1>& X);
   
   inline Row(      eT* aux_mem, const uword aux_length, const bool copy_aux_mem = true, const bool strict = false);
   inline Row(const eT* aux_mem, const uword aux_length);

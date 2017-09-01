@@ -322,23 +322,6 @@ Row<eT>::operator=(const std::vector<eT>& x)
 
 template<typename eT>
 inline
-Row<eT>::Row(const SpRow<eT>& X)
-  : Mat<eT>(arma_vec_indicator(), 1, X.n_elem, 1)
-  {
-  arma_extra_debug_sigprint_this(this);
-
-  arrayops::inplace_set(Mat<eT>::memptr(), eT(0), X.n_elem);
-
-  for(typename SpRow<eT>::const_iterator it = X.begin(); it != X.end(); ++it)
-    {
-    at(it.col()) = (*it);
-    }
-  }
-
-
-
-template<typename eT>
-inline
 Row<eT>&
 Row<eT>::operator=(const eT val)
   {
@@ -383,6 +366,34 @@ template<typename T1>
 inline
 Row<eT>&
 Row<eT>::operator=(const Base<eT,T1>& X)
+  {
+  arma_extra_debug_sigprint();
+  
+  Mat<eT>::operator=(X.get_ref());
+  
+  return *this;
+  }
+
+
+
+template<typename eT>
+template<typename T1>
+inline
+Row<eT>::Row(const SpBase<eT,T1>& X)
+  : Mat<eT>(arma_vec_indicator(), 2)
+  {
+  arma_extra_debug_sigprint();
+  
+  Mat<eT>::operator=(X.get_ref());
+  }
+
+
+
+template<typename eT>
+template<typename T1>
+inline
+Row<eT>&
+Row<eT>::operator=(const SpBase<eT,T1>& X)
   {
   arma_extra_debug_sigprint();
   

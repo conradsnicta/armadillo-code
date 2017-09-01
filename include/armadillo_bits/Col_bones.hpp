@@ -57,13 +57,14 @@ class Col : public Mat<eT>
   inline Col& operator=(Col&& m);
   #endif
   
-  inline explicit Col(const SpCol<eT>& X);
-  
   inline Col& operator=(const eT val);
   inline Col& operator=(const Col& m);
   
   template<typename T1> inline             Col(const Base<eT,T1>& X);
   template<typename T1> inline Col&  operator=(const Base<eT,T1>& X);
+  
+  template<typename T1> inline explicit    Col(const SpBase<eT,T1>& X);
+  template<typename T1> inline Col&  operator=(const SpBase<eT,T1>& X);
   
   inline Col(      eT* aux_mem, const uword aux_length, const bool copy_aux_mem = true, const bool strict = false);
   inline Col(const eT* aux_mem, const uword aux_length);

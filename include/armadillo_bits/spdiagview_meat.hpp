@@ -689,18 +689,6 @@ spdiagview<eT>::extract(SpMat<eT>& out, const spdiagview<eT>& d)
   
   const SpMat<eT>& d_m = d.m;
   
-  // handle aliasing
-  if(&out == &d_m)
-    {
-    SpMat<eT> tmp;
-    
-    spdiagview<eT>::extract(tmp, d);
-    
-    out.steal_mem(tmp);
-    
-    return;
-    }
-  
   const uword d_n_elem     = d.n_elem;
   const uword d_row_offset = d.row_offset;
   const uword d_col_offset = d.col_offset;

@@ -258,7 +258,7 @@ class SpProxy< spdiagview<eT> >
     }
   
   arma_inline uword get_n_rows()    const { return Q.n_rows;    }
-  arma_inline uword get_n_cols()    const { return Q.n_cols;    }
+  arma_inline uword get_n_cols()    const { return 1;           }
   arma_inline uword get_n_elem()    const { return Q.n_elem;    }
   arma_inline uword get_n_nonzero() const { return Q.n_nonzero; }
   

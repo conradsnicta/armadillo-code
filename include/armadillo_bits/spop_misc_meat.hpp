@@ -467,4 +467,68 @@ spop_sign::apply(SpMat<typename T1::elem_type>& out, const SpOp<T1,spop_sign>& i
 
 
 
+template<typename T1>
+inline
+void
+spop_diagvec::apply(SpMat<typename T1::elem_type>& out, const SpOp<T1,spop_diagvec>& in)
+  {
+  arma_extra_debug_sigprint();
+  
+  typedef typename T1::elem_type eT;
+  
+  const unwrap_spmat<T1> U(in.m);
+  
+  const SpMat<eT>& X = U.M;
+  
+  const uword a = in.aux_uword_a;
+  const uword b = in.aux_uword_b;
+  
+  const uword row_offset = (b >  0) ? a : 0;
+  const uword col_offset = (b == 0) ? a : 0;
+  
+  arma_debug_check
+    (
+    ((row_offset > 0) && (row_offset >= X.n_rows)) || ((col_offset > 0) && (col_offset >= X.n_cols)),
+    "diagvec(): requested diagonal out of bounds"
+    );
+  
+  const uword len = (std::min)(X.n_rows - row_offset, X.n_cols - col_offset);
+  
+  Col<eT> cache(len);
+  eT* cache_mem = cache.memptr();
+  
+  uword n_nonzero = 0;
+  
+  for(uword i=0; i < len; ++i)
+    {
+    const eT val = X.at(i + row_offset, i + col_offset);
+    
+    cache_mem[i] = val;
+    
+    n_nonzero += (val != eT(0)) ? uword(1) : uword(0);
+    }
+  
+  out.set_size(len, 1);
+  
+  out.mem_resize(n_nonzero);
+  
+  uword count = 0;
+  for(uword i=0; i < len; ++i)
+    {
+    const eT val = cache_mem[i];
+    
+    if(val != eT(0))
+      {
+      access::rw(out.row_indices[count]) = i;
+      access::rw(out.values[count])      = val;
+      ++count;
+      }
+    }
+  
+  access::rw(out.col_ptrs[0]) = 0;
+  access::rw(out.col_ptrs[1]) = n_nonzero;
+  }
+
+
+
 //! @}

@@ -3731,9 +3731,7 @@ Read/write access to a diagonal in a matrix
 <br>
 <li>For <i>k &lt; 0</i>, the <i>k</i>-th sub-diagonal is accessed (bottom-left corner)</li>
 <br>
-<li>
-The diagonal is interpreted as a column vector within expressions
-</li>
+<li>The diagonal is interpreted as a column vector within expressions</li>
 <br>
 <li>
 Examples:
@@ -3748,11 +3746,18 @@ vec c = X.diag(-2);
 X.diag()  = randu&lt;vec&gt;(5);
 X.diag() += 6;
 X.diag().ones();
-
-
+</pre>
+</ul>
+</li>
+<br>
+<li>
+<b>NOTE:</b> handling of sparse matrix diagonals has changed slightly in Armadillo 8.x;
+to copy sparse diagonal to dense vector, use:
+<ul>
+<pre>
 sp_mat S = sprandu&lt;sp_mat&gt;(10,10,0.1);
 
-vec v(S.diag());  // convert sparse diagonal view to dense vector
+vec v(S.diag());  // copy sparse diagonal view to dense vector
 </pre>
 </ul>
 </li>

@@ -577,6 +577,8 @@ class SpMat : public SpBase< eT, SpMat<eT> >
   inline void init_batch_std(const Mat<uword>& locations, const Mat<eT>& values, const bool sort_locations);
   inline void init_batch_add(const Mat<uword>& locations, const Mat<eT>& values, const bool sort_locations);
   
+  inline SpMat(const arma_vec_indicator&, const uword in_vec_state);
+  inline SpMat(const arma_vec_indicator&, const uword in_n_rows, const uword in_n_cols, const uword in_vec_state);
   
   
   private:

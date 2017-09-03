@@ -4260,23 +4260,13 @@ SpMat<eT>::init(uword in_rows, uword in_cols)
     {
     if((in_rows == 0) && (in_cols == 0))
       {
-      if(vec_state == 1)
-        {
-        in_cols = 1;
-        }
-      else
-      if(vec_state == 2)
-        {
-        in_rows = 1;
-        }
+      if(vec_state == 1)  { in_cols = 1; }
+      if(vec_state == 2)  { in_rows = 1; }
       }
     else
       {
-      arma_debug_check
-        (
-        ( ((vec_state == 1) && (in_cols != 1)) || ((vec_state == 2) && (in_rows != 1)) ),
-        "SpMat::init(): object is a row or column vector; requested size is not compatible"
-        );
+      if(vec_state == 1)  { arma_debug_check( (in_cols != 1), "SpMat::init(): object is a column vector; requested size is not compatible" ); }
+      if(vec_state == 2)  { arma_debug_check( (in_rows != 1), "SpMat::init(): object is a row vector; requested size is not compatible"    ); }
       }
     }
   
@@ -4784,6 +4774,49 @@ SpMat<eT>::init_batch_add(const Mat<uword>& locs, const Mat<eT>& vals, const boo
     {
     access::rw(col_ptrs[i + 1]) += col_ptrs[i];
     }
+  }
+
+
+
+//! constructor used by SpRow and SpCol classes
+template<typename eT>
+inline
+SpMat<eT>::SpMat(const arma_vec_indicator&, const uword in_vec_state)
+  : n_rows(0)
+  , n_cols(0)
+  , n_elem(0)
+  , n_nonzero(0)
+  , vec_state(in_vec_state)
+  , values(NULL)
+  , row_indices(NULL)
+  , col_ptrs(NULL)
+  {
+  arma_extra_debug_sigprint_this(this);
+  
+  const uword in_n_rows = (in_vec_state == 2) ? 1 : 0;
+  const uword in_n_cols = (in_vec_state == 1) ? 1 : 0;
+  
+  init(in_n_rows, in_n_cols);
+  }
+
+
+
+//! constructor used by SpRow and SpCol classes
+template<typename eT>
+inline
+SpMat<eT>::SpMat(const arma_vec_indicator&, const uword in_n_rows, const uword in_n_cols, const uword in_vec_state)
+  : n_rows(0)
+  , n_cols(0)
+  , n_elem(0)
+  , n_nonzero(0)
+  , vec_state(in_vec_state)
+  , values(NULL)
+  , row_indices(NULL)
+  , col_ptrs(NULL)
+  {
+  arma_extra_debug_sigprint_this(this);
+  
+  init(in_n_rows, in_n_cols);
   }
 
 

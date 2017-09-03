@@ -18,28 +18,23 @@
 //! @{
 
 
-//! construct an empty column vector
+
 template<typename eT>
 inline
 SpCol<eT>::SpCol()
-  : SpMat<eT>(0, 1)
+  : SpMat<eT>(arma_vec_indicator(), 1)
   {
   arma_extra_debug_sigprint();
-
-  access::rw(SpMat<eT>::vec_state) = 1;
   }
 
 
 
-//! construct a column vector with the specified number of elements
 template<typename eT>
 inline
 SpCol<eT>::SpCol(const uword in_n_elem)
-  : SpMat<eT>(in_n_elem, 1)
+  : SpMat<eT>(arma_vec_indicator(), in_n_elem, 1, 1)
   {
   arma_extra_debug_sigprint();
-
-  access::rw(SpMat<eT>::vec_state) = 1;
   }
 
 
@@ -47,74 +42,60 @@ SpCol<eT>::SpCol(const uword in_n_elem)
 template<typename eT>
 inline
 SpCol<eT>::SpCol(const uword in_n_rows, const uword in_n_cols)
-  : SpMat<eT>(in_n_rows, in_n_cols)
+  : SpMat<eT>(arma_vec_indicator(), in_n_rows, in_n_cols, 1)
   {
   arma_extra_debug_sigprint();
-
-  arma_debug_check((in_n_cols != 1), "SpCol::SpCol(): must have only one column");
-
-  access::rw(SpMat<eT>::vec_state) = 1;
   }
 
 
 
-//! construct a column vector from specified text
 template<typename eT>
 inline
 SpCol<eT>::SpCol(const char* text)
-  : SpMat<eT>(text)
+  : SpMat<eT>(arma_vec_indicator(), 1)
   {
   arma_extra_debug_sigprint();
-
-  access::rw(SpMat<eT>::vec_state) = 1;
-
-  arma_debug_check((SpMat<eT>::n_cols != 1), "SpCol::SpCol(): must have only one column");
+  
+  SpMat<eT>::init(std::string(text));
   }
 
 
 
-//! construct a column vector from specified text
 template<typename eT>
 inline
 SpCol<eT>&
 SpCol<eT>::operator=(const char* text)
   {
   arma_extra_debug_sigprint();
-
+  
   SpMat<eT>::init(std::string(text));
-
-  access::rw(SpMat<eT>::vec_state) = 1;
-
+  
   return *this;
   }
 
 
 
-//! construct a column vector from specified text
 template<typename eT>
 inline
 SpCol<eT>::SpCol(const std::string& text)
-  : SpMat<eT>(text)
+  : SpMat<eT>(arma_vec_indicator(), 1)
   {
   arma_extra_debug_sigprint();
-
-  access::rw(SpMat<eT>::vec_state) = 1;
-
-  arma_debug_check((SpMat<eT>::n_cols != 1), "SpCol::SpCol(): must have only one column");
+  
+  SpMat<eT>::init(text);
   }
 
 
 
-//! construct a column vector from specified text
 template<typename eT>
 inline
 SpCol<eT>&
 SpCol<eT>::operator=(const std::string& text)
   {
   arma_extra_debug_sigprint();
-
-  SpMat<eT>::init(std::string(text));
-
+  
+  SpMat<eT>::init(text);
+  
   return *this;
   }
 
@@ -138,11 +119,10 @@ template<typename eT>
 template<typename T1>
 inline
 SpCol<eT>::SpCol(const Base<eT,T1>& X)
+  : SpMat<eT>(arma_vec_indicator(), 1)
   {
   arma_extra_debug_sigprint();
-
-  access::rw(SpMat<eT>::vec_state) = 1;
-
+  
   SpMat<eT>::operator=(X.get_ref());
   }
 
@@ -155,11 +135,9 @@ SpCol<eT>&
 SpCol<eT>::operator=(const Base<eT,T1>& X)
   {
   arma_extra_debug_sigprint();
-
-  access::rw(SpMat<eT>::vec_state) = 1;
-
+  
   SpMat<eT>::operator=(X.get_ref());
-
+  
   return *this;
   }
 
@@ -169,11 +147,10 @@ template<typename eT>
 template<typename T1>
 inline
 SpCol<eT>::SpCol(const SpBase<eT,T1>& X)
+  : SpMat<eT>(arma_vec_indicator(), 1)
   {
   arma_extra_debug_sigprint();
-
-  access::rw(SpMat<eT>::vec_state) = 1;
-
+  
   SpMat<eT>::operator=(X.get_ref());
   }
 
@@ -186,11 +163,9 @@ SpCol<eT>&
 SpCol<eT>::operator=(const SpBase<eT,T1>& X)
   {
   arma_extra_debug_sigprint();
-
-  access::rw(SpMat<eT>::vec_state) = 1;
-
+  
   SpMat<eT>::operator=(X.get_ref());
-
+  
   return *this;
   }
 
@@ -204,11 +179,10 @@ SpCol<eT>::SpCol
   const SpBase<typename SpCol<eT>::pod_type, T1>& A,
   const SpBase<typename SpCol<eT>::pod_type, T2>& B
   )
+  : SpMat<eT>(arma_vec_indicator(), 1)
   {
   arma_extra_debug_sigprint();
-
-  access::rw(SpMat<eT>::vec_state) = 1;
-
+  
   SpMat<eT>::init(A,B);
   }
 

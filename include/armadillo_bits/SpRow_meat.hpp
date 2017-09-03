@@ -51,6 +51,18 @@ SpRow<eT>::SpRow(const uword in_n_rows, const uword in_n_cols)
 
 template<typename eT>
 inline
+SpRow<eT>::SpRow(const SizeMat& s)
+  : SpMat<eT>(arma_vec_indicator(), 0, 0, 2)
+  {
+  arma_extra_debug_sigprint();
+  
+  SpMat<eT>::init(s.n_rows, s.n_cols);
+  }
+
+
+
+template<typename eT>
+inline
 SpRow<eT>::SpRow(const char* text)
   : SpMat<eT>(arma_vec_indicator(), 2)
   {

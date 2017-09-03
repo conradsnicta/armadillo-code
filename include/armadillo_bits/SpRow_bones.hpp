@@ -33,7 +33,8 @@ class SpRow : public SpMat<eT>
   
   inline          SpRow();
   inline explicit SpRow(const uword N);
-  inline          SpRow(const uword in_rows, const uword in_cols);
+  inline explicit SpRow(const uword in_rows, const uword in_cols);
+  inline explicit SpRow(const SizeMat& s);
   
   inline            SpRow(const char*        text);
   inline SpRow& operator=(const char*        text);

@@ -33,7 +33,8 @@ class SpCol : public SpMat<eT>
   
   inline          SpCol();
   inline explicit SpCol(const uword n_elem);
-  inline          SpCol(const uword in_rows, const uword in_cols);
+  inline explicit SpCol(const uword in_rows, const uword in_cols);
+  inline explicit SpCol(const SizeMat& s);
   
   inline            SpCol(const char*        text);
   inline SpCol& operator=(const char*        text);

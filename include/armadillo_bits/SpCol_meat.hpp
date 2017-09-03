@@ -51,6 +51,18 @@ SpCol<eT>::SpCol(const uword in_n_rows, const uword in_n_cols)
 
 template<typename eT>
 inline
+SpCol<eT>::SpCol(const SizeMat& s)
+  : SpMat<eT>(arma_vec_indicator(), 0, 0, 1)
+  {
+  arma_extra_debug_sigprint();
+  
+  SpMat<eT>::init(s.n_rows, s.n_cols);
+  }
+
+
+
+template<typename eT>
+inline
 SpCol<eT>::SpCol(const char* text)
   : SpMat<eT>(arma_vec_indicator(), 1)
   {

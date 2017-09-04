@@ -4320,9 +4320,6 @@ SpMat<eT>::init(uword in_rows, uword in_cols)
 
 
 
-/**
- * Initialize the matrix from a string.
- */
 template<typename eT>
 inline
 void
@@ -4330,92 +4327,31 @@ SpMat<eT>::init(const std::string& text)
   {
   arma_extra_debug_sigprint();
   
-  // Figure out the size first.
-  uword t_n_rows = 0;
-  uword t_n_cols = 0;
-
-  bool t_n_cols_found = false;
-
-  std::string token;
-
-  std::string::size_type line_start = 0;
-  std::string::size_type   line_end = 0;
-
-  while (line_start < text.length())
+  Mat<eT> tmp(text);
+  
+  if(vec_state == 1)
     {
-
-    line_end = text.find(';', line_start);
-
-    if (line_end == std::string::npos)
-      line_end = text.length() - 1;
-
-    std::string::size_type line_len = line_end - line_start + 1;
-    std::stringstream line_stream(text.substr(line_start, line_len));
-
-    // Step through each column.
-    uword line_n_cols = 0;
-
-    while (line_stream >> token)
+    if((tmp.n_elem > 0) && tmp.is_vec())
       {
-      ++line_n_cols;
+      access::rw(tmp.n_rows) = tmp.n_elem;
+      access::rw(tmp.n_cols) = 1;
       }
-
-    if (line_n_cols > 0)
-      {
-      if (t_n_cols_found == false)
-        {
-        t_n_cols = line_n_cols;
-        t_n_cols_found = true;
-        }
-      else // Check it each time through, just to make sure.
-        arma_check((line_n_cols != t_n_cols), "SpMat::init(): inconsistent number of columns in given string");
-
-      ++t_n_rows;
-      }
-
-    line_start = line_end + 1;
-
     }
-
-  zeros(t_n_rows, t_n_cols);
-
-  // Second time through will pick up all the values.
-  line_start = 0;
-  line_end = 0;
-
-  uword lrow = 0;
-
-  while (line_start < text.length())
+  
+  if(vec_state == 2)
     {
-
-    line_end = text.find(';', line_start);
-
-    if (line_end == std::string::npos)
-      line_end = text.length() - 1;
-
-    std::string::size_type line_len = line_end - line_start + 1;
-    std::stringstream line_stream(text.substr(line_start, line_len));
-
-    uword lcol = 0;
-    eT val;
-
-    while (line_stream >> val)
+    if((tmp.n_elem > 0) && tmp.is_vec())
       {
-      if(val != eT(0))  { at(lrow, lcol) = val; }
-      
-      ++lcol;
+      access::rw(tmp.n_rows) = 1;
+      access::rw(tmp.n_cols) = tmp.n_elem;
       }
-
-    ++lrow;
-    line_start = line_end + 1;
-
     }
-
+  
+  (*this).operator=(tmp);
   }
 
-/**
- * Copy from another matrix.
- */
+
+
 template<typename eT>
 inline
 void

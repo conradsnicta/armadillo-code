@@ -28,6 +28,15 @@ class glue_affmul
   
   template<typename T1, typename T2>
   inline static void apply_noalias(Mat<typename T1::elem_type>& out, const T1& A, const T2& B);
+  
+  template<typename T1, typename T2>
+  inline static void apply_noalias_square(Mat<typename T1::elem_type>& out, const T1& A, const T2& B);
+  
+  template<typename T1, typename T2>
+  inline static void apply_noalias_rectangle(Mat<typename T1::elem_type>& out, const T1& A, const T2& B);
+  
+  template<typename T1, typename T2>
+  inline static void apply_noalias_generic(Mat<typename T1::elem_type>& out, const T1& A, const T2& B);
   };
 
 

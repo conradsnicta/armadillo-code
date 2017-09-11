@@ -6982,7 +6982,7 @@ See also:
 <a name="affmul"></a>
 <b>affmul( A, B )</b>
 <ul>
-<li>Multiply square matrix <i>A</i> by an augmented form of <i>B</i>, where a row with ones is appended to B;<br>for example:</li>
+<li>Multiply matrix <i>A</i> by an augmented form of <i>B</i>, where a row with ones is appended to B;<br>for example:</li>
 <pre>
 &#9121; A<sub>00</sub> A<sub>01</sub> A<sub>02</sub> &#9124;   &#9121; B<sub>0</sub> &#9124;
 &#9122; A<sub>10</sub> A<sub>11</sub> A<sub>12</sub> &#9125; x &#9122; B<sub>1</sub> &#9125;
@@ -6990,7 +6990,7 @@ See also:
 </pre>
 <li><i>A</i> is typically an affine transformation matrix</li>
 <br>
-<li><i>B</i> must have one less row than <i>A</i></li>
+<li>The number of columns in <i>A</i> must be equal to number of rows in the augmented form of <i>B</i> (ie. A.n_cols = B.n_rows+1)</li>
 <br>
 <li><i>B</i> can be a vector or matrix</li>
 <br>

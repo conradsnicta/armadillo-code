@@ -55,7 +55,8 @@ class Glue : public Base<typename T1::elem_type, Glue<T1, T2, glue_type> >
     || (is_same_type<glue_type,glue_atan2>::value && (T1::is_col || T2::is_col))
     || (is_same_type<glue_type,glue_hypot>::value && (T1::is_col || T2::is_col))
     || (is_same_type<glue_type,glue_polyfit>::value)
-    || (is_same_type<glue_type,glue_polyval>::value && T2::is_col);
+    || (is_same_type<glue_type,glue_polyval>::value && T2::is_col)
+    || (is_same_type<glue_type,glue_affmul>::value  && T2::is_col);
   
   arma_inline  Glue(const T1& in_A, const T2& in_B);
   arma_inline  Glue(const T1& in_A, const T2& in_B, const uword in_aux_uword);

@@ -56,13 +56,41 @@ glue_affmul::apply_noalias(Mat<typename T1::elem_type>& out, const T1& A, const 
   {
   arma_extra_debug_sigprint();
   
+  const uword A_n_cols = A.n_cols;
+  const uword A_n_rows = A.n_rows;
+  const uword B_n_rows = B.n_rows;
+  
+  arma_debug_check( (A_n_cols != B_n_rows+1), "affmul(): size mismatch" );
+  
+  if(A_n_rows == A_n_cols)
+    {
+    glue_affmul::apply_noalias_square(out, A, B);
+    }
+  else
+  if(A_n_rows == B_n_rows)
+    {
+    glue_affmul::apply_noalias_rectangle(out, A, B);
+    }
+  else
+    {
+    glue_affmul::apply_noalias_generic(out, A, B);
+    }
+  }
+
+
+
+template<typename T1, typename T2>
+inline
+void
+glue_affmul::apply_noalias_square(Mat<typename T1::elem_type>& out, const T1& A, const T2& B)
+  {
+  arma_extra_debug_sigprint();
+  
   typedef typename T1::elem_type eT;
   
-  const uword N = A.n_rows;
+  // assuming that A is square sized, and A.n_cols = B.n_rows+1
   
-  arma_debug_check( (N != A.n_cols  ), "affmul(): first object must be a square matrix" );
-  arma_debug_check( (N != B.n_rows+1), "affmul(): size mismatch"                        );
-  
+  const uword N        = A.n_rows;
   const uword B_n_cols = B.n_cols;
   
   out.set_size(N, B_n_cols);
@@ -76,11 +104,11 @@ glue_affmul::apply_noalias(Mat<typename T1::elem_type>& out, const T1& A, const 
     case 0:
       break;
     
-    case 1:
+    case 1:  // A is 1x1
       out.fill(A_mem[0]);
       break;
     
-    case 2:
+    case 2:  // A is 2x2
       {
       if(B_n_cols == 1)
         {
@@ -106,7 +134,7 @@ glue_affmul::apply_noalias(Mat<typename T1::elem_type>& out, const T1& A, const 
       }
       break;
     
-    case 3:
+    case 3:  // A is 3x3
       {
       if(B_n_cols == 1)
         {
@@ -136,7 +164,7 @@ glue_affmul::apply_noalias(Mat<typename T1::elem_type>& out, const T1& A, const 
       }
       break;
     
-    case 4:
+    case 4:  // A is 4x4
       {
       if(B_n_cols == 1)
         {
@@ -170,7 +198,7 @@ glue_affmul::apply_noalias(Mat<typename T1::elem_type>& out, const T1& A, const 
       }
       break;
     
-    case 5:
+    case 5:  // A is 5x5
       {
       if(B_n_cols == 1)
         {
@@ -239,6 +267,221 @@ glue_affmul::apply_noalias(Mat<typename T1::elem_type>& out, const T1& A, const 
         }
       }
     }
+  }
+
+
+
+template<typename T1, typename T2>
+inline
+void
+glue_affmul::apply_noalias_rectangle(Mat<typename T1::elem_type>& out, const T1& A, const T2& B)
+  {
+  arma_extra_debug_sigprint();
+  
+  typedef typename T1::elem_type eT;
+  
+  // assuming that A and B have the same number of rows, and A.n_cols = B.n_rows+1
+  
+  // A.n_rows+1 = A.n_cols
+  // or
+  // A.n_rows   = A.n_cols-1
+  
+  const uword A_n_rows = A.n_rows;
+  const uword B_n_cols = B.n_cols;
+  
+  out.set_size(A_n_rows, B_n_cols);
+  
+  if(out.n_elem == 0)  { return; }
+  
+  const eT* A_mem = A.memptr();
+  
+  switch(A_n_rows)
+    {
+    case 0:
+      break;
+    
+    case 1:  // A is 1x2
+      {
+      if(B_n_cols == 1)
+        {
+        const eT*   B_mem =   B.memptr();
+              eT* out_mem = out.memptr();
+        
+        const eT x = B_mem[0];
+        
+        out_mem[0] = A_mem[0]*x + A_mem[1];
+        }
+      else
+      for(uword col=0; col < B_n_cols; ++col)
+        {
+        const eT*   B_mem =   B.colptr(col);
+              eT* out_mem = out.colptr(col);
+        
+        const eT x = B_mem[0];
+        
+        out_mem[0] = A_mem[0]*x + A_mem[1];
+        }
+      }
+      break;
+    
+    case 2:  // A is 2x3
+      {
+      if(B_n_cols == 1)
+        {
+        const eT*   B_mem =   B.memptr();
+              eT* out_mem = out.memptr();
+        
+        const eT x = B_mem[0];
+        const eT y = B_mem[1];
+        
+        out_mem[0] = A_mem[0]*x + A_mem[2]*y + A_mem[4];
+        out_mem[1] = A_mem[1]*x + A_mem[3]*y + A_mem[5];
+        }
+      else
+      for(uword col=0; col < B_n_cols; ++col)
+        {
+        const eT*   B_mem =   B.colptr(col);
+              eT* out_mem = out.colptr(col);
+        
+        const eT x = B_mem[0];
+        const eT y = B_mem[1];
+        
+        out_mem[0] = A_mem[0]*x + A_mem[2]*y + A_mem[4];
+        out_mem[1] = A_mem[1]*x + A_mem[3]*y + A_mem[5];
+        }
+      }
+      break;
+    
+    case 3:  // A is 3x4
+      {
+      if(B_n_cols == 1)
+        {
+        const eT*   B_mem =   B.memptr();
+              eT* out_mem = out.memptr();
+        
+        const eT x = B_mem[0];
+        const eT y = B_mem[1];
+        const eT z = B_mem[2];
+        
+        out_mem[0] = A_mem[ 0]*x + A_mem[ 3]*y + A_mem[ 6]*z + A_mem[ 9];
+        out_mem[1] = A_mem[ 1]*x + A_mem[ 4]*y + A_mem[ 7]*z + A_mem[10];
+        out_mem[2] = A_mem[ 2]*x + A_mem[ 5]*y + A_mem[ 8]*z + A_mem[11];
+        }
+      else
+      for(uword col=0; col < B_n_cols; ++col)
+        {
+        const eT*   B_mem =   B.colptr(col);
+              eT* out_mem = out.colptr(col);
+        
+        const eT x = B_mem[0];
+        const eT y = B_mem[1];
+        const eT z = B_mem[2];
+        
+        out_mem[0] = A_mem[ 0]*x + A_mem[ 3]*y + A_mem[ 6]*z + A_mem[ 9];
+        out_mem[1] = A_mem[ 1]*x + A_mem[ 4]*y + A_mem[ 7]*z + A_mem[10];
+        out_mem[2] = A_mem[ 2]*x + A_mem[ 5]*y + A_mem[ 8]*z + A_mem[11];
+        }
+      }
+      break;
+    
+    case 4:  // A is 4x5
+      {
+      if(B_n_cols == 1)
+        {
+        const eT*   B_mem =   B.memptr();
+              eT* out_mem = out.memptr();
+        
+        const eT x = B_mem[0];
+        const eT y = B_mem[1];
+        const eT z = B_mem[2];
+        const eT w = B_mem[3];
+        
+        out_mem[0] = A_mem[ 0]*x + A_mem[ 4]*y + A_mem[ 8]*z + A_mem[12]*w + A_mem[16];
+        out_mem[1] = A_mem[ 1]*x + A_mem[ 5]*y + A_mem[ 9]*z + A_mem[13]*w + A_mem[17];
+        out_mem[2] = A_mem[ 2]*x + A_mem[ 6]*y + A_mem[10]*z + A_mem[14]*w + A_mem[18];
+        out_mem[3] = A_mem[ 3]*x + A_mem[ 7]*y + A_mem[11]*z + A_mem[15]*w + A_mem[19];
+        }
+      else
+      for(uword col=0; col < B_n_cols; ++col)
+        {
+        const eT*   B_mem =   B.colptr(col);
+              eT* out_mem = out.colptr(col);
+        
+        const eT x = B_mem[0];
+        const eT y = B_mem[1];
+        const eT z = B_mem[2];
+        const eT w = B_mem[3];
+        
+        out_mem[0] = A_mem[ 0]*x + A_mem[ 4]*y + A_mem[ 8]*z + A_mem[12]*w + A_mem[16];
+        out_mem[1] = A_mem[ 1]*x + A_mem[ 5]*y + A_mem[ 9]*z + A_mem[13]*w + A_mem[17];
+        out_mem[2] = A_mem[ 2]*x + A_mem[ 6]*y + A_mem[10]*z + A_mem[14]*w + A_mem[18];
+        out_mem[3] = A_mem[ 3]*x + A_mem[ 7]*y + A_mem[11]*z + A_mem[15]*w + A_mem[19];
+        }
+      }
+      break;
+    
+    default:
+      {
+      const uword A_n_cols = A.n_cols;
+      
+      if(B_n_cols == 1)
+        {
+        Col<eT> tmp(A_n_cols);
+        eT*     tmp_mem = tmp.memptr();
+        
+        arrayops::copy(tmp_mem, B.memptr(), A_n_cols-1);
+        
+        tmp_mem[A_n_cols-1] = eT(1);
+        
+        out = A * tmp;
+        }
+      else
+        {
+        Mat<eT> tmp(A_n_cols, B_n_cols);
+        
+        for(uword col=0; col < B_n_cols; ++col)
+          {
+          const eT*   B_mem =   B.colptr(col);
+                eT* tmp_mem = tmp.colptr(col);
+          
+          arrayops::copy(tmp_mem, B_mem, A_n_cols-1);
+          
+          tmp_mem[A_n_cols-1] = eT(1);
+          }
+        
+        out = A * tmp;
+        }
+      }
+    }
+  }
+
+
+
+template<typename T1, typename T2>
+inline
+void
+glue_affmul::apply_noalias_generic(Mat<typename T1::elem_type>& out, const T1& A, const T2& B)
+  {
+  arma_extra_debug_sigprint();
+  
+  typedef typename T1::elem_type eT;
+  
+  const uword B_n_rows = B.n_rows;
+  const uword B_n_cols = B.n_cols;
+  
+  Mat<eT> tmp(B_n_rows+1, B_n_cols);
+  
+  for(uword col=0; col < B_n_cols; ++col)
+    {
+    const eT*   B_mem =   B.colptr(col);
+          eT* tmp_mem = tmp.colptr(col);
+    
+    arrayops::copy(tmp_mem, B_mem, B_n_rows);
+    
+    tmp_mem[B_n_rows] = eT(1);
+    }
+  
+  out = A * tmp;
   }
 
 

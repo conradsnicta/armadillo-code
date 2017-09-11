@@ -1,4 +1,4 @@
-#include <iostream>
+#include <vector>
 #include <armadillo>
 #include "catch.hpp"
 

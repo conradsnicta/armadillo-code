@@ -280,11 +280,8 @@ glue_affmul::apply_noalias_rectangle(Mat<typename T1::elem_type>& out, const T1&
   
   typedef typename T1::elem_type eT;
   
-  // assuming that A and B have the same number of rows, and A.n_cols = B.n_rows+1
-  
-  // A.n_rows+1 = A.n_cols
-  // or
-  // A.n_rows   = A.n_cols-1
+  // assuming that A.n_rows = A.n_cols-1, and A.n_cols = B.n_rows+1
+  // (A and B have the same number of rows)
   
   const uword A_n_rows = A.n_rows;
   const uword B_n_cols = B.n_cols;
@@ -465,6 +462,8 @@ glue_affmul::apply_noalias_generic(Mat<typename T1::elem_type>& out, const T1& A
   arma_extra_debug_sigprint();
   
   typedef typename T1::elem_type eT;
+  
+  // assuming that A.n_cols = B.n_rows+1
   
   const uword B_n_rows = B.n_rows;
   const uword B_n_cols = B.n_cols;

@@ -5919,7 +5919,7 @@ Numerical data stored in portable <a href="https://en.wikipedia.org/wiki/Hierarc
 <li>
 For saving, the default dataset name within the HDF5 file is "dataset"
 unless explicitly specified via the <i>hdf5_name()</i> argument;
-an HDF5 dataset name (e.g. <i>"dataset"</i>)
+an HDF5 dataset name (eg. <i>"dataset"</i>)
 or full path may be specified (eg. <i>"/group_name/dataset"</i>)
 </li>
 <li>
@@ -5932,7 +5932,7 @@ the order of operations is:
 <li>
 <b>Caveat</b>:
 support for HDF5 must be enabled within Armadillo's <a href="#config_hpp">configuration</a>;
-the <i>hdf5.h</i> header file must be available on your system and you will need to link with the hdf5 library (eg. -lhdf5)
+the <i>hdf5.h</i> header file must be available on your system and you will need to link with the hdf5 library (eg. <code><i>-lhdf5</i></code>)
 </li>
 </ul>
 <br>
@@ -15593,7 +15593,7 @@ Specific functionality can be enabled or disabled by uncommenting or commenting 
     </td>
     <td style="vertical-align: top;">
 Disable going through the run-time Armadillo wrapper library (<i>libarmadillo.so</i>) when calling LAPACK, BLAS, ARPACK, SuperLU and HDF5 functions.
-You will need to directly link with BLAS, LAPACK, etc (eg. <i>-lblas -llapack </i>)
+You will need to directly link with BLAS, LAPACK, etc (eg. <code><i>-lblas -llapack</i></code>)
     </td>
   </tr>
   <tr>
@@ -15799,7 +15799,7 @@ Disable use of ARPACK. Overrides <i>ARMA_USE_ARPACK</i>
     <td style="vertical-align: top;">
 Enable use of SuperLU, which is used by <a href="#spsolve">spsolve()</a> for finding the solutions of sparse systems;
 you will need to link with the superlu library, for example <code><i>-lsuperlu</i></code>
-<br><b>Caveat:</b> Armadillo&nbsp;6.x requires SuperLU&nbsp;4.3, while Armadillo&nbsp;7.x requires SuperLU&nbsp;5.2
+<br><b>Caveat:</b> Armadillo&nbsp;6.x requires SuperLU&nbsp;4.3, while Armadillo&nbsp;7.x and 8.x require SuperLU&nbsp;5.2
     </td>
   </tr>
   <tr>
@@ -15844,7 +15844,7 @@ Disable use of SuperLU. Overrides <i>ARMA_USE_SUPERLU</i>
     </td>
     <td style="vertical-align: top;">
 Enable the ability to <a href="#save_load_mat">save and load</a> matrices stored in the HDF5 format;
-the <i>hdf5.h</i> header file must be available on your system and you will need to link with the hdf5 library (eg. -lhdf5)
+the <i>hdf5.h</i> header file must be available on your system and you will need to link with the hdf5 library (eg. <code><i>-lhdf5</i></code>)
     </td>
   </tr>
   <tr>

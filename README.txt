@@ -180,11 +180,15 @@ For example, for GCC and Clang compilers use -O2 or -O3
   If you don't have root/administrator/superuser privileges, 
   type the following command:
   
-  make install DESTDIR=my_usr_dir
+  make install DESTDIR=my_directory
   
-  where "my_usr_dir" is for storing C++ headers and library files.
+  where "my_directory" is an alternative directory for storing
+  C++ headers and library files.
   Caveat: make sure your C++ compiler is configured to use the
   "lib" and "include" sub-directories present within this directory.
+  Note that the "lib" directory might be named differently on your system.
+  On recent 64 bit Debian & Ubuntu systems it is "lib/x86_64-linux-gnu".
+  On recent 64 bit Fedora & RHEL systems it is "lib64".
 
 
 

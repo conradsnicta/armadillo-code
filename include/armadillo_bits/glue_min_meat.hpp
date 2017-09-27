@@ -32,7 +32,7 @@ glue_min::apply(Mat<typename T1::elem_type>& out, const Glue<T1, T2, glue_min>& 
   const Proxy<T1> PA(X.A);
   const Proxy<T2> PB(X.B);
   
-  if(PA.is_alias(out) || PB.is_alias(out))
+  if( (PA.is_alias(out) && PA.has_subview) || (PB.is_alias(out) && PB.has_subview) )
     {
     Mat<eT> tmp;
     
@@ -152,7 +152,7 @@ glue_min::apply(Cube<typename T1::elem_type>& out, const GlueCube<T1, T2, glue_m
   const ProxyCube<T1> PA(X.A);
   const ProxyCube<T2> PB(X.B);
   
-  if(PA.is_alias(out) || PB.is_alias(out))
+  if( (PA.is_alias(out) && PA.has_subview) || (PB.is_alias(out) && PB.has_subview) )
     {
     Cube<eT> tmp;
     

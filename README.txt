@@ -472,4 +472,4 @@ Octave/Matlab with C++ code that uses Armadillo matrices.
   https://sourceforge.net/projects/sigpack/
   
 * matlab2cpp: conversion of Matlab code to Armadillo based C++ code
-  https://github.com/emc2norway/m2cpp
+  https://github.com/jonathf/matlab2cpp

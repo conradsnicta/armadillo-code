@@ -120,11 +120,12 @@ class glue_join_cols;
 class glue_join_rows;
 class glue_atan2;
 class glue_hypot;
-class glue_polyfit;
-class glue_polyval;
-class glue_affmul;
 class glue_max;
 class glue_min;
+class glue_polyfit;
+class glue_polyval;
+class glue_intersect;
+class glue_affmul;
 
 class glue_rel_lt;
 class glue_rel_gt;

@@ -8442,8 +8442,7 @@ For form 2:
 <ul>
 <li>store in <i>C</i> the unique elements common to both <i>A</i> and <i>B</i>, sorted in ascending order</li>
 <li>store in <i>iA</i> and <i>iB</i> the indices of the unique elements, such that <i>C = A.elem(iA)</i> and <i>C = B.elem(iB)</i></li>
-<li><i>iA</i> and <i>iB</i> must have the type <a href="#Col">uvec</a>
-(ie. the indices are stored as unsigned integers of type <a href="#uword">uword</a>)
+<li><i>iA</i> and <i>iB</i> must have the type <a href="#Col">uvec</a> (ie. the indices are stored as unsigned integers of type <a href="#uword">uword</a>)</li>
 </ul>
 </li>
 <br>
@@ -8453,10 +8452,23 @@ For form 2:
 </li>
 <br>
 <li>
+For matrices and vectors with complex numbers, ordering is via absolute values 
+</li>
+<br>
+<li>
 Examples:
 <ul>
 <pre>
-TODO
+ivec A = regspace&lt;ivec&gt;(4, 1);  // 4, 3, 2, 1
+ivec B = regspace&lt;ivec&gt;(3, 6);  // 3, 4, 5, 6
+
+ivec C = intersect(A,B);       // 3, 4
+
+ivec CC;
+uvec iA;
+uvec iB;
+
+intersect(CC, iA, iB, A, B);
 </pre>
 </ul>
 </li>

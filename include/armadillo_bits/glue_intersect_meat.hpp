@@ -126,6 +126,7 @@ glue_intersect::apply(Mat<typename T1::elem_type>& out, uvec& iA, uvec& iB, cons
     
     Mat<eT> out_alias(out.memptr(), ii.n_elem, 1, false, true);
     
+    // NOTE: this relies on .elem() not changing the size of the output and not reallocating memory for the output
     out_alias = C_sorted.elem(ii);
     }
   else

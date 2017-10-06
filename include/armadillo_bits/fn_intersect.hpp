@@ -22,16 +22,21 @@
 template<typename T1, typename T2>
 arma_warn_unused
 inline
-const Glue<T1, T2, glue_intersect>
+typename
+enable_if2
+  <
+  ( is_arma_type<T1>::value && is_arma_type<T2>::value && is_same_type<typename T1::elem_type, typename T2::elem_type>::value ),
+  const Glue<T1, T2, glue_intersect>
+  >::result
 intersect
   (
-  const Base<typename T1::elem_type,T1>& A,
-  const Base<typename T1::elem_type,T2>& B
+  const T1& A,
+  const T2& B
   )
   {
   arma_extra_debug_sigprint();
   
-  return Glue<T1, T2, glue_intersect>(A.get_ref(), B.get_ref());
+  return Glue<T1, T2, glue_intersect>(A, B);
   }
 
 

@@ -1,8 +1,10 @@
 Armadillo C++ Linear Algebra Library
 http://arma.sourceforge.net
 
-Copyright 2008-2016 Conrad Sanderson (http://conradsanderson.id.au)
+Copyright 2008-2017 Conrad Sanderson (http://conradsanderson.id.au)
 Copyright 2008-2016 National ICT Australia (NICTA)
+Copyright 2017      Arroyo Consortium
+Copyright 2017      Data61, CSIRO
 
 
 

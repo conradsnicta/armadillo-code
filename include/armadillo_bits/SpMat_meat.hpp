@@ -5715,12 +5715,20 @@ SpMat<eT>::sync_cache() const
   {
   arma_extra_debug_sigprint();
   
-  if(sync_state == 0)
-    {
-    cache = (*this);
-    
-    sync_state = 2;
-    }
+  #if defined(_OPENMP)
+  #pragma omp critical
+    if(sync_state == 0)
+      {
+      cache      = (*this);
+      sync_state = 2;
+      }
+  #else
+    if(sync_state == 0)
+      {
+      cache      = (*this);
+      sync_state = 2;
+      }
+  #endif
   }
 
 
@@ -5733,19 +5741,37 @@ SpMat<eT>::sync_csc() const
   {
   arma_extra_debug_sigprint();
   
-  if(sync_state == 1)
-    {
-    SpMat<eT> tmp(cache);  // construct separate matrix to prevent the cache getting zapped
-    
-    // sync_state is only set to 1 by non-const element access operators,
-    // so the shenanigans with const_cast are to satisfy the compiler
-    
-    SpMat<eT>& x = const_cast< SpMat<eT>& >(*this);
-    
-    x.steal_mem_simple(tmp);
-    
-    sync_state = 2;
-    }
+  // method:
+  // 1. construct separate matrix to prevent the cache getting zapped
+  // 2. steal memmory from the separate matrix
+  
+  // sync_state is only set to 1 by non-const element access operators,
+  // so the shenanigans with const_cast are to satisfy the compiler
+  
+  #if defined(_OPENMP)
+  #pragma omp critical
+    if(sync_state == 1)
+      {
+      SpMat<eT> tmp(cache);
+      
+      SpMat<eT>& x = const_cast< SpMat<eT>& >(*this);
+      
+      x.steal_mem_simple(tmp);
+      
+      sync_state = 2;
+      }
+  #else
+    if(sync_state == 1)
+      {
+      SpMat<eT> tmp(cache);
+      
+      SpMat<eT>& x = const_cast< SpMat<eT>& >(*this);
+      
+      x.steal_mem_simple(tmp);
+      
+      sync_state = 2;
+      }
+  #endif
   }
 
 

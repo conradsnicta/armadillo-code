@@ -307,9 +307,10 @@ class SpSubview : public SpBase<eT, SpSubview<eT> >
   SpSubview();
 
   // For use by SpValProxy.  We just update n_nonzero and pass the call on to the matrix.
-  inline arma_hot arma_warn_unused eT&  add_element(const uword in_row, const uword in_col, const eT in_val = 0.0);
-  inline arma_hot                  void delete_element(const uword in_row, const uword in_col);
-
+  inline arma_warn_unused eT&     add_element(const uword in_row, const uword in_col, const eT in_val = eT(0));
+  inline                  void delete_element(const uword in_row, const uword in_col);
+  
+  inline void invalidate_cache() const;
   };
 
 /*

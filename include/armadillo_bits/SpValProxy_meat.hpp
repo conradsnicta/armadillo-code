@@ -65,6 +65,7 @@ SpValProxy<T1>::operator=(const eT rhs)
       {
       // The value exists and merely needs to be updated.
       *val_ptr = rhs;
+      parent.invalidate_cache();
       }
 
     else
@@ -102,6 +103,7 @@ SpValProxy<T1>::operator+=(const eT rhs)
     {
     // The value already exists and merely needs to be updated.
     *val_ptr += rhs;
+    parent.invalidate_cache();
     check_zero();
     }
   else
@@ -127,6 +129,7 @@ SpValProxy<T1>::operator-=(const eT rhs)
     {
     // The value already exists and merely needs to be updated.
     *val_ptr -= rhs;
+    parent.invalidate_cache();
     check_zero();
     }
   else
@@ -155,6 +158,7 @@ SpValProxy<T1>::operator*=(const eT rhs)
       {
       // The value already exists and merely needs to be updated.
       *val_ptr *= rhs;
+      parent.invalidate_cache();
       check_zero();
       }
 
@@ -187,6 +191,7 @@ SpValProxy<T1>::operator/=(const eT rhs)
     if (val_ptr)
       {
       *val_ptr /= rhs;
+      parent.invalidate_cache();
       check_zero();
       }
 
@@ -231,6 +236,7 @@ SpValProxy<T1>::operator++()
   if (val_ptr)
     {
     (*val_ptr) += eT(1);
+    parent.invalidate_cache();
     check_zero();
     }
 
@@ -252,6 +258,7 @@ SpValProxy<T1>::operator--()
   if (val_ptr)
     {
     (*val_ptr) -= eT(1);
+    parent.invalidate_cache();
     check_zero();
     }
 
@@ -273,6 +280,7 @@ SpValProxy<T1>::operator++(const int)
   if (val_ptr)
     {
     (*val_ptr) += eT(1);
+    parent.invalidate_cache();
     check_zero();
     }
 
@@ -301,6 +309,7 @@ SpValProxy<T1>::operator--(const int)
   if (val_ptr)
     {
     (*val_ptr) -= eT(1);
+    parent.invalidate_cache();
     check_zero();
     }
 

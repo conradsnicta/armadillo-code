@@ -598,9 +598,8 @@ class SpMat : public SpBase< eT, SpMat<eT> >
    * The element will be set to 0 (unless otherwise specified).
    * If the element already exists, its value will be overwritten.
    */
-  inline arma_hot arma_warn_unused eT& add_element(const uword in_row, const uword in_col, const eT in_val = eT(0));
-  
-  inline arma_hot void delete_element(const uword in_row, const uword in_col);
+  inline arma_warn_unused eT&     add_element(const uword in_row, const uword in_col, const eT in_val = eT(0));
+  inline                  void delete_element(const uword in_row, const uword in_col);
   
   
   // cache related

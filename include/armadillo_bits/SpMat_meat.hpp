@@ -5489,7 +5489,6 @@ SpMat<eT>::get_position(const uword i, uword& row_of_i, uword& col_of_i) const
  */
 template<typename eT>
 inline
-arma_hot
 arma_warn_unused
 eT&
 SpMat<eT>::add_element(const uword in_row, const uword in_col, const eT val)
@@ -5601,7 +5600,6 @@ SpMat<eT>::add_element(const uword in_row, const uword in_col, const eT val)
  */
 template<typename eT>
 inline
-arma_hot
 void
 SpMat<eT>::delete_element(const uword in_row, const uword in_col)
   {

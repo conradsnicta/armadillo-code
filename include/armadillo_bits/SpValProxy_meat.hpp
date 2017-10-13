@@ -70,8 +70,8 @@ SpValProxy<T1>::operator=(const eT rhs)
 
     else
       {
-      // The value is nonzero and must be added.
-      val_ptr = &parent.add_element(row, col, rhs);
+      // The value is nonzero and must be inserted.
+      val_ptr = &parent.insert_element(row, col, rhs);
       }
 
     }
@@ -110,8 +110,8 @@ SpValProxy<T1>::operator+=(const eT rhs)
     {
     if (rhs != eT(0))
       {
-      // The value does not exist and must be added.
-      val_ptr = &parent.add_element(row, col, rhs);
+      // The value does not exist and must be inserted.
+      val_ptr = &parent.insert_element(row, col, rhs);
       }
     }
   
@@ -136,8 +136,8 @@ SpValProxy<T1>::operator-=(const eT rhs)
     {
     if (rhs != eT(0))
       {
-      // The value does not exist and must be added.
-      val_ptr = &parent.add_element(row, col, -rhs);
+      // The value does not exist and must be inserted.
+      val_ptr = &parent.insert_element(row, col, -rhs);
       }
     }
 
@@ -216,8 +216,8 @@ SpValProxy<T1>::operator/=(const eT rhs)
 
       if (val != eT(0))
         {
-        // Ok, now we have to add it.
-        val_ptr = &parent.add_element(row, col, val);
+        // Ok, now we have to insert it.
+        val_ptr = &parent.insert_element(row, col, val);
         }
 
       }
@@ -242,7 +242,7 @@ SpValProxy<T1>::operator++()
 
   else
     {
-    val_ptr = &parent.add_element(row, col, eT(1));
+    val_ptr = &parent.insert_element(row, col, eT(1));
     }
 
   return *this;
@@ -264,7 +264,7 @@ SpValProxy<T1>::operator--()
 
   else
     {
-    val_ptr = &parent.add_element(row, col, eT(-1));
+    val_ptr = &parent.insert_element(row, col, eT(-1));
     }
 
   return *this;
@@ -286,7 +286,7 @@ SpValProxy<T1>::operator++(const int)
 
   else
     {
-    val_ptr = &parent.add_element(row, col, eT(1));
+    val_ptr = &parent.insert_element(row, col, eT(1));
     }
 
   if (val_ptr) // It may have changed to now be 0.
@@ -315,7 +315,7 @@ SpValProxy<T1>::operator--(const int)
 
   else
     {
-    val_ptr = &parent.add_element(row, col, eT(-1));
+    val_ptr = &parent.insert_element(row, col, eT(-1));
     }
 
   if (val_ptr) // It may have changed to now be 0.
@@ -348,7 +348,6 @@ SpValProxy<T1>::operator eT() const
 
 template<typename T1>
 arma_inline
-arma_hot
 void
 SpValProxy<T1>::check_zero()
   {

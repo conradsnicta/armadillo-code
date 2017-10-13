@@ -1648,13 +1648,13 @@ template<typename eT>
 inline
 arma_warn_unused
 eT&
-SpSubview<eT>::add_element(const uword in_row, const uword in_col, const eT in_val)
+SpSubview<eT>::insert_element(const uword in_row, const uword in_col, const eT in_val)
   {
   arma_extra_debug_sigprint();
 
-  // This may not actually add an element.
+  // This may not actually insert an element.
   const uword old_n_nonzero = m.n_nonzero;
-  eT& retval = access::rw(m).add_element(in_row + aux_row1, in_col + aux_col1, in_val);
+  eT& retval = access::rw(m).insert_element(in_row + aux_row1, in_col + aux_col1, in_val);
   // Update n_nonzero (if necessary).
   access::rw(n_nonzero) += (m.n_nonzero - old_n_nonzero);
 

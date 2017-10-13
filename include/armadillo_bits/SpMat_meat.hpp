@@ -5479,19 +5479,19 @@ SpMat<eT>::get_position(const uword i, uword& row_of_i, uword& col_of_i) const
 
 
 /**
- * Add an element at the given position, and return a reference to it.  The
- * element will be set to 0 (unless otherwise specified).  If the element
- * already exists, its value will be overwritten.
+ * Insert an element at the given position, and return a reference to it.  
+ * The element will be set to 0, unless otherwise specified.
+ * If the element already exists, its value will be overwritten.
  *
  * @param in_row Row of new element.
  * @param in_col Column of new element.
- * @param in_val Value to set new element to (default 0.0).
+ * @param in_val Value to set new element to (default 0).
  */
 template<typename eT>
 inline
 arma_warn_unused
 eT&
-SpMat<eT>::add_element(const uword in_row, const uword in_col, const eT val)
+SpMat<eT>::insert_element(const uword in_row, const uword in_col, const eT val)
   {
   arma_extra_debug_sigprint();
   

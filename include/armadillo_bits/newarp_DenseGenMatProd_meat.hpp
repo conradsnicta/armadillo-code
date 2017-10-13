@@ -39,8 +39,9 @@ DenseGenMatProd<eT>::perform_op(eT* x_in, eT* y_out) const
   {
   arma_extra_debug_sigprint();
   
-  Col<eT> x(x_in , n_cols, false);
-  Col<eT> y(y_out, n_rows, false);
+  const Col<eT> x(x_in , n_cols, false, true);
+        Col<eT> y(y_out, n_rows, false, true);
+  
   y = op_mat * x;
   }
 

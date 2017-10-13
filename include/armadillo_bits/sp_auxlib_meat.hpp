@@ -89,7 +89,7 @@ sp_auxlib::eigs_sym(Col<eT>& eigval, Mat<eT>& eigvec, const SpBase<eT, T1>& X, c
 template<typename eT, typename T1>
 inline
 bool
-sp_auxlib::eigs_sym_newarp(Col<eT>& eigval, Mat<eT>& eigvec, const SpBase<eT, T1>& X, const uword n_eigvals, const char* form_str, const eT default_tol)
+sp_auxlib::eigs_sym_newarp(Col<eT>& eigval, Mat<eT>& eigvec, const SpBase<eT, T1>& X_expr, const uword n_eigvals, const char* form_str, const eT default_tol)
   {
   arma_extra_debug_sigprint();
   
@@ -99,7 +99,10 @@ sp_auxlib::eigs_sym_newarp(Col<eT>& eigval, Mat<eT>& eigvec, const SpBase<eT, T1
     
     arma_debug_check( (form_val != form_lm) && (form_val != form_sm) && (form_val != form_la) && (form_val != form_sa), "eigs_sym(): unknown form specified" );
     
-    const newarp::SparseGenMatProd<eT> op(X.get_ref());
+    const unwrap_spmat<T1> U(X_expr.get_ref());
+    const SpMat<eT>&       X = U.M;
+    
+    const newarp::SparseGenMatProd<eT> op(X);
     
     arma_debug_check( (op.n_rows != op.n_cols), "eigs_sym(): given matrix must be square sized" );
     
@@ -182,7 +185,7 @@ sp_auxlib::eigs_sym_newarp(Col<eT>& eigval, Mat<eT>& eigvec, const SpBase<eT, T1
     {
     arma_ignore(eigval);
     arma_ignore(eigvec);
-    arma_ignore(X);
+    arma_ignore(X_expr);
     arma_ignore(n_eigvals);
     arma_ignore(form_str);
     arma_ignore(default_tol);
@@ -331,7 +334,7 @@ sp_auxlib::eigs_gen(Col< std::complex<T> >& eigval, Mat< std::complex<T> >& eigv
 template<typename T, typename T1>
 inline
 bool
-sp_auxlib::eigs_gen_newarp(Col< std::complex<T> >& eigval, Mat< std::complex<T> >& eigvec, const SpBase<T, T1>& X, const uword n_eigvals, const char* form_str, const T default_tol)
+sp_auxlib::eigs_gen_newarp(Col< std::complex<T> >& eigval, Mat< std::complex<T> >& eigvec, const SpBase<T, T1>& X_expr, const uword n_eigvals, const char* form_str, const T default_tol)
   {
   arma_extra_debug_sigprint();
   
@@ -341,7 +344,10 @@ sp_auxlib::eigs_gen_newarp(Col< std::complex<T> >& eigval, Mat< std::complex<T> 
     
     arma_debug_check( (form_val == form_none), "eigs_gen(): unknown form specified" );
     
-    const newarp::SparseGenMatProd<T> op(X.get_ref());
+    const unwrap_spmat<T1> U(X_expr.get_ref());
+    const SpMat<T>&        X = U.M;
+    
+    const newarp::SparseGenMatProd<T> op(X);
     
     arma_debug_check( (op.n_rows != op.n_cols), "eigs_sym(): given matrix must be square sized" );
     
@@ -442,7 +448,7 @@ sp_auxlib::eigs_gen_newarp(Col< std::complex<T> >& eigval, Mat< std::complex<T> 
     {
     arma_ignore(eigval);
     arma_ignore(eigvec);
-    arma_ignore(X);
+    arma_ignore(X_expr);
     arma_ignore(n_eigvals);
     arma_ignore(form_str);
     arma_ignore(default_tol);

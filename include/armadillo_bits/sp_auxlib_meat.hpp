@@ -818,6 +818,7 @@ sp_auxlib::spsolve_simple(Mat<typename T1::elem_type>& X, const SpBase<typename 
     
     int info = 0; // Return code.
     
+    arma_extra_debug_print("superlu::gssv()");
     superlu::gssv<eT>(&options, &a, perm_c, perm_r, &l, &u, &x, &stat, &info);
     
     
@@ -1000,6 +1001,7 @@ sp_auxlib::spsolve_refine(Mat<typename T1::elem_type>& X, typename T1::pod_type&
     char  work[8];
     int  lwork = int(0);  // 0 means superlu will allocate memory
     
+    arma_extra_debug_print("superlu::gssvx()");
     superlu::gssvx<eT>(&options, &a, perm_c, perm_r, etree, equed, R, C, &l, &u, &work[0], lwork, &b, &x, &rpg, &rcond, ferr, berr, &glu, &mu, &stat, &info);
     
     // Process the return code.

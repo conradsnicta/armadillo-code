@@ -5740,8 +5740,8 @@ SpMat<eT>::sync_csc() const
   arma_extra_debug_sigprint();
   
   // method:
-  // 1. construct separate matrix to prevent the cache getting zapped
-  // 2. steal memmory from the separate matrix
+  // 1. construct temporary matrix to prevent the cache from getting zapped
+  // 2. steal memory from the temporary matrix
   
   // sync_state is only set to 1 by non-const element access operators,
   // so the shenanigans with const_cast are to satisfy the compiler

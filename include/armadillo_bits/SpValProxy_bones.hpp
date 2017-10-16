@@ -18,11 +18,10 @@
 //! @{
 
 
-/**
- * Sparse value proxy class, meant to prevent 0s from being added to sparse matrices.
- * T1 must be either SpMat or SpSubview.
- * This class only uses T1::insert_element() and T1::delete_element()
- */
+// Sparse value proxy class, to prevent inserting 0s into sparse matrices.
+// T1 must be either SpMat or SpSubview.
+// This class uses T1::insert_element(), T1::delete_element(), T1::invalidate_cache()
+
 template<typename T1>
 class SpValProxy
   {

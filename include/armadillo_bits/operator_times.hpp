@@ -472,12 +472,14 @@ operator*
   {
   arma_extra_debug_sigprint();
   
+  typedef typename T1::elem_type eT;
+  
   const SpProxy<T1> pa(x);
   const   Proxy<T2> pb(y);
   
   arma_debug_assert_mul_size(pa.get_n_rows(), pa.get_n_cols(), pb.get_n_rows(), pb.get_n_cols(), "matrix multiplication");
   
-  Mat<typename T1::elem_type> result(pa.get_n_rows(), pb.get_n_cols());
+  Mat<eT> result(pa.get_n_rows(), pb.get_n_cols());
   result.zeros();
   
   if( (pa.get_n_nonzero() > 0) && (pb.get_n_elem() > 0) )
@@ -489,9 +491,13 @@ operator*
       
     while(x_it != x_it_end)
       {
+      const eT    x_it_val = (*x_it);
+      const uword x_it_row = x_it.row();
+      const uword x_it_col = x_it.col();
+      
       for(uword col = 0; col < result_n_cols; ++col)
         {
-        result.at(x_it.row(), col) += (*x_it) * pb.at(x_it.col(), col);
+        result.at(x_it_row, col) += x_it_val * pb.at(x_it_col, col);
         }
       
       ++x_it;
@@ -520,29 +526,35 @@ operator*
   {
   arma_extra_debug_sigprint();
   
+  typedef typename T1::elem_type eT;
+  
   const   Proxy<T1> pa(x);
   const SpProxy<T2> pb(y);
   
   arma_debug_assert_mul_size(pa.get_n_rows(), pa.get_n_cols(), pb.get_n_rows(), pb.get_n_cols(), "matrix multiplication");
   
-  Mat<typename T1::elem_type> result(pa.get_n_rows(), pb.get_n_cols());
+  Mat<eT> result(pa.get_n_rows(), pb.get_n_cols());
   result.zeros();
   
   if( (pa.get_n_elem() > 0) && (pb.get_n_nonzero() > 0) )
     {
-    typename SpProxy<T2>::const_iterator_type y_col_it     = pb.begin();
-    typename SpProxy<T2>::const_iterator_type y_col_it_end = pb.end();
+    typename SpProxy<T2>::const_iterator_type y_it     = pb.begin();
+    typename SpProxy<T2>::const_iterator_type y_it_end = pb.end();
     
     const uword result_n_rows = result.n_rows;
     
-    while(y_col_it != y_col_it_end)
+    while(y_it != y_it_end)
       {
+      const eT    y_it_val = (*y_it);
+      const uword y_it_col = y_it.col();
+      const uword y_it_row = y_it.row();
+      
       for(uword row = 0; row < result_n_rows; ++row)
         {
-        result.at(row, y_col_it.col()) += pa.at(row, y_col_it.row()) * (*y_col_it);
+        result.at(row, y_it_col) += pa.at(row, y_it_row) * y_it_val;
         }
       
-      ++y_col_it;
+      ++y_it;
       }
     }
   

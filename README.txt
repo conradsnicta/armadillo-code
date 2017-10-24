@@ -436,21 +436,21 @@ implementation details, and may change or be removed without notice.
 15: Bug Reports and Frequently Asked Questions
 ==============================================
 
-Armadillo has gone through extensive testing and
-has been successfully used in production environments.
-However, as with almost all software, it's impossible
-to guarantee 100% correct functionality.
+Armadillo has gone through extensive testing and has been successfully
+used in production environments. However, as with almost all software,
+it's impossible to guarantee 100% correct functionality.
 
-If you find a bug in the library or the documentation,
-we are interested in hearing about it. Please make a
-_small_ and _self-contained_ program which exposes the bug,
-and then send the program source and the bug description
-to the developers. The contact details are at:
+If you find a bug in the library or the documentation, we are interested
+in hearing about it. Please make a _small_ and _self-contained_ program
+which exposes the bug, and then send the program source and the bug description
+to the developers. The small program must have a main() function and use only
+functions/classes from Armadillo and the standard C++ library (no other libraries).
+
+The contact details are at:
 
   http://arma.sourceforge.net/contact.html
 
-Further information about Armadillo as well as
-answers to frequently asked questions are at:
+Further information about Armadillo is on the frequently asked questions page:
 
   http://arma.sourceforge.net/faq.html
 

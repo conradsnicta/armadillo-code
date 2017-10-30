@@ -476,7 +476,7 @@
 
 
 #if defined(ARMA_USE_OPENMP) && !defined(ARMA_USE_CXX11)
-  #if (defined(ARMA_GCC_VERSION) && (ARMA_GCC_VERSION >= 40803)) || (defined(__clang__) && !defined(ARMA_FAKE_CLANG))
+  #if (defined(ARMA_GCC_VERSION) && (ARMA_GCC_VERSION >= 50400)) || (defined(__clang__) && !defined(ARMA_FAKE_CLANG))
     #undef  ARMA_PRINT_OPENMP_CXX11_WARNING
     #define ARMA_PRINT_OPENMP_CXX11_WARNING
   #endif
@@ -494,7 +494,7 @@
     // due to https://gcc.gnu.org/bugzilla/show_bug.cgi?id=57580
     #undef ARMA_USE_OPENMP
     #if !defined(ARMA_DONT_PRINT_OPENMP_WARNING)
-      #pragma message ("WARNING: use of OpenMP disabled due to compiler bug in gcc <= 5.3");
+      #pragma message ("WARNING: use of OpenMP disabled due to compiler bug in gcc <= 5.3")
     #endif
   #endif
 #endif

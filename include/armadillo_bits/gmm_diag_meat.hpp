@@ -158,7 +158,7 @@ gmm_diag<eT>::set_params(const Base<eT,T1>& in_means_expr, const Base<eT,T2>& in
   
   const eT s = accu(in_hefts);
   
-  arma_debug_check( ((s < (eT(1) - Datum<eT>::eps)) || (s > (eT(1) + Datum<eT>::eps))), "gmm_diag::set_params(): sum of given hefts is not 1" );
+  arma_debug_check( ((s < (eT(1) - eT(0.001))) || (s > (eT(1) + eT(0.001)))), "gmm_diag::set_params(): sum of given hefts is not 1" );
   
   access::rw(means) = in_means;
   access::rw(dcovs) = in_dcovs;
@@ -230,7 +230,7 @@ gmm_diag<eT>::set_hefts(const Base<eT,T1>& in_hefts_expr)
   
   const eT s = accu(in_hefts);
   
-  arma_debug_check( ((s < (eT(1) - Datum<eT>::eps)) || (s > (eT(1) + Datum<eT>::eps))), "gmm_diag::set_hefts(): sum of given hefts is not 1" );
+  arma_debug_check( ((s < (eT(1) - eT(0.001))) || (s > (eT(1) + eT(0.001)))), "gmm_diag::set_hefts(): sum of given hefts is not 1" );
   
   // make sure all hefts are positive and non-zero
   

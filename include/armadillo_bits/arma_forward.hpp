@@ -280,6 +280,7 @@ struct hdf5_name
   {
   const std::string filename;
   const std::string dsname;
+  const bool append = false;
   
   inline
   hdf5_name(const std::string& in_filename)
@@ -290,6 +291,12 @@ struct hdf5_name
   hdf5_name(const std::string& in_filename, const std::string& in_dsname)
     : filename(in_filename)
     , dsname  (in_dsname  )
+    {}
+  inline
+  hdf5_name(const std::string& in_filename, const std::string& in_dsname, const bool& in_append)
+    : filename(in_filename)
+    , dsname  (in_dsname  )
+    , append  (in_append  )
     {}
   };
 

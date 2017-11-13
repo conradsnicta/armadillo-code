@@ -240,6 +240,21 @@ class auxlib
   template<typename T1>
   inline static bool solve_tri(Mat<typename T1::elem_type>& out, const Mat<typename T1::elem_type>& A, const Base<typename T1::elem_type,T1>& B_expr, const uword layout);
   
+  template<typename T1>
+  inline static bool solve_band_fast(Mat<typename T1::pod_type>& out, Mat<typename T1::pod_type>& A, const uword KL, const uword KU, const Base<typename T1::pod_type,T1>& B_expr);
+  
+  template<typename T1>
+  inline static bool solve_band_fast(Mat< std::complex<typename T1::pod_type> >& out, Mat< std::complex<typename T1::pod_type> >& A, const uword KL, const uword KU, const Base< std::complex<typename T1::pod_type>,T1>& B_expr);
+  
+  template<typename T1>
+  inline static bool solve_band_fast_common(Mat<typename T1::elem_type>& out, const Mat<typename T1::elem_type>& A, const uword KL, const uword KU, const Base<typename T1::elem_type,T1>& B_expr);
+  
+  template<typename T1>
+  inline static bool solve_band_refine(Mat<typename T1::pod_type>& out, typename T1::pod_type& out_rcond, Mat<typename T1::pod_type>& A, const uword KL, const uword KU, const Base<typename T1::pod_type,T1>& B_expr, const bool equilibrate);
+  
+  template<typename T1>
+  inline static bool solve_band_refine(Mat< std::complex<typename T1::pod_type> >& out, typename T1::pod_type& out_rcond, Mat< std::complex<typename T1::pod_type> >& A, const uword KL, const uword KU, const Base<std::complex<typename T1::pod_type>,T1>& B_expr, const bool equilibrate);
+  
   
   //
   // Schur decomposition
@@ -296,6 +311,13 @@ namespace qz_helper
   
   template<typename T> inline void_ptr ptr_cast(blas_int (*function)(const T*, const T*, const T*));
   template<typename T> inline void_ptr ptr_cast(blas_int (*function)(const std::complex<T>*, const std::complex<T>*));
+  }
+
+
+
+namespace band_helper
+  {
+  template<typename eT> inline void gen_band_format(Mat<eT>& AB, const Mat<eT>& A, const uword KL, const uword KU, const bool use_offset);
   }
 
 

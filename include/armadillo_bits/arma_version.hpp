@@ -20,9 +20,9 @@
 
 
 #define ARMA_VERSION_MAJOR 8
-#define ARMA_VERSION_MINOR 200
-#define ARMA_VERSION_PATCH 2
-#define ARMA_VERSION_NAME  "Feral Pursuits Deluxe"
+#define ARMA_VERSION_MINOR 290
+#define ARMA_VERSION_PATCH 0
+#define ARMA_VERSION_NAME  "unstable"
 
 
 

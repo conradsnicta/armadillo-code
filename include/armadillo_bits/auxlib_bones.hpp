@@ -148,9 +148,17 @@ class auxlib
   //
   // chol
   
-  template<typename eT, typename T1>
-  inline static bool chol(Mat<eT>& out, const Base<eT,T1>& X, const uword layout);
+  template<typename eT>
+  inline static bool chol(Mat<eT>& X, const uword layout);
   
+  template<typename eT>
+  inline static bool chol_band(Mat<eT>& X, const uword KD, const uword layout);
+  
+  template<typename  T>
+  inline static bool chol_band(Mat< std::complex<T> >& X, const uword KD, const uword layout);
+  
+  template<typename eT>
+  inline static bool chol_band_common(Mat<eT>& X, const uword KD, const uword layout);
   
   //
   // qr
@@ -293,6 +301,13 @@ class auxlib
   
   template<typename T1>
   inline static typename T1::pod_type rcond(const Base<std::complex<typename T1::pod_type>,T1>& A_expr);
+  
+  
+  //
+  // misc
+  
+  template<typename T1>
+  inline static bool crippled_lapack(const Base<typename T1::elem_type, T1>&);
   };
 
 
@@ -313,12 +328,6 @@ namespace qz_helper
   template<typename T> inline void_ptr ptr_cast(blas_int (*function)(const std::complex<T>*, const std::complex<T>*));
   }
 
-
-
-namespace band_helper
-  {
-  template<typename eT> inline void gen_band_format(Mat<eT>& AB, const Mat<eT>& A, const uword KL, const uword KU, const bool use_offset);
-  }
 
 
 //! @}

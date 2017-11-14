@@ -383,6 +383,28 @@ extern "C"
     
     
     
+    void arma_fortran_prefix(arma_spbtrf)(char* uplo, blas_int* n, blas_int* kd,  float* ab, blas_int* ldab, blas_int* info)
+      {
+      arma_fortran_noprefix(arma_spbtrf)(uplo, n, kd, ab, ldab, info);
+      }
+    
+    void arma_fortran_prefix(arma_dpbtrf)(char* uplo, blas_int* n, blas_int* kd, double* ab, blas_int* ldab, blas_int* info)
+      {
+      arma_fortran_noprefix(arma_dpbtrf)(uplo, n, kd, ab, ldab, info);
+      }
+    
+    void arma_fortran_prefix(arma_cpbtrf)(char* uplo, blas_int* n, blas_int* kd,   void* ab, blas_int* ldab, blas_int* info)
+      {
+      arma_fortran_noprefix(arma_cpbtrf)(uplo, n, kd, ab, ldab, info);
+      }
+    
+    void arma_fortran_prefix(arma_zpbtrf)(char* uplo, blas_int* n, blas_int* kd,   void* ab, blas_int* ldab, blas_int* info)
+      {
+      arma_fortran_noprefix(arma_zpbtrf)(uplo, n, kd, ab, ldab, info);
+      }
+    
+    
+    
     void arma_fortran_prefix(arma_spotri)(char* uplo, blas_int* n,  float* a, blas_int* lda, blas_int* info)
       {
       arma_fortran_noprefix(arma_spotri)(uplo, n, a, lda, info);

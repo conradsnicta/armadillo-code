@@ -56,7 +56,7 @@ chol
   
   arma_debug_check( ((sig != 'u') && (sig != 'l')), "chol(): layout must be \"upper\" or \"lower\"" );
   
-  const bool status = auxlib::chol(out, X.get_ref(), ((sig == 'u') ? 0 : 1));
+  const bool status = op_chol::apply_direct(out, X.get_ref(), ((sig == 'u') ? 0 : 1));
   
   if(status == false)
     {

@@ -73,13 +73,13 @@ glue_solve_gen::apply(Mat<eT>& out, const Base<eT,T1>& A_expr, const Base<eT,T2>
     uword KL = 0;
     uword KU = 0;
     
-    const bool band = (no_band == false) ? glue_solve_gen::is_band(KL, KU, A) : false;
+    const bool is_band = ((no_band == false) && (auxlib::crippled_lapack(A) == false)) ? band_helper::is_band(KL, KU, A, uword(16)) : false;
     
     if(fast)
       {
       if(equilibrate)  { arma_debug_warn("solve(): option 'equilibrate' ignored, as option 'fast' is enabled"); }
       
-      if(band == false)
+      if(is_band == false)
         {
         arma_extra_debug_print("glue_solve_gen::apply(): fast + dense");
       
@@ -94,7 +94,7 @@ glue_solve_gen::apply(Mat<eT>& out, const Base<eT,T1>& A_expr, const Base<eT,T2>
       }
     else
       {
-      if(band == false)
+      if(is_band == false)
         {
         arma_extra_debug_print("glue_solve_gen::apply(): refine + dense");
         
@@ -153,83 +153,6 @@ glue_solve_gen::apply(Mat<eT>& out, const Base<eT,T1>& A_expr, const Base<eT,T2>
   if(status == false)  { out.soft_reset(); }
   
   return status;
-  }
-
-
-
-template<typename eT>
-inline
-bool
-glue_solve_gen::is_band(uword& out_KL, uword& out_KU, const Mat<eT>& A)
-  {
-  arma_extra_debug_sigprint();
-  
-  // NOTE: assuming that A has a square size
-  
-  const uword N = A.n_rows;
-  
-  if(N < 16)  { return false; }
-  
-  // first, quickly check bottom-right and top-left corners
-  
-  const eT eT_zero = eT(0);
-  
-  const eT* A_col0 = A.memptr();
-  const eT* A_col1 = A_col0 + N;
-  
-  if( (A_col0[N-2] != eT_zero) || (A_col0[N-1] != eT_zero) || (A_col1[N-1] != eT_zero) )  { return false; }
-  
-  const eT* A_colNm2 = A.colptr(N-2);
-  const eT* A_colNm1 = A_colNm2 + N;
-  
-  if( (A_colNm2[0] != eT_zero) || (A_colNm1[0] != eT_zero) || (A_colNm1[1] != eT_zero) )  { return false; }
-  
-  // if we reached this point, go through the entire matrix to work out number of subdiagonals and superdiagonals
-  
-  const uword n_nonzero_threshold = (N*N)/4;  // empirically determined
-  
-  uword KL = 0;  // number of   subdiagonals
-  uword KU = 0;  // number of superdiagonals
-  
-  const eT* A_colptr = A.memptr();
-  
-  for(uword col=0; col < N; ++col)
-    {
-    uword first_nonzero_row = col;
-    uword  last_nonzero_row = col;
-    
-    for(uword row=0; row < col; ++row)
-      {
-      if( A_colptr[row] != eT_zero )  { first_nonzero_row = row; break; }
-      }
-    
-    for(uword row=(col+1); row < N; ++row)
-      {
-      last_nonzero_row = (A_colptr[row] != eT_zero) ? row : last_nonzero_row;
-      }
-    
-    const uword L_count = last_nonzero_row - col;
-    const uword U_count = col - first_nonzero_row;
-    
-    if( (L_count > KL) || (U_count > KU) )
-      {
-      KL = L_count;
-      KU = U_count;
-      
-      const uword n_nonzero = N*(KL+KU+1) - (KL*(KL+1) + KU*(KU+1))/2;
-      
-      // return as soon as we know that it's not worth analysing the matrix any further
-      
-      if(n_nonzero > n_nonzero_threshold)  { return false; }
-      }
-    
-    A_colptr += N;
-    }
-  
-  out_KL = KL;
-  out_KU = KU;
-  
-  return true;
   }
 
 

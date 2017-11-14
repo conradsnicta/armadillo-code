@@ -538,6 +538,7 @@ namespace arma
   
   #include "armadillo_bits/hdf5_misc.hpp"
   #include "armadillo_bits/fft_engine.hpp"
+  #include "armadillo_bits/band_helper.hpp"
   
   //
   // classes implementing various forms of dense matrix multiplication

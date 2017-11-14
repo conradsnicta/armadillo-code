@@ -1754,48 +1754,42 @@ auxlib::eig_sym_dc(Col<T>& eigval, Mat< std::complex<T> >& eigvec, const Base<st
 
 
 
-template<typename eT, typename T1>
+template<typename eT>
 inline
 bool
-auxlib::chol(Mat<eT>& out, const Base<eT,T1>& X, const uword layout)
+auxlib::chol(Mat<eT>& X, const uword layout)
   {
   arma_extra_debug_sigprint();
   
   #if defined(ARMA_USE_LAPACK)
     {
-    out = X.get_ref();
-    
-    arma_debug_check( (out.is_square() == false), "chol(): given matrix must be square sized" );
-    
-    if(out.is_empty())  { return true; }
-    
-    arma_debug_assert_blas_size(out);
+    arma_debug_assert_blas_size(X);
     
     char      uplo = (layout == 0) ? 'U' : 'L';
-    blas_int  n    = blas_int(out.n_rows);
+    blas_int  n    = blas_int(X.n_rows);
     blas_int  info = 0;
     
     arma_extra_debug_print("lapack::potrf()");
-    lapack::potrf(&uplo, &n, out.memptr(), &n, &info);
+    lapack::potrf(&uplo, &n, X.memptr(), &n, &info);
     
     if(info != 0)  { return false; }
     
-    const uword out_n_rows = out.n_rows;
+    const uword X_n_rows = X.n_rows;
     
     if(layout == 0)
       {
-      for(uword col=0; col < out_n_rows; ++col)
+      for(uword col=0; col < X_n_rows; ++col)
         {
-        eT* colptr = out.colptr(col);
+        eT* colptr = X.colptr(col);
         
-        for(uword row=(col+1); row < out_n_rows; ++row)  { colptr[row] = eT(0); }
+        for(uword row=(col+1); row < X_n_rows; ++row)  { colptr[row] = eT(0); }
         }
       }
     else
       {
-      for(uword col=1; col < out_n_rows; ++col)
+      for(uword col=1; col < X_n_rows; ++col)
         {
-        eT* colptr = out.colptr(col);
+        eT* colptr = X.colptr(col);
         
         for(uword row=0; row < col; ++row)  { colptr[row] = eT(0); }
         }
@@ -1805,8 +1799,89 @@ auxlib::chol(Mat<eT>& out, const Base<eT,T1>& X, const uword layout)
     }
   #else
     {
-    arma_ignore(out);
     arma_ignore(X);
+    arma_ignore(layout);
+    
+    arma_stop_logic_error("chol(): use of LAPACK must be enabled");
+    return false;
+    }
+  #endif
+  }
+
+
+
+template<typename eT>
+inline
+bool
+auxlib::chol_band(Mat<eT>& X, const uword KD, const uword layout)
+  {
+  arma_extra_debug_sigprint();
+  
+  return auxlib::chol_band_common(X, KD, layout);
+  }
+
+
+
+template<typename T>
+inline
+bool
+auxlib::chol_band(Mat< std::complex<T> >& X, const uword KD, const uword layout)
+  {
+  arma_extra_debug_sigprint();
+  
+  #if defined(ARMA_CRIPPLED_LAPACK)
+    {
+    arma_ignore(KD);
+    
+    return auxlib::chol(X, layout);
+    }
+  #else
+    {
+    return auxlib::chol_band_common(X, KD, layout);
+    }
+  #endif
+  }
+
+
+
+template<typename eT>
+inline
+bool
+auxlib::chol_band_common(Mat<eT>& X, const uword KD, const uword layout)
+  {
+  arma_extra_debug_sigprint();
+  
+  #if defined(ARMA_USE_LAPACK)
+    {
+    const uword N = X.n_rows;
+    
+    const uword KL = (layout == 0) ? uword(0) : KD;
+    const uword KU = (layout == 0) ? KD       : uword(0);
+    
+    Mat<eT> AB;
+    band_helper::compress(AB, X, KL, KU, false);
+    
+    arma_debug_assert_blas_size(AB);
+    
+    char     uplo = (layout == 0) ? 'U' : 'L';
+    blas_int n    = blas_int(N);
+    blas_int kd   = blas_int(KD);
+    blas_int ldab = blas_int(AB.n_rows);
+    blas_int info = 0;
+    
+    arma_extra_debug_print("lapack::pbtrf()");
+    lapack::pbtrf(&uplo, &n, &kd, AB.memptr(), &ldab, &info);
+    
+    if(info != 0)  { return false; }
+    
+    band_helper::uncompress(X, AB, KL, KU, false);
+    
+    return true;
+    }
+  #else
+    {
+    arma_ignore(out);
+    arma_ignore(KD);
     arma_ignore(layout);
     
     arma_stop_logic_error("chol(): use of LAPACK must be enabled");
@@ -3764,7 +3839,7 @@ auxlib::solve_band_fast_common(Mat<typename T1::elem_type>& out, const Mat<typen
     // for gbsv, matrix AB size: 2*KL+KU+1 x N; band representation of A stored in rows KL+1 to 2*KL+KU+1  (note: fortran counts from 1)
     
     Mat<eT> AB;
-    band_helper::gen_band_format(AB, A, KL, KU, true);
+    band_helper::compress(AB, A, KL, KU, true);
     
     const uword N = AB.n_cols;  // order of the original square matrix A
     
@@ -3827,7 +3902,7 @@ auxlib::solve_band_refine(Mat<typename T1::pod_type>& out, typename T1::pod_type
     // for gbsvx, matrix AB size: KL+KU+1 x N; band representation of A stored in rows 1 to KL+KU+1  (note: fortran counts from 1)
     
     Mat<eT> AB;
-    band_helper::gen_band_format(AB, A, KL, KU, false);
+    band_helper::compress(AB, A, KL, KU, false);
     
     const uword N = AB.n_cols;
     
@@ -3933,7 +4008,7 @@ auxlib::solve_band_refine(Mat< std::complex<typename T1::pod_type> >& out, typen
     // for gbsvx, matrix AB size: KL+KU+1 x N; band representation of A stored in rows 1 to KL+KU+1  (note: fortran counts from 1)
     
     Mat<eT> AB;
-    band_helper::gen_band_format(AB, A, KL, KU, false);
+    band_helper::compress(AB, A, KL, KU, false);
     
     const uword N = AB.n_cols;
     
@@ -4518,6 +4593,24 @@ auxlib::rcond(const Base<std::complex<typename T1::pod_type>,T1>& A_expr)
 
 
 
+template<typename T1>
+inline
+bool
+auxlib::crippled_lapack(const Base<typename T1::elem_type, T1>&)
+  {
+  #if defined(ARMA_CRIPPLED_LAPACK)
+    {
+    return (is_cx<typename T1::elem_type>::yes);
+    }
+  #else
+    {
+    return false;
+    }
+  #endif
+  }
+
+
+
 //
 
 
@@ -4760,72 +4853,6 @@ ptr_cast(blas_int (*function)(const std::complex<T>*, const std::complex<T>*))
 
 
 }  // end of namespace qz_helper
-
-
-
-//
-
-
-
-namespace band_helper
-{
-
-
-
-template<typename eT>
-inline
-void
-gen_band_format(Mat<eT>& AB, const Mat<eT>& A, const uword KL, const uword KU, const bool use_offset)
-  {
-  arma_extra_debug_sigprint();
-  
-  // NOTE: assuming that A has a square size
-  
-  // band matrix storage format
-  // http://www.netlib.org/lapack/lug/node124.html  
-  
-  // for ?gbsv,  matrix AB size: 2*KL+KU+1 x N; band representation of A stored in rows KL+1 to 2*KL+KU+1  (note: fortran counts from 1)
-  // for ?gbsvx, matrix AB size:   KL+KU+1 x N; band representaiton of A stored in rows    1 to   KL+KU+1  (note: fortran counts from 1)
-  //
-  // the +1 in the above formulas is to take into account the main diagonal
-  
-  const uword AB_n_rows = (use_offset) ? uword(2*KL + KU + 1) : uword(KL + KU + 1);
-  const uword N         = A.n_rows;
-  
-  AB.set_size(AB_n_rows, N);
-  
-  if(A.is_empty())  { AB.zeros(); return; }
-  
-  if(AB_n_rows == uword(1))
-    {
-    eT* AB_mem = AB.memptr();
-    
-    for(uword i=0; i<N; ++i)  { AB_mem[i] = A.at(i,i); }
-    }
-  else
-    {
-    AB.zeros();  // paranoia
-    
-    for(uword j=0; j < N; ++j)
-      {
-      const uword A_row_start = (j > KU) ? uword(j - KU) : uword(0);
-      const uword A_row_endp1 = (std::min)(N, j+KL+1);
-      
-      const uword length = A_row_endp1 - A_row_start;
-      
-      const uword AB_row_start = (KU > j) ? (KU - j) : uword(0);
-      
-      const eT*  A_colptr =  A.colptr(j) +  A_row_start;
-            eT* AB_colptr = AB.colptr(j) + AB_row_start + ( (use_offset) ? KL : uword(0) );
-      
-      arrayops::copy( AB_colptr, A_colptr, length );
-      }
-    }
-  }
-
-
-
-}  // end of namespace band_helper
 
 
 //! @}

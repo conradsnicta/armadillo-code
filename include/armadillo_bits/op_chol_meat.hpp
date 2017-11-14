@@ -26,13 +26,37 @@ op_chol::apply(Mat<typename T1::elem_type>& out, const Op<T1,op_chol>& X)
   {
   arma_extra_debug_sigprint();
   
-  const bool status = auxlib::chol(out, X.m, X.aux_uword_a);
+  const bool status = op_chol::apply_direct(out, X.m, X.aux_uword_a);
   
   if(status == false)
     {
     out.soft_reset();
     arma_stop_runtime_error("chol(): decomposition failed");
     }
+  }
+
+
+
+template<typename T1>
+inline
+bool
+op_chol::apply_direct(Mat<typename T1::elem_type>& out, const Base<typename T1::elem_type,T1>& A_expr, const uword layout)
+  {
+  arma_extra_debug_sigprint();
+  
+  out = A_expr.get_ref();
+  
+  arma_debug_check( (out.is_square() == false), "chol(): given matrix must be square sized" );
+  
+  if(out.is_empty())  { return true; }
+  
+  uword KD = 0;
+  
+  const bool is_band = (auxlib::crippled_lapack(out)) ? false : ((layout == 0) ? band_helper::is_band_upper(KD, out, uword(32)) : band_helper::is_band_lower(KD, out, uword(32)));
+  
+  const bool status = (is_band == false) ? auxlib::chol(out, layout) : auxlib::chol_band(out, KD, layout);
+  
+  return status;
   }
 
 

@@ -368,7 +368,40 @@ namespace lapack
       typedef std::complex<double> T;
       arma_fortran(arma_zpotrf)(uplo, n, (T*)a, lda, info);
       }
+    }
+  
+  
+  
+  template<typename eT>
+  inline
+  void
+  pbtrf(char* uplo, blas_int* n, blas_int* kd, eT* ab, blas_int* ldab, blas_int* info)
+    {
+    arma_type_check(( is_supported_blas_type<eT>::value == false ));
     
+    if(is_float<eT>::value)
+      {
+      typedef float T;
+      arma_fortran(arma_spbtrf)(uplo, n, kd, (T*)ab, ldab, info);
+      }
+    else
+    if(is_double<eT>::value)
+      {
+      typedef double T;
+      arma_fortran(arma_dpbtrf)(uplo, n, kd, (T*)ab, ldab, info);
+      }
+    else
+    if(is_supported_complex_float<eT>::value)
+      {
+      typedef std::complex<float> T;
+      arma_fortran(arma_cpbtrf)(uplo, n, kd, (T*)ab, ldab, info);
+      }
+    else
+    if(is_supported_complex_double<eT>::value)
+      {
+      typedef std::complex<double> T;
+      arma_fortran(arma_zpbtrf)(uplo, n, kd, (T*)ab, ldab, info);
+      }
     }
   
   
@@ -403,7 +436,6 @@ namespace lapack
       typedef std::complex<double> T;
       arma_fortran(arma_zpotri)(uplo, n, (T*)a, lda, info);
       }
-    
     }
   
   
@@ -438,7 +470,6 @@ namespace lapack
       typedef std::complex<double> T;
       arma_fortran(arma_zgeqrf)(m, n, (T*)a, lda, (T*)tau, (T*)work, lwork, info);
       }
-    
     }
   
   

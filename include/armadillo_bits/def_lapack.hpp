@@ -63,6 +63,11 @@
   #define arma_cpotrf cpotrf
   #define arma_zpotrf zpotrf
   
+  #define arma_spbtrf spbtrf
+  #define arma_dpbtrf dpbtrf
+  #define arma_cpbtrf cpbtrf
+  #define arma_zpbtrf zpbtrf
+  
   #define arma_spotri spotri
   #define arma_dpotri dpotri
   #define arma_cpotri cpotri
@@ -228,6 +233,11 @@
   #define arma_dpotrf DPOTRF
   #define arma_cpotrf CPOTRF
   #define arma_zpotrf ZPOTRF
+  
+  #define arma_spbtrf SPBTRF
+  #define arma_dpbtrf DPBTRF
+  #define arma_cpbtrf CPBTRF
+  #define arma_zpbtrf ZPBTRF
   
   #define arma_spotri SPOTRI
   #define arma_dpotri DPOTRI
@@ -411,6 +421,12 @@ extern "C"
   void arma_fortran(arma_dpotrf)(char* uplo, blas_int* n, double* a, blas_int* lda, blas_int* info);
   void arma_fortran(arma_cpotrf)(char* uplo, blas_int* n,   void* a, blas_int* lda, blas_int* info);
   void arma_fortran(arma_zpotrf)(char* uplo, blas_int* n,   void* a, blas_int* lda, blas_int* info);
+  
+  // Cholesky decomposition (band matrices)
+  void arma_fortran(arma_spbtrf)(char* uplo, blas_int* n, blas_int* kd,  float* ab, blas_int* ldab, blas_int* info);
+  void arma_fortran(arma_dpbtrf)(char* uplo, blas_int* n, blas_int* kd, double* ab, blas_int* ldab, blas_int* info);
+  void arma_fortran(arma_cpbtrf)(char* uplo, blas_int* n, blas_int* kd,   void* ab, blas_int* ldab, blas_int* info);
+  void arma_fortran(arma_zpbtrf)(char* uplo, blas_int* n, blas_int* kd,   void* ab, blas_int* ldab, blas_int* info);
   
   // matrix inversion (using Cholesky decomposition result)
   void arma_fortran(arma_spotri)(char* uplo, blas_int* n,  float* a, blas_int* lda, blas_int* info);

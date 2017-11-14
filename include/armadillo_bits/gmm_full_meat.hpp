@@ -1056,7 +1056,7 @@ gmm_full<eT>::init_constants(const bool calc_chol)
       
       const uword chol_layout = 1;  // indicates "lower"
       
-      const bool chol_ok = auxlib::chol(tmp_chol, fcov, chol_layout);
+      const bool chol_ok = op_chol::apply_direct(tmp_chol, fcov, chol_layout);
       
       if(chol_ok)
         {

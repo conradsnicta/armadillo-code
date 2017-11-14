@@ -24,7 +24,7 @@ arma_inline
 typename enable_if2< (is_real<eT>::value), eT >::result
 normpdf(const eT x)
   {
-  const eT out = std::exp(-0.5 * (x*x)) / std::sqrt( eT(2)*Datum<eT>::pi );
+  const eT out = std::exp(-0.5 * (x*x)) / Datum<eT>::sqrt2pi;
   
   return out;
   }
@@ -38,7 +38,7 @@ normpdf(const eT x, const eT mu)
   {
   const eT tmp = (x - mu);
   
-  const eT out = std::exp(-0.5 * (tmp*tmp)) / std::sqrt( eT(2)*Datum<eT>::pi );
+  const eT out = std::exp(-0.5 * (tmp*tmp)) / Datum<eT>::sqrt2pi;
   
   return out;
   }
@@ -52,7 +52,7 @@ normpdf(const eT x, const eT mu, const eT sigma)
   {
   const eT tmp = (x - mu) / sigma;
   
-  const eT out = std::exp(-0.5 * (tmp*tmp)) / ( sigma * std::sqrt( eT(2)*Datum<eT>::pi ) );
+  const eT out = std::exp(-0.5 * (tmp*tmp)) / ( sigma * Datum<eT>::sqrt2pi );
   
   return out;
   }
@@ -79,8 +79,6 @@ normpdf(const Base<typename T1::elem_type, T1>& X_expr)
   const uword N     = X.n_elem;
   const eT*   X_mem = X.memptr();
   
-  const eT sqrt_2pi = std::sqrt( eT(2)*Datum<eT>::pi );
-  
   const bool use_mp = arma_config::cxx11 && arma_config::openmp && mp_gate<eT,true>::eval(N);
   
   if(use_mp)
@@ -93,7 +91,7 @@ normpdf(const Base<typename T1::elem_type, T1>& X_expr)
         {
         const eT tmp = X_mem[i];
         
-        out_mem[i] = std::exp(-0.5 * (tmp*tmp)) / sqrt_2pi;
+        out_mem[i] = std::exp(-0.5 * (tmp*tmp)) / Datum<eT>::sqrt2pi;
         }
       }
     #endif
@@ -104,7 +102,7 @@ normpdf(const Base<typename T1::elem_type, T1>& X_expr)
       {
       const eT tmp = X_mem[i];
       
-      out_mem[i] = std::exp(-0.5 * (tmp*tmp)) / sqrt_2pi;
+      out_mem[i] = std::exp(-0.5 * (tmp*tmp)) / Datum<eT>::sqrt2pi;
       }
     }
   
@@ -138,8 +136,6 @@ normpdf(const Base<typename T1::elem_type, T1>& X_expr, const Base<typename T1::
   const eT*   X_mem = X.memptr();
   const eT*   M_mem = M.memptr();
   
-  const eT sqrt_2pi = std::sqrt( eT(2)*Datum<eT>::pi );
-  
   const bool use_mp = arma_config::cxx11 && arma_config::openmp && mp_gate<eT,true>::eval(N);
   
   if(use_mp)
@@ -152,7 +148,7 @@ normpdf(const Base<typename T1::elem_type, T1>& X_expr, const Base<typename T1::
         {
         const eT tmp = (X_mem[i] - M_mem[i]);
         
-        out_mem[i] = std::exp(-0.5 * (tmp*tmp)) / sqrt_2pi;
+        out_mem[i] = std::exp(-0.5 * (tmp*tmp)) / Datum<eT>::sqrt2pi;
         }
       }
     #endif
@@ -163,7 +159,7 @@ normpdf(const Base<typename T1::elem_type, T1>& X_expr, const Base<typename T1::
       {
       const eT tmp = (X_mem[i] - M_mem[i]);
       
-      out_mem[i] = std::exp(-0.5 * (tmp*tmp)) / sqrt_2pi;
+      out_mem[i] = std::exp(-0.5 * (tmp*tmp)) / Datum<eT>::sqrt2pi;
       }
     }
   
@@ -200,8 +196,6 @@ normpdf(const Base<typename T1::elem_type, T1>& X_expr, const Base<typename T1::
   const eT*   M_mem = M.memptr();
   const eT*   S_mem = S.memptr();
   
-  const eT sqrt_2pi = std::sqrt( eT(2)*Datum<eT>::pi );
-  
   const bool use_mp = arma_config::cxx11 && arma_config::openmp && mp_gate<eT,true>::eval(N);
   
   if(use_mp)
@@ -216,7 +210,7 @@ normpdf(const Base<typename T1::elem_type, T1>& X_expr, const Base<typename T1::
         
         const eT tmp = (X_mem[i] - M_mem[i]) / sigma;
         
-        out_mem[i] = std::exp(-0.5 * (tmp*tmp)) / (sigma * sqrt_2pi);
+        out_mem[i] = std::exp(-0.5 * (tmp*tmp)) / (sigma * Datum<eT>::sqrt2pi);
         }
       }
     #endif
@@ -229,7 +223,7 @@ normpdf(const Base<typename T1::elem_type, T1>& X_expr, const Base<typename T1::
       
       const eT tmp = (X_mem[i] - M_mem[i]) / sigma;
       
-      out_mem[i] = std::exp(-0.5 * (tmp*tmp)) / (sigma * sqrt_2pi);
+      out_mem[i] = std::exp(-0.5 * (tmp*tmp)) / (sigma * Datum<eT>::sqrt2pi);
       }
     }
   

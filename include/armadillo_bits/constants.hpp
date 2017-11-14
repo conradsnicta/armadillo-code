@@ -129,6 +129,7 @@ class Datum
   static const eT euler;    //!< Euler's constant, aka Euler-Mascheroni constant
   static const eT gratio;   //!< golden ratio
   static const eT sqrt2;    //!< square root of 2
+  static const eT sqrt2pi;  //!< square root of 2*pi
   static const eT eps;      //!< the difference between 1 and the least value greater than 1 that is representable
   static const eT log_min;  //!< log of the minimum representable value
   static const eT log_max;  //!< log of the maximum representable value
@@ -177,6 +178,7 @@ template<typename eT> const eT Datum<eT>::e         = eT(2.718281828459045235360
 template<typename eT> const eT Datum<eT>::euler     = eT(0.5772156649015328606065120900824024310421593359399235988057672348848677267776646709369470632917467495);
 template<typename eT> const eT Datum<eT>::gratio    = eT(1.6180339887498948482045868343656381177203091798057628621354486227052604628189024497072072041893911374);
 template<typename eT> const eT Datum<eT>::sqrt2     = eT(1.4142135623730950488016887242096980785696718753769480731766797379907324784621070388503875343276415727);
+template<typename eT> const eT Datum<eT>::sqrt2pi   = eT(2.5066282746310005024157652848110452530069867406099383166299235763422936546078419749465958383780572661);
 template<typename eT> const eT Datum<eT>::eps       = std::numeric_limits<eT>::epsilon();
 template<typename eT> const eT Datum<eT>::log_min   = std::log(std::numeric_limits<eT>::min());
 template<typename eT> const eT Datum<eT>::log_max   = std::log(std::numeric_limits<eT>::max());

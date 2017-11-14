@@ -488,6 +488,7 @@ Conrad Sanderson and Ryan Curtin.
 <tr><td><a href="#hist">hist</a></td><td>&nbsp;</td><td>histogram of counts</td></tr>
 <tr><td><a href="#histc">histc</a></td><td>&nbsp;</td><td>histogram of counts with user specified edges</td></tr>
 <tr><td><a href="#princomp">princomp</a></td><td>&nbsp;</td><td>principal component analysis</td></tr>
+<tr style="background-color: #F5F5F5;"><td><a href="#normpdf">normpdf</a></td><td>&nbsp;</td><td>likelihood according to normal distribution</td></tr>
 <tr style="background-color: #F5F5F5;"><td><a href="#running_stat">running_stat</a></td><td>&nbsp;</td><td>running statistics of one dimensional process/signal</td></tr>
 <tr style="background-color: #F5F5F5;"><td><a href="#running_stat_vec">running_stat_vec</a></td><td>&nbsp;</td><td>running statistics of multi-dimensional process/signal</td></tr>
 <tr><td><a href="#kmeans">kmeans</a></td><td>&nbsp;</td><td>cluster data into disjoint sets</td></tr>
@@ -6624,6 +6625,7 @@ arma_rng::set_seed_random();  // set the seed to a random value
 <li><a href="#randu_randn_member">.randu() &amp; .randn()</a> (member functions)</li>
 <li><a href="#randi">randi()</a></li>
 <li><a href="#randg">randg()</a></li>
+<li><a href="#normpdf">normpdf()</a></li>
 <li><a href="#imbue">.imbue()</a></li>
 <li><a href="#ones_standalone">ones()</a></li>
 <li><a href="#zeros_standalone">zeros()</a></li>
@@ -12982,6 +12984,42 @@ See also:
 <ul>
 <li><a href="http://en.wikipedia.org/wiki/Principal_component_analysis">principal components analysis in Wikipedia</a></li>
 <li><a href="http://mathworld.wolfram.com/PrincipalComponentAnalysis.html">principal components analysis in MathWorld</a></li>
+</ul>
+</li>
+<br>
+</ul>
+
+<div class="pagebreak"></div><div class="noprint"><hr class="greyline"><br></div>
+<a name="normpdf"></a>
+<b>normpdf(X)</b>
+<br><b>normpdf(X, M)</b>
+<br><b>normpdf(X, M, S)</b>
+<ul>
+<li>For each value in <i>X</i>, compute its likelihood according to a normal distribution using the corresponding mean value in <i>M</i> and the corresponding standard deviation value in <i>S</i></li>
+<br>
+<li>If <i>M</i> is omitted, its values are assumed to be 0</li>
+<br>
+<li>If <i>S</i> is omitted, its values are assumed to be 1</li>
+<br>
+<li>
+Examples:
+<ul>
+<pre>
+mat X(10,12, fill::randu);
+mat M(10,12, fill::randu);
+mat S(10,12, fill::randu);
+
+mat P1 = normpdf(X);
+mat P2 = normpdf(X, M, S);
+</pre>
+</ul>
+</li>
+<br>
+<li>
+See also:
+<ul>
+<li><a href="#randu_randn_standalone">randn()</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Normal_distribution">normal distribution in Wikipedia</a></li>
 </ul>
 </li>
 <br>

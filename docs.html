@@ -12992,14 +12992,11 @@ See also:
 <div class="pagebreak"></div><div class="noprint"><hr class="greyline"><br></div>
 <a name="normpdf"></a>
 <b>normpdf(X)</b>
-<br><b>normpdf(X, M)</b>
 <br><b>normpdf(X, M, S)</b>
 <ul>
 <li>For each value in <i>X</i>, compute its likelihood according to a normal distribution using the corresponding mean value in <i>M</i> and the corresponding standard deviation value in <i>S</i></li>
 <br>
-<li>If <i>M</i> is omitted, its values are assumed to be 0</li>
-<br>
-<li>If <i>S</i> is omitted, its values are assumed to be 1</li>
+<li>If <i>M</i> and <i>S</i> are omitted, their values are assumed to be 0 and 1, respectively</li>
 <br>
 <li>
 Examples:
@@ -13019,6 +13016,7 @@ mat P2 = normpdf(X, M, S);
 See also:
 <ul>
 <li><a href="#randu_randn_standalone">randn()</a></li>
+<li><a href="#gmm_diag">gmm_diag</a></li>
 <li><a href="http://en.wikipedia.org/wiki/Normal_distribution">normal distribution in Wikipedia</a></li>
 </ul>
 </li>
@@ -14194,6 +14192,7 @@ model.save("my_model.gmm");
 <br>
 <li>See also:
 <ul>
+<li><a href="#normpdf">normpdf()</a></li>
 <li><a href="#stats_fns">statistics functions</a></li>
 <li><a href="#running_stat_vec">running_stat_vec</a></li>
 <li><a href="#kmeans">kmeans()</a></li>

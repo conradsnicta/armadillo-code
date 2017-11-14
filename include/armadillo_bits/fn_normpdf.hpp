@@ -45,25 +45,41 @@ normpdf(const eT x, const eT mu, const eT sigma)
 
 
 
-template<typename T1>
+template<typename T1, typename T2, typename T3>
 inline
-typename enable_if2< (is_real<typename T1::elem_type>::value), Mat<typename T1::elem_type> >::result
-normpdf(const Base<typename T1::elem_type, T1>& X_expr)
+typename enable_if2< (is_real<typename T1::elem_type>::value), void >::result
+normpdf_internal(Mat<typename T1::elem_type>& out, const Base<typename T1::elem_type, T1>& X_expr, const Base<typename T1::elem_type, T2>& M_expr, const Base<typename T1::elem_type, T3>& S_expr)
   {
   arma_extra_debug_sigprint();
   
   typedef typename T1::elem_type eT;
   
-  const quasi_unwrap<T1> tmp1(X_expr.get_ref());
+  if(Proxy<T1>::use_at || Proxy<T2>::use_at || Proxy<T3>::use_at)
+    {
+    const unwrap<T1> UX(X_expr.get_ref());
+    const unwrap<T2> UM(M_expr.get_ref());
+    const unwrap<T3> US(S_expr.get_ref());
+    
+    normpdf_internal(out, UX.M, UM.M, US.M);
+    
+    return;
+    }
   
-  const Mat<eT>& X = tmp1.M;
+  const Proxy<T1> PX(X_expr.get_ref());
+  const Proxy<T2> PM(M_expr.get_ref());
+  const Proxy<T3> PS(S_expr.get_ref());
   
-  Mat<eT> out( size(X) );
+  arma_debug_check( ( (PX.get_n_rows() != PM.get_n_rows()) || (PX.get_n_cols() != PM.get_n_cols()) || (PM.get_n_rows() != PS.get_n_rows()) || (PM.get_n_cols() != PS.get_n_cols()) ), "normpdf(): size mismatch" );
+  
+  out.set_size(PX.get_n_rows(), PX.get_n_cols());
   
   eT* out_mem = out.memptr();
   
-  const uword N     = X.n_elem;
-  const eT*   X_mem = X.memptr();
+  const uword N = PX.get_n_elem();
+  
+  typename Proxy<T1>::ea_type X_ea = PX.get_ea();
+  typename Proxy<T2>::ea_type M_ea = PM.get_ea();
+  typename Proxy<T3>::ea_type S_ea = PS.get_ea();
   
   const bool use_mp = arma_config::cxx11 && arma_config::openmp && mp_gate<eT,true>::eval(N);
   
@@ -75,9 +91,11 @@ normpdf(const Base<typename T1::elem_type, T1>& X_expr)
       #pragma omp parallel for schedule(static) num_threads(n_threads)
       for(uword i=0; i<N; ++i)
         {
-        const eT tmp = X_mem[i];
+        const eT sigma = S_ea[i];
         
-        out_mem[i] = std::exp(-0.5 * (tmp*tmp)) / Datum<eT>::sqrt2pi;
+        const eT tmp = (X_ea[i] - M_ea[i]) / sigma;
+        
+        out_mem[i] = std::exp(-0.5 * (tmp*tmp)) / (sigma * Datum<eT>::sqrt2pi);
         }
       }
     #endif
@@ -86,11 +104,72 @@ normpdf(const Base<typename T1::elem_type, T1>& X_expr)
     {
     for(uword i=0; i<N; ++i)
       {
-      const eT tmp = X_mem[i];
+      const eT sigma = S_ea[i];
       
-      out_mem[i] = std::exp(-0.5 * (tmp*tmp)) / Datum<eT>::sqrt2pi;
+      const eT tmp = (X_ea[i] - M_ea[i]) / sigma;
+      
+      out_mem[i] = std::exp(-0.5 * (tmp*tmp)) / (sigma * Datum<eT>::sqrt2pi);
       }
     }
+  }
+
+
+
+template<typename eT, typename T2, typename T3>
+inline
+typename enable_if2< (is_real<eT>::value), Mat<eT> >::result
+normpdf(const eT x, const Base<eT, T2>& M_expr, const Base<eT, T3>& S_expr)
+  {
+  arma_extra_debug_sigprint();
+  
+  const quasi_unwrap<T2> UM(M_expr.get_ref());
+  const Mat<eT>&     M = UM.M;
+  
+  Mat<eT> out;
+  
+  normpdf_internal(out, x*ones< Mat<eT> >(size(M)), M, S_expr.get_ref());
+  
+  return out;
+  }
+
+
+
+template<typename T1>
+inline
+typename enable_if2< (is_real<typename T1::elem_type>::value), Mat<typename T1::elem_type> >::result
+normpdf(const Base<typename T1::elem_type, T1>& X_expr)
+  {
+  arma_extra_debug_sigprint();
+  
+  typedef typename T1::elem_type eT;
+  
+  const quasi_unwrap<T1> UX(X_expr.get_ref());
+  const Mat<eT>&     X = UX.M;
+  
+  Mat<eT> out;
+  
+  normpdf_internal(out, X, ones< Mat<eT> >(size(X)), zeros< Mat<eT> >(size(X)));
+  
+  return out;
+  }
+
+
+
+template<typename T1>
+inline
+typename enable_if2< (is_real<typename T1::elem_type>::value), Mat<typename T1::elem_type> >::result
+normpdf(const Base<typename T1::elem_type, T1>& X_expr, const typename T1::elem_type mu, const typename T1::elem_type sigma)
+  {
+  arma_extra_debug_sigprint();
+  
+  typedef typename T1::elem_type eT;
+  
+  const quasi_unwrap<T1> UX(X_expr.get_ref());
+  const Mat<eT>&     X = UX.M;
+  
+  Mat<eT> out;
+  
+  normpdf_internal(out, X, mu*ones< Mat<eT> >(size(X)), sigma*ones< Mat<eT> >(size(X)));
   
   return out;
   }
@@ -106,55 +185,9 @@ normpdf(const Base<typename T1::elem_type, T1>& X_expr, const Base<typename T1::
   
   typedef typename T1::elem_type eT;
   
-  const quasi_unwrap<T1> tmp1(X_expr.get_ref());
-  const quasi_unwrap<T2> tmp2(M_expr.get_ref());
-  const quasi_unwrap<T3> tmp3(S_expr.get_ref());
+  Mat<eT> out;
   
-  const Mat<eT>& X = tmp1.M;
-  const Mat<eT>& M = tmp2.M;
-  const Mat<eT>& S = tmp3.M;
-  
-  arma_debug_check( ((size(X) != size(M)) || (size(M) != size(S))), "normpdf(): size mismatch" );
-
-  Mat<eT> out( size(X) );
-  
-  eT* out_mem = out.memptr();
-  
-  const uword N     = X.n_elem;
-  const eT*   X_mem = X.memptr();
-  const eT*   M_mem = M.memptr();
-  const eT*   S_mem = S.memptr();
-  
-  const bool use_mp = arma_config::cxx11 && arma_config::openmp && mp_gate<eT,true>::eval(N);
-  
-  if(use_mp)
-    {
-    #if defined(ARMA_USE_OPENMP)
-      {
-      const int n_threads = mp_thread_limit::get();
-      #pragma omp parallel for schedule(static) num_threads(n_threads)
-      for(uword i=0; i<N; ++i)
-        {
-        const eT sigma = S_mem[i];
-        
-        const eT tmp = (X_mem[i] - M_mem[i]) / sigma;
-        
-        out_mem[i] = std::exp(-0.5 * (tmp*tmp)) / (sigma * Datum<eT>::sqrt2pi);
-        }
-      }
-    #endif
-    }
-  else
-    {
-    for(uword i=0; i<N; ++i)
-      {
-      const eT sigma = S_mem[i];
-      
-      const eT tmp = (X_mem[i] - M_mem[i]) / sigma;
-      
-      out_mem[i] = std::exp(-0.5 * (tmp*tmp)) / (sigma * Datum<eT>::sqrt2pi);
-      }
-    }
+  normpdf_internal(out, X_expr.get_ref(), M_expr.get_ref(), S_expr.get_ref());
   
   return out;
   }

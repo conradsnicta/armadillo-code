@@ -19,36 +19,10 @@
 
 
 
-template<typename eT>
-arma_inline
-typename enable_if2< (is_real<eT>::value), eT >::result
-normpdf(const eT x)
-  {
-  const eT out = std::exp(-0.5 * (x*x)) / Datum<eT>::sqrt2pi;
-  
-  return out;
-  }
-
-
-
-template<typename eT>
-inline
-typename enable_if2< (is_real<eT>::value), eT >::result
-normpdf(const eT x, const eT mu, const eT sigma)
-  {
-  const eT tmp = (x - mu) / sigma;
-  
-  const eT out = std::exp(-0.5 * (tmp*tmp)) / ( sigma * Datum<eT>::sqrt2pi );
-  
-  return out;
-  }
-
-
-
 template<typename T1, typename T2, typename T3>
 inline
 typename enable_if2< (is_real<typename T1::elem_type>::value), void >::result
-normpdf_internal(Mat<typename T1::elem_type>& out, const Base<typename T1::elem_type, T1>& X_expr, const Base<typename T1::elem_type, T2>& M_expr, const Base<typename T1::elem_type, T3>& S_expr)
+normpdf_helper(Mat<typename T1::elem_type>& out, const Base<typename T1::elem_type, T1>& X_expr, const Base<typename T1::elem_type, T2>& M_expr, const Base<typename T1::elem_type, T3>& S_expr)
   {
   arma_extra_debug_sigprint();
   
@@ -60,7 +34,7 @@ normpdf_internal(Mat<typename T1::elem_type>& out, const Base<typename T1::elem_
     const unwrap<T2> UM(M_expr.get_ref());
     const unwrap<T3> US(S_expr.get_ref());
     
-    normpdf_internal(out, UX.M, UM.M, US.M);
+    normpdf_helper(out, UX.M, UM.M, US.M);
     
     return;
     }
@@ -115,6 +89,32 @@ normpdf_internal(Mat<typename T1::elem_type>& out, const Base<typename T1::elem_
 
 
 
+template<typename eT>
+arma_inline
+typename enable_if2< (is_real<eT>::value), eT >::result
+normpdf(const eT x)
+  {
+  const eT out = std::exp(-0.5 * (x*x)) / Datum<eT>::sqrt2pi;
+  
+  return out;
+  }
+
+
+
+template<typename eT>
+inline
+typename enable_if2< (is_real<eT>::value), eT >::result
+normpdf(const eT x, const eT mu, const eT sigma)
+  {
+  const eT tmp = (x - mu) / sigma;
+  
+  const eT out = std::exp(-0.5 * (tmp*tmp)) / ( sigma * Datum<eT>::sqrt2pi );
+  
+  return out;
+  }
+
+
+
 template<typename eT, typename T2, typename T3>
 inline
 typename enable_if2< (is_real<eT>::value), Mat<eT> >::result
@@ -127,7 +127,7 @@ normpdf(const eT x, const Base<eT, T2>& M_expr, const Base<eT, T3>& S_expr)
   
   Mat<eT> out;
   
-  normpdf_internal(out, x*ones< Mat<eT> >(size(M)), M, S_expr.get_ref());
+  normpdf_helper(out, x*ones< Mat<eT> >(size(M)), M, S_expr.get_ref());
   
   return out;
   }
@@ -148,7 +148,7 @@ normpdf(const Base<typename T1::elem_type, T1>& X_expr)
   
   Mat<eT> out;
   
-  normpdf_internal(out, X, ones< Mat<eT> >(size(X)), zeros< Mat<eT> >(size(X)));
+  normpdf_helper(out, X, ones< Mat<eT> >(size(X)), zeros< Mat<eT> >(size(X)));
   
   return out;
   }
@@ -169,7 +169,7 @@ normpdf(const Base<typename T1::elem_type, T1>& X_expr, const typename T1::elem_
   
   Mat<eT> out;
   
-  normpdf_internal(out, X, mu*ones< Mat<eT> >(size(X)), sigma*ones< Mat<eT> >(size(X)));
+  normpdf_helper(out, X, mu*ones< Mat<eT> >(size(X)), sigma*ones< Mat<eT> >(size(X)));
   
   return out;
   }
@@ -187,7 +187,7 @@ normpdf(const Base<typename T1::elem_type, T1>& X_expr, const Base<typename T1::
   
   Mat<eT> out;
   
-  normpdf_internal(out, X_expr.get_ref(), M_expr.get_ref(), S_expr.get_ref());
+  normpdf_helper(out, X_expr.get_ref(), M_expr.get_ref(), S_expr.get_ref());
   
   return out;
   }

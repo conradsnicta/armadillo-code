@@ -47,12 +47,12 @@ spsolve_helper
   
   bool status = false;
   
+  const superlu_opts& opts = (settings.id == 1) ? static_cast<const superlu_opts&>(settings) : superlu_opts();
+  
+  arma_debug_check( ( (opts.pivot_thresh < double(0)) || (opts.pivot_thresh > double(1)) ), "spsolve(): pivot_thresh out of bounds" );
+  
   if(sig == 's')  // SuperLU solver
     {
-    const superlu_opts& opts = (settings.id == 1) ? static_cast<const superlu_opts&>(settings) : superlu_opts();
-    
-    arma_debug_check( ( (opts.pivot_thresh < double(0)) || (opts.pivot_thresh > double(1)) ), "spsolve(): pivot_thresh out of bounds" );
-    
     if( (opts.equilibrate == false) && (opts.refine == superlu_opts::REF_NONE) )
       {
       status = sp_auxlib::spsolve_simple(out, A.get_ref(), B.get_ref(), opts);
@@ -65,7 +65,10 @@ spsolve_helper
   else
   if(sig == 'l')  // brutal LAPACK solver
     {
-    if(settings.id != 0)  { arma_debug_warn("spsolve(): ignoring settings not applicable to LAPACK based solver"); }
+    if( (settings.id != 0) && ((opts.symmetric) || (opts.pivot_thresh != double(1.0))) )
+      {
+      arma_debug_warn("spsolve(): ignoring settings not applicable to LAPACK based solver");
+      }
     
     Mat<eT> AA;
     
@@ -88,7 +91,19 @@ spsolve_helper
       {
       arma_debug_check( (AA.n_rows != AA.n_cols), "spsolve(): matrix A must be square sized" );
       
-      status = auxlib::solve_square_refine(out, rcond, AA, B.get_ref(), false);
+      uword flags = solve_opts::flag_none;
+      
+      if( (opts.equilibrate == false) && (opts.refine == superlu_opts::REF_NONE) )
+        {
+        flags |= solve_opts::flag_fast;
+        }
+      else
+      if(opts.equilibrate == true)
+        {
+        flags |= solve_opts::flag_equilibrate;
+        }
+      
+      status = glue_solve_gen::apply(out, AA, B.get_ref(), flags);
       }
     }
   

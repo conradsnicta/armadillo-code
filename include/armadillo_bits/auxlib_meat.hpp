@@ -1880,7 +1880,7 @@ auxlib::chol_band_common(Mat<eT>& X, const uword KD, const uword layout)
     }
   #else
     {
-    arma_ignore(out);
+    arma_ignore(X);
     arma_ignore(KD);
     arma_ignore(layout);
     

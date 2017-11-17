@@ -42,6 +42,9 @@ class arma_rng_cxx11
   inline static int randi_max_val();
   
   template<typename eT>
+  inline void randg_fill_simple(eT* mem, const uword N, const double a, const double b);
+  
+  template<typename eT>
   inline void randg_fill(eT* mem, const uword N, const double a, const double b);
   
   
@@ -136,7 +139,7 @@ arma_rng_cxx11::randi_max_val()
 template<typename eT>
 inline
 void
-arma_rng_cxx11::randg_fill(eT* mem, const uword N, const double a, const double b)
+arma_rng_cxx11::randg_fill_simple(eT* mem, const uword N, const double a, const double b)
   {
   std::gamma_distribution<double> g_distr(a,b);
   
@@ -144,6 +147,64 @@ arma_rng_cxx11::randg_fill(eT* mem, const uword N, const double a, const double 
     {
     mem[i] = eT(g_distr(engine));
     }
+  }
+
+
+
+template<typename eT>
+inline
+void
+arma_rng_cxx11::randg_fill(eT* mem, const uword N, const double a, const double b)
+  {
+  #if defined(ARMA_USE_OPENMP)
+    {
+    if((N < 512) || omp_in_parallel())  { (*this).randg_fill_simple(mem, N, a, b); return; }
+    
+    typedef std::mt19937_64                  motor_type;
+    typedef std::mt19937_64::result_type      seed_type;
+    typedef std::gamma_distribution<double>  distr_type;
+    
+    const uword n_threads = uword( mp_thread_limit::get() );
+    
+    std::vector<motor_type> g_motor(n_threads);
+    std::vector<distr_type> g_distr(n_threads);
+    
+    const distr_type g_distr_base(a,b);
+    
+    for(uword t=0; t < n_threads; ++t)
+      {
+      motor_type& g_motor_t = g_motor[t];
+      distr_type& g_distr_t = g_distr[t];
+      
+      g_motor_t.seed( seed_type(t) + seed_type((*this).randi_val()) );
+      
+      g_distr_t.param( g_distr_base.param() );
+      }
+    
+    const uword chunk_size = N / n_threads;
+    
+    #pragma omp parallel for schedule(static) num_threads(int(n_threads))
+    for(uword t=0; t < n_threads; ++t)
+      {
+      const uword start = (t+0) * chunk_size;
+      const uword endp1 = (t+1) * chunk_size;
+      
+      motor_type& g_motor_t = g_motor[t];
+      distr_type& g_distr_t = g_distr[t];
+      
+      for(uword i=start; i < endp1; ++i)  { mem[i] = eT( g_distr_t(g_motor_t)); }
+      }
+    
+    motor_type& g_motor_0 = g_motor[0];
+    distr_type& g_distr_0 = g_distr[0];
+    
+    for(uword i=(n_threads*chunk_size); i < N; ++i)  { mem[i] = eT( g_distr_0(g_motor_0)); }
+    }
+  #else
+    {
+    (*this).randg_fill_simple(mem, N, a, b);
+    }
+  #endif
   }
 
 

@@ -12996,18 +12996,25 @@ See also:
 <ul>
 <li>For each value in <i>X</i>, compute its likelihood according to a normal distribution using the corresponding mean value in <i>M</i> and the corresponding standard deviation value in <i>S</i></li>
 <br>
+<li><i>X</i> can be a scalar, vector, or matrix</li>
+<br>
+<li><i>M</i> and <i>S</i> can jointly be either scalars, vectors, or matrices</li>
+<br>
 <li>If <i>M</i> and <i>S</i> are omitted, their values are assumed to be 0 and 1, respectively</li>
 <br>
 <li>
 Examples:
 <ul>
 <pre>
-mat X(10,12, fill::randu);
-mat M(10,12, fill::randu);
-mat S(10,12, fill::randu);
+vec X(10, fill::randu);
+vec M(10, fill::randu);
+vec S(10, fill::randu);
 
-mat P1 = normpdf(X);
-mat P2 = normpdf(X, M, S);
+vec P1 = normpdf(X);
+vec P2 = normpdf(X,    M,    S   );
+vec P3 = normpdf(1.23, M,    S   );
+vec P4 = normpdf(X,    4.56, 7.89);
+vec P5 = normpdf(1.23, 4.56, 7.89);
 </pre>
 </ul>
 </li>

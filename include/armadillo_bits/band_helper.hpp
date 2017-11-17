@@ -31,7 +31,7 @@ is_band(uword& out_KL, uword& out_KU, const Mat<eT>& A, const uword N_min)
   arma_extra_debug_sigprint();
   
   // NOTE: assuming that A has a square size
-  // NOTE  assuming that N_min is >= 3
+  // NOTE  assuming that N_min is >= 4
   
   const uword N = A.n_rows;
   
@@ -44,12 +44,12 @@ is_band(uword& out_KL, uword& out_KU, const Mat<eT>& A, const uword N_min)
   const eT* A_col0 = A.memptr();
   const eT* A_col1 = A_col0 + N;
   
-  if( (A_col0[N-2] != eT_zero) || (A_col0[N-1] != eT_zero) || (A_col1[N-1] != eT_zero) )  { return false; }
+  if( (A_col0[N-2] != eT_zero) || (A_col0[N-1] != eT_zero) || (A_col1[N-2] != eT_zero) || (A_col1[N-1] != eT_zero) )  { return false; }
   
   const eT* A_colNm2 = A.colptr(N-2);
   const eT* A_colNm1 = A_colNm2 + N;
   
-  if( (A_colNm2[0] != eT_zero) || (A_colNm1[0] != eT_zero) || (A_colNm1[1] != eT_zero) )  { return false; }
+  if( (A_colNm2[0] != eT_zero) || (A_colNm2[1] != eT_zero) || (A_colNm1[0] != eT_zero) || (A_colNm1[1] != eT_zero) )  { return false; }
   
   // if we reached this point, go through the entire matrix to work out number of subdiagonals and superdiagonals
   
@@ -109,7 +109,7 @@ is_band_lower(uword& out_KD, const Mat<eT>& A, const uword N_min)
   arma_extra_debug_sigprint();
   
   // NOTE: assuming that A has a square size
-  // NOTE  assuming that N_min is >= 3
+  // NOTE  assuming that N_min is >= 4
   
   const uword N = A.n_rows;
   
@@ -122,7 +122,7 @@ is_band_lower(uword& out_KD, const Mat<eT>& A, const uword N_min)
   const eT* A_col0 = A.memptr();
   const eT* A_col1 = A_col0 + N;
   
-  if( (A_col0[N-2] != eT_zero) || (A_col0[N-1] != eT_zero) || (A_col1[N-1] != eT_zero) )  { return false; }
+  if( (A_col0[N-2] != eT_zero) || (A_col0[N-1] != eT_zero) || (A_col1[N-2] != eT_zero) || (A_col1[N-1] != eT_zero) )  { return false; }
   
   // if we reached this point, go through the bottom triangle to work out number of subdiagonals
   
@@ -172,7 +172,7 @@ is_band_upper(uword& out_KD, const Mat<eT>& A, const uword N_min)
   arma_extra_debug_sigprint();
   
   // NOTE: assuming that A has a square size
-  // NOTE  assuming that N_min is >= 3
+  // NOTE  assuming that N_min is >= 4
   
   const uword N = A.n_rows;
   
@@ -185,7 +185,7 @@ is_band_upper(uword& out_KD, const Mat<eT>& A, const uword N_min)
   const eT* A_colNm2 = A.colptr(N-2);
   const eT* A_colNm1 = A_colNm2 + N;
   
-  if( (A_colNm2[0] != eT_zero) || (A_colNm1[0] != eT_zero) || (A_colNm1[1] != eT_zero) )  { return false; }
+  if( (A_colNm2[0] != eT_zero) || (A_colNm2[1] != eT_zero) || (A_colNm1[0] != eT_zero) || (A_colNm1[1] != eT_zero) )  { return false; }
   
   // if we reached this point, go through the entire matrix to work out number of superdiagonals
   

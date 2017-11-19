@@ -1274,7 +1274,7 @@ diskio::save_hdf5_binary(const Mat<eT>& x, const hdf5_name& spec)
 
     // Set up the file according to HDF5's preferences
     hid_t file;
-    if ((file_is_hdf5 == 1) & (spec.append == true))
+    if ((file_is_hdf5 == 1) && (spec.append == true))
       {
       file = arma_H5Fopen(spec.filename.c_str(), H5F_ACC_RDWR, H5P_DEFAULT);
       }
@@ -1316,7 +1316,7 @@ diskio::save_hdf5_binary(const Mat<eT>& x, const hdf5_name& spec)
     const std::string dataset_name = (full_name.empty() == false) ? full_name : std::string("dataset");
 
     hid_t dataset = arma_H5Dcreate(groups.size() == 0 ? file : groups[groups.size() - 1], dataset_name.c_str(), datatype, dataspace, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
-    if (dataset < 0) { arma_debug_warn("Mat::save(): dataset ", dataset_name.c_str(), std::string(" already exists in ") + spec.filename.c_str());} //can never happen if file is overwritten, so no need to use tmp_name.c_str()
+    if (dataset < 0) { arma_warn("Mat::save(): dataset ", dataset_name.c_str(), std::string(" already exists in ") + spec.filename.c_str());} //can never happen if file is overwritten, so no need to use tmp_name.c_str()
 
     // H5Dwrite does not make a distinction between row-major and column-major;
     // it just writes the memory.  MATLAB and Octave store HDF5 matrices as
@@ -3473,8 +3473,19 @@ diskio::save_hdf5_binary(const Cube<eT>& x, const hdf5_name& spec)
 
     const std::string tmp_name = diskio::gen_tmp_name(spec.filename);
 
+    //Check if file exists and is HDF5
+    int file_is_hdf5 = arma_H5Fis_hdf5(spec.filename.c_str());
+
     // Set up the file according to HDF5's preferences
-    hid_t file = arma_H5Fcreate(tmp_name.c_str(), H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
+    hid_t file;
+    if ((file_is_hdf5 == 1) && (spec.append == true))
+      {
+      file = arma_H5Fopen(spec.filename.c_str(), H5F_ACC_RDWR, H5P_DEFAULT);
+      }
+    else
+      {
+      file = arma_H5Fcreate(tmp_name.c_str(), H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
+      }
 
     // We need to create a dataset, datatype, and dataspace
     hsize_t dims[3];
@@ -3510,6 +3521,7 @@ diskio::save_hdf5_binary(const Cube<eT>& x, const hdf5_name& spec)
     const std::string dataset_name = (full_name.empty() == false) ? full_name : std::string("dataset");
     
     hid_t dataset = arma_H5Dcreate(groups.size() == 0 ? file : groups[groups.size() - 1], dataset_name.c_str(), datatype, dataspace, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+    if (dataset < 0) { arma_warn("Cube::save(): dataset ", dataset_name.c_str(), std::string(" already exists in ") + spec.filename.c_str());} //can never happen if file is overwritten, so no need to use tmp_name.c_str()
 
     herr_t status = arma_H5Dwrite(dataset, datatype, H5S_ALL, H5S_ALL, H5P_DEFAULT, x.mem);
     save_okay = (status >= 0);
@@ -3520,7 +3532,10 @@ diskio::save_hdf5_binary(const Cube<eT>& x, const hdf5_name& spec)
     for (size_t i = 0; i < groups.size(); ++i)  { arma_H5Gclose(groups[i]); }
     arma_H5Fclose(file);
 
-    if(save_okay == true) { save_okay = diskio::safe_rename(tmp_name, spec.filename); }
+    if (save_okay == true)
+      {
+      if ((file_is_hdf5 != 1) || (spec.append == false)) { save_okay = diskio::safe_rename(tmp_name, spec.filename); }
+      }
 
     return save_okay;
     }

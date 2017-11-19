@@ -727,7 +727,7 @@ TEST_CASE("hdf5_dataset_append_test")
   a.save(hdf5_name("file.h5", "dataset1"), hdf5_binary);
 
   arma::Mat<double> b;
-  b.randu(10,10);
+  b.randu(10, 10);
 
   // Save second dataset.
   b.save(hdf5_name("file.h5", "dataset2", true), hdf5_binary);
@@ -755,6 +755,42 @@ TEST_CASE("hdf5_dataset_append_test")
   remove("file.h5");
   }
 
+TEST_CASE("hdf5_cube_dataset_append_test")
+  {
+  arma::Mat<double> a;
+  a.randu(20, 20);
+
+  // Save first dataset.
+  a.save(hdf5_name("file.h5", "dataset1"), hdf5_binary);
+
+  arma::Cube<double> b;
+  b.randu(10, 10, 10);
+
+  // Save second dataset.
+  b.save(hdf5_name("file.h5", "dataset2", true), hdf5_binary);
+
+  // Load first dataset as different matrix.
+  arma::Mat<double> c;
+  c.load(hdf5_name("file.h5", "dataset1"), hdf5_binary);
+
+  // Check that they are the same.
+  for (uword i = 0; i < a.n_elem; ++i)
+    {
+    REQUIRE( a[i] == c[i] );
+    }
+
+  // Load second dataset as different matrix.
+  arma::Cube<double> d;
+  d.load(hdf5_name("file.h5", "dataset2"), hdf5_binary);
+
+  // Check that they are the same.
+  for (uword i = 0; i < b.n_elem; ++i)
+    {
+    REQUIRE( b[i] == d[i] );
+    }
+
+  remove("file.h5");
+  }
 
 
 TEST_CASE("hdf5_dataset_append-overwrite-test")
@@ -766,7 +802,7 @@ TEST_CASE("hdf5_dataset_append-overwrite-test")
   a.save(hdf5_name("file.h5", "dataset1"), hdf5_binary);
 
   arma::Mat<double> b;
-  b.randu(10,10);
+  b.randu(10, 10);
 
   // Save second dataset.
   b.save(hdf5_name("file.h5", "dataset2", false), hdf5_binary);
@@ -800,7 +836,7 @@ TEST_CASE("hdf5_dataset_same_dataset_twice_test")
   a.save(hdf5_name("file.h5", "dataset1"), hdf5_binary);
 
   arma::Mat<double> b;
-  b.randu(10,10);
+  b.randu(10, 10);
 
   // Append second dataset with same name, causing warning message.
   REQUIRE_FALSE(b.save(hdf5_name("file.h5", "dataset1", true), hdf5_binary));

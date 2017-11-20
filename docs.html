@@ -12994,7 +12994,28 @@ See also:
 <b>normpdf(X)</b>
 <br><b>normpdf(X, M, S)</b>
 <ul>
-<li>For each value in <i>X</i>, compute its likelihood according to a normal distribution using the corresponding mean value in <i>M</i> and the corresponding standard deviation value in <i>S</i></li>
+<li>
+For each scalar <i>x</i> in <i>X</i>, compute its likelihood according to a Gaussian (normal) distribution using the corresponding mean value <i>m</i> in <i>M</i> and the corresponding standard deviation value <i>s</i> in <i>S</i>:
+<br>
+<br>
+<ul>
+<code>
+<table style="text-align: left;" border="0" cellpadding="0" cellspacing="0">
+  <tbody>
+    <tr>
+      <td>&nbsp;</td><td>&nbsp;&nbsp;&nbsp;1</td><td>&nbsp;</td><td>&#9127;</td><td>&nbsp;</td><td>(x-m)<sup>2</sup></td><td>&#9131;</td>
+    </tr>
+    <tr>
+      <td>y&nbsp;=&nbsp;</td><td>&#8210;&#8210;&#8210;&#8210;&#8210;&#8210;&#8210;</td><td>&nbsp;exp</td><td>&#9130;</td><td>&minus;0.5&nbsp;</td><td>&#8210;&#8210;&#8210;&#8210;&#8210;&#8210;&nbsp;</td><td>&#9130;</td>
+    </tr>
+    <tr>
+      <td>&nbsp;</td><td>s&nbsp;&radic;(2&pi;)</td><td>&nbsp;</td><td>&#9129;</td><td>&nbsp;</td><td>&nbsp;&nbsp;s<sup>2</sup></td><td>&#9133;</td>
+    </tr>
+  </tbody>
+</table>
+</code>
+</ul>
+</li>
 <br>
 <li><i>X</i> can be a scalar, vector, or matrix</li>
 <br>

@@ -108,7 +108,7 @@ normpdf(const eT x, const eT mu, const eT sigma)
   {
   const eT tmp = (x - mu) / sigma;
   
-  const eT out = std::exp(-0.5 * (tmp*tmp)) / ( sigma * Datum<eT>::sqrt2pi );
+  const eT out = std::exp(-0.5 * (tmp*tmp)) / (sigma * Datum<eT>::sqrt2pi);
   
   return out;
   }
@@ -148,7 +148,7 @@ normpdf(const Base<typename T1::elem_type, T1>& X_expr)
   
   Mat<eT> out;
   
-  normpdf_helper(out, X, ones< Mat<eT> >(size(X)), zeros< Mat<eT> >(size(X)));
+  normpdf_helper(out, X, zeros< Mat<eT> >(size(X)), ones< Mat<eT> >(size(X)));
   
   return out;
   }

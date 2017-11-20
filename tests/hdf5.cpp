@@ -13,6 +13,7 @@
 // limitations under the License.
 // ------------------------------------------------------------------------
 
+#include <cstdio>
 #include <armadillo>
 
 #include "catch.hpp"
@@ -49,7 +50,7 @@ TEST_CASE("hdf5_u8_test")
     REQUIRE( a[i] == c[i] );
     }
 
-  remove("file.h5");
+  std::remove("file.h5");
   }
 
 
@@ -82,7 +83,7 @@ TEST_CASE("hdf5_u16_test")
     REQUIRE( a[i] == c[i] );
     }
 
-  remove("file.h5");
+  std::remove("file.h5");
   }
 
 
@@ -115,7 +116,7 @@ TEST_CASE("hdf5_u32_test")
     REQUIRE( a[i] == c[i] );
     }
 
-  remove("file.h5");
+  std::remove("file.h5");
   }
 
 
@@ -149,7 +150,7 @@ TEST_CASE("hdf5_u64_test")
     REQUIRE( a[i] == c[i] );
     }
 
-  remove("file.h5");
+  std::remove("file.h5");
   }
 #endif
 
@@ -183,7 +184,7 @@ TEST_CASE("hdf5_s8_test")
     REQUIRE( a[i] == c[i] );
     }
 
-  remove("file.h5");
+  std::remove("file.h5");
   }
 
 
@@ -216,7 +217,7 @@ TEST_CASE("hdf5_s16_test")
     REQUIRE( a[i] == c[i] );
     }
 
-  remove("file.h5");
+  std::remove("file.h5");
   }
 
 
@@ -249,7 +250,7 @@ TEST_CASE("hdf5_s32_test")
     REQUIRE( a[i] == c[i] );
     }
 
-  remove("file.h5");
+  std::remove("file.h5");
   }
 
 
@@ -283,7 +284,7 @@ TEST_CASE("hdf5_s64_test")
     REQUIRE( a[i] == c[i] );
     }
 
-  remove("file.h5");
+  std::remove("file.h5");
   }
 #endif
 
@@ -317,7 +318,7 @@ TEST_CASE("hdf5_char_test")
     REQUIRE( a[i] == c[i] );
     }
 
-  remove("file.h5");
+  std::remove("file.h5");
   }
 
 
@@ -350,7 +351,7 @@ TEST_CASE("hdf5_int_test")
     REQUIRE( a[i] == c[i] );
     }
 
-  remove("file.h5");
+  std::remove("file.h5");
   }
 
 
@@ -383,7 +384,7 @@ TEST_CASE("hdf5_uint_test")
     REQUIRE( a[i] == c[i] );
     }
 
-  remove("file.h5");
+  std::remove("file.h5");
   }
 
 
@@ -416,7 +417,7 @@ TEST_CASE("hdf5_short_test")
     REQUIRE( a[i] == c[i] );
     }
 
-  remove("file.h5");
+  std::remove("file.h5");
   }
 
 
@@ -449,7 +450,7 @@ TEST_CASE("hdf5_ushort_test")
     REQUIRE( a[i] == c[i] );
     }
 
-  remove("file.h5");
+  std::remove("file.h5");
   }
 
 
@@ -482,7 +483,7 @@ TEST_CASE("hdf5_long_test")
     REQUIRE( a[i] == c[i] );
     }
 
-  remove("file.h5");
+  std::remove("file.h5");
   }
 
 
@@ -515,7 +516,7 @@ TEST_CASE("hdf5_ulong_test")
     REQUIRE( a[i] == c[i] );
     }
 
-  remove("file.h5");
+  std::remove("file.h5");
   }
 
 
@@ -549,7 +550,7 @@ TEST_CASE("hdf5_llong_test")
     REQUIRE( a[i] == c[i] );
     }
 
-  remove("file.h5");
+  std::remove("file.h5");
   }
 
 
@@ -582,7 +583,7 @@ TEST_CASE("hdf5_ullong_test")
     REQUIRE( a[i] == c[i] );
     }
 
-  remove("file.h5");
+  std::remove("file.h5");
   }
 #endif
 
@@ -616,7 +617,7 @@ TEST_CASE("hdf5_float_test")
     REQUIRE( a[i] == c[i] );
     }
 
-  remove("file.h5");
+  std::remove("file.h5");
   }
 
 
@@ -649,7 +650,7 @@ TEST_CASE("hdf5_double_test")
     REQUIRE( a[i] == c[i] );
     }
 
-  remove("file.h5");
+  std::remove("file.h5");
   }
 
 
@@ -682,7 +683,7 @@ TEST_CASE("hdf5_complex_float_test")
     REQUIRE( a[i] == c[i] );
     }
 
-  remove("file.h5");
+  std::remove("file.h5");
   }
 
 
@@ -713,7 +714,7 @@ TEST_CASE("hdf5_complex_double_test")
     REQUIRE( a[i] == c[i] );
     }
 
-  remove("file.h5");
+  std::remove("file.h5");
   }
 
 
@@ -724,17 +725,17 @@ TEST_CASE("hdf5_dataset_append_test")
   a.randu(20, 20);
 
   // Save first dataset.
-  a.save(hdf5_name("file.h5", "dataset1"), hdf5_binary);
+  a.save( hdf5_name("file.h5", "dataset1") );
 
   arma::Mat<double> b;
   b.randu(10, 10);
 
   // Save second dataset.
-  b.save(hdf5_name("file.h5", "dataset2", true), hdf5_binary);
+  b.save( hdf5_name("file.h5", "dataset2", hdf5_opts::append) );
 
   // Load first dataset as different matrix.
   arma::Mat<double> c;
-  c.load(hdf5_name("file.h5", "dataset1"), hdf5_binary);
+  c.load( hdf5_name("file.h5", "dataset1") );
 
   // Check that they are the same.
   for (uword i = 0; i < a.n_elem; ++i)
@@ -744,7 +745,7 @@ TEST_CASE("hdf5_dataset_append_test")
 
   // Load second dataset as different matrix.
   arma::Mat<double> d;
-  d.load(hdf5_name("file.h5", "dataset2"), hdf5_binary);
+  d.load( hdf5_name("file.h5", "dataset2") );
 
   // Check that they are the same.
   for (uword i = 0; i < b.n_elem; ++i)
@@ -752,7 +753,7 @@ TEST_CASE("hdf5_dataset_append_test")
     REQUIRE( b[i] == d[i] );
     }
 
-  remove("file.h5");
+  std::remove("file.h5");
   }
 
 TEST_CASE("hdf5_cube_dataset_append_test")
@@ -761,17 +762,17 @@ TEST_CASE("hdf5_cube_dataset_append_test")
   a.randu(20, 20);
 
   // Save first dataset.
-  a.save(hdf5_name("file.h5", "dataset1"), hdf5_binary);
+  a.save( hdf5_name("file.h5", "dataset1") );
 
   arma::Cube<double> b;
   b.randu(10, 10, 10);
 
   // Save second dataset.
-  b.save(hdf5_name("file.h5", "dataset2", true), hdf5_binary);
+  b.save( hdf5_name("file.h5", "dataset2", hdf5_opts::append) );
 
   // Load first dataset as different matrix.
   arma::Mat<double> c;
-  c.load(hdf5_name("file.h5", "dataset1"), hdf5_binary);
+  c.load( hdf5_name("file.h5", "dataset1") );
 
   // Check that they are the same.
   for (uword i = 0; i < a.n_elem; ++i)
@@ -781,7 +782,7 @@ TEST_CASE("hdf5_cube_dataset_append_test")
 
   // Load second dataset as different matrix.
   arma::Cube<double> d;
-  d.load(hdf5_name("file.h5", "dataset2"), hdf5_binary);
+  d.load( hdf5_name("file.h5", "dataset2") );
 
   // Check that they are the same.
   for (uword i = 0; i < b.n_elem; ++i)
@@ -789,7 +790,7 @@ TEST_CASE("hdf5_cube_dataset_append_test")
     REQUIRE( b[i] == d[i] );
     }
 
-  remove("file.h5");
+  std::remove("file.h5");
   }
 
 
@@ -799,22 +800,21 @@ TEST_CASE("hdf5_dataset_append-overwrite-test")
   a.randu(20, 20);
 
   // Save first dataset.
-  a.save(hdf5_name("file.h5", "dataset1"), hdf5_binary);
+  a.save( hdf5_name("file.h5", "dataset1") );
 
   arma::Mat<double> b;
   b.randu(10, 10);
 
   // Save second dataset.
-  b.save(hdf5_name("file.h5", "dataset2", false), hdf5_binary);
+  b.save( hdf5_name("file.h5", "dataset2") );
 
-  // Load first dataset as different matrix.
+  // Load first dataset as different matrix and check that first dataset has been overwritten.
   arma::Mat<double> c;
-  // Chech that first dataset has been overwritten.
-  REQUIRE_FALSE(c.load(hdf5_name("file.h5", "dataset1"), hdf5_binary));
+  REQUIRE_FALSE( c.load( hdf5_name("file.h5", "dataset1") ) );
 
   // Load second dataset as different matrix.
   arma::Mat<double> d;
-  d.load(hdf5_name("file.h5", "dataset2"), hdf5_binary);
+  d.load( hdf5_name("file.h5", "dataset2") );
 
   // Check that they are the same.
   for (uword i = 0; i < b.n_elem; ++i)
@@ -822,7 +822,7 @@ TEST_CASE("hdf5_dataset_append-overwrite-test")
     REQUIRE( b[i] == d[i] );
     }
 
-  remove("file.h5");
+  std::remove("file.h5");
   }
 
 
@@ -838,10 +838,10 @@ TEST_CASE("hdf5_dataset_same_dataset_twice_test")
   arma::Mat<double> b;
   b.randu(10, 10);
 
-  // Append second dataset with same name, causing warning message.
-  REQUIRE_FALSE(b.save(hdf5_name("file.h5", "dataset1", true), hdf5_binary));
+  // Append second dataset with same name, causing failure.
+  REQUIRE_FALSE( b.save(hdf5_name("file.h5", "dataset1", hdf5_opts::append) ) );
 
-  remove("file.h5");
+  std::remove("file.h5");
   }
 
 #endif

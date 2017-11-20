@@ -50,6 +50,7 @@
   #define arma_H5Fis_hdf5   H5Fis_hdf5
 
   #define arma_H5Gcreate    H5Gcreate
+  #define arma_H5Gopen      H5Gopen
   #define arma_H5Gclose     H5Gclose
 
   #define arma_H5T_NATIVE_UCHAR   H5T_NATIVE_UCHAR
@@ -102,6 +103,7 @@ extern "C"
   htri_t arma_H5Fis_hdf5(const char* name);
 
   hid_t  arma_H5Gcreate(hid_t loc_id, const char* name, hid_t lcpl_id, hid_t gcpl_id, hid_t gapl_id);
+  hid_t  arma_H5Gopen(hid_t loc_id, const char* name, hid_t gapl_id);
   herr_t arma_H5Gclose(hid_t group_id);
   
   // Wrapper variables that represent the hid_t values for the H5T_NATIVE_*

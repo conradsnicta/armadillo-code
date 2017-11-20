@@ -1258,30 +1258,18 @@ diskio::save_hdf5_binary(const Mat<eT>& x, const hdf5_name& spec)
   
   #if defined(ARMA_USE_HDF5)
     {
-    #if !defined(ARMA_PRINT_HDF5_ERRORS)
-      {
-      // Disable annoying HDF5 error messages.
-      arma_H5Eset_auto(H5E_DEFAULT, NULL, NULL);
-      }
-    #endif
+    hdf5_misc::hdf5_suspend_printing_errors hdf5_print_suspender;
     
     bool save_okay = false;
     
-    const std::string tmp_name = diskio::gen_tmp_name(spec.filename);
+    const bool use_existing_file = ( bool(spec.opts.flags & hdf5_opts::flag_append) && (arma_H5Fis_hdf5(spec.filename.c_str()) > 0));
     
-    //Check if file exists and is HDF5
-    int file_is_hdf5 = arma_H5Fis_hdf5(spec.filename.c_str());
-
+    const std::string tmp_name = (use_existing_file) ? std::string() : diskio::gen_tmp_name(spec.filename);
+    
     // Set up the file according to HDF5's preferences
-    hid_t file;
-    if ((file_is_hdf5 == 1) && (spec.append == true))
-      {
-      file = arma_H5Fopen(spec.filename.c_str(), H5F_ACC_RDWR, H5P_DEFAULT);
-      }
-    else
-      {
-      file = arma_H5Fcreate(tmp_name.c_str(), H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
-      }
+    hid_t file = (use_existing_file) ? arma_H5Fopen(spec.filename.c_str(), H5F_ACC_RDWR, H5P_DEFAULT) : arma_H5Fcreate(tmp_name.c_str(), H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
+    
+    if(file < 0)  { return false; }
     
     // We need to create a dataset, datatype, and dataspace
     hsize_t dims[2];
@@ -1307,34 +1295,48 @@ diskio::save_hdf5_binary(const Mat<eT>& x, const hdf5_name& spec)
       if (loc != 0) // Ignore the first /, if there is a leading /.
         {
         hid_t gid = arma_H5Gcreate((groups.size() == 0) ? file : groups[groups.size() - 1], full_name.substr(0, loc).c_str(), H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+        
+        if((gid < 0) && use_existing_file)
+          {
+          gid = arma_H5Gopen((groups.size() == 0) ? file : groups[groups.size() - 1], full_name.substr(0, loc).c_str(), H5P_DEFAULT);
+          }
+        
         groups.push_back(gid);
         }
-
+      
       full_name = full_name.substr(loc + 1);
       }
     
     const std::string dataset_name = (full_name.empty() == false) ? full_name : std::string("dataset");
-
-    hid_t dataset = arma_H5Dcreate(groups.size() == 0 ? file : groups[groups.size() - 1], dataset_name.c_str(), datatype, dataspace, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
-    if (dataset < 0) { arma_warn("Mat::save(): dataset ", dataset_name.c_str(), std::string(" already exists in ") + spec.filename.c_str());} //can never happen if file is overwritten, so no need to use tmp_name.c_str()
-
-    // H5Dwrite does not make a distinction between row-major and column-major;
-    // it just writes the memory.  MATLAB and Octave store HDF5 matrices as
-    // column-major, though, so we can save ours like that too and not need to
-    // transpose.
-    herr_t status = arma_H5Dwrite(dataset, datatype, H5S_ALL, H5S_ALL, H5P_DEFAULT, x.mem);
-    save_okay = (status >= 0);
     
-    arma_H5Dclose(dataset);
+    hid_t dataset = arma_H5Dcreate(groups.size() == 0 ? file : groups[groups.size() - 1], dataset_name.c_str(), datatype, dataspace, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+    
+    if(dataset < 0)
+      {
+      // if the dataset already exists then H5Dcreate() will fail
+      save_okay = false;
+      
+      //// TODO: refactor to store error message in a given string argument, in order to respect quiet_save()
+      // if(use_existing_file)  { arma_warn("Mat::save(): file already contains the specified dataset"); }
+      }
+    else
+      {
+      // H5Dwrite does not make a distinction between row-major and column-major;
+      // it just writes the memory.  MATLAB and Octave store HDF5 matrices as
+      // column-major, though, so we can save ours like that too and not need to
+      // transpose.
+      herr_t status = arma_H5Dwrite(dataset, datatype, H5S_ALL, H5S_ALL, H5P_DEFAULT, x.mem);
+      save_okay = (status >= 0);
+      
+      arma_H5Dclose(dataset);
+      }
+    
     arma_H5Tclose(datatype);
     arma_H5Sclose(dataspace);
     for (size_t i = 0; i < groups.size(); ++i)  { arma_H5Gclose(groups[i]); }
     arma_H5Fclose(file);
     
-    if (save_okay == true)
-      {
-      if ((file_is_hdf5 != 1) || (spec.append == false)) { save_okay = diskio::safe_rename(tmp_name, spec.filename); }
-      }
+    if((use_existing_file == false) && (save_okay == true))  { save_okay = diskio::safe_rename(tmp_name, spec.filename); }
     
     return save_okay;
     }
@@ -2330,20 +2332,8 @@ diskio::load_hdf5_binary(Mat<eT>& x, const hdf5_name& spec, std::string& err_msg
   
   #if defined(ARMA_USE_HDF5)
     {
-    // These may be necessary to store the error handler (if we need to).
-    herr_t (*old_func)(hid_t, void*);
-    void *old_client_data;
-
-    #if !defined(ARMA_PRINT_HDF5_ERRORS)
-      {
-      // Save old error handler.
-      arma_H5Eget_auto(H5E_DEFAULT, &old_func, &old_client_data);
-
-      // Disable annoying HDF5 error messages.
-      arma_H5Eset_auto(H5E_DEFAULT, NULL, NULL);
-      }
-    #endif
-
+    hdf5_misc::hdf5_suspend_printing_errors hdf5_print_suspender;
+    
     bool load_okay = false;
     
     hid_t fid = arma_H5Fopen(spec.filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
@@ -2389,13 +2379,6 @@ diskio::load_hdf5_binary(Mat<eT>& x, const hdf5_name& spec, std::string& err_msg
           arma_H5Sclose(filespace);
           arma_H5Dclose(dataset);
           arma_H5Fclose(fid);
-    
-          #if !defined(ARMA_PRINT_HDF5_ERRORS)
-            {
-            // Restore HDF5 error handler.
-            arma_H5Eset_auto(H5E_DEFAULT, old_func, old_client_data);
-            }
-          #endif
           
           return false;
           }
@@ -2436,20 +2419,13 @@ diskio::load_hdf5_binary(Mat<eT>& x, const hdf5_name& spec, std::string& err_msg
 
       if(load_okay == false)
         {
-        err_msg = "unsupported or incorrect HDF5 data in ";
+        err_msg = "unsupported or missing HDF5 data in ";
         }
       }
     else
       {
       err_msg = "cannot open file ";
       }
-
-    #if !defined(ARMA_PRINT_HDF5_ERRORS)
-      {
-      // Restore HDF5 error handler.
-      arma_H5Eset_auto(H5E_DEFAULT, old_func, old_client_data);
-      }
-    #endif
 
     return load_okay;
     }
@@ -3459,46 +3435,34 @@ bool
 diskio::save_hdf5_binary(const Cube<eT>& x, const hdf5_name& spec)
   {
   arma_extra_debug_sigprint();
-
+  
   #if defined(ARMA_USE_HDF5)
     {
-    #if !defined(ARMA_PRINT_HDF5_ERRORS)
-      {
-      // Disable annoying HDF5 error messages.
-      arma_H5Eset_auto(H5E_DEFAULT, NULL, NULL);
-      }
-    #endif
-
+    hdf5_misc::hdf5_suspend_printing_errors hdf5_print_suspender;
+    
     bool save_okay = false;
-
-    const std::string tmp_name = diskio::gen_tmp_name(spec.filename);
-
-    //Check if file exists and is HDF5
-    int file_is_hdf5 = arma_H5Fis_hdf5(spec.filename.c_str());
-
+    
+    const bool use_existing_file = ( bool(spec.opts.flags & hdf5_opts::flag_append) && (arma_H5Fis_hdf5(spec.filename.c_str()) > 0));
+    
+    const std::string tmp_name = (use_existing_file) ? std::string() : diskio::gen_tmp_name(spec.filename);
+    
     // Set up the file according to HDF5's preferences
-    hid_t file;
-    if ((file_is_hdf5 == 1) && (spec.append == true))
-      {
-      file = arma_H5Fopen(spec.filename.c_str(), H5F_ACC_RDWR, H5P_DEFAULT);
-      }
-    else
-      {
-      file = arma_H5Fcreate(tmp_name.c_str(), H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
-      }
-
+    hid_t file = (use_existing_file) ? arma_H5Fopen(spec.filename.c_str(), H5F_ACC_RDWR, H5P_DEFAULT) : arma_H5Fcreate(tmp_name.c_str(), H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
+    
+    if(file < 0)  { return false; }
+    
     // We need to create a dataset, datatype, and dataspace
     hsize_t dims[3];
     dims[2] = x.n_rows;
     dims[1] = x.n_cols;
     dims[0] = x.n_slices;
-
+    
     hid_t dataspace = arma_H5Screate_simple(3, dims, NULL);   // treat the cube as a 3d array dataspace
     hid_t datatype  = hdf5_misc::get_hdf5_type<eT>();
-
+    
     // If this returned something invalid, well, it's time to crash.
     arma_check(datatype == -1, "Cube::save(): unknown datatype for HDF5");
-
+    
     // MATLAB forces the users to specify a name at save time for HDF5;
     // Octave will use the default of 'dataset' unless otherwise specified.
     // If the user hasn't specified a dataset name, we will use 'dataset'
@@ -3512,31 +3476,45 @@ diskio::save_hdf5_binary(const Cube<eT>& x, const hdf5_name& spec)
       if (loc != 0) // Ignore the first /, if there is a leading /.
         {
         hid_t gid = arma_H5Gcreate((groups.size() == 0) ? file : groups[groups.size() - 1], full_name.substr(0, loc).c_str(), H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+        
+        if((gid < 0) && use_existing_file)
+          {
+          gid = arma_H5Gopen((groups.size() == 0) ? file : groups[groups.size() - 1], full_name.substr(0, loc).c_str(), H5P_DEFAULT);
+          }
+        
         groups.push_back(gid);
         }
-
+      
       full_name = full_name.substr(loc + 1);
       }
     
     const std::string dataset_name = (full_name.empty() == false) ? full_name : std::string("dataset");
     
     hid_t dataset = arma_H5Dcreate(groups.size() == 0 ? file : groups[groups.size() - 1], dataset_name.c_str(), datatype, dataspace, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
-    if (dataset < 0) { arma_warn("Cube::save(): dataset ", dataset_name.c_str(), std::string(" already exists in ") + spec.filename.c_str());} //can never happen if file is overwritten, so no need to use tmp_name.c_str()
-
-    herr_t status = arma_H5Dwrite(dataset, datatype, H5S_ALL, H5S_ALL, H5P_DEFAULT, x.mem);
-    save_okay = (status >= 0);
-
-    arma_H5Dclose(dataset);
+    
+    if(dataset < 0)
+      {
+      // if the dataset already exists then H5Dcreate() will fail
+      save_okay = false;
+      
+      //// TODO: refactor to store error message in a given string argument, in order to respect quiet_save()
+      // if(use_existing_file)  { arma_warn("Mat::save(): file already contains the specified dataset"); }
+      }
+    else
+      {
+      herr_t status = arma_H5Dwrite(dataset, datatype, H5S_ALL, H5S_ALL, H5P_DEFAULT, x.mem);
+      save_okay = (status >= 0);
+      
+      arma_H5Dclose(dataset);
+      }
+    
     arma_H5Tclose(datatype);
     arma_H5Sclose(dataspace);
     for (size_t i = 0; i < groups.size(); ++i)  { arma_H5Gclose(groups[i]); }
     arma_H5Fclose(file);
-
-    if (save_okay == true)
-      {
-      if ((file_is_hdf5 != 1) || (spec.append == false)) { save_okay = diskio::safe_rename(tmp_name, spec.filename); }
-      }
-
+    
+    if((use_existing_file == false) && (save_okay == true))  { save_okay = diskio::safe_rename(tmp_name, spec.filename); }
+    
     return save_okay;
     }
   #else
@@ -3889,19 +3867,7 @@ diskio::load_hdf5_binary(Cube<eT>& x, const hdf5_name& spec, std::string& err_ms
 
   #if defined(ARMA_USE_HDF5)
     {
-    // These may be necessary to store the error handler (if we need to).
-    herr_t (*old_func)(hid_t, void*);
-    void *old_client_data;
-
-    #if !defined(ARMA_PRINT_HDF5_ERRORS)
-      {
-      // Save old error handler.
-      arma_H5Eget_auto(H5E_DEFAULT, &old_func, &old_client_data);
-
-      // Disable annoying HDF5 error messages.
-      arma_H5Eset_auto(H5E_DEFAULT, NULL, NULL);
-      }
-    #endif
+    hdf5_misc::hdf5_suspend_printing_errors hdf5_print_suspender;
 
     bool load_okay = false;
 
@@ -3949,13 +3915,6 @@ diskio::load_hdf5_binary(Cube<eT>& x, const hdf5_name& spec, std::string& err_ms
           arma_H5Dclose(dataset);
           arma_H5Fclose(fid);
 
-          #if !defined(ARMA_PRINT_HDF5_ERRORS)
-            {
-            // Restore HDF5 error handler.
-            arma_H5Eset_auto(H5E_DEFAULT, old_func, old_client_data);
-            }
-          #endif
-
           return false;
           }
 
@@ -3996,20 +3955,13 @@ diskio::load_hdf5_binary(Cube<eT>& x, const hdf5_name& spec, std::string& err_ms
 
       if(load_okay == false)
         {
-        err_msg = "unsupported or incorrect HDF5 data in ";
+        err_msg = "unsupported or missing HDF5 data in ";
         }
       }
     else
       {
       err_msg = "cannot open file ";
       }
-
-    #if !defined(ARMA_PRINT_HDF5_ERRORS)
-      {
-      // Restore HDF5 error handler.
-      arma_H5Eset_auto(H5E_DEFAULT, old_func, old_client_data);
-      }
-    #endif
 
     return load_okay;
     }

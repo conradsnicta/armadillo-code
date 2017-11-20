@@ -276,29 +276,65 @@ enum file_type
   };
 
 
+namespace hdf5_opts
+  {
+  typedef unsigned int flag_type;
+  
+  struct opts
+    {
+    const flag_type flags;
+    
+    inline explicit opts(const flag_type in_flags);
+    
+    inline const opts operator+(const opts& rhs) const;
+    };
+  
+  inline
+  opts::opts(const flag_type in_flags)
+    : flags(in_flags)
+    {}
+  
+  inline
+  const opts
+  opts::operator+(const opts& rhs) const
+    {
+    const opts result( flags | rhs.flags );
+    
+    return result;
+    }
+  
+  // The values below (eg. 1u << 0) are for internal Armadillo use only.
+  // The values can change without notice.
+  
+  static const flag_type flag_none   = flag_type(0      );
+  static const flag_type flag_append = flag_type(1u << 0);
+  
+  struct opts_none   : public opts { inline opts_none()   : opts(flag_none  ) {} };
+  struct opts_append : public opts { inline opts_append() : opts(flag_append) {} };
+  
+  static const opts_none   none;
+  static const opts_append append;
+  }
+
+
 struct hdf5_name
   {
-  const std::string filename;
-  const std::string dsname;
-  const bool append;
+  const std::string     filename;
+  const std::string     dsname;
+  const hdf5_opts::opts opts;
   
   inline
   hdf5_name(const std::string& in_filename)
-    : filename(in_filename)
-    , append  (false      )
+    : filename(in_filename    )
+    , dsname  (std::string()  )
+    , opts    (hdf5_opts::none)
     {}
   
   inline
-  hdf5_name(const std::string& in_filename, const std::string& in_dsname)
+  hdf5_name(const std::string& in_filename, const std::string& in_dsname, const hdf5_opts::opts& in_opts = hdf5_opts::none)
     : filename(in_filename)
     , dsname  (in_dsname  )
-    , append  (false      )
-    {}
-  inline
-  hdf5_name(const std::string& in_filename, const std::string& in_dsname, const bool& in_append)
-    : filename(in_filename)
-    , dsname  (in_dsname  )
-    , append  (in_append  )
+    , opts    (in_opts    )
     {}
   };
 

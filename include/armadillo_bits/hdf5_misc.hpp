@@ -749,6 +749,39 @@ load_and_convert_hdf5
 
 
 
+struct hdf5_suspend_printing_errors
+  {
+  #if defined(ARMA_PRINT_HDF5_ERRORS)
+    
+    inline
+    hdf5_suspend_printing_errors() {}
+    
+  #else
+    
+    herr_t (*old_client_func)(hid_t, void*);
+    void*    old_client_data;
+    
+    inline
+    hdf5_suspend_printing_errors()
+      {
+      // Save old error handler.
+      arma_H5Eget_auto(H5E_DEFAULT, &old_client_func, &old_client_data);
+      
+      // Disable annoying HDF5 error messages.
+      arma_H5Eset_auto(H5E_DEFAULT, NULL, NULL);
+      }
+    
+    inline
+    ~hdf5_suspend_printing_errors()
+      {
+      arma_H5Eset_auto(H5E_DEFAULT, old_client_func, old_client_data);
+      }
+    
+  #endif
+  };
+
+
+
 }       // namespace hdf5_misc
 #endif  // #if defined(ARMA_USE_HDF5)
 

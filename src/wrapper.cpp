@@ -1426,12 +1426,17 @@ extern "C"
       {
       return H5Fis_hdf5(name);
       }
-
+    
     hid_t arma_H5Gcreate(hid_t loc_id, const char* name, hid_t lcpl_id, hid_t gcpl_id, hid_t gapl_id)
       {
       return H5Gcreate(loc_id, name, lcpl_id, gcpl_id, gapl_id);
       }
-
+    
+    hid_t arma_H5Gopen(hid_t loc_id, const char* name, hid_t gapl_id)
+      {
+      return H5Gopen(loc_id, name, gapl_id);
+      }
+    
     herr_t arma_H5Gclose(hid_t group_id)
       {
       return H5Gclose(group_id);

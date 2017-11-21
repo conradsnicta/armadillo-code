@@ -5901,7 +5901,7 @@ A.raw_print(cout, "A:");
 <br><b>.save(</b> stream<b>,</b> file_type <b>)</b>
 <br>
 <br><b>.save( hdf5_name(</b>filename<b>,</b> dataset<b>) )</b>
-<br><b>.save( hdf5_name(</b>filename<b>,</b> dataset<b>),</b> file_type <b>)</b>
+<br><b>.save( hdf5_name(</b>filename<b>,</b> dataset<b>,</b> settings<b>) )</b>
 </td>
 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 <td>
@@ -5912,7 +5912,7 @@ A.raw_print(cout, "A:");
 <br><b>.load(</b> stream<b>,</b> file_type <b>)</b>
 <br>
 <br><b>.load( hdf5_name(</b>filename<b>,</b> dataset<b>) )</b>
-<br><b>.load( hdf5_name(</b>filename<b>,</b> dataset<b>),</b> file_type <b>)</b>
+<br><b>.load( hdf5_name(</b>filename<b>,</b> dataset<b>,</b> settings<b>) )</b>
 </td>
 </tr>
 </tbody>
@@ -5943,10 +5943,6 @@ The default <i>file_type</i> for <i>.load()</i> is <i>auto_detect</i> (see below
 <li>
 <i>.load()</i> will return a <i>bool</i> set to <i>false</i> if the loading process fails;
 additionally, the object will be reset so it has no elements
-</li>
-<br>
-<li>
-Forms of <i>.save()</i> and <i>.load()</i> with the <i>hdf5_name()</i> argument allow explicit specification of the dataset name within a HDF5 file
 </li>
 <br>
 <li>
@@ -6040,34 +6036,18 @@ Applicable to <i>Mat</i> only.
 Numerical data stored in portable <a href="https://en.wikipedia.org/wiki/Hierarchical_Data_Format">HDF5</a> binary format.
 <ul>
 <li>
-For saving, the default dataset name within the HDF5 file is "dataset"
-unless explicitly specified via the <i>hdf5_name()</i> argument;
-an HDF5 dataset name (eg. <i>"dataset"</i>)
-or full path may be specified (eg. <i>"/group_name/dataset"</i>)
+for saving, the default dataset name within the HDF5 file is "dataset"
 </li>
 <li>
-For loading, if the dataset has not been specified via the <i>hdf5_name()</i> argument,
-the order of operations is:
+for loading, the order of operations is:
 (1) try loading a dataset named "dataset",
 (2) try loading a dataset named "value",
 (3) try loading the first available dataset
 </li>
 <li>
-<b>Caveat</b>:
-support for HDF5 must be enabled within Armadillo's <a href="#config_hpp">configuration</a>;
-the <i>hdf5.h</i> header file must be available on your system and you will need to link with the hdf5 library (eg. <code><i>-lhdf5</i></code>)
+to explicitly control the dataset name, specify it via the <b>hdf5_name()</b> argument (more details below)
 </li>
 </ul>
-<br>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td style="vertical-align: top;"><b>hdf5_binary_trans</b></td>
-                        <td style="vertical-align: top;"><br>
-                        </td>
-                        <td style="vertical-align: top;">
-As per <i>hdf5_binary</i>, but save/load the data with columns transposed to rows (and vice versa)
-<br>
 <br>
                         </td>
                       </tr>
@@ -6109,6 +6089,28 @@ As such the cube/field should have values in the [0,255] interval, otherwise the
                     </tbody>
                   </table>
 </ul>
+</li>
+<br>
+<li>
+By providing either <b>hdf5_name(</b>filename<b>,</b> dataset<b>)</b> or <b>hdf5_name(</b>filename<b>,</b> dataset<b>,</b> settings<b>)</b>, the <i>file_type</i> type is assumed to be <i>hdf5_binary</i>
+<ul>
+<li>the <i>dataset</i> argument specifies an HDF5 dataset name (eg. "my_dataset") that can include a full path (eg. "/group_name/my_dataset"); if a blank dataset name is specified (ie. ""), the name is assumed to be "dataset"
+<li>the <i>settings</i> argument is optional and is one of the following or a combination thereof:
+<ul>
+<table>
+<tr><td><code>hdf5_opts::append</code></td><td>&nbsp;&nbsp;&nbsp;</td><td>append the specified dataset to the file instead of overwriting the file; the specified dataset must not already exist in the file</td></tr>
+<tr><td><code>hdf5_opts::trans </code></b></td><td>&nbsp;&nbsp;&nbsp;</td><td>save/load the data with columns transposed to rows (and vice versa)</td></tr>
+</table>
+</ul>
+the above settings can be combined using the <code>+</code> operator; for example: <code>hdf5_opts::append&nbsp;+&nbsp;hdf5_opts::trans</code>
+</li>
+</ul>
+</li>
+<br>
+<li>
+<b>Caveat</b>:
+for saving/loading HDF5 files, support for HDF5 must be enabled within Armadillo's <a href="#config_hpp">configuration</a>;
+the <i>hdf5.h</i> header file must be available on your system and you will need to link with the HDF5 library (eg. <code><i>-lhdf5</i></code>)
 </li>
 <br>
 <br>
@@ -16790,6 +16792,7 @@ List of additions and changes for each version:
 <li>faster handling of band matrices by <a href="#chol">chol()</a></li>
 <li>faster <a href="#randg">randg()</a> when using OpenMP</li>
 <li>added <a href="#normpdf">normpdf()</a></li>
+<li>expanded <a href="#save_load_mat">.save()</a> to allow appending new datasets to existing HDF5 files
 </ul>
 </li>
 <br>
@@ -16933,7 +16936,6 @@ see the <a href="http://arma.sourceforge.net/faq.html#license">Questions page</a
 <li>added <a href="#regspace">regspace()</a> for generating vectors with regularly spaced elements</li>
 <li>added <a href="#logspace">logspace()</a> for generating vectors with logarithmically spaced elements</li>
 <li>added <a href="#approx_equal">approx_equal()</a> for determining approximate equality</li>
-<li>expanded <a href="#save_load_mat">.save()</a> and <a href="#save_load_mat">.load()</a> with <i>hdf5_binary_trans</i> file type, to save/load data with columns transposed to rows 
 </ul>
 </li>
 <br>

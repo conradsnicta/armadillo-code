@@ -3791,6 +3791,7 @@ Cube<eT>::save(const hdf5_name& spec, const file_type type, const bool print_sta
     }
   
   bool save_okay = false;
+  std::string err_msg;
   
   if(do_trans)
     {
@@ -3798,14 +3799,24 @@ Cube<eT>::save(const hdf5_name& spec, const file_type type, const bool print_sta
     
     op_strans_cube::apply_noalias(tmp, (*this));
     
-    save_okay = diskio::save_hdf5_binary(tmp, spec);
+    save_okay = diskio::save_hdf5_binary(tmp, spec, err_msg);
     }
   else
     {
-    save_okay = diskio::save_hdf5_binary(*this, spec);
+    save_okay = diskio::save_hdf5_binary(*this, spec, err_msg);
     }
   
-  if(print_status && (save_okay == false))  { arma_debug_warn("Cube::save(): couldn't write to ", spec.filename); }
+  if((print_status == true) && (save_okay == false))
+    {
+    if(err_msg.length() > 0)
+      {
+      arma_debug_warn("Cube::save(): ", err_msg, spec.filename);
+      }
+    else
+      {
+      arma_debug_warn("Cube::save(): couldn't write to ", spec.filename);
+      }
+    }
   
   return save_okay;
   }

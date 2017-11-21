@@ -1252,7 +1252,7 @@ diskio::save_pgm_binary(const Mat< std::complex<T> >& x, std::ostream& f)
 template<typename eT>
 inline 
 bool 
-diskio::save_hdf5_binary(const Mat<eT>& x, const hdf5_name& spec)
+diskio::save_hdf5_binary(const Mat<eT>& x, const hdf5_name& spec, std::string& err_msg)
   {
   arma_extra_debug_sigprint();
   
@@ -1329,8 +1329,7 @@ diskio::save_hdf5_binary(const Mat<eT>& x, const hdf5_name& spec)
       {
       save_okay = false;
       
-      //// TODO: refactor to store error message in a given string argument, in order to respect quiet_save()
-      // if(use_existing_file)  { arma_warn("Mat::save(): couldn't create specified dataset"); }
+      err_msg = "couldn't create dataset in ";
       }
     else
       {
@@ -3440,7 +3439,7 @@ diskio::save_arma_binary(const Cube<eT>& x, std::ostream& f)
 template<typename eT>
 inline
 bool
-diskio::save_hdf5_binary(const Cube<eT>& x, const hdf5_name& spec)
+diskio::save_hdf5_binary(const Cube<eT>& x, const hdf5_name& spec, std::string& err_msg)
   {
   arma_extra_debug_sigprint();
   
@@ -3518,8 +3517,7 @@ diskio::save_hdf5_binary(const Cube<eT>& x, const hdf5_name& spec)
       {
       save_okay = false;
       
-      //// TODO: refactor to store error message in a given string argument, in order to respect quiet_save()
-      // if(use_existing_file)  { arma_warn("Cube::save(): couldn't create the specified dataset"); }
+      err_msg = "couldn't create dataset in ";
       }
     else
       {

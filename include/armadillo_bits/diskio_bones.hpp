@@ -50,7 +50,7 @@ class diskio
   template<typename eT> inline static bool save_arma_binary(const Mat<eT>&                x, const std::string& final_name);
   template<typename eT> inline static bool save_pgm_binary (const Mat<eT>&                x, const std::string& final_name);
   template<typename  T> inline static bool save_pgm_binary (const Mat< std::complex<T> >& x, const std::string& final_name);
-  template<typename eT> inline static bool save_hdf5_binary(const Mat<eT>&                x, const   hdf5_name& spec      );
+  template<typename eT> inline static bool save_hdf5_binary(const Mat<eT>&                x, const   hdf5_name& spec, std::string& err_msg);
   
   template<typename eT> inline static bool save_raw_ascii  (const Mat<eT>&                x, std::ostream& f);
   template<typename eT> inline static bool save_raw_binary (const Mat<eT>&                x, std::ostream& f);
@@ -118,7 +118,7 @@ class diskio
   template<typename eT> inline static bool save_raw_binary (const Cube<eT>& x, const std::string& name);
   template<typename eT> inline static bool save_arma_ascii (const Cube<eT>& x, const std::string& name);
   template<typename eT> inline static bool save_arma_binary(const Cube<eT>& x, const std::string& name);
-  template<typename eT> inline static bool save_hdf5_binary(const Cube<eT>& x, const   hdf5_name& spec);
+  template<typename eT> inline static bool save_hdf5_binary(const Cube<eT>& x, const   hdf5_name& spec, std::string& err_msg);
   
   template<typename eT> inline static bool save_raw_ascii  (const Cube<eT>& x, std::ostream& f);
   template<typename eT> inline static bool save_raw_binary (const Cube<eT>& x, std::ostream& f);

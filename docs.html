@@ -6029,29 +6029,6 @@ Applicable to <i>Mat</i> only.
                         </td>
                       </tr>
                       <tr>
-                        <td style="vertical-align: top;"><b>hdf5_binary</b></td>
-                        <td style="vertical-align: top;"><br>
-                        </td>
-                        <td style="vertical-align: top;">
-Numerical data stored in portable <a href="https://en.wikipedia.org/wiki/Hierarchical_Data_Format">HDF5</a> binary format.
-<ul>
-<li>
-for saving, the default dataset name within the HDF5 file is "dataset"
-</li>
-<li>
-for loading, the order of operations is:
-(1) try loading a dataset named "dataset",
-(2) try loading a dataset named "value",
-(3) try loading the first available dataset
-</li>
-<li>
-to explicitly control the dataset name, specify it via the <b>hdf5_name()</b> argument (more details below)
-</li>
-</ul>
-<br>
-                        </td>
-                      </tr>
-                      <tr>
                         <td style="vertical-align: top;"><b>coord_ascii</b></td>
                         <td style="vertical-align: top;"><br>
                         </td>
@@ -6084,6 +6061,30 @@ Image data stored in Portable Pixel Map (PPM) format.
 Applicable to <i>Cube</i> only.
 Saving <i>int</i>, <i>float</i> or <i>double</i> matrices is a lossy operation, as each element is copied and converted to an 8 bit representation.
 As such the cube/field should have values in the [0,255] interval, otherwise the resulting image may not display correctly.
+<br>
+<br>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="vertical-align: top;"><b>hdf5_binary</b></td>
+                        <td style="vertical-align: top;"><br>
+                        </td>
+                        <td style="vertical-align: top;">
+Numerical data stored in portable <a href="https://en.wikipedia.org/wiki/Hierarchical_Data_Format">HDF5</a> binary format.
+<ul>
+<li>
+for saving, the default dataset name within the HDF5 file is "dataset"
+</li>
+<li>
+for loading, the order of operations is:
+(1) try loading a dataset named "dataset",
+(2) try loading a dataset named "value",
+(3) try loading the first available dataset
+</li>
+<li>
+to explicitly control the dataset name, specify it via the <b>hdf5_name()</b> argument (more details below)
+</li>
+</ul>
                         </td>
                       </tr>
                     </tbody>

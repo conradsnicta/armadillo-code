@@ -1316,7 +1316,7 @@ diskio::save_hdf5_binary(const Mat<eT>& x, const hdf5_name& spec, std::string& e
     
     if(use_existing_file && replace)
       {
-      H5Ldelete(last_group, dataset_name.c_str(), H5P_DEFAULT);
+      arma_H5Ldelete(last_group, dataset_name.c_str(), H5P_DEFAULT);
       // NOTE: H5Ldelete() in HDF5 v1.8 doesn't reclaim the deleted space; use h5repack to reclaim space: h5repack oldfile.h5 newfile.h5
       // NOTE: has this behaviour changed in HDF5 1.10 ?
       // NOTE: https://lists.hdfgroup.org/pipermail/hdf-forum_lists.hdfgroup.org/2017-August/010482.html
@@ -3504,7 +3504,7 @@ diskio::save_hdf5_binary(const Cube<eT>& x, const hdf5_name& spec, std::string& 
     
     if(use_existing_file && replace)
       {
-      H5Ldelete(last_group, dataset_name.c_str(), H5P_DEFAULT);
+      arma_H5Ldelete(last_group, dataset_name.c_str(), H5P_DEFAULT);
       // NOTE: H5Ldelete() in HDF5 v1.8 doesn't reclaim the deleted space; use h5repack to reclaim space: h5repack oldfile.h5 newfile.h5
       // NOTE: has this behaviour changed in HDF5 1.10 ?
       // NOTE: https://lists.hdfgroup.org/pipermail/hdf-forum_lists.hdfgroup.org/2017-August/010482.html

@@ -6099,7 +6099,7 @@ By providing either <b>hdf5_name(</b>filename<b>,</b> dataset<b>)</b> or <b>hdf5
 <ul>
 <table>
 <tr><td><code>hdf5_opts::append</code></td><td>&nbsp;&nbsp;&nbsp;</td><td>append the specified dataset to the file instead of overwriting the file; the specified dataset must not already exist in the file</td></tr>
-<tr><td><code>hdf5_opts::trans </code></b></td><td>&nbsp;&nbsp;&nbsp;</td><td>save/load the data with columns transposed to rows (and vice versa)</td></tr>
+<tr><td><code>hdf5_opts::trans </code></td><td>&nbsp;&nbsp;&nbsp;</td><td>save/load the data with columns transposed to rows (and vice versa)</td></tr>
 </table>
 </ul>
 the above settings can be combined using the <code>+</code> operator; for example: <code>hdf5_opts::append&nbsp;+&nbsp;hdf5_opts::trans</code>
@@ -6112,7 +6112,6 @@ the above settings can be combined using the <code>+</code> operator; for exampl
 for saving/loading HDF5 files, support for HDF5 must be enabled within Armadillo's <a href="#config_hpp">configuration</a>;
 the <i>hdf5.h</i> header file must be available on your system and you will need to link with the HDF5 library (eg. <code><i>-lhdf5</i></code>)
 </li>
-<br>
 <br>
 <li>
 Examples:

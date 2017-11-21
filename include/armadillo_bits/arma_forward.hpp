@@ -308,12 +308,15 @@ namespace hdf5_opts
   
   static const flag_type flag_none   = flag_type(0      );
   static const flag_type flag_append = flag_type(1u << 0);
+  static const flag_type flag_trans  = flag_type(1u << 1);
   
   struct opts_none   : public opts { inline opts_none()   : opts(flag_none  ) {} };
   struct opts_append : public opts { inline opts_append() : opts(flag_append) {} };
+  struct opts_trans  : public opts { inline opts_trans()  : opts(flag_trans ) {} };
   
   static const opts_none   none;
   static const opts_append append;
+  static const opts_trans  trans;
   }
 
 

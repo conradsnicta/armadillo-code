@@ -6919,7 +6919,7 @@ Mat<eT>::save(const std::string name, const file_type type, const bool print_sta
   {
   arma_extra_debug_sigprint();
   
-  bool save_okay;
+  bool save_okay = false;
   
   switch(type)
     {
@@ -6942,23 +6942,17 @@ Mat<eT>::save(const std::string name, const file_type type, const bool print_sta
     case arma_binary:
       save_okay = diskio::save_arma_binary(*this, name);
       break;
-      
+    
     case pgm_binary:
       save_okay = diskio::save_pgm_binary(*this, name);
       break;
     
     case hdf5_binary:
-      save_okay = diskio::save_hdf5_binary(*this, hdf5_name(name));
+      return (*this).save(hdf5_name(name));
       break;
     
-    case hdf5_binary_trans:
-      {
-      Mat<eT> tmp;
-      
-      op_strans::apply_mat_noalias(tmp, *this);
-      
-      save_okay = diskio::save_hdf5_binary(tmp, hdf5_name(name));
-      }
+    case hdf5_binary_trans:  // kept for compatibility with earlier versions of Armadillo
+      return (*this).save(hdf5_name(name, std::string(), hdf5_opts::trans));
       break;
     
     default:
@@ -6980,27 +6974,27 @@ Mat<eT>::save(const hdf5_name& spec, const file_type type, const bool print_stat
   {
   arma_extra_debug_sigprint();
   
-  bool save_okay;
-  
-  switch(type)
+  if( (type != hdf5_binary) && (type != hdf5_binary_trans) )
     {
-    case hdf5_binary:
-      save_okay = diskio::save_hdf5_binary(*this, spec);
-      break;
+    if(print_status)  { arma_debug_warn("Mat::save(): unsupported file type for hdf5_name()"); }
+    return false;
+    }
+  
+  bool save_okay = false;
+  
+  const bool do_trans = bool(spec.opts.flags & hdf5_opts::flag_trans) || (type == hdf5_binary_trans);
+  
+  if(do_trans)
+    {
+    Mat<eT> tmp;
     
-    case hdf5_binary_trans:
-      {
-      Mat<eT> tmp;
-      
-      op_strans::apply_mat_noalias(tmp, *this);
-      
-      save_okay = diskio::save_hdf5_binary(tmp, spec);
-      }
-      break;
+    op_strans::apply_mat_noalias(tmp, *this);
     
-    default:
-      if(print_status)  { arma_debug_warn("Mat::save(): unsupported file type"); }
-      save_okay = false;
+    save_okay = diskio::save_hdf5_binary(tmp, spec);
+    }
+  else
+    {
+    save_okay = diskio::save_hdf5_binary(*this, spec);
     }
   
   if(print_status && (save_okay == false))  { arma_debug_warn("Mat::save(): couldn't write to ", spec.filename); }
@@ -7018,7 +7012,7 @@ Mat<eT>::save(std::ostream& os, const file_type type, const bool print_status) c
   {
   arma_extra_debug_sigprint();
   
-  bool save_okay;
+  bool save_okay = false;
   
   switch(type)
     {
@@ -7041,7 +7035,7 @@ Mat<eT>::save(std::ostream& os, const file_type type, const bool print_status) c
     case arma_binary:
       save_okay = diskio::save_arma_binary(*this, os);
       break;
-      
+    
     case pgm_binary:
       save_okay = diskio::save_pgm_binary(*this, os);
       break;
@@ -7066,7 +7060,7 @@ Mat<eT>::load(const std::string name, const file_type type, const bool print_sta
   {
   arma_extra_debug_sigprint();
   
-  bool load_okay;
+  bool load_okay = false;
   std::string err_msg;
   
   switch(type)
@@ -7094,25 +7088,19 @@ Mat<eT>::load(const std::string name, const file_type type, const bool print_sta
     case arma_binary:
       load_okay = diskio::load_arma_binary(*this, name, err_msg);
       break;
-      
+    
     case pgm_binary:
       load_okay = diskio::load_pgm_binary(*this, name, err_msg);
       break;
     
     case hdf5_binary:
-      load_okay = diskio::load_hdf5_binary(*this, hdf5_name(name), err_msg);
+      return (*this).load(hdf5_name(name));
       break;
-
-    case hdf5_binary_trans:
-      {
-      Mat<eT> tmp;
-      
-      load_okay = diskio::load_hdf5_binary(tmp, hdf5_name(name), err_msg);
-      
-      if(load_okay)  { op_strans::apply_mat_noalias(*this, tmp); }
-      }
+    
+    case hdf5_binary_trans:  // kept for compatibility with earlier versions of Armadillo
+      return (*this).load(hdf5_name(name, std::string(), hdf5_opts::trans));
       break;
-
+    
     default:
       if(print_status)  { arma_debug_warn("Mat::load(): unsupported file type"); }
       load_okay = false;
@@ -7134,7 +7122,7 @@ Mat<eT>::load(const std::string name, const file_type type, const bool print_sta
     {
     (*this).soft_reset();
     }
-    
+  
   return load_okay;
   }
 
@@ -7147,29 +7135,31 @@ Mat<eT>::load(const hdf5_name& spec, const file_type type, const bool print_stat
   {
   arma_extra_debug_sigprint();
   
-  bool load_okay;
+  if( (type != hdf5_binary) && (type != hdf5_binary_trans) )
+    {
+    if(print_status)  { arma_debug_warn("Mat::load(): unsupported file type for hdf5_name()"); }
+    (*this).soft_reset();
+    return false;
+    }
+  
+  bool load_okay = false;
   std::string err_msg;
   
-  switch(type)
+  const bool do_trans = bool(spec.opts.flags & hdf5_opts::flag_trans) || (type == hdf5_binary_trans);
+  
+  if(do_trans)
     {
-    case hdf5_binary:
-      load_okay = diskio::load_hdf5_binary(*this, spec, err_msg);
-      break;
-
-    case hdf5_binary_trans:
-      {
-      Mat<eT> tmp;
-      
-      load_okay = diskio::load_hdf5_binary(tmp, spec, err_msg);
-      
-      if(load_okay)  { op_strans::apply_mat_noalias(*this, tmp); }
-      }
-      break;
-
-    default:
-      if(print_status)  { arma_debug_warn("Mat::load(): unsupported file type"); }
-      load_okay = false;
+    Mat<eT> tmp;
+    
+    load_okay = diskio::load_hdf5_binary(tmp, spec, err_msg);
+    
+    if(load_okay)  { op_strans::apply_mat_noalias(*this, tmp); }
     }
+  else
+    {
+    load_okay = diskio::load_hdf5_binary(*this, spec, err_msg);
+    }
+  
   
   if( (print_status == true) && (load_okay == false) )
     {
@@ -7187,7 +7177,7 @@ Mat<eT>::load(const hdf5_name& spec, const file_type type, const bool print_stat
     {
     (*this).soft_reset();
     }
-    
+  
   return load_okay;
   }
 
@@ -7201,7 +7191,7 @@ Mat<eT>::load(std::istream& is, const file_type type, const bool print_status)
   {
   arma_extra_debug_sigprint();
   
-  bool load_okay;
+  bool load_okay = false;
   std::string err_msg;
   
   switch(type)
@@ -7229,7 +7219,7 @@ Mat<eT>::load(std::istream& is, const file_type type, const bool print_status)
     case arma_binary:
       load_okay = diskio::load_arma_binary(*this, is, err_msg);
       break;
-      
+    
     case pgm_binary:
       load_okay = diskio::load_pgm_binary(*this, is, err_msg);
       break;
@@ -7238,7 +7228,6 @@ Mat<eT>::load(std::istream& is, const file_type type, const bool print_status)
       if(print_status)  { arma_debug_warn("Mat::load(): unsupported file type"); }
       load_okay = false;
     }
-  
   
   if( (print_status == true) && (load_okay == false) )
     {
@@ -7256,7 +7245,7 @@ Mat<eT>::load(std::istream& is, const file_type type, const bool print_status)
     {
     (*this).soft_reset();
     }
-    
+  
   return load_okay;
   }
 

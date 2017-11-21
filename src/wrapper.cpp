@@ -1442,6 +1442,17 @@ extern "C"
       return H5Gclose(group_id);
       }
     
+    htri_t arma_H5Lexists(hid_t loc_id, const char* name, hid_t lapl_id)
+      {
+      return H5Lexists(loc_id, name, lapl_id);
+      }
+    
+    herr_t arma_H5Ldelete(hid_t loc_id, const char* name, hid_t lapl_id)
+      {
+      return H5Ldelete(loc_id, name, lapl_id);
+      }
+    
+    
     // H5T_NATIVE_* types.  The rhs here expands to some macros.
     hid_t arma_H5T_NATIVE_UCHAR  = H5T_NATIVE_UCHAR;
     hid_t arma_H5T_NATIVE_CHAR   = H5T_NATIVE_CHAR;

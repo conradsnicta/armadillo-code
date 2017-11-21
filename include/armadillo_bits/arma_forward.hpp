@@ -306,17 +306,20 @@ namespace hdf5_opts
   // The values below (eg. 1u << 0) are for internal Armadillo use only.
   // The values can change without notice.
   
-  static const flag_type flag_none   = flag_type(0      );
-  static const flag_type flag_append = flag_type(1u << 0);
-  static const flag_type flag_trans  = flag_type(1u << 1);
+  static const flag_type flag_none    = flag_type(0      );
+  static const flag_type flag_trans   = flag_type(1u << 0);
+  static const flag_type flag_append  = flag_type(1u << 1);
+  static const flag_type flag_replace = flag_type(1u << 2);
   
-  struct opts_none   : public opts { inline opts_none()   : opts(flag_none  ) {} };
-  struct opts_append : public opts { inline opts_append() : opts(flag_append) {} };
-  struct opts_trans  : public opts { inline opts_trans()  : opts(flag_trans ) {} };
+  struct opts_none    : public opts { inline opts_none()    : opts(flag_none   ) {} };
+  struct opts_trans   : public opts { inline opts_trans()   : opts(flag_trans  ) {} };
+  struct opts_append  : public opts { inline opts_append()  : opts(flag_append ) {} };
+  struct opts_replace : public opts { inline opts_replace() : opts(flag_replace) {} };
   
-  static const opts_none   none;
-  static const opts_append append;
-  static const opts_trans  trans;
+  static const opts_none    none;
+  static const opts_trans   trans;
+  static const opts_append  append;
+  static const opts_replace replace;
   }
 
 

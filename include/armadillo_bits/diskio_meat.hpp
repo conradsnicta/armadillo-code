@@ -1262,7 +1262,10 @@ diskio::save_hdf5_binary(const Mat<eT>& x, const hdf5_name& spec)
     
     bool save_okay = false;
     
-    const bool use_existing_file = ( bool(spec.opts.flags & hdf5_opts::flag_append) && (arma_H5Fis_hdf5(spec.filename.c_str()) > 0));
+    const bool append  = bool(spec.opts.flags & hdf5_opts::flag_append);
+    const bool replace = bool(spec.opts.flags & hdf5_opts::flag_replace);
+    
+    const bool use_existing_file = ((append || replace) && (arma_H5Fis_hdf5(spec.filename.c_str()) > 0));
     
     const std::string tmp_name = (use_existing_file) ? std::string() : diskio::gen_tmp_name(spec.filename);
     
@@ -1307,26 +1310,31 @@ diskio::save_hdf5_binary(const Mat<eT>& x, const hdf5_name& spec)
       full_name = full_name.substr(loc + 1);
       }
     
-    const std::string dataset_name = (full_name.empty() == false) ? full_name : std::string("dataset");
+    const std::string dataset_name = full_name.empty() ? std::string("dataset") : full_name;
     
-    hid_t dataset = arma_H5Dcreate(groups.size() == 0 ? file : groups[groups.size() - 1], dataset_name.c_str(), datatype, dataspace, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+    const hid_t last_group = (groups.size() == 0) ? file : groups[groups.size() - 1];
+    
+    if(use_existing_file && replace)
+      {
+      H5Ldelete(last_group, dataset_name.c_str(), H5P_DEFAULT);
+      // NOTE: H5Ldelete() in HDF5 v1.8 doesn't reclaim the deleted space; use h5repack to reclaim space: h5repack oldfile.h5 newfile.h5
+      // NOTE: has this behaviour changed in HDF5 1.10 ?
+      // NOTE: https://lists.hdfgroup.org/pipermail/hdf-forum_lists.hdfgroup.org/2017-August/010482.html
+      // NOTE: https://lists.hdfgroup.org/pipermail/hdf-forum_lists.hdfgroup.org/2017-August/010486.html
+      }
+    
+    hid_t dataset = arma_H5Dcreate(last_group, dataset_name.c_str(), datatype, dataspace, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
     
     if(dataset < 0)
       {
-      // if the dataset already exists then H5Dcreate() will fail
       save_okay = false;
       
       //// TODO: refactor to store error message in a given string argument, in order to respect quiet_save()
-      // if(use_existing_file)  { arma_warn("Mat::save(): file already contains the specified dataset"); }
+      // if(use_existing_file)  { arma_warn("Mat::save(): couldn't create specified dataset"); }
       }
     else
       {
-      // H5Dwrite does not make a distinction between row-major and column-major;
-      // it just writes the memory.  MATLAB and Octave store HDF5 matrices as
-      // column-major, though, so we can save ours like that too and not need to
-      // transpose.
-      herr_t status = arma_H5Dwrite(dataset, datatype, H5S_ALL, H5S_ALL, H5P_DEFAULT, x.mem);
-      save_okay = (status >= 0);
+      save_okay = (arma_H5Dwrite(dataset, datatype, H5S_ALL, H5S_ALL, H5P_DEFAULT, x.mem) >= 0);
       
       arma_H5Dclose(dataset);
       }
@@ -3442,7 +3450,10 @@ diskio::save_hdf5_binary(const Cube<eT>& x, const hdf5_name& spec)
     
     bool save_okay = false;
     
-    const bool use_existing_file = ( bool(spec.opts.flags & hdf5_opts::flag_append) && (arma_H5Fis_hdf5(spec.filename.c_str()) > 0));
+    const bool append  = bool(spec.opts.flags & hdf5_opts::flag_append);
+    const bool replace = bool(spec.opts.flags & hdf5_opts::flag_replace);
+    
+    const bool use_existing_file = ((append || replace) && (arma_H5Fis_hdf5(spec.filename.c_str()) > 0));
     
     const std::string tmp_name = (use_existing_file) ? std::string() : diskio::gen_tmp_name(spec.filename);
     
@@ -3488,22 +3499,31 @@ diskio::save_hdf5_binary(const Cube<eT>& x, const hdf5_name& spec)
       full_name = full_name.substr(loc + 1);
       }
     
-    const std::string dataset_name = (full_name.empty() == false) ? full_name : std::string("dataset");
+    const std::string dataset_name = full_name.empty() ? std::string("dataset") : full_name;
     
-    hid_t dataset = arma_H5Dcreate(groups.size() == 0 ? file : groups[groups.size() - 1], dataset_name.c_str(), datatype, dataspace, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+    const hid_t last_group = (groups.size() == 0) ? file : groups[groups.size() - 1];
+    
+    if(use_existing_file && replace)
+      {
+      H5Ldelete(last_group, dataset_name.c_str(), H5P_DEFAULT);
+      // NOTE: H5Ldelete() in HDF5 v1.8 doesn't reclaim the deleted space; use h5repack to reclaim space: h5repack oldfile.h5 newfile.h5
+      // NOTE: has this behaviour changed in HDF5 1.10 ?
+      // NOTE: https://lists.hdfgroup.org/pipermail/hdf-forum_lists.hdfgroup.org/2017-August/010482.html
+      // NOTE: https://lists.hdfgroup.org/pipermail/hdf-forum_lists.hdfgroup.org/2017-August/010486.html
+      }
+    
+    hid_t dataset = arma_H5Dcreate(last_group, dataset_name.c_str(), datatype, dataspace, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
     
     if(dataset < 0)
       {
-      // if the dataset already exists then H5Dcreate() will fail
       save_okay = false;
       
       //// TODO: refactor to store error message in a given string argument, in order to respect quiet_save()
-      // if(use_existing_file)  { arma_warn("Mat::save(): file already contains the specified dataset"); }
+      // if(use_existing_file)  { arma_warn("Cube::save(): couldn't create the specified dataset"); }
       }
     else
       {
-      herr_t status = arma_H5Dwrite(dataset, datatype, H5S_ALL, H5S_ALL, H5P_DEFAULT, x.mem);
-      save_okay = (status >= 0);
+      save_okay = (arma_H5Dwrite(dataset, datatype, H5S_ALL, H5S_ALL, H5P_DEFAULT, x.mem) >= 0);
       
       arma_H5Dclose(dataset);
       }

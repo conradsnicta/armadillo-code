@@ -6974,15 +6974,25 @@ Mat<eT>::save(const hdf5_name& spec, const file_type type, const bool print_stat
   {
   arma_extra_debug_sigprint();
   
+  // handling of hdf5_binary_trans kept for compatibility with earlier versions of Armadillo
+  
   if( (type != hdf5_binary) && (type != hdf5_binary_trans) )
     {
-    if(print_status)  { arma_debug_warn("Mat::save(): unsupported file type for hdf5_name()"); }
+    arma_debug_check(true, "Mat::save(): unsupported file type for hdf5_name()");
+    return false;
+    }
+  
+  const bool do_trans = bool(spec.opts.flags & hdf5_opts::flag_trans  ) || (type == hdf5_binary_trans);
+  const bool append   = bool(spec.opts.flags & hdf5_opts::flag_append );
+  const bool replace  = bool(spec.opts.flags & hdf5_opts::flag_replace);
+  
+  if(append && replace)
+    {
+    arma_debug_check(true, "Mat::save(): only one of 'append' or 'replace' options can be used");
     return false;
     }
   
   bool save_okay = false;
-  
-  const bool do_trans = bool(spec.opts.flags & hdf5_opts::flag_trans) || (type == hdf5_binary_trans);
   
   if(do_trans)
     {

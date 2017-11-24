@@ -610,7 +610,7 @@ class SpMat : public SpBase< eT, SpMat<eT> >
   arma_inline void invalidate_csc()   const;
   
   arma_inline void sync_cache() const;
-  arma_inline void sync_csc()   const;
+       inline void sync_csc()   const;
   
   
   friend class SpValProxy< SpMat<eT> >;  // allow SpValProxy to call insert_element() and delete_element()

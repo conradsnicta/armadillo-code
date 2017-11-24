@@ -5687,9 +5687,18 @@ SpMat<eT>::invalidate_cache() const
   {
   arma_extra_debug_sigprint();
   
-  cache.reset();
-  
-  sync_state = 0;
+  #if defined(_OPENMP)
+  #pragma omp critical
+    {
+    cache.reset();
+    sync_state = 0;
+    }
+  #else
+    {
+    cache.reset();
+    sync_state = 0;
+    }
+  #endif
   }
 
 

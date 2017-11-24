@@ -5733,7 +5733,7 @@ SpMat<eT>::sync_cache() const
 
 
 template<typename eT>
-inline
+arma_inline
 void
 SpMat<eT>::sync_csc() const
   {

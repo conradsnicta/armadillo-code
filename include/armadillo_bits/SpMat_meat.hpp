@@ -5687,18 +5687,8 @@ SpMat<eT>::invalidate_cache() const
   {
   arma_extra_debug_sigprint();
   
-  #if defined(_OPENMP)
-  #pragma omp critical
-    {
-    cache.reset();
-    sync_state = 0;
-    }
-  #else
-    {
-    cache.reset();
-    sync_state = 0;
-    }
-  #endif
+  sync_state = 0;
+  cache.reset();
   }
 
 
@@ -5716,7 +5706,7 @@ SpMat<eT>::invalidate_csc() const
 
 
 template<typename eT>
-arma_inline
+inline
 void
 SpMat<eT>::sync_cache() const
   {
@@ -5729,6 +5719,14 @@ SpMat<eT>::sync_cache() const
       cache      = (*this);
       sync_state = 2;
       }
+  #elif defined(ARMA_USE_CXX11)
+    cache_mutex.lock();
+    if(sync_state == 0)
+      {
+      cache      = (*this);
+      sync_state = 2;
+      }
+    cache_mutex.unlock();
   #else
     if(sync_state == 0)
       {
@@ -5767,6 +5765,19 @@ SpMat<eT>::sync_csc() const
       
       sync_state = 2;
       }
+  #elif defined(ARMA_USE_CXX11)
+    cache_mutex.lock();
+    if(sync_state == 1)
+      {
+      SpMat<eT> tmp(cache);
+      
+      SpMat<eT>& x = const_cast< SpMat<eT>& >(*this);
+      
+      x.steal_mem_simple(tmp);
+      
+      sync_state = 2;
+      }
+    cache_mutex.unlock();
   #else
     if(sync_state == 1)
       {

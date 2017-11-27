@@ -606,11 +606,15 @@ class SpMat : public SpBase< eT, SpMat<eT> >
   // 1: CSC needs to be updated from cache
   // 2: no update required
   
+  #if !defined(_OPENMP) && defined(ARMA_USE_CXX11)
+  arma_aligned mutable std::mutex cache_mutex;
+  #endif
+  
   arma_inline void invalidate_cache() const;
   arma_inline void invalidate_csc()   const;
   
-  arma_inline void sync_cache() const;
-       inline void sync_csc()   const;
+  inline void sync_cache() const;
+  inline void sync_csc()   const;
   
   
   friend class SpValProxy< SpMat<eT> >;  // allow SpValProxy to call insert_element() and delete_element()

@@ -5713,7 +5713,7 @@ SpMat<eT>::sync_cache() const
   arma_extra_debug_sigprint();
   
   #if defined(_OPENMP)
-  #pragma omp critical
+    #pragma omp critical
     if(sync_state == 0)
       {
       cache      = (*this);
@@ -5754,7 +5754,7 @@ SpMat<eT>::sync_csc() const
   // so the shenanigans with const_cast are to satisfy the compiler
   
   #if defined(_OPENMP)
-  #pragma omp critical
+    #pragma omp critical
     if(sync_state == 1)
       {
       SpMat<eT> tmp(cache);

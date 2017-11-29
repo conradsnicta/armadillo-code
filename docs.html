@@ -16216,7 +16216,7 @@ Disable use of C++11 features. Overrides <i>ARMA_USE_CXX11</i>
     <td style="vertical-align: top;">
 Use OpenMP for parallelisation of computationally expensive element-wise operations
 (such as <a href="#misc_fns">exp()</a>, <a href="#misc_fns">log()</a>, <a href="#trig_fns">cos()</a>, etc).
-Automatically enabled when using a C++11/C++14 compiler which has OpenMP 3.0+ active (eg. the <code>-fopenmp</code> option for gcc and clang).
+Automatically enabled when using a C++11/C++14 compiler which has OpenMP 3.1+ active (eg. the <code>-fopenmp</code> option for gcc and clang).
 <b>Caveat:</b> when using gcc, use of <code>-march=native</code> in conjunction with <code>-fopenmp</code> may lead to speed regressions on recent processors.
     </td>
   </tr>
@@ -16820,7 +16820,7 @@ List of additions and changes for each version:
 <li>
 computationally expensive element-wise functions (such as <a href="#misc_fns">exp()</a>, <a href="#misc_fns">log()</a>, <a href="#trig_fns">cos()</a>, etc)
 can now be automatically sped up via <a href="https://en.wikipedia.org/wiki/OpenMP">OpenMP</a>;
-this requires a C++11/C++14 compiler with OpenMP 3.0+ support
+this requires a C++11/C++14 compiler with OpenMP 3.1+ support
 <ul>
 <li>for GCC and clang compilers use the following options to enable both C++11 and OpenMP: <code>-std=c++11 -fopenmp</code></li>
 <li><b>Caveat:</b> when using GCC, use of <code>-march=native</code> in conjunction with <code>-fopenmp</code> may lead to speed regressions on recent processors</li>

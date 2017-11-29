@@ -21,7 +21,7 @@
 
 #define ARMA_VERSION_MAJOR 8
 #define ARMA_VERSION_MINOR 300
-#define ARMA_VERSION_PATCH 0
+#define ARMA_VERSION_PATCH 1
 #define ARMA_VERSION_NAME  "Tropical Shenanigans"
 
 

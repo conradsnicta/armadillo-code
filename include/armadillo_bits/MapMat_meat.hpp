@@ -415,7 +415,7 @@ MapMat<eT>::speye(const SizeMat& s)
 template<typename eT>
 arma_inline
 MapMat_elem<eT>
-MapMat<eT>::elem(const uword index, uword& sync_state, uword& n_nonzero)
+MapMat<eT>::elem(const uword index, state_wrapper& sync_state, uword& n_nonzero)
   {
   return MapMat_elem<eT>(*this, index, sync_state, n_nonzero);
   }
@@ -425,7 +425,7 @@ MapMat<eT>::elem(const uword index, uword& sync_state, uword& n_nonzero)
 template<typename eT>
 arma_inline
 MapMat_elem<eT>
-MapMat<eT>::elem(const uword in_row, const uword in_col, uword& sync_state, uword& n_nonzero)
+MapMat<eT>::elem(const uword in_row, const uword in_col, state_wrapper& sync_state, uword& n_nonzero)
   {
   const uword index = (n_rows * in_col) + in_row;
   
@@ -437,7 +437,7 @@ MapMat<eT>::elem(const uword in_row, const uword in_col, uword& sync_state, uwor
 template<typename eT>
 arma_inline
 MapMat_svel<eT>
-MapMat<eT>::svel(const uword in_row, const uword in_col, uword& sync_state, uword& n_nonzero, uword& sv_n_nonzero)
+MapMat<eT>::svel(const uword in_row, const uword in_col, state_wrapper& sync_state, uword& n_nonzero, uword& sv_n_nonzero)
   {
   const uword index = (n_rows * in_col) + in_row;
   
@@ -1120,7 +1120,7 @@ MapMat_val<eT>::operator--(int)
 
 template<typename eT>
 arma_inline
-MapMat_elem<eT>::MapMat_elem(MapMat<eT>& in_parent, const uword in_index, uword& in_sync_state, uword& in_n_nonzero)
+MapMat_elem<eT>::MapMat_elem(MapMat<eT>& in_parent, const uword in_index, state_wrapper& in_sync_state, uword& in_n_nonzero)
   : parent    (in_parent    )
   , index     (in_index     )
   , sync_state(in_sync_state)
@@ -1415,7 +1415,7 @@ MapMat_elem<eT>::operator--(int)
 
 template<typename eT>
 arma_inline
-MapMat_svel<eT>::MapMat_svel(MapMat<eT>& in_parent, const uword in_index, uword& in_sync_state, uword& in_n_nonzero, uword& in_sv_n_nonzero)
+MapMat_svel<eT>::MapMat_svel(MapMat<eT>& in_parent, const uword in_index, state_wrapper& in_sync_state, uword& in_n_nonzero, uword& in_sv_n_nonzero)
   : parent      (in_parent      )
   , index       (in_index       )
   , sync_state  (in_sync_state  )

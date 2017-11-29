@@ -80,9 +80,9 @@ class MapMat
   inline void speye(const uword in_n_rows, const uword in_n_cols);
   inline void speye(const SizeMat& s);
   
-  arma_inline MapMat_elem<eT> elem(const uword index,                      uword& sync_state, uword& n_nonzero);
-  arma_inline MapMat_elem<eT> elem(const uword in_row, const uword in_col, uword& sync_state, uword& n_nonzero);
-  arma_inline MapMat_svel<eT> svel(const uword in_row, const uword in_col, uword& sync_state, uword& n_nonzero, uword& sv_n_nonzero);
+  arma_inline MapMat_elem<eT> elem(const uword index,                      state_wrapper& sync_state, uword& n_nonzero);
+  arma_inline MapMat_elem<eT> elem(const uword in_row, const uword in_col, state_wrapper& sync_state, uword& n_nonzero);
+  arma_inline MapMat_svel<eT> svel(const uword in_row, const uword in_col, state_wrapper& sync_state, uword& n_nonzero, uword& sv_n_nonzero);
   
   arma_inline arma_warn_unused MapMat_val<eT> operator[](const uword index);
   arma_inline arma_warn_unused            eT  operator[](const uword index) const;
@@ -169,11 +169,11 @@ class MapMat_elem
   
   arma_aligned MapMat<eT>& parent;
   
-  arma_aligned const uword  index;
-  arma_aligned       uword& sync_state;
-  arma_aligned       uword& n_nonzero;
+  arma_aligned const uword          index;
+  arma_aligned       state_wrapper& sync_state;
+  arma_aligned       uword&         n_nonzero;
   
-  inline MapMat_elem(MapMat<eT>& in_parent, const uword in_index, uword& in_sync_state, uword& in_n_nonzero);
+  inline MapMat_elem(MapMat<eT>& in_parent, const uword in_index, state_wrapper& in_sync_state, uword& in_n_nonzero);
   
   friend class MapMat<eT>;
   
@@ -206,12 +206,12 @@ class MapMat_svel
   
   arma_aligned MapMat<eT>& parent;
   
-  arma_aligned const uword  index;
-  arma_aligned       uword& sync_state;
-  arma_aligned       uword& n_nonzero;
-  arma_aligned       uword& sv_n_nonzero;
+  arma_aligned const uword          index;
+  arma_aligned       state_wrapper& sync_state;
+  arma_aligned       uword&         n_nonzero;
+  arma_aligned       uword&         sv_n_nonzero;
   
-  inline MapMat_svel(MapMat<eT>& in_parent, const uword in_index, uword& in_sync_state, uword& in_n_nonzero, uword& in_sv_n_nonzero);
+  inline MapMat_svel(MapMat<eT>& in_parent, const uword in_index, state_wrapper& in_sync_state, uword& in_n_nonzero, uword& in_sv_n_nonzero);
   
   arma_inline void update_n_nonzeros();
   

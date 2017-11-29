@@ -227,24 +227,22 @@ class spglue_minus2;
 class spglue_times;
 class spglue_times2;
 
-struct state_wrapper
+struct state_type
   {
-  typedef int state_type;
-  
   #if   defined(_OPENMP)
-                state_type  state;
+                int  state;
   #elif defined(ARMA_USE_CXX11)
-    std::atomic<state_type> state;
+    std::atomic<int> state;
   #else
-                state_type  state;
+                int  state;
   #endif
   
   // std::atomic<>::load() and std::atomic<>::store() use std::memory_order_seq_cst by default
   
   arma_inline
-  operator state_type () const
+  operator int () const
     {
-    state_type out;
+    int out;
     
     #if   defined(_OPENMP)
       #pragma omp atomic read
@@ -260,7 +258,7 @@ struct state_wrapper
   
   arma_inline
   void
-  operator= (const state_type in_state)
+  operator= (const int in_state)
     {
     #if   defined(_OPENMP)
       #pragma omp atomic write

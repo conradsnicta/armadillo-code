@@ -600,8 +600,8 @@ class SpMat : public SpBase< eT, SpMat<eT> >
   
   // cache related
   
-  arma_aligned mutable MapMat<eT>    cache;
-  arma_aligned mutable state_wrapper sync_state;
+  arma_aligned mutable MapMat<eT> cache;
+  arma_aligned mutable state_type sync_state;
   // 0: cache needs to be updated from CSC
   // 1: CSC needs to be updated from cache
   // 2: no update required

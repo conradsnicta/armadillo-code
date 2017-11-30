@@ -5715,13 +5715,12 @@ SpMat<eT>::sync_cache() const
   // using approach adapted from http://preshing.com/20130930/double-checked-locking-is-fixed-in-cpp11/
   // 
   // OpenMP mode:
-  // sync_state uses atomic read/write;
-  // OpenMP flush is analogous to a fence;
-  // flush is implicitly executed at the entrance and the exit of critical section
+  // sync_state uses atomic read/write, which has an implied flush;
+  // flush is also implicitly executed at the entrance and the exit of critical section
   // 
   // C++11  mode:
   // underlying type for sync_state is std::atomic<int>;
-  // reading and writing to sync_state uses std::memory_order_seq_cst which is in effect a fence;
+  // reading and writing to sync_state uses std::memory_order_seq_cst which has an implied fence;
   // the sequence of operations is guaranteed to appear sequentially consistent
   // as data races are prevented via the mutex
   

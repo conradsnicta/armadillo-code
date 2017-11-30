@@ -237,7 +237,8 @@ struct state_type
                 int  state;
   #endif
   
-  // std::atomic<>::load() and std::atomic<>::store() use std::memory_order_seq_cst by default
+  // openmp: "omp atomic" does an implicit flush on the affected variable
+  // C++11:  std::atomic<>::load() and std::atomic<>::store() use std::memory_order_seq_cst by default, which has an implied fence
   
   arma_inline
   operator int () const

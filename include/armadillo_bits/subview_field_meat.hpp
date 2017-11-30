@@ -156,28 +156,16 @@ arma_inline
 oT&
 subview_field<oT>::operator[](const uword i)
   {
-  uword index;
+  const uword n_elem_slice = n_rows*n_cols;
   
-  if(n_slices == 1)
-    {
-    const uword in_col = i / n_rows;
-    const uword in_row = i % n_rows;
-      
-    index = (in_col + aux_col1)*f.n_rows + aux_row1 + in_row;
-    }
-  else
-    {
-    const uword n_elem_slice = n_rows*n_cols;
-    
-    const uword in_slice = i / n_elem_slice;
-    const uword offset   = in_slice * n_elem_slice;
-    const uword j        = i - offset;
-    
-    const uword in_col   = j / n_rows;
-    const uword in_row   = j % n_rows;
-    
-    index = (in_slice + aux_slice1)*(f.n_rows*f.n_cols) + (in_col + aux_col1)*f.n_rows + aux_row1 + in_row;
-    }
+  const uword in_slice = i / n_elem_slice;
+  const uword offset   = in_slice * n_elem_slice;
+  const uword j        = i - offset;
+  
+  const uword in_col   = j / n_rows;
+  const uword in_row   = j % n_rows;
+  
+  const uword index = (in_slice + aux_slice1)*(f.n_rows*f.n_cols) + (in_col + aux_col1)*f.n_rows + aux_row1 + in_row;
   
   return *((const_cast< field<oT>& >(f)).mem[index]);
   }
@@ -189,28 +177,16 @@ arma_inline
 const oT&
 subview_field<oT>::operator[](const uword i) const
   {
-  uword index;
+  const uword n_elem_slice = n_rows*n_cols;
   
-  if(n_slices == 1)
-    {
-    const uword in_col = i / n_rows;
-    const uword in_row = i % n_rows;
-      
-    index = (in_col + aux_col1)*f.n_rows + aux_row1 + in_row;
-    }
-  else
-    {
-    const uword n_elem_slice = n_rows*n_cols;
-    
-    const uword in_slice = i / n_elem_slice;
-    const uword offset   = in_slice * n_elem_slice;
-    const uword j        = i - offset;
-    
-    const uword in_col   = j / n_rows;
-    const uword in_row   = j % n_rows;
-    
-    index = (in_slice + aux_slice1)*(f.n_rows*f.n_cols) + (in_col + aux_col1)*f.n_rows + aux_row1 + in_row;
-    }
+  const uword in_slice = i / n_elem_slice;
+  const uword offset   = in_slice * n_elem_slice;
+  const uword j        = i - offset;
+  
+  const uword in_col   = j / n_rows;
+  const uword in_row   = j % n_rows;
+  
+  const uword index = (in_slice + aux_slice1)*(f.n_rows*f.n_cols) + (in_col + aux_col1)*f.n_rows + aux_row1 + in_row;
   
   return *(f.mem[index]);
   }
@@ -246,11 +222,7 @@ arma_inline
 oT&
 subview_field<oT>::operator()(const uword in_row, const uword in_col)
   {
-  arma_debug_check( ((in_row >= n_rows) || (in_col >= n_cols) || (0 >= n_slices)), "subview_field::operator(): index out of bounds" );
-  
-  const uword index = (in_col + aux_col1)*f.n_rows + aux_row1 + in_row;
-  
-  return *((const_cast< field<oT>& >(f)).mem[index]);
+  return operator()(in_row, in_col, 0);
   }
 
 
@@ -260,11 +232,7 @@ arma_inline
 const oT&
 subview_field<oT>::operator()(const uword in_row, const uword in_col) const
   {
-  arma_debug_check( ((in_row >= n_rows) || (in_col >= n_cols) || (0 >= n_slices)), "subview_field::operator(): index out of bounds" );
-  
-  const uword index = (in_col + aux_col1)*f.n_rows + aux_row1 + in_row;
-  
-  return *(f.mem[index]);
+  return operator()(in_row, in_col, 0);
   }
 
 
@@ -302,9 +270,7 @@ arma_inline
 oT&
 subview_field<oT>::at(const uword in_row, const uword in_col)
   {
-  const uword index = (in_col + aux_col1)*f.n_rows + aux_row1 + in_row;
-  
-  return *((const_cast< field<oT>& >(f)).mem[index]);
+  return at(in_row, in_col, 0);
   }
 
 
@@ -314,9 +280,7 @@ arma_inline
 const oT&
 subview_field<oT>::at(const uword in_row, const uword in_col) const
   {
-  const uword index = (in_col + aux_col1)*f.n_rows + aux_row1 + in_row;
-  
-  return *(f.mem[index]);
+  return at(in_row, in_col, 0);
   }
 
 

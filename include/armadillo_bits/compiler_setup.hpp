@@ -462,7 +462,7 @@
 #endif
 
 
-#if ( (defined(_OPENMP) && (_OPENMP < 200805)) && !defined(ARMA_DONT_USE_OPENMP) )
+#if ( (defined(_OPENMP) && (_OPENMP < 201107)) && !defined(ARMA_DONT_USE_OPENMP) )
   // if the compiler has an ancient version of OpenMP and use of OpenMP hasn't been explicitly disabled,
   // print a warning to ensure there is no confusion about OpenMP support
   #undef  ARMA_USE_OPENMP

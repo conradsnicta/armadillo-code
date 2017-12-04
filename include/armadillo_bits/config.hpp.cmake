@@ -95,7 +95,7 @@
 #if !defined(ARMA_USE_OPENMP)
 // #define ARMA_USE_OPENMP
 //// Uncomment the above line to forcefully enable use of OpenMP for parallelisation.
-//// Note that ARMA_USE_OPENMP is automatically enabled when a compiler supporting OpenMP 3.0 is detected.
+//// Note that ARMA_USE_OPENMP is automatically enabled when a compiler supporting OpenMP 3.1 is detected.
 #endif
 
 #if !defined(ARMA_64BIT_WORD)

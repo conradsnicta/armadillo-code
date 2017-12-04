@@ -5716,13 +5716,13 @@ SpMat<eT>::sync_cache() const
   // 
   // OpenMP mode:
   // sync_state uses atomic read/write, which has an implied flush;
-  // flush is also implicitly executed at the entrance and the exit of critical section
+  // flush is also implicitly executed at the entrance and the exit of critical section;
+  // data races are prevented by the 'critical' directive
   // 
   // C++11  mode:
   // underlying type for sync_state is std::atomic<int>;
   // reading and writing to sync_state uses std::memory_order_seq_cst which has an implied fence;
-  // the sequence of operations is guaranteed to appear sequentially consistent
-  // as data races are prevented via the mutex
+  // data races are prevented via the mutex
   
   #if defined(_OPENMP)
     if(sync_state == 0)

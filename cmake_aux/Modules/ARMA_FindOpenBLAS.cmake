@@ -6,15 +6,20 @@ set(OpenBLAS_NAMES ${OpenBLAS_NAMES} openblas )
 set(OpenBLAS_TMP_LIBRARY)
 set(OpenBLAS_TMP_LIBRARIES)
 
+set(OpenBLAS_SEARCH_PATH ${CMAKE_SYSTEM_LIBRARY_PATH} /lib64 /lib /usr/lib64 /usr/lib /usr/local/lib64 /usr/local/lib /opt/local/lib64 /opt/local/lib)
+
+if(DEFINED ENV{OpenBLAS_DIR})
+  set(OpenBLAS_SEARCH_PATH $ENV{OpenBLAS_DIR} $ENV{OpenBLAS_DIR}/build/lib)
+endif()
 
 foreach (OpenBLAS_NAME ${OpenBLAS_NAMES})
   find_library(${OpenBLAS_NAME}_LIBRARY
     NAMES ${OpenBLAS_NAME}
-    PATHS ${CMAKE_SYSTEM_LIBRARY_PATH} /lib64 /lib /usr/lib64 /usr/lib /usr/local/lib64 /usr/local/lib /opt/local/lib64 /opt/local/lib
-    )
-  
+    PATHS ${OpenBLAS_SEARCH_PATH}
+  )
+
   set(OpenBLAS_TMP_LIBRARY ${${OpenBLAS_NAME}_LIBRARY})
-  
+
   if(OpenBLAS_TMP_LIBRARY)
     set(OpenBLAS_TMP_LIBRARIES ${OpenBLAS_TMP_LIBRARIES} ${OpenBLAS_TMP_LIBRARY})
   endif()

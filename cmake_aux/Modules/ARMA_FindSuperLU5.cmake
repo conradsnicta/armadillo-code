@@ -5,22 +5,34 @@
 #  SuperLU_LIBRARY      - Link this to use SuperLU
 #  SuperLU_INCLUDE_DIR  - directory of SuperLU headers
 
-find_path(SuperLU_INCLUDE_DIR slu_ddefs.h
-  /usr/include/superlu/
-  /usr/include/SuperLU/
-  /usr/include/
-  /usr/local/include/superlu/
-  /usr/local/include/SuperLU/
-  /usr/local/include/
-  /opt/local/include/superlu/
-  /opt/local/include/SuperLU/
-  /opt/local/include/
-)
+if(DEFINED ENV{SuperLU_DIR})
+    find_path(SuperLU_INCLUDE_DIR slu_ddefs.h $ENV{SuperLU_DIR}/SRC)
+    find_library(SuperLU_LIBRARY NAMES superlu PATHS $ENV{SuperLU_DIR}/SRC $ENV{SuperLU_DIR}/build/SRC)
+else()
+    find_path(SuperLU_INCLUDE_DIR slu_ddefs.h
+      /usr/include/superlu/
+      /usr/include/SuperLU/
+      /usr/include/
+      /usr/local/include/superlu/
+      /usr/local/include/SuperLU/
+      /usr/local/include/
+      /opt/local/include/superlu/
+      /opt/local/include/SuperLU/
+      /opt/local/include/
+    )
 
-find_library(SuperLU_LIBRARY
-  NAMES superlu
-  PATHS ${CMAKE_SYSTEM_LIBRARY_PATH} /usr/lib64 /usr/lib /usr/local/lib64 /usr/local/lib /opt/local/lib64 /opt/local/lib
-)
+    find_library(SuperLU_LIBRARY
+      NAMES superlu
+      PATHS
+        ${CMAKE_SYSTEM_LIBRARY_PATH}
+        /usr/lib64
+        /usr/lib
+        /usr/local/lib64
+        /usr/local/lib
+        /opt/local/lib64
+        /opt/local/lib
+    )
+endif()
 
 set(SuperLU_FOUND NO)
 

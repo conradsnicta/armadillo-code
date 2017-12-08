@@ -105,7 +105,7 @@ TEST_CASE("col_iterator_test")
 
   REQUIRE( it == x.begin() );
 
-  // Try removing an element we itreated to.
+  // Try removing an element we iterated to.
   it++;
   it++;
   *it = 0;

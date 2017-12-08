@@ -423,7 +423,7 @@ TEST_CASE("row_iterator_test")
 
   REQUIRE( it == x.begin_row() );
 
-  // Try removing an element we itreated to.
+  // Try removing an element we iterated to.
   it++;
   it++;
   *it = 0;

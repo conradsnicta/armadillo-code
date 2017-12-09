@@ -5724,7 +5724,7 @@ SpMat<eT>::sync_cache() const
   // reading and writing to sync_state uses std::memory_order_seq_cst which has an implied fence;
   // data races are prevented via the mutex
   
-  #if defined(_OPENMP)
+  #if defined(ARMA_USE_OPENMP)
     if(sync_state == 0)
       {
       #pragma omp critical
@@ -5773,7 +5773,7 @@ SpMat<eT>::sync_csc() const
   
   // see also the note in sync_cache() above
   
-  #if defined(_OPENMP)
+  #if defined(ARMA_USE_OPENMP)
     if(sync_state == 1)
       {
       #pragma omp critical

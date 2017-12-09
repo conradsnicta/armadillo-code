@@ -229,7 +229,7 @@ class spglue_times2;
 
 struct state_type
   {
-  #if   defined(_OPENMP)
+  #if   defined(ARMA_USE_OPENMP)
                 int  state;
   #elif defined(ARMA_USE_CXX11)
     std::atomic<int> state;
@@ -245,7 +245,7 @@ struct state_type
     {
     int out;
     
-    #if   defined(_OPENMP)
+    #if   defined(ARMA_USE_OPENMP)
       #pragma omp atomic read
       out = state;
     #elif defined(ARMA_USE_CXX11)
@@ -261,7 +261,7 @@ struct state_type
   void
   operator= (const int in_state)
     {
-    #if   defined(_OPENMP)
+    #if   defined(ARMA_USE_OPENMP)
       #pragma omp atomic write
       state = in_state;
     #elif defined(ARMA_USE_CXX11)

@@ -25,7 +25,7 @@ Contents
 
  9: Support for OpenBLAS and Intel MKL
 10: Support for ATLAS
-11: Support for C++11/C++14 Features
+11: Support for C++11 / C++14 Features
 12: Support for OpenMP
 
 13: API Documentation

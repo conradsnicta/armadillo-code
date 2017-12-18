@@ -318,6 +318,7 @@ namespace arma
   #include "armadillo_bits/spglue_minus_bones.hpp"
   #include "armadillo_bits/spglue_times_bones.hpp"
   #include "armadillo_bits/spglue_join_bones.hpp"
+  #include "armadillo_bits/spglue_kron_bones.hpp"
   
   #if defined(ARMA_USE_NEWARP)
     #include "armadillo_bits/newarp_EigsSelect.hpp"
@@ -700,6 +701,7 @@ namespace arma
   #include "armadillo_bits/spglue_minus_meat.hpp"
   #include "armadillo_bits/spglue_times_meat.hpp"
   #include "armadillo_bits/spglue_join_meat.hpp"
+  #include "armadillo_bits/spglue_kron_meat.hpp"
   
   #if defined(ARMA_USE_NEWARP)
     #include "armadillo_bits/newarp_cx_attrib.hpp"

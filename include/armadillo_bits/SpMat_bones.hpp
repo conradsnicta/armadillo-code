@@ -606,7 +606,7 @@ class SpMat : public SpBase< eT, SpMat<eT> >
   // 1: CSC needs to be updated from cache
   // 2: no update required
   
-  #if !defined(_OPENMP) && defined(ARMA_USE_CXX11)
+  #if !defined(ARMA_USE_OPENMP) && defined(ARMA_USE_CXX11)
   arma_aligned mutable std::mutex cache_mutex;
   #endif
   

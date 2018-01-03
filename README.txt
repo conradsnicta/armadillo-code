@@ -337,12 +337,12 @@ the CMake based installation. Comment out the lines containing:
 =====================
 
 Armadillo can use the ATLAS library for faster versions of a subset
-of LAPACK and BLAS functions.  LAPACK should still be installed to obtain
-full functionality.
+of LAPACK and BLAS functions. LAPACK should still be installed to
+obtain full functionality.
 
-Caveat: the minimum recommended version of ATLAS is 3.8.
-Older versions of ATLAS can produce incorrect results or corrupt memory,
-leading to random crashes.
+Caveat: the minimum recommended version of ATLAS is 3.10;
+earlier versions (such as 3.6 and 3.8) can produce incorrect
+results and/or corrupt memory, leading to random crashes.
 
 
 

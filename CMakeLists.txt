@@ -167,6 +167,8 @@ if(APPLE)
     message(STATUS "Clang compiler on MacOS X detected. Added '-stdlib=libc++' to compiler flags")
   endif()
   
+  set(CMAKE_MACOSX_RPATH 1)
+  
 else()
   
   set(ARMA_OS unix)

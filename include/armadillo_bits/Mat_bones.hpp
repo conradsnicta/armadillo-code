@@ -525,6 +525,7 @@ class Mat : public Base< eT, Mat<eT> >
     {
     public:
     
+    inline row_iterator();
     inline row_iterator(Mat<eT>& in_M, const uword in_row);
     
     inline eT& operator* ();
@@ -538,7 +539,13 @@ class Mat : public Base< eT, Mat<eT> >
     inline bool operator!=(const row_iterator& X) const;
     inline bool operator==(const row_iterator& X) const;
     
-    arma_aligned Mat<eT>& M;
+    typedef std::bidirectional_iterator_tag iterator_category;
+    typedef eT                              value_type;
+    typedef uword                           difference_type; // not certain on this one
+    typedef const eT*                       pointer;
+    typedef const eT&                       reference;
+    
+    arma_aligned Mat<eT>* M;
     arma_aligned uword    row;
     arma_aligned uword    col;
     };
@@ -548,8 +555,9 @@ class Mat : public Base< eT, Mat<eT> >
     {
     public:
     
-    const_row_iterator(const Mat<eT>& in_M, const uword in_row);
-    const_row_iterator(const row_iterator& X);
+    inline const_row_iterator();
+    inline const_row_iterator(const Mat<eT>& in_M, const uword in_row);
+    inline const_row_iterator(const row_iterator& X);
     
     inline eT operator*() const;
     
@@ -562,7 +570,13 @@ class Mat : public Base< eT, Mat<eT> >
     inline bool operator!=(const const_row_iterator& X) const;
     inline bool operator==(const const_row_iterator& X) const;
     
-    arma_aligned const Mat<eT>& M;
+    typedef std::bidirectional_iterator_tag iterator_category;
+    typedef eT                              value_type;
+    typedef uword                           difference_type; // not certain on this one
+    typedef const eT*                       pointer;
+    typedef const eT&                       reference;
+    
+    arma_aligned const Mat<eT>* M;
     arma_aligned       uword    row;
     arma_aligned       uword    col;
     };

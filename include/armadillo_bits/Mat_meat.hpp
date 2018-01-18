@@ -7350,10 +7350,22 @@ Mat<eT>::quiet_load(std::istream& is, const file_type type)
 
 template<typename eT>
 inline
+Mat<eT>::row_iterator::row_iterator()
+  : M  (NULL)
+  , row(0   )
+  , col(0   )
+  {
+  arma_extra_debug_sigprint();
+  }
+
+
+
+template<typename eT>
+inline
 Mat<eT>::row_iterator::row_iterator(Mat<eT>& in_M, const uword in_row)
-  : M  (in_M  )
-  , row(in_row)
-  , col(0     )
+  : M  (&in_M  )
+  , row( in_row)
+  , col( 0     )
   {
   arma_extra_debug_sigprint();
   }
@@ -7365,7 +7377,7 @@ inline
 eT&
 Mat<eT>::row_iterator::operator*()
   {
-  return M.at(row,col);
+  return (*M).at(row,col);
   }
 
 
@@ -7377,7 +7389,7 @@ Mat<eT>::row_iterator::operator++()
   {
   ++col;
   
-  if(col >= M.n_cols)
+  if(col >= (*M).n_cols)
     {
     col = 0;
     ++row;
@@ -7411,7 +7423,7 @@ Mat<eT>::row_iterator::operator--()
     {
     if(row > 0)
       {
-      col = M.n_cols - 1;
+      col = (*M).n_cols - 1;
       --row;
       }
     }
@@ -7453,10 +7465,22 @@ Mat<eT>::row_iterator::operator==(const typename Mat<eT>::row_iterator& X) const
 
 template<typename eT>
 inline
+Mat<eT>::const_row_iterator::const_row_iterator()
+  : M  (NULL)
+  , row(0   )
+  , col(0   )
+  {
+  arma_extra_debug_sigprint();
+  }
+
+
+
+template<typename eT>
+inline
 Mat<eT>::const_row_iterator::const_row_iterator(const Mat<eT>& in_M, const uword in_row)
-  : M  (in_M  )
-  , row(in_row)
-  , col(0     )
+  : M  (&in_M  )
+  , row( in_row)
+  , col( 0     )
   {
   arma_extra_debug_sigprint();
   }
@@ -7480,7 +7504,7 @@ inline
 eT
 Mat<eT>::const_row_iterator::operator*() const
   {
-  return M.at(row,col);
+  return (*M).at(row,col);
   }
 
 
@@ -7492,7 +7516,7 @@ Mat<eT>::const_row_iterator::operator++()
   {
   ++col;
   
-  if(col >= M.n_cols)
+  if(col >= (*M).n_cols)
     {
     col = 0;
     ++row;
@@ -7526,7 +7550,7 @@ Mat<eT>::const_row_iterator::operator--()
     {
     if(row > 0)
       {
-      col = M.n_cols - 1;
+      col = (*M).n_cols - 1;
       --row;
       }
     }

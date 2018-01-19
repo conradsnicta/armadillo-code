@@ -80,6 +80,23 @@ index_min
 
 template<typename T1>
 arma_warn_unused
+arma_inline
+const mtOpCube<uword, T1, op_index_min>
+index_min
+  (
+  const BaseCube<typename T1::elem_type, T1>& X,
+  const uword dim = 0
+  )
+  {
+  arma_extra_debug_sigprint();
+  
+  return mtOpCube<uword, T1, op_index_min>(X.get_ref(), dim, 0, 0);
+  }
+
+
+
+template<typename T1>
+arma_warn_unused
 inline
 typename
 enable_if2

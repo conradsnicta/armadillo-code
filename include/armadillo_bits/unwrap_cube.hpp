@@ -34,6 +34,9 @@ class unwrap_cube
     }
   
   const Cube<eT> M;
+  
+  template<typename eT2>
+  arma_inline bool is_alias(const Cube<eT2>&) const { return false; }
   };
 
 
@@ -42,15 +45,18 @@ template<typename eT>
 class unwrap_cube< Cube<eT> >
   {
   public:
-
+  
   inline
   unwrap_cube(const Cube<eT>& A)
     : M(A)
     {
     arma_extra_debug_sigprint();
     }
-
+  
   const Cube<eT>& M;
+  
+  template<typename eT2>
+  arma_inline bool is_alias(const Cube<eT2>& X) const { return (void_ptr(&M) == void_ptr(&X)); }
   };
 
 

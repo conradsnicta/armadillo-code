@@ -164,17 +164,16 @@ op_min::apply(Cube<typename T1::elem_type>& out, const OpCube<T1,op_min>& in)
   arma_debug_check( (dim > 2), "min(): parameter 'dim' must be 0 or 1 or 2" );
   
   const unwrap_cube<T1> U(in.m);
-  const Cube<eT>& X =   U.M;
   
-  if(&out != &X)
+  if(U.is_alias(out) == false)
     {
-    op_min::apply_noalias(out, X, dim);
+    op_min::apply_noalias(out, U.M, dim);
     }
   else
     {
     Cube<eT> tmp;
     
-    op_min::apply_noalias(tmp, X, dim);
+    op_min::apply_noalias(tmp, U.M, dim);
     
     out.steal_mem(tmp);
     }

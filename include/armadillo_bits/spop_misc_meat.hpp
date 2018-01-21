@@ -296,29 +296,42 @@ spop_repmat::apply(SpMat<typename T1::elem_type>& out, const SpOp<T1, spop_repma
   //     }
   //   }
   
-  SpMat<eT> tmp(X_n_rows * copies_per_row, X_n_cols);
+  const uword out_n_rows = X_n_rows * copies_per_row;
+  const uword out_n_cols = X_n_cols * copies_per_col;
+  const uword out_nnz    = X.n_nonzero * copies_per_row * copies_per_col;
   
-  if(tmp.n_elem > 0)
+  if( (out_n_rows > 0) && (out_n_cols > 0) && (out_nnz > 0) )
     {
-    for(uword row = 0; row < tmp.n_rows; row += X_n_rows)
+    umat    locs(2, out_nnz);
+    Col<eT> vals(   out_nnz);
+    
+    uword* locs_mem = locs.memptr();
+    eT*    vals_mem = vals.memptr();
+    
+    typename SpMat<eT>::const_iterator X_begin = X.begin();
+    typename SpMat<eT>::const_iterator X_end   = X.end();
+    typename SpMat<eT>::const_iterator X_it;
+    
+    for(uword col_offset = 0; col_offset < out_n_cols; col_offset += X_n_cols)
+    for(uword row_offset = 0; row_offset < out_n_rows; row_offset += X_n_rows)
       {
-      tmp.submat(row, 0, row+X_n_rows-1, X_n_cols-1) = X;
+      for(X_it = X_begin; X_it != X_end; ++X_it)
+        {
+        const uword out_row = row_offset + X_it.row();
+        const uword out_col = col_offset + X_it.col();
+        
+        (*locs_mem) = out_row;  ++locs_mem;
+        (*locs_mem) = out_col;  ++locs_mem;
+        
+        (*vals_mem) = (*X_it);  ++vals_mem;
+        }
       }
+    
+    out = SpMat<eT>(locs, vals, out_n_rows, out_n_cols);
     }
-  
-  // tmp contains copies of the input matrix, so no need to check for aliasing
-  
-  out.set_size(X_n_rows * copies_per_row, X_n_cols * copies_per_col);
-  
-  const uword out_n_rows = out.n_rows;
-  const uword out_n_cols = out.n_cols;
-  
-  if( (out_n_rows > 0) && (out_n_cols > 0) )
+  else
     {
-    for(uword col = 0; col < out_n_cols; col += X_n_cols)
-      {
-      out.submat(0, col, out_n_rows-1, col+X_n_cols-1) = tmp;
-      }
+    out.zeros(out_n_rows, out_n_cols);
     }
   }
 

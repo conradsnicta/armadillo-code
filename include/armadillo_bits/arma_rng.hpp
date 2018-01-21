@@ -227,15 +227,15 @@ struct arma_rng::randi
     {
     #if   defined(ARMA_RNG_ALT)
       {
-      return arma_rng_alt::randi_fill(mem, N, a, b);
+      arma_rng_alt::randi_fill(mem, N, a, b);
       }
     #elif defined(ARMA_USE_EXTERN_CXX11_RNG)
       {
-      return arma_rng_cxx11_instance.randi_fill(mem, N, a, b);
+      arma_rng_cxx11_instance.randi_fill(mem, N, a, b);
       }
     #else
       {
-      return arma_rng_cxx98::randi_fill(mem, N, a, b);
+      arma_rng_cxx98::randi_fill(mem, N, a, b);
       }
     #endif
     }

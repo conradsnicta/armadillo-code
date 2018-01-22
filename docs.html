@@ -149,7 +149,7 @@ hr.greyline
 <!--  -->
 <a class="noprint" style="display:scroll; position:fixed; bottom:5px; right:5px;" href="#top"><font size=-1>[top]</font></a>
 
-<big><b>API Documentation for Armadillo 8.300</b></big>
+<big><b>API Documentation for Armadillo 8.400</b></big>
 <br>
 <br>
 <br>
@@ -1965,7 +1965,7 @@ the following subset of operations currently works with sparse matrices:
 <li>element-wise functions: <a href="#abs">abs()</a>, <a href="#imag_real">imag()</a>, <a href="#imag_real">real()</a>, <a href="#conj">conj()</a>, <a href="#misc_fns">sqrt()</a>, <a href="#misc_fns">square()</a>, <a href="#misc_fns">floor()</a>, <a href="#misc_fns">ceil()</a>, <a href="#misc_fns">round()</a>, <a href="#misc_fns">trunc()</a>, <a href="#misc_fns">sign()</a></li>
 <li>scalar functions of matrices: <a href="#accu">accu()</a>, <a href="#as_scalar">as_scalar()</a>, <a href="#dot">dot()</a>, <a href="#norm">norm()</a>, <a href="#trace">trace()</a></li>
 <li>vector valued functions of matrices: <a href="#min_and_max">min()</a>, <a href="#min_and_max">max()</a>, <a href="#nonzeros">nonzeros()</a>, <a href="#sum">sum()</a>, <a href="#stats_fns">mean()</a>, <a href="#stats_fns">var()</a></li>
-<li>matrix valued functions of matrices: <a href="#diagmat">diagmat()</a>, <a href="#trimat">trimatu()/trimatl()</a>, <a href="#symmat">symmatu()/symmatl()</a>, <a href="#join">join_rows()</a>, <a href="#join">join_cols()</a>, <a href="#repmat">repmat()</a>, <a href="#reshape">reshape()</a>, <a href="#resize">resize()</a>, <a href="#t_st_members">.t()</a>, <a href="#trans">trans()</a></li>
+<li>matrix valued functions of matrices: <a href="#diagmat">diagmat()</a>, <a href="#trimat">trimatu()/trimatl()</a>, <a href="#symmat">symmatu()/symmatl()</a>, <a href="#join">join_rows()</a>, <a href="#join">join_cols()</a>, <a href="#kron">kron()</a>, <a href="#repmat">repmat()</a>, <a href="#reshape">reshape()</a>, <a href="#resize">resize()</a>, <a href="#t_st_members">.t()</a>, <a href="#trans">trans()</a></li>
 <li>generated matrices: <a href="#speye">speye()</a>, <a href="#spones">spones()</a>, <a href="#sprandu_sprandn">sprandu()/sprandn()</a></li>
 <li>eigen and svd decomposition: <a href="#eigs_sym">eigs_sym()</a>, <a href="#eigs_gen">eigs_gen()</a>, <a href="#svds">svds()</a></li>
 <li>solution of sparse linear systems: <a href="#spsolve">spsolve()</a>
@@ -2189,6 +2189,7 @@ See also:
 <li><a href="#replace">.replace()</a></li>
 <li><a href="#transform">.transform()</a></li>
 <li><a href="#each_colrow">.each_col() &amp; .each_row()</a></li>
+<li><a href="#kron">kron()</a></li>
 <li><a href="#misc_fns">miscellaneous element-wise functions</a> &nbsp; (exp, log, pow, sqrt, square, round, ...)</li>
 <li><a href="https://en.wikipedia.org/wiki/Floating_point">floating point representation in Wikipedia</a></li>
 <li><a href="http://mathworld.wolfram.com/Floating-PointRepresentation.html">floating point representation in MathWorld</a></li>
@@ -8383,12 +8384,16 @@ cout &lt;&lt; "slice: " &lt;&lt; u(2) &lt;&lt; endl;
 <b>index_min( V )</b>
 <br><b>index_min( M )</b>
 <br><b>index_min( M, dim )</b>
+<br><b>index_min( Q )</b>
+<br><b>index_min( Q, dim )</b>
 </td>
 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 <td>
 <b>index_max( V )</b>
 <br><b>index_max( M )</b>
 <br><b>index_max( M, dim )</b>
+<br><b>index_max( Q )</b>
+<br><b>index_max( Q, dim )</b>
 </td>
 </tr>
 </tbody>
@@ -8413,7 +8418,11 @@ with each row containing the index of the extremum value in the corresponding ro
 </li>
 <br>
 <li>
-For each column and row, the index starts at zero
+For cube <i>Q</i>, return a cube (of type <a href="#Cube">ucube</a>) containing the indices of extremum values of elements along dimension <i>dim</i>, where <i>dim</i> &isin; {&nbsp;0,&nbsp;1,&nbsp;2&nbsp;}
+</li>
+<br>
+<li>
+For each column, row, or slice, the index starts at zero
 </li>
 <br>
 <li>
@@ -8758,6 +8767,7 @@ mat K = kron(A,B);
 <li>
 See also:
 <ul>
+<li><a href="#operators">math &amp; relational operators</a></li>
 <li><a href="http://mathworld.wolfram.com/KroneckerProduct.html">Kronecker product in MathWorld</a></li>
 <li><a href="http://en.wikipedia.org/wiki/Kronecker_product">Kronecker product in Wikipedia</a></li>
 </ul>
@@ -16761,6 +16771,15 @@ List of additions and changes for each version:
 
 
 
+<a name="version_8400"></a>
+<li>Version 8.400:
+<ul>
+<li>faster handling of sparse matrices by <a href="#repmat">repmat()</a></li>
+<li>expanded <a href="#kron">kron()</a> to handle sparse matrices</li>
+<li>expanded <a href="#index_min_and_index_max_standalone">index_min()</a> and <a href="#index_min_and_index_max_standalone">index_max()</a> to handle cubes</li>
+</ul>
+</li>
+<br>
 <a name="version_8300"></a>
 <li>Version 8.300:
 <ul>

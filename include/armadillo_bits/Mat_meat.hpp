@@ -7356,6 +7356,19 @@ Mat<eT>::row_iterator::row_iterator()
   , col(0   )
   {
   arma_extra_debug_sigprint();
+  // Technically this iterator is invalid (it does not point to a real element)
+  }
+
+
+
+template<typename eT>
+inline
+Mat<eT>::row_iterator::row_iterator(const row_iterator& in_it)
+  : M  (in_it.M  )
+  , row(in_it.row)
+  , col(in_it.col)
+  {
+  arma_extra_debug_sigprint();
   }
 
 
@@ -7402,10 +7415,14 @@ Mat<eT>::row_iterator::operator++()
 
 template<typename eT>
 inline
-void
+typename Mat<eT>::row_iterator
 Mat<eT>::row_iterator::operator++(int)
   {
-  operator++();
+  typename Mat<eT>::row_iterator temp(*this);
+  
+  ++(*this);
+  
+  return temp;
   }
 
 
@@ -7435,10 +7452,14 @@ Mat<eT>::row_iterator::operator--()
 
 template<typename eT>
 inline
-void
+typename Mat<eT>::row_iterator
 Mat<eT>::row_iterator::operator--(int)
   {
-  operator--();
+  typename Mat<eT>::row_iterator temp(*this);
+  
+  --(*this);
+  
+  return temp;
   }
 
 

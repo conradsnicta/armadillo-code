@@ -526,15 +526,16 @@ class Mat : public Base< eT, Mat<eT> >
     public:
     
     inline row_iterator();
+    inline row_iterator(const row_iterator& in_it);
     inline row_iterator(Mat<eT>& in_M, const uword in_row);
     
     inline eT& operator* ();
     
     inline row_iterator& operator++();
-    inline void          operator++(int);
+    inline row_iterator  operator++(int);
     
     inline row_iterator& operator--();
-    inline void          operator--(int);
+    inline row_iterator  operator--(int);
     
     inline bool operator!=(const row_iterator& X) const;
     inline bool operator==(const row_iterator& X) const;

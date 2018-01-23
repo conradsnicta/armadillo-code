@@ -128,8 +128,10 @@
   #define ARMA_BLAS_SDOT_BUG
   
   #undef  ARMA_HAVE_POSIX_MEMALIGN
+  // TODO: posix_memalign() is available since macOS 10.6 (late 2009 onwards)
+  
   #undef  ARMA_USE_EXTERN_CXX11_RNG
-  // TODO: thread local storage (TLS) (eg. "extern thread_local") appears currently broken on Mac OS X
+  // TODO: thread_local seems to work in Apple clang since Xcode 8 (mid 2016 onwards)
 #endif
 
 

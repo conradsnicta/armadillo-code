@@ -2350,7 +2350,7 @@ inline
 typename subview<eT>::iterator
 subview<eT>::begin()
   {
-  return iterator( const_cast< Mat<eT>& >(m), aux_row1, aux_col1, aux_row1 + n_rows - 1);
+  return iterator(*this, aux_row1, aux_col1);
   }
 
 
@@ -2360,7 +2360,7 @@ inline
 typename subview<eT>::iterator
 subview<eT>::end()
   {
-  return iterator( const_cast< Mat<eT>& >(m), aux_row1, aux_col1 + n_cols - 1, aux_row1 + n_rows - 1);
+  return iterator(*this, aux_row1, aux_col1 + n_cols);
   }
 
 
@@ -2374,13 +2374,13 @@ subview<eT>::end()
 template<typename eT>
 inline
 subview<eT>::iterator::iterator()
-  : M           (NULL)
-  , current_pos (NULL)
-  , internal_row(0   )
-  , internal_col(0   )
-  , aux_row1    (0   )
-  , aux_col1    (0   )
-  , aux_row2    (0   )
+  : M          (NULL)
+  , current_ptr(NULL)
+  , current_row(0   )
+  , current_col(0   )
+  , aux_row1   (0   )
+  , aux_col1   (0   )
+  , aux_row2   (0   )
   {
   arma_extra_debug_sigprint();
   // Technically this iterator is invalid (it does not point to a real element)
@@ -2391,13 +2391,13 @@ subview<eT>::iterator::iterator()
 template<typename eT>
 inline
 subview<eT>::iterator::iterator(const iterator& X)
-  : M           (X.M           )
-  , current_pos (X.current_pos )
-  , internal_row(X.internal_row)
-  , internal_col(X.internal_col)
-  , aux_row1    (X.aux_row1    )
-  , aux_col1    (X.aux_col1    )
-  , aux_row2    (X.aux_row2    )
+  : M          (X.M                    )
+  , current_ptr(X.current_ptr          )
+  , current_row(X.current_row          )
+  , current_col(X.current_col          )
+  , aux_row1   (X.aux_row1             )
+  , aux_col1   (X.aux_col1             )
+  , aux_row2   (X.aux_row2             )
   {
   arma_extra_debug_sigprint();
   }
@@ -2406,14 +2406,14 @@ subview<eT>::iterator::iterator(const iterator& X)
 
 template<typename eT>
 inline
-subview<eT>::iterator::iterator(Mat<eT>& in_M, const uword in_row1, const uword in_col1, const uword in_row2)
-  : M           (&in_M                      )
-  , current_pos (&(in_M.at(in_row1,in_col1)))
-  , internal_row(in_row1                    )
-  , internal_col(in_col1                    )
-  , aux_row1    (in_row1                    )
-  , aux_col1    (in_col1                    )
-  , aux_row2    (in_row2                    )
+subview<eT>::iterator::iterator(subview<eT>& in_sv, const uword in_row, const uword in_col)
+  : M          (&(const_cast< Mat<eT>& >(in_sv.m)))
+  , current_ptr(&(M->at(in_row,in_col))           )
+  , current_row(in_row                            )
+  , current_col(in_col                            )
+  , aux_row1   (in_sv.aux_row1                    )
+  , aux_col1   (in_sv.aux_col1                    )
+  , aux_row2   (in_sv.aux_row1 + in_sv.n_rows-1   )
   {
   arma_extra_debug_sigprint();
   }
@@ -2425,7 +2425,7 @@ inline
 eT&
 subview<eT>::iterator::operator*()
   {
-  return (*current_pos);
+  return (*current_ptr);
   }
 
 
@@ -2435,15 +2435,18 @@ inline
 typename subview<eT>::iterator&
 subview<eT>::iterator::operator++()
   {
-  current_pos++;
-  internal_row++;
+  current_row++;
   
-  if(internal_row > aux_row2)
+  if(current_row > aux_row2)
     {
-    internal_row = aux_row1;
-    internal_col++;
+    current_row = aux_row1;
+    current_col++;
     
-    current_pos = &( (*M).at(internal_row,internal_col) );
+    current_ptr = &( (*M).at(current_row,current_col) );
+    }
+  else
+    {
+    current_ptr++;
     }
   
   return *this;
@@ -2470,7 +2473,7 @@ inline
 bool
 subview<eT>::iterator::operator==(const iterator& rhs) const
   {
-  return (current_pos == rhs.current_pos);
+  return (current_ptr == rhs.current_ptr);
   }
 
 
@@ -2480,7 +2483,7 @@ inline
 bool
 subview<eT>::iterator::operator!=(const iterator& rhs) const
   {
-  return (current_pos != rhs.current_pos);
+  return (current_ptr != rhs.current_ptr);
   }
 
 
@@ -2490,7 +2493,7 @@ subview<eT>::iterator::operator!=(const iterator& rhs) const
 // bool
 // subview<eT>::iterator::operator==(const const_iterator& rhs) const
 //   {
-//   return (current_pos == rhs.current_pos);
+//   return (current_ptr == rhs.current_ptr);
 //   }
 // 
 // 
@@ -2500,7 +2503,7 @@ subview<eT>::iterator::operator!=(const iterator& rhs) const
 // bool
 // subview<eT>::iterator::operator!=(const const_iterator& rhs) const
 //   {
-//   return (current_pos != rhs.current_pos);
+//   return (current_ptr != rhs.current_ptr);
 //   }
 
 

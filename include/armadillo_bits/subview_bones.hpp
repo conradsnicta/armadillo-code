@@ -189,7 +189,7 @@ class subview : public Base<eT, subview<eT> >
     
     inline iterator();
     inline iterator(const iterator& X);
-    inline iterator(Mat<eT>& in_M, const uword in_row1, const uword in_col1, const uword in_row2);
+    inline iterator(subview<eT>& in_sv, const uword in_row, const uword in_col);
     
     inline eT& operator*();
     
@@ -209,9 +209,9 @@ class subview : public Base<eT, subview<eT> >
     typedef const eT&                 reference;
     
     arma_aligned Mat<eT>* M;
-    arma_aligned eT*      current_pos;
-    arma_aligned uword    internal_row;
-    arma_aligned uword    internal_col;
+    arma_aligned eT*      current_ptr;
+    arma_aligned uword    current_row;
+    arma_aligned uword    current_col;
     
     const uword aux_row1;
     const uword aux_col1;

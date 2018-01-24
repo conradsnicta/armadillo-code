@@ -521,12 +521,14 @@ class Mat : public Base< eT, Mat<eT> >
   typedef       eT*       col_iterator;
   typedef const eT* const_col_iterator;
   
+  class const_row_iterator;
+  
   class row_iterator
     {
     public:
     
     inline row_iterator();
-    inline row_iterator(const row_iterator& in_it);
+    inline row_iterator(const row_iterator& X);
     inline row_iterator(Mat<eT>& in_M, const uword in_row);
     
     inline eT& operator* ();
@@ -537,8 +539,10 @@ class Mat : public Base< eT, Mat<eT> >
     inline row_iterator& operator--();
     inline row_iterator  operator--(int);
     
-    inline bool operator!=(const row_iterator& X) const;
-    inline bool operator==(const row_iterator& X) const;
+    inline bool operator!=(const       row_iterator& X) const;
+    inline bool operator==(const       row_iterator& X) const;
+    inline bool operator!=(const const_row_iterator& X) const;
+    inline bool operator==(const const_row_iterator& X) const;
     
     typedef std::bidirectional_iterator_tag iterator_category;
     typedef eT                              value_type;
@@ -557,17 +561,20 @@ class Mat : public Base< eT, Mat<eT> >
     public:
     
     inline const_row_iterator();
+    inline const_row_iterator(const       row_iterator& X);
+    inline const_row_iterator(const const_row_iterator& X);
     inline const_row_iterator(const Mat<eT>& in_M, const uword in_row);
-    inline const_row_iterator(const row_iterator& X);
     
-    inline eT operator*() const;
+    inline const eT& operator*() const;
     
     inline const_row_iterator& operator++();
-    inline void                operator++(int);
+    inline const_row_iterator  operator++(int);
     
     inline const_row_iterator& operator--();
-    inline void                operator--(int);
+    inline const_row_iterator  operator--(int);
     
+    inline bool operator!=(const       row_iterator& X) const;
+    inline bool operator==(const       row_iterator& X) const;
     inline bool operator!=(const const_row_iterator& X) const;
     inline bool operator==(const const_row_iterator& X) const;
     

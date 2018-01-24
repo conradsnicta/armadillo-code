@@ -551,8 +551,9 @@ class Mat : public Base< eT, Mat<eT> >
     typedef const eT&                       reference;
     
     arma_aligned Mat<eT>* M;
-    arma_aligned uword    row;
-    arma_aligned uword    col;
+    arma_aligned eT*      current_ptr;
+    arma_aligned uword    current_row;
+    arma_aligned uword    current_col;
     };
   
   
@@ -585,8 +586,9 @@ class Mat : public Base< eT, Mat<eT> >
     typedef const eT&                       reference;
     
     arma_aligned const Mat<eT>* M;
-    arma_aligned       uword    row;
-    arma_aligned       uword    col;
+    arma_aligned const eT*      current_ptr;
+    arma_aligned       uword    current_row;
+    arma_aligned       uword    current_col;
     };
   
   

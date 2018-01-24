@@ -181,6 +181,53 @@ class subview : public Base<eT, subview<eT> >
   inline void swap_cols(const uword in_col1, const uword in_col2);
   
   
+  class const_iterator;  // TODO
+  
+  class iterator
+    {
+    public:
+    
+    inline iterator();
+    inline iterator(const iterator& X);
+    inline iterator(Mat<eT>& in_M, const uword in_row1, const uword in_col1, const uword in_row2);
+    
+    inline eT& operator*();
+    
+    inline iterator& operator++();
+    inline iterator  operator++(int);
+    
+    inline bool operator==(const       iterator& rhs) const;
+    inline bool operator!=(const       iterator& rhs) const;
+  //inline bool operator==(const const_iterator& rhs) const;  // TODO
+  //inline bool operator!=(const const_iterator& rhs) const;  // TODO
+    
+    // So that we satisfy the STL iterator types.
+    typedef std::forward_iterator_tag iterator_category;
+    typedef eT                        value_type;
+    typedef unused_diff_type          difference_type;
+    typedef const eT*                 pointer;
+    typedef const eT&                 reference;
+    
+    arma_aligned Mat<eT>* M;
+    arma_aligned eT*      current_pos;
+    arma_aligned uword    internal_row;
+    arma_aligned uword    internal_col;
+    
+    const uword aux_row1;
+    const uword aux_col1;
+    const uword aux_row2;
+    };
+  
+  
+  inline       iterator  begin();
+//inline const_iterator  begin() const;  // TODO
+//inline const_iterator cbegin() const;  // TODO
+  
+  inline       iterator  end();
+//inline const_iterator  end() const;  // TODO
+//inline const_iterator cend() const;  // TODO
+  
+  
   private:
   
   friend class Mat<eT>;

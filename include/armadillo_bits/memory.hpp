@@ -74,7 +74,7 @@ memory::acquire(const uword n_elem)
     }
   #elif defined(ARMA_HAVE_POSIX_MEMALIGN)
     {
-    eT* memptr = NULL;
+    eT* memptr;
     
     const size_t n_bytes   = sizeof(eT)*size_t(n_elem);
     const size_t alignment = (n_bytes >= size_t(512)) ? size_t(64) : size_t(16);

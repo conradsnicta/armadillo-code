@@ -214,7 +214,6 @@ class subview : public Base<eT, subview<eT> >
     arma_aligned uword    current_col;
     
     arma_aligned const uword aux_row1;
-    arma_aligned const uword aux_col1;
     arma_aligned const uword aux_row2;
     };
   
@@ -251,7 +250,6 @@ class subview : public Base<eT, subview<eT> >
     arma_aligned       uword    current_col;
     
     arma_aligned const uword aux_row1;
-    arma_aligned const uword aux_col1;
     arma_aligned const uword aux_row2;
     };
   

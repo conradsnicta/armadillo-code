@@ -2419,7 +2419,6 @@ subview<eT>::iterator::iterator()
   , current_row(0   )
   , current_col(0   )
   , aux_row1   (0   )
-  , aux_col1   (0   )
   , aux_row2   (0   )
   {
   arma_extra_debug_sigprint();
@@ -2436,7 +2435,6 @@ subview<eT>::iterator::iterator(const iterator& X)
   , current_row(X.current_row          )
   , current_col(X.current_col          )
   , aux_row1   (X.aux_row1             )
-  , aux_col1   (X.aux_col1             )
   , aux_row2   (X.aux_row2             )
   {
   arma_extra_debug_sigprint();
@@ -2452,7 +2450,6 @@ subview<eT>::iterator::iterator(subview<eT>& in_sv, const uword in_row, const uw
   , current_row(in_row                            )
   , current_col(in_col                            )
   , aux_row1   (in_sv.aux_row1                    )
-  , aux_col1   (in_sv.aux_col1                    )
   , aux_row2   (in_sv.aux_row1 + in_sv.n_rows-1   )
   {
   arma_extra_debug_sigprint();
@@ -2562,7 +2559,6 @@ subview<eT>::const_iterator::const_iterator()
   , current_row(0   )
   , current_col(0   )
   , aux_row1   (0   )
-  , aux_col1   (0   )
   , aux_row2   (0   )
   {
   arma_extra_debug_sigprint();
@@ -2579,7 +2575,6 @@ subview<eT>::const_iterator::const_iterator(const iterator& X)
   , current_row(X.current_row          )
   , current_col(X.current_col          )
   , aux_row1   (X.aux_row1             )
-  , aux_col1   (X.aux_col1             )
   , aux_row2   (X.aux_row2             )
   {
   arma_extra_debug_sigprint();
@@ -2595,7 +2590,6 @@ subview<eT>::const_iterator::const_iterator(const const_iterator& X)
   , current_row(X.current_row          )
   , current_col(X.current_col          )
   , aux_row1   (X.aux_row1             )
-  , aux_col1   (X.aux_col1             )
   , aux_row2   (X.aux_row2             )
   {
   arma_extra_debug_sigprint();
@@ -2611,7 +2605,6 @@ subview<eT>::const_iterator::const_iterator(const subview<eT>& in_sv, const uwor
   , current_row(in_row                         )
   , current_col(in_col                         )
   , aux_row1   (in_sv.aux_row1                 )
-  , aux_col1   (in_sv.aux_col1                 )
   , aux_row2   (in_sv.aux_row1 + in_sv.n_rows-1)
   {
   arma_extra_debug_sigprint();

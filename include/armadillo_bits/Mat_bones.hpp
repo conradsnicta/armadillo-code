@@ -546,7 +546,7 @@ class Mat : public Base< eT, Mat<eT> >
     
     typedef std::bidirectional_iterator_tag iterator_category;
     typedef eT                              value_type;
-    typedef uword                           difference_type; // not certain on this one
+    typedef unused_diff_type                difference_type;
     typedef const eT*                       pointer;
     typedef const eT&                       reference;
     
@@ -580,7 +580,7 @@ class Mat : public Base< eT, Mat<eT> >
     
     typedef std::bidirectional_iterator_tag iterator_category;
     typedef eT                              value_type;
-    typedef uword                           difference_type; // not certain on this one
+    typedef unused_diff_type                difference_type;
     typedef const eT*                       pointer;
     typedef const eT&                       reference;
     
@@ -618,7 +618,7 @@ class Mat : public Base< eT, Mat<eT> >
     // So that we satisfy the STL iterator types.
     typedef std::bidirectional_iterator_tag iterator_category;
     typedef eT                              value_type;
-    typedef uword                           difference_type; // not certain on this one
+    typedef unused_diff_type                difference_type;
     typedef const eT*                       pointer;
     typedef const eT&                       reference;
     
@@ -657,7 +657,7 @@ class Mat : public Base< eT, Mat<eT> >
     // So that we satisfy the STL iterator types.
     typedef std::bidirectional_iterator_tag iterator_category;
     typedef eT                              value_type;
-    typedef uword                           difference_type; // not certain on this one
+    typedef unused_diff_type                difference_type;
     typedef const eT*                       pointer;
     typedef const eT&                       reference;
     

@@ -74,18 +74,24 @@ memory::acquire(const uword n_elem)
     }
   #elif defined(ARMA_HAVE_POSIX_MEMALIGN)
     {
-    eT* memptr;
+    eT* memptr = NULL;
     
-    const size_t alignment = 16;  // change the 16 to 64 if you wish to align to the cache line
+    const size_t n_bytes   = sizeof(eT)*size_t(n_elem);
+    const size_t alignment = (n_bytes >= size_t(512)) ? size_t(64) : size_t(16);
     
-    int status = posix_memalign((void **)&memptr, ( (alignment >= sizeof(void*)) ? alignment : sizeof(void*) ), sizeof(eT)*n_elem);
+    int status = posix_memalign((void **)&memptr, ( (alignment >= sizeof(void*)) ? alignment : sizeof(void*) ), n_bytes);
     
     out_memptr = (status == 0) ? memptr : NULL;
     }
   #elif defined(_MSC_VER)
     {
     //out_memptr = (eT *) malloc(sizeof(eT)*n_elem);
-    out_memptr = (eT *) _aligned_malloc( sizeof(eT)*n_elem, 16 );  // lives in malloc.h
+    //out_memptr = (eT *) _aligned_malloc( sizeof(eT)*n_elem, 16 );  // lives in malloc.h
+    
+    const size_t n_bytes   = sizeof(eT)*size_t(n_elem);
+    const size_t alignment = (n_bytes >= size_t(512)) ? size_t(64) : size_t(16);
+    
+    out_memptr = (eT *) _aligned_malloc( n_bytes, alignment );
     }
   #else
     {

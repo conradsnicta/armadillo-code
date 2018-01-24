@@ -2430,12 +2430,12 @@ subview<eT>::iterator::iterator()
 template<typename eT>
 inline
 subview<eT>::iterator::iterator(const iterator& X)
-  : M          (X.M                    )
-  , current_ptr(X.current_ptr          )
-  , current_row(X.current_row          )
-  , current_col(X.current_col          )
-  , aux_row1   (X.aux_row1             )
-  , aux_row2   (X.aux_row2             )
+  : M          (X.M          )
+  , current_ptr(X.current_ptr)
+  , current_row(X.current_row)
+  , current_col(X.current_col)
+  , aux_row1   (X.aux_row1   )
+  , aux_row2   (X.aux_row2   )
   {
   arma_extra_debug_sigprint();
   }
@@ -2570,12 +2570,12 @@ subview<eT>::const_iterator::const_iterator()
 template<typename eT>
 inline
 subview<eT>::const_iterator::const_iterator(const iterator& X)
-  : M          (X.M                    )
-  , current_ptr(X.current_ptr          )
-  , current_row(X.current_row          )
-  , current_col(X.current_col          )
-  , aux_row1   (X.aux_row1             )
-  , aux_row2   (X.aux_row2             )
+  : M          (X.M          )
+  , current_ptr(X.current_ptr)
+  , current_row(X.current_row)
+  , current_col(X.current_col)
+  , aux_row1   (X.aux_row1   )
+  , aux_row2   (X.aux_row2   )
   {
   arma_extra_debug_sigprint();
   }
@@ -2585,12 +2585,12 @@ subview<eT>::const_iterator::const_iterator(const iterator& X)
 template<typename eT>
 inline
 subview<eT>::const_iterator::const_iterator(const const_iterator& X)
-  : M          (X.M                    )
-  , current_ptr(X.current_ptr          )
-  , current_row(X.current_row          )
-  , current_col(X.current_col          )
-  , aux_row1   (X.aux_row1             )
-  , aux_row2   (X.aux_row2             )
+  : M          (X.M          )
+  , current_ptr(X.current_ptr)
+  , current_row(X.current_row)
+  , current_col(X.current_col)
+  , aux_row1   (X.aux_row1   )
+  , aux_row2   (X.aux_row2   )
   {
   arma_extra_debug_sigprint();
   }

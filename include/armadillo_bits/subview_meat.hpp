@@ -2357,10 +2357,50 @@ subview<eT>::begin()
 
 template<typename eT>
 inline
+typename subview<eT>::const_iterator
+subview<eT>::begin() const
+  {
+  return const_iterator(*this, aux_row1, aux_col1);
+  }
+
+
+
+template<typename eT>
+inline
+typename subview<eT>::const_iterator
+subview<eT>::cbegin() const
+  {
+  return const_iterator(*this, aux_row1, aux_col1);
+  }
+
+
+
+template<typename eT>
+inline
 typename subview<eT>::iterator
 subview<eT>::end()
   {
   return iterator(*this, aux_row1, aux_col1 + n_cols);
+  }
+
+
+
+template<typename eT>
+inline
+typename subview<eT>::const_iterator
+subview<eT>::end() const
+  {
+  return const_iterator(*this, aux_row1, aux_col1 + n_cols);
+  }
+
+
+
+template<typename eT>
+inline
+typename subview<eT>::const_iterator
+subview<eT>::cend() const
+  {
+  return const_iterator(*this, aux_row1, aux_col1 + n_cols);
   }
 
 
@@ -2488,23 +2528,182 @@ subview<eT>::iterator::operator!=(const iterator& rhs) const
 
 
 
-// template<typename eT>
-// inline
-// bool
-// subview<eT>::iterator::operator==(const const_iterator& rhs) const
-//   {
-//   return (current_ptr == rhs.current_ptr);
-//   }
-// 
-// 
-// 
-// template<typename eT>
-// inline
-// bool
-// subview<eT>::iterator::operator!=(const const_iterator& rhs) const
-//   {
-//   return (current_ptr != rhs.current_ptr);
-//   }
+template<typename eT>
+inline
+bool
+subview<eT>::iterator::operator==(const const_iterator& rhs) const
+  {
+  return (current_ptr == rhs.current_ptr);
+  }
+
+
+
+template<typename eT>
+inline
+bool
+subview<eT>::iterator::operator!=(const const_iterator& rhs) const
+  {
+  return (current_ptr != rhs.current_ptr);
+  }
+
+
+
+//
+//
+//
+
+
+
+template<typename eT>
+inline
+subview<eT>::const_iterator::const_iterator()
+  : M          (NULL)
+  , current_ptr(NULL)
+  , current_row(0   )
+  , current_col(0   )
+  , aux_row1   (0   )
+  , aux_col1   (0   )
+  , aux_row2   (0   )
+  {
+  arma_extra_debug_sigprint();
+  // Technically this iterator is invalid (it does not point to a real element)
+  }
+
+
+
+template<typename eT>
+inline
+subview<eT>::const_iterator::const_iterator(const iterator& X)
+  : M          (X.M                    )
+  , current_ptr(X.current_ptr          )
+  , current_row(X.current_row          )
+  , current_col(X.current_col          )
+  , aux_row1   (X.aux_row1             )
+  , aux_col1   (X.aux_col1             )
+  , aux_row2   (X.aux_row2             )
+  {
+  arma_extra_debug_sigprint();
+  }
+
+
+
+template<typename eT>
+inline
+subview<eT>::const_iterator::const_iterator(const const_iterator& X)
+  : M          (X.M                    )
+  , current_ptr(X.current_ptr          )
+  , current_row(X.current_row          )
+  , current_col(X.current_col          )
+  , aux_row1   (X.aux_row1             )
+  , aux_col1   (X.aux_col1             )
+  , aux_row2   (X.aux_row2             )
+  {
+  arma_extra_debug_sigprint();
+  }
+
+
+
+template<typename eT>
+inline
+subview<eT>::const_iterator::const_iterator(const subview<eT>& in_sv, const uword in_row, const uword in_col)
+  : M          (&(in_sv.m)                     )
+  , current_ptr(&(M->at(in_row,in_col))        )
+  , current_row(in_row                         )
+  , current_col(in_col                         )
+  , aux_row1   (in_sv.aux_row1                 )
+  , aux_col1   (in_sv.aux_col1                 )
+  , aux_row2   (in_sv.aux_row1 + in_sv.n_rows-1)
+  {
+  arma_extra_debug_sigprint();
+  }
+
+
+
+template<typename eT>
+inline
+const eT&
+subview<eT>::const_iterator::operator*()
+  {
+  return (*current_ptr);
+  }
+
+
+
+template<typename eT>
+inline
+typename subview<eT>::const_iterator&
+subview<eT>::const_iterator::operator++()
+  {
+  current_row++;
+  
+  if(current_row > aux_row2)
+    {
+    current_row = aux_row1;
+    current_col++;
+    
+    current_ptr = &( (*M).at(current_row,current_col) );
+    }
+  else
+    {
+    current_ptr++;
+    }
+  
+  return *this;
+  }
+
+
+
+template<typename eT>
+inline
+typename subview<eT>::const_iterator
+subview<eT>::const_iterator::operator++(int)
+  {
+  typename subview<eT>::const_iterator temp(*this);
+  
+  ++(*this);
+  
+  return temp;
+  }
+
+
+
+template<typename eT>
+inline
+bool
+subview<eT>::const_iterator::operator==(const iterator& rhs) const
+  {
+  return (current_ptr == rhs.current_ptr);
+  }
+
+
+
+template<typename eT>
+inline
+bool
+subview<eT>::const_iterator::operator!=(const iterator& rhs) const
+  {
+  return (current_ptr != rhs.current_ptr);
+  }
+
+
+
+template<typename eT>
+inline
+bool
+subview<eT>::const_iterator::operator==(const const_iterator& rhs) const
+  {
+  return (current_ptr == rhs.current_ptr);
+  }
+
+
+
+template<typename eT>
+inline
+bool
+subview<eT>::const_iterator::operator!=(const const_iterator& rhs) const
+  {
+  return (current_ptr != rhs.current_ptr);
+  }
 
 
 

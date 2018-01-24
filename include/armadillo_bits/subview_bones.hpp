@@ -181,7 +181,7 @@ class subview : public Base<eT, subview<eT> >
   inline void swap_cols(const uword in_col1, const uword in_col2);
   
   
-  class const_iterator;  // TODO
+  class const_iterator;
   
   class iterator
     {
@@ -198,8 +198,8 @@ class subview : public Base<eT, subview<eT> >
     
     inline bool operator==(const       iterator& rhs) const;
     inline bool operator!=(const       iterator& rhs) const;
-  //inline bool operator==(const const_iterator& rhs) const;  // TODO
-  //inline bool operator!=(const const_iterator& rhs) const;  // TODO
+    inline bool operator==(const const_iterator& rhs) const;
+    inline bool operator!=(const const_iterator& rhs) const;
     
     // So that we satisfy the STL iterator types.
     typedef std::forward_iterator_tag iterator_category;
@@ -213,19 +213,56 @@ class subview : public Base<eT, subview<eT> >
     arma_aligned uword    current_row;
     arma_aligned uword    current_col;
     
-    const uword aux_row1;
-    const uword aux_col1;
-    const uword aux_row2;
+    arma_aligned const uword aux_row1;
+    arma_aligned const uword aux_col1;
+    arma_aligned const uword aux_row2;
+    };
+  
+  
+  class const_iterator
+    {
+    public:
+    
+    inline const_iterator();
+    inline const_iterator(const       iterator& X);
+    inline const_iterator(const const_iterator& X);
+    inline const_iterator(const subview<eT>& in_sv, const uword in_row, const uword in_col);
+    
+    inline const eT& operator*();
+    
+    inline const_iterator& operator++();
+    inline const_iterator  operator++(int);
+    
+    inline bool operator==(const       iterator& rhs) const;
+    inline bool operator!=(const       iterator& rhs) const;
+    inline bool operator==(const const_iterator& rhs) const;
+    inline bool operator!=(const const_iterator& rhs) const;
+    
+    // So that we satisfy the STL iterator types.
+    typedef std::forward_iterator_tag iterator_category;
+    typedef eT                        value_type;
+    typedef unused_diff_type          difference_type;
+    typedef const eT*                 pointer;
+    typedef const eT&                 reference;
+    
+    arma_aligned const Mat<eT>* M;
+    arma_aligned const eT*      current_ptr;
+    arma_aligned       uword    current_row;
+    arma_aligned       uword    current_col;
+    
+    arma_aligned const uword aux_row1;
+    arma_aligned const uword aux_col1;
+    arma_aligned const uword aux_row2;
     };
   
   
   inline       iterator  begin();
-//inline const_iterator  begin() const;  // TODO
-//inline const_iterator cbegin() const;  // TODO
+  inline const_iterator  begin() const;
+  inline const_iterator cbegin() const;
   
   inline       iterator  end();
-//inline const_iterator  end() const;  // TODO
-//inline const_iterator cend() const;  // TODO
+  inline const_iterator  end() const;
+  inline const_iterator cend() const;
   
   
   private:

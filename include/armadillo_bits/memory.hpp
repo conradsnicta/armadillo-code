@@ -56,6 +56,8 @@ arma_malloc
 eT*
 memory::acquire(const uword n_elem)
   {
+  if(n_elem == 0)  { return NULL; }
+  
   arma_debug_check
     (
     ( size_t(n_elem) > (std::numeric_limits<size_t>::max() / sizeof(eT)) ),
@@ -102,10 +104,7 @@ memory::acquire(const uword n_elem)
   
   // TODO: for mingw, use __mingw_aligned_malloc
   
-  if(n_elem > 0)
-    {
-    arma_check_bad_alloc( (out_memptr == NULL), "arma::memory::acquire(): out of memory" );
-    }
+  arma_check_bad_alloc( (out_memptr == NULL), "arma::memory::acquire(): out of memory" );
   
   return out_memptr;
   }
@@ -131,6 +130,8 @@ arma_inline
 void
 memory::release(eT* mem)
   {
+  if(mem == NULL)  { return; }
+  
   #if   defined(ARMA_USE_TBB_ALLOC)
     {
     scalable_free( (void *)(mem) );

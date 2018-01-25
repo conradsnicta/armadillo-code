@@ -134,6 +134,96 @@ class subview_cube : public BaseCube<eT, subview_cube<eT> >
   inline bool check_overlap(const Mat<eT>&      x) const;
   
   
+  class const_iterator;
+  
+  class iterator
+    {
+    public:
+    
+    inline iterator();
+    inline iterator(const iterator& X);
+    inline iterator(subview_cube<eT>& in_sv, const uword in_row, const uword in_col, const uword in_slice);
+    
+    inline eT& operator*();
+    
+    inline iterator& operator++();
+    inline iterator  operator++(int);
+    
+    inline bool operator==(const       iterator& rhs) const;
+    inline bool operator!=(const       iterator& rhs) const;
+    inline bool operator==(const const_iterator& rhs) const;
+    inline bool operator!=(const const_iterator& rhs) const;
+    
+    // So that we satisfy the STL iterator types.
+    typedef std::forward_iterator_tag iterator_category;
+    typedef eT                        value_type;
+    typedef unused_diff_type          difference_type;
+    typedef const eT*                 pointer;
+    typedef const eT&                 reference;
+    
+    arma_aligned Cube<eT>* M;
+    arma_aligned eT*       current_ptr;
+    arma_aligned uword     current_row;
+    arma_aligned uword     current_col;
+    arma_aligned uword     current_slice;
+    
+    arma_aligned const uword aux_row1;
+    arma_aligned const uword aux_col1;
+    
+    arma_aligned const uword aux_row2_p1;
+    arma_aligned const uword aux_col2_p1;
+    };
+  
+  
+  class const_iterator
+    {
+    public:
+    
+    inline const_iterator();
+    inline const_iterator(const       iterator& X);
+    inline const_iterator(const const_iterator& X);
+    inline const_iterator(const subview_cube<eT>& in_sv, const uword in_row, const uword in_col, const uword in_slice);
+    
+    inline const eT& operator*();
+    
+    inline const_iterator& operator++();
+    inline const_iterator  operator++(int);
+    
+    inline bool operator==(const       iterator& rhs) const;
+    inline bool operator!=(const       iterator& rhs) const;
+    inline bool operator==(const const_iterator& rhs) const;
+    inline bool operator!=(const const_iterator& rhs) const;
+    
+    // So that we satisfy the STL iterator types.
+    typedef std::forward_iterator_tag iterator_category;
+    typedef eT                        value_type;
+    typedef unused_diff_type          difference_type;
+    typedef const eT*                 pointer;
+    typedef const eT&                 reference;
+    
+    arma_aligned const Cube<eT>* M;
+    arma_aligned const eT*       current_ptr;
+    arma_aligned       uword     current_row;
+    arma_aligned       uword     current_col;
+    arma_aligned       uword     current_slice;
+    
+    arma_aligned const uword aux_row1;
+    arma_aligned const uword aux_col1;
+    
+    arma_aligned const uword aux_row2_p1;
+    arma_aligned const uword aux_col2_p1;
+    };
+  
+  
+  inline       iterator  begin();
+  inline const_iterator  begin() const;
+  inline const_iterator cbegin() const;
+  
+  inline       iterator  end();
+  inline const_iterator  end() const;
+  inline const_iterator cend() const;
+  
+  
   private:
   
   friend class  Mat<eT>;

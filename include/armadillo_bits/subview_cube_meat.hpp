@@ -2251,4 +2251,392 @@ subview_cube<eT>::div_inplace(Mat<eT>& out, const subview_cube<eT>& in)
 
 
 
+template<typename eT>
+inline
+typename subview_cube<eT>::iterator
+subview_cube<eT>::begin()
+  {
+  return iterator(*this, aux_row1, aux_col1, aux_slice1);
+  }
+
+
+
+template<typename eT>
+inline
+typename subview_cube<eT>::const_iterator
+subview_cube<eT>::begin() const
+  {
+  return const_iterator(*this, aux_row1, aux_col1, aux_slice1);
+  }
+
+
+
+template<typename eT>
+inline
+typename subview_cube<eT>::const_iterator
+subview_cube<eT>::cbegin() const
+  {
+  return const_iterator(*this, aux_row1, aux_col1, aux_slice1);
+  }
+
+
+
+template<typename eT>
+inline
+typename subview_cube<eT>::iterator
+subview_cube<eT>::end()
+  {
+  return iterator(*this, aux_row1, aux_col1, aux_slice1 + n_slices);
+  }
+
+
+
+template<typename eT>
+inline
+typename subview_cube<eT>::const_iterator
+subview_cube<eT>::end() const
+  {
+  return const_iterator(*this, aux_row1, aux_col1, aux_slice1 + n_slices);
+  }
+
+
+
+template<typename eT>
+inline
+typename subview_cube<eT>::const_iterator
+subview_cube<eT>::cend() const
+  {
+  return const_iterator(*this, aux_row1, aux_col1, aux_slice1 + n_slices);
+  }
+
+
+
+//
+//
+//
+
+
+
+template<typename eT>
+inline
+subview_cube<eT>::iterator::iterator()
+  : M            (NULL)
+  , current_ptr  (NULL)
+  , current_row  (0   )
+  , current_col  (0   )
+  , current_slice(0   )
+  , aux_row1     (0   )
+  , aux_col1     (0   )
+  , aux_row2_p1  (0   )
+  , aux_col2_p1  (0   )
+  {
+  arma_extra_debug_sigprint();
+  // Technically this iterator is invalid (it does not point to a real element)
+  }
+
+
+
+template<typename eT>
+inline
+subview_cube<eT>::iterator::iterator(const iterator& X)
+  : M            (X.M            )
+  , current_ptr  (X.current_ptr  )
+  , current_row  (X.current_row  )
+  , current_col  (X.current_col  )
+  , current_slice(X.current_slice)
+  , aux_row1     (X.aux_row1     )
+  , aux_col1     (X.aux_col1     )
+  , aux_row2_p1  (X.aux_row2_p1  )
+  , aux_col2_p1  (X.aux_col2_p1  )
+  {
+  arma_extra_debug_sigprint();
+  }
+
+
+
+template<typename eT>
+inline
+subview_cube<eT>::iterator::iterator(subview_cube<eT>& in_sv, const uword in_row, const uword in_col, const uword in_slice)
+  : M            (&(const_cast< Cube<eT>& >(in_sv.m)))
+  , current_ptr  (&(M->at(in_row,in_col,in_slice))   )
+  , current_row  (in_row                             )
+  , current_col  (in_col                             )
+  , current_slice(in_slice                           )
+  , aux_row1     (in_sv.aux_row1                     )
+  , aux_col1     (in_sv.aux_col1                     )
+  , aux_row2_p1  (in_sv.aux_row1 + in_sv.n_rows      )
+  , aux_col2_p1  (in_sv.aux_col1 + in_sv.n_cols      )
+  {
+  arma_extra_debug_sigprint();
+  }
+
+
+
+template<typename eT>
+inline
+eT&
+subview_cube<eT>::iterator::operator*()
+  {
+  return (*current_ptr);
+  }
+
+
+
+template<typename eT>
+inline
+typename subview_cube<eT>::iterator&
+subview_cube<eT>::iterator::operator++()
+  {
+  current_row++;
+  
+  if(current_row == aux_row2_p1)
+    {
+    current_row = aux_row1;
+    current_col++;
+    
+    if(current_col == aux_col2_p1)
+      {
+      current_col = aux_col1;
+      current_slice++;
+      }
+    
+    current_ptr = &( (*M).at(current_row,current_col,current_slice) );
+    }
+  else
+    {
+    current_ptr++;
+    }
+  
+  return *this;
+  }
+
+
+
+template<typename eT>
+inline
+typename subview_cube<eT>::iterator
+subview_cube<eT>::iterator::operator++(int)
+  {
+  typename subview_cube<eT>::iterator temp(*this);
+  
+  ++(*this);
+  
+  return temp;
+  }
+
+
+
+template<typename eT>
+inline
+bool
+subview_cube<eT>::iterator::operator==(const iterator& rhs) const
+  {
+  return (current_ptr == rhs.current_ptr);
+  }
+
+
+
+template<typename eT>
+inline
+bool
+subview_cube<eT>::iterator::operator!=(const iterator& rhs) const
+  {
+  return (current_ptr != rhs.current_ptr);
+  }
+
+
+
+template<typename eT>
+inline
+bool
+subview_cube<eT>::iterator::operator==(const const_iterator& rhs) const
+  {
+  return (current_ptr == rhs.current_ptr);
+  }
+
+
+
+template<typename eT>
+inline
+bool
+subview_cube<eT>::iterator::operator!=(const const_iterator& rhs) const
+  {
+  return (current_ptr != rhs.current_ptr);
+  }
+
+
+
+//
+//
+//
+
+
+
+template<typename eT>
+inline
+subview_cube<eT>::const_iterator::const_iterator()
+  : M            (NULL)
+  , current_ptr  (NULL)
+  , current_row  (0   )
+  , current_col  (0   )
+  , current_slice(0   )
+  , aux_row1     (0   )
+  , aux_col1     (0   )
+  , aux_row2_p1  (0   )
+  , aux_col2_p1  (0   )
+  {
+  arma_extra_debug_sigprint();
+  // Technically this iterator is invalid (it does not point to a real element)
+  }
+
+
+
+template<typename eT>
+inline
+subview_cube<eT>::const_iterator::const_iterator(const iterator& X)
+  : M            (X.M            )
+  , current_ptr  (X.current_ptr  )
+  , current_row  (X.current_row  )
+  , current_col  (X.current_col  )
+  , current_slice(X.current_slice)
+  , aux_row1     (X.aux_row1     )
+  , aux_col1     (X.aux_col1     )
+  , aux_row2_p1  (X.aux_row2_p1  )
+  , aux_col2_p1  (X.aux_col2_p1  )
+  {
+  arma_extra_debug_sigprint();
+  }
+
+
+
+template<typename eT>
+inline
+subview_cube<eT>::const_iterator::const_iterator(const const_iterator& X)
+  : M            (X.M            )
+  , current_ptr  (X.current_ptr  )
+  , current_row  (X.current_row  )
+  , current_col  (X.current_col  )
+  , current_slice(X.current_slice)
+  , aux_row1     (X.aux_row1     )
+  , aux_col1     (X.aux_col1     )
+  , aux_row2_p1  (X.aux_row2_p1  )
+  , aux_col2_p1  (X.aux_col2_p1  )
+  {
+  arma_extra_debug_sigprint();
+  }
+
+
+
+template<typename eT>
+inline
+subview_cube<eT>::const_iterator::const_iterator(const subview_cube<eT>& in_sv, const uword in_row, const uword in_col, const uword in_slice)
+  : M            (&(in_sv.m)                      )
+  , current_ptr  (&(M->at(in_row,in_col,in_slice)))
+  , current_row  (in_row                          )
+  , current_col  (in_col                          )
+  , current_slice(in_slice                        )
+  , aux_row1     (in_sv.aux_row1                  )
+  , aux_col1     (in_sv.aux_col1                  )
+  , aux_row2_p1  (in_sv.aux_row1 + in_sv.n_rows   )
+  , aux_col2_p1  (in_sv.aux_col1 + in_sv.n_cols   )
+  {
+  arma_extra_debug_sigprint();
+  }
+
+
+
+template<typename eT>
+inline
+const eT&
+subview_cube<eT>::const_iterator::operator*()
+  {
+  return (*current_ptr);
+  }
+
+
+
+template<typename eT>
+inline
+typename subview_cube<eT>::const_iterator&
+subview_cube<eT>::const_iterator::operator++()
+  {
+  current_row++;
+  
+  if(current_row == aux_row2_p1)
+    {
+    current_row = aux_row1;
+    current_col++;
+    
+    if(current_col == aux_col2_p1)
+      {
+      current_col = aux_col1;
+      current_slice++;
+      }
+    
+    current_ptr = &( (*M).at(current_row,current_col,current_slice) );
+    }
+  else
+    {
+    current_ptr++;
+    }
+  
+  return *this;
+  }
+
+
+
+template<typename eT>
+inline
+typename subview_cube<eT>::const_iterator
+subview_cube<eT>::const_iterator::operator++(int)
+  {
+  typename subview_cube<eT>::const_iterator temp(*this);
+  
+  ++(*this);
+  
+  return temp;
+  }
+
+
+
+template<typename eT>
+inline
+bool
+subview_cube<eT>::const_iterator::operator==(const iterator& rhs) const
+  {
+  return (current_ptr == rhs.current_ptr);
+  }
+
+
+
+template<typename eT>
+inline
+bool
+subview_cube<eT>::const_iterator::operator!=(const iterator& rhs) const
+  {
+  return (current_ptr != rhs.current_ptr);
+  }
+
+
+
+template<typename eT>
+inline
+bool
+subview_cube<eT>::const_iterator::operator==(const const_iterator& rhs) const
+  {
+  return (current_ptr == rhs.current_ptr);
+  }
+
+
+
+template<typename eT>
+inline
+bool
+subview_cube<eT>::const_iterator::operator!=(const const_iterator& rhs) const
+  {
+  return (current_ptr != rhs.current_ptr);
+  }
+
+
+
 //! @}

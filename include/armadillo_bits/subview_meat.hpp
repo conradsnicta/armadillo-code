@@ -2419,7 +2419,7 @@ subview<eT>::iterator::iterator()
   , current_row(0   )
   , current_col(0   )
   , aux_row1   (0   )
-  , aux_row2   (0   )
+  , aux_row2_p1(0   )
   {
   arma_extra_debug_sigprint();
   // Technically this iterator is invalid (it does not point to a real element)
@@ -2435,7 +2435,7 @@ subview<eT>::iterator::iterator(const iterator& X)
   , current_row(X.current_row)
   , current_col(X.current_col)
   , aux_row1   (X.aux_row1   )
-  , aux_row2   (X.aux_row2   )
+  , aux_row2_p1(X.aux_row2_p1)
   {
   arma_extra_debug_sigprint();
   }
@@ -2450,7 +2450,7 @@ subview<eT>::iterator::iterator(subview<eT>& in_sv, const uword in_row, const uw
   , current_row(in_row                            )
   , current_col(in_col                            )
   , aux_row1   (in_sv.aux_row1                    )
-  , aux_row2   (in_sv.aux_row1 + in_sv.n_rows-1   )
+  , aux_row2_p1(in_sv.aux_row1 + in_sv.n_rows     )
   {
   arma_extra_debug_sigprint();
   }
@@ -2474,7 +2474,7 @@ subview<eT>::iterator::operator++()
   {
   current_row++;
   
-  if(current_row > aux_row2)
+  if(current_row == aux_row2_p1)
     {
     current_row = aux_row1;
     current_col++;
@@ -2559,7 +2559,7 @@ subview<eT>::const_iterator::const_iterator()
   , current_row(0   )
   , current_col(0   )
   , aux_row1   (0   )
-  , aux_row2   (0   )
+  , aux_row2_p1(0   )
   {
   arma_extra_debug_sigprint();
   // Technically this iterator is invalid (it does not point to a real element)
@@ -2575,7 +2575,7 @@ subview<eT>::const_iterator::const_iterator(const iterator& X)
   , current_row(X.current_row)
   , current_col(X.current_col)
   , aux_row1   (X.aux_row1   )
-  , aux_row2   (X.aux_row2   )
+  , aux_row2_p1(X.aux_row2_p1)
   {
   arma_extra_debug_sigprint();
   }
@@ -2590,7 +2590,7 @@ subview<eT>::const_iterator::const_iterator(const const_iterator& X)
   , current_row(X.current_row)
   , current_col(X.current_col)
   , aux_row1   (X.aux_row1   )
-  , aux_row2   (X.aux_row2   )
+  , aux_row2_p1(X.aux_row2_p1)
   {
   arma_extra_debug_sigprint();
   }
@@ -2600,12 +2600,12 @@ subview<eT>::const_iterator::const_iterator(const const_iterator& X)
 template<typename eT>
 inline
 subview<eT>::const_iterator::const_iterator(const subview<eT>& in_sv, const uword in_row, const uword in_col)
-  : M          (&(in_sv.m)                     )
-  , current_ptr(&(M->at(in_row,in_col))        )
-  , current_row(in_row                         )
-  , current_col(in_col                         )
-  , aux_row1   (in_sv.aux_row1                 )
-  , aux_row2   (in_sv.aux_row1 + in_sv.n_rows-1)
+  : M          (&(in_sv.m)                   )
+  , current_ptr(&(M->at(in_row,in_col))      )
+  , current_row(in_row                       )
+  , current_col(in_col                       )
+  , aux_row1   (in_sv.aux_row1               )
+  , aux_row2_p1(in_sv.aux_row1 + in_sv.n_rows)
   {
   arma_extra_debug_sigprint();
   }
@@ -2629,7 +2629,7 @@ subview<eT>::const_iterator::operator++()
   {
   current_row++;
   
-  if(current_row > aux_row2)
+  if(current_row == aux_row2_p1)
     {
     current_row = aux_row1;
     current_col++;

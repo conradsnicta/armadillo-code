@@ -4584,11 +4584,11 @@ Member functions:
 </li>
 <br>
 <li>
-Iterators for dense matrices and vectors traverse over all elements
+Iterators for dense matrices and vectors traverse over all elements within the specified range
 </li>
 <br>
 <li>
-Iterators for sparse matrices traverse over non-zero elements;
+Iterators for sparse matrices traverse over non-zero elements within the specified range;
 <br><b>caveat:</b> writing a zero value into a sparse matrix through an iterator will invalidate all current iterators associated with the sparse matrix
 </li>
 <br>
@@ -4788,25 +4788,23 @@ Iterator types:
 Examples:
 <ul>
 <pre>
-mat X = randu&lt;mat&gt;(5,5);
+mat X(5, 6, fill::randu);
 
+mat::iterator it     = X.begin();
+mat::iterator it_end = X.end();
 
-mat::iterator a = X.begin();
-mat::iterator b = X.end();
-
-for(mat::iterator i=a; i!=b; ++i)
+for(; it != it_end; ++it)
   {
-  cout &lt;&lt; *i &lt;&lt; endl;
+  cout &lt;&lt; (*it) &lt;&lt; endl;
   }
 
+mat::col_iterator col_it     = X.begin_col(1);  // start of column 1
+mat::col_iterator col_it_end = X.end_col(3);    //   end of column 3
 
-mat::col_iterator c = X.begin_col(1);  // start of column 1
-mat::col_iterator d = X.end_col(3);    // end of column 3
-
-for(mat::col_iterator i=c; i!=d; ++i)
+for(; col_it != col_it_end; ++col_it)
   {
-  cout &lt;&lt; *i &lt;&lt; endl;
-  (*i) = 123.0;
+  cout &lt;&lt; (*col_it) &lt;&lt; endl;
+  (*col_it) = 123.0;
   }
 </pre>
 </ul>

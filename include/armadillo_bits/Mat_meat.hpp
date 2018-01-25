@@ -7702,10 +7702,10 @@ Mat<eT>::const_row_iterator::operator==(const typename Mat<eT>::const_row_iterat
 template<typename eT>
 inline
 Mat<eT>::row_col_iterator::row_col_iterator()
-  : M           (NULL)
-  , current_pos (NULL)
-  , internal_col(0   )
-  , internal_row(0   )
+  : M          (NULL)
+  , current_ptr(NULL)
+  , current_col(0   )
+  , current_row(0   )
   {
   arma_extra_debug_sigprint();
   // Technically this iterator is invalid (it does not point to a real element)
@@ -7716,10 +7716,10 @@ Mat<eT>::row_col_iterator::row_col_iterator()
 template<typename eT>
 inline
 Mat<eT>::row_col_iterator::row_col_iterator(const row_col_iterator& in_it)
-  : M           (in_it.M           )
-  , current_pos (in_it.current_pos )
-  , internal_col(in_it.internal_col)
-  , internal_row(in_it.internal_row)
+  : M          (in_it.M          )
+  , current_ptr(in_it.current_ptr)
+  , current_col(in_it.current_col)
+  , current_row(in_it.current_row)
   {
   arma_extra_debug_sigprint();
   }
@@ -7729,10 +7729,10 @@ Mat<eT>::row_col_iterator::row_col_iterator(const row_col_iterator& in_it)
 template<typename eT>
 inline
 Mat<eT>::row_col_iterator::row_col_iterator(Mat<eT>& in_M, const uword in_row, const uword in_col)
-  : M           (&in_M                  )
-  , current_pos (&in_M.at(in_row,in_col))
-  , internal_col(in_col                 )
-  , internal_row(in_row                 )
+  : M          (&in_M                  )
+  , current_ptr(&in_M.at(in_row,in_col))
+  , current_col(in_col                 )
+  , current_row(in_row                 )
   {
   arma_extra_debug_sigprint();
   }
@@ -7744,7 +7744,7 @@ inline
 eT&
 Mat<eT>::row_col_iterator::operator*()
   {
-  return *current_pos;
+  return *current_ptr;
   }
 
 
@@ -7754,14 +7754,14 @@ inline
 typename Mat<eT>::row_col_iterator&
 Mat<eT>::row_col_iterator::operator++()
   {
-  current_pos++;
-  internal_row++;
+  current_ptr++;
+  current_row++;
   
   // Check to see if we moved a column.
-  if(internal_row == M->n_rows)
+  if(current_row == M->n_rows)
     {
-    internal_col++;
-    internal_row = 0;
+    current_col++;
+    current_row = 0;
     }
   
   return *this;
@@ -7787,17 +7787,17 @@ template<typename eT>
 inline typename Mat<eT>::row_col_iterator&
 Mat<eT>::row_col_iterator::operator--()
   {
-  if(internal_row > 0)
+  if(current_row > 0)
     {
-    current_pos--;
-    internal_row--;
+    current_ptr--;
+    current_row--;
     }
   else
-  if(internal_col > 0)
+  if(current_col > 0)
     {
-    current_pos--;
-    internal_col--;
-    internal_row = M->n_rows - 1;
+    current_ptr--;
+    current_col--;
+    current_row = M->n_rows - 1;
     }
   
   return *this;
@@ -7824,7 +7824,7 @@ inline
 uword
 Mat<eT>::row_col_iterator::row() const
   {
-  return internal_row;
+  return current_row;
   }
 
 
@@ -7834,7 +7834,7 @@ inline
 uword
 Mat<eT>::row_col_iterator::col() const
   {
-  return internal_col;
+  return current_col;
   }
 
 
@@ -7844,7 +7844,7 @@ inline
 bool
 Mat<eT>::row_col_iterator::operator==(const row_col_iterator& rhs) const
   {
-  return (current_pos == rhs.current_pos);
+  return (current_ptr == rhs.current_ptr);
   }
 
 
@@ -7854,7 +7854,7 @@ inline
 bool
 Mat<eT>::row_col_iterator::operator!=(const row_col_iterator& rhs) const
   {
-  return (current_pos != rhs.current_pos);
+  return (current_ptr != rhs.current_ptr);
   }
 
 
@@ -7864,7 +7864,7 @@ inline
 bool
 Mat<eT>::row_col_iterator::operator==(const const_row_col_iterator& rhs) const
   {
-  return (current_pos == rhs.current_pos);
+  return (current_ptr == rhs.current_ptr);
   }
 
 
@@ -7874,7 +7874,7 @@ inline
 bool
 Mat<eT>::row_col_iterator::operator!=(const const_row_col_iterator& rhs) const
   {
-  return (current_pos != rhs.current_pos);
+  return (current_ptr != rhs.current_ptr);
   }
 
 
@@ -7882,10 +7882,10 @@ Mat<eT>::row_col_iterator::operator!=(const const_row_col_iterator& rhs) const
 template<typename eT>
 inline
 Mat<eT>::const_row_col_iterator::const_row_col_iterator()
-  : M           (NULL)
-  , current_pos (NULL)
-  , internal_col(0   )
-  , internal_row(0   )
+  : M          (NULL)
+  , current_ptr(NULL)
+  , current_col(0   )
+  , current_row(0   )
   {
   arma_extra_debug_sigprint();
   // Technically this iterator is invalid (it does not point to a real element)
@@ -7897,9 +7897,9 @@ template<typename eT>
 inline
 Mat<eT>::const_row_col_iterator::const_row_col_iterator(const row_col_iterator& in_it)
   : M           (in_it.M          )
-  , current_pos (in_it.current_pos)
-  , internal_col(in_it.col()      )
-  , internal_row(in_it.row()      )
+  , current_ptr (in_it.current_ptr)
+  , current_col(in_it.col()      )
+  , current_row(in_it.row()      )
   {
   arma_extra_debug_sigprint();
   }
@@ -7910,9 +7910,9 @@ template<typename eT>
 inline
 Mat<eT>::const_row_col_iterator::const_row_col_iterator(const const_row_col_iterator& in_it)
   : M           (in_it.M          )
-  , current_pos (in_it.current_pos)
-  , internal_col(in_it.col()      )
-  , internal_row(in_it.row()      )
+  , current_ptr (in_it.current_ptr)
+  , current_col(in_it.col()      )
+  , current_row(in_it.row()      )
   {
   arma_extra_debug_sigprint();
   }
@@ -7923,9 +7923,9 @@ template<typename eT>
 inline
 Mat<eT>::const_row_col_iterator::const_row_col_iterator(const Mat<eT>& in_M, const uword in_row, const uword in_col)
   : M           (&in_M                  )
-  , current_pos (&in_M.at(in_row,in_col))
-  , internal_col(in_col                 )
-  , internal_row(in_row                 )
+  , current_ptr (&in_M.at(in_row,in_col))
+  , current_col(in_col                 )
+  , current_row(in_row                 )
   {
   arma_extra_debug_sigprint();
   }
@@ -7937,7 +7937,7 @@ inline
 const eT&
 Mat<eT>::const_row_col_iterator::operator*() const
   {
-  return *current_pos;
+  return *current_ptr;
   }
 
 
@@ -7947,14 +7947,14 @@ inline
 typename Mat<eT>::const_row_col_iterator&
 Mat<eT>::const_row_col_iterator::operator++()
   {
-  current_pos++;
-  internal_row++;
+  current_ptr++;
+  current_row++;
   
   // Check to see if we moved a column.
-  if(internal_row == M->n_rows)
+  if(current_row == M->n_rows)
     {
-    internal_col++;
-    internal_row = 0;
+    current_col++;
+    current_row = 0;
     }
   
   return *this;
@@ -7981,17 +7981,17 @@ inline
 typename Mat<eT>::const_row_col_iterator&
 Mat<eT>::const_row_col_iterator::operator--()
   {
-  if(internal_row > 0)
+  if(current_row > 0)
     {
-    current_pos--;
-    internal_row--;
+    current_ptr--;
+    current_row--;
     }
   else
-  if(internal_col > 0)
+  if(current_col > 0)
     {
-    current_pos--;
-    internal_col--;
-    internal_row = M->n_rows - 1;
+    current_ptr--;
+    current_col--;
+    current_row = M->n_rows - 1;
     }
   
   return *this;
@@ -8018,7 +8018,7 @@ inline
 uword
 Mat<eT>::const_row_col_iterator::row() const
   {
-  return internal_row;
+  return current_row;
   }
 
 
@@ -8028,7 +8028,7 @@ inline
 uword
 Mat<eT>::const_row_col_iterator::col() const
   {
-  return internal_col;
+  return current_col;
   }
 
 
@@ -8038,7 +8038,7 @@ inline
 bool
 Mat<eT>::const_row_col_iterator::operator==(const const_row_col_iterator& rhs) const
   {
-  return (current_pos == rhs.current_pos);
+  return (current_ptr == rhs.current_ptr);
   }
 
 
@@ -8048,7 +8048,7 @@ inline
 bool
 Mat<eT>::const_row_col_iterator::operator!=(const const_row_col_iterator& rhs) const
   {
-  return (current_pos != rhs.current_pos);
+  return (current_ptr != rhs.current_ptr);
   }
 
 
@@ -8058,7 +8058,7 @@ inline
 bool
 Mat<eT>::const_row_col_iterator::operator==(const row_col_iterator& rhs) const
   {
-  return (current_pos == rhs.current_pos);
+  return (current_ptr == rhs.current_ptr);
   }
 
 
@@ -8068,7 +8068,7 @@ inline
 bool
 Mat<eT>::const_row_col_iterator::operator!=(const row_col_iterator& rhs) const
   {
-  return (current_pos != rhs.current_pos);
+  return (current_ptr != rhs.current_ptr);
   }
 
 

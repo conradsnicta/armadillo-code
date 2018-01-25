@@ -7896,8 +7896,8 @@ Mat<eT>::const_row_col_iterator::const_row_col_iterator()
 template<typename eT>
 inline
 Mat<eT>::const_row_col_iterator::const_row_col_iterator(const row_col_iterator& in_it)
-  : M           (in_it.M          )
-  , current_ptr (in_it.current_ptr)
+  : M          (in_it.M          )
+  , current_ptr(in_it.current_ptr)
   , current_col(in_it.col()      )
   , current_row(in_it.row()      )
   {
@@ -7909,8 +7909,8 @@ Mat<eT>::const_row_col_iterator::const_row_col_iterator(const row_col_iterator& 
 template<typename eT>
 inline
 Mat<eT>::const_row_col_iterator::const_row_col_iterator(const const_row_col_iterator& in_it)
-  : M           (in_it.M          )
-  , current_ptr (in_it.current_ptr)
+  : M          (in_it.M          )
+  , current_ptr(in_it.current_ptr)
   , current_col(in_it.col()      )
   , current_row(in_it.row()      )
   {
@@ -7922,8 +7922,8 @@ Mat<eT>::const_row_col_iterator::const_row_col_iterator(const const_row_col_iter
 template<typename eT>
 inline
 Mat<eT>::const_row_col_iterator::const_row_col_iterator(const Mat<eT>& in_M, const uword in_row, const uword in_col)
-  : M           (&in_M                  )
-  , current_ptr (&in_M.at(in_row,in_col))
+  : M          (&in_M                  )
+  , current_ptr(&in_M.at(in_row,in_col))
   , current_col(in_col                 )
   , current_row(in_row                 )
   {

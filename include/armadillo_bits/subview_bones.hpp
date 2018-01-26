@@ -253,6 +253,77 @@ class subview : public Base<eT, subview<eT> >
     arma_aligned const uword aux_row2_p1;
     };
   
+  class const_row_iterator;
+  
+  class row_iterator
+    {
+    public:
+    
+    inline row_iterator();
+    inline row_iterator(const row_iterator& X);
+    inline row_iterator(subview<eT>& in_sv, const uword in_row, const uword in_col);
+    
+    inline eT& operator* ();
+    
+    inline row_iterator& operator++();
+    inline row_iterator  operator++(int);
+    
+    inline bool operator!=(const       row_iterator& X) const;
+    inline bool operator==(const       row_iterator& X) const;
+    inline bool operator!=(const const_row_iterator& X) const;
+    inline bool operator==(const const_row_iterator& X) const;
+    
+    typedef std::forward_iterator_tag iterator_category;
+    typedef eT                        value_type;
+    typedef unused_diff_type          difference_type;
+    typedef const eT*                 pointer;
+    typedef const eT&                 reference;
+    
+    arma_aligned Mat<eT>* M;
+    arma_aligned eT*      current_ptr;
+    arma_aligned uword    current_row;
+    arma_aligned uword    current_col;
+    
+    arma_aligned const uword aux_col1;
+    arma_aligned const uword aux_col2_p1;
+    };
+  
+  
+  class const_row_iterator
+    {
+    public:
+    
+    inline const_row_iterator();
+    inline const_row_iterator(const       row_iterator& X);
+    inline const_row_iterator(const const_row_iterator& X);
+    inline const_row_iterator(const subview<eT>& in_sv, const uword in_row, const uword in_col);
+    
+    inline const eT& operator*() const;
+    
+    inline const_row_iterator& operator++();
+    inline const_row_iterator  operator++(int);
+    
+    inline bool operator!=(const       row_iterator& X) const;
+    inline bool operator==(const       row_iterator& X) const;
+    inline bool operator!=(const const_row_iterator& X) const;
+    inline bool operator==(const const_row_iterator& X) const;
+    
+    typedef std::forward_iterator_tag iterator_category;
+    typedef eT                        value_type;
+    typedef unused_diff_type          difference_type;
+    typedef const eT*                 pointer;
+    typedef const eT&                 reference;
+    
+    arma_aligned const Mat<eT>* M;
+    arma_aligned const eT*      current_ptr;
+    arma_aligned       uword    current_row;
+    arma_aligned       uword    current_col;
+    
+    arma_aligned const uword aux_col1;
+    arma_aligned const uword aux_col2_p1;
+    };
+  
+  
   
   inline       iterator  begin();
   inline const_iterator  begin() const;
@@ -418,6 +489,13 @@ class subview_row : public subview<eT>
   inline arma_warn_unused uword index_min() const;
   inline arma_warn_unused uword index_max() const;
   
+  inline typename subview<eT>::row_iterator        begin();
+  inline typename subview<eT>::const_row_iterator  begin() const;
+  inline typename subview<eT>::const_row_iterator cbegin() const;
+  
+  inline typename subview<eT>::row_iterator        end();
+  inline typename subview<eT>::const_row_iterator  end() const;
+  inline typename subview<eT>::const_row_iterator cend() const;
   
   protected:
   

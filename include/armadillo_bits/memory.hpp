@@ -79,7 +79,7 @@ memory::acquire(const uword n_elem)
     eT* memptr;
     
     const size_t n_bytes   = sizeof(eT)*size_t(n_elem);
-    const size_t alignment = (n_bytes >= size_t(512)) ? size_t(64) : size_t(16);
+    const size_t alignment = (n_bytes >= size_t(1024)) ? size_t(64) : size_t(16);
     
     int status = posix_memalign((void **)&memptr, ( (alignment >= sizeof(void*)) ? alignment : sizeof(void*) ), n_bytes);
     
@@ -91,7 +91,7 @@ memory::acquire(const uword n_elem)
     //out_memptr = (eT *) _aligned_malloc( sizeof(eT)*n_elem, 16 );  // lives in malloc.h
     
     const size_t n_bytes   = sizeof(eT)*size_t(n_elem);
-    const size_t alignment = (n_bytes >= size_t(512)) ? size_t(64) : size_t(16);
+    const size_t alignment = (n_bytes >= size_t(1024)) ? size_t(64) : size_t(16);
     
     out_memptr = (eT *) _aligned_malloc( n_bytes, alignment );
     }

@@ -527,6 +527,7 @@ namespace arma
   #include "armadillo_bits/fn_polyval.hpp"
   #include "armadillo_bits/fn_intersect.hpp"
   #include "armadillo_bits/fn_normpdf.hpp"
+  #include "armadillo_bits/fn_normcdf.hpp"
   
   #include "armadillo_bits/fn_speye.hpp"
   #include "armadillo_bits/fn_spones.hpp"

@@ -205,8 +205,8 @@ class subview : public Base<eT, subview<eT> >
     typedef std::forward_iterator_tag iterator_category;
     typedef eT                        value_type;
     typedef unused_diff_type          difference_type;
-    typedef const eT*                 pointer;
-    typedef const eT&                 reference;
+    typedef eT*                       pointer;
+    typedef eT&                       reference;
     
     arma_aligned Mat<eT>* M;
     arma_aligned eT*      current_ptr;
@@ -276,8 +276,8 @@ class subview : public Base<eT, subview<eT> >
     typedef std::forward_iterator_tag iterator_category;
     typedef eT                        value_type;
     typedef unused_diff_type          difference_type;
-    typedef const eT*                 pointer;
-    typedef const eT&                 reference;
+    typedef eT*                       pointer;
+    typedef eT&                       reference;
     
     arma_aligned Mat<eT>* M;
     arma_aligned eT*      current_ptr;

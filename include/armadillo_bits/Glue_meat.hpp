@@ -44,6 +44,19 @@ Glue<T1,T2,glue_type>::Glue(const T1& in_A, const T2& in_B, const uword in_aux_u
 
 template<typename T1, typename T2, typename glue_type>
 inline
+Glue<T1,T2,glue_type>::Glue(const T1& in_A, const T2& in_B, const uword in_aux_uword, const typename T1::elem_type in_aux)
+  : A(in_A)
+  , B(in_B)
+  , aux_uword(in_aux_uword)
+  , aux      (in_aux      )
+  {
+  arma_extra_debug_sigprint();
+  }
+
+
+
+template<typename T1, typename T2, typename glue_type>
+inline
 Glue<T1,T2,glue_type>::~Glue()
   {
   arma_extra_debug_sigprint();

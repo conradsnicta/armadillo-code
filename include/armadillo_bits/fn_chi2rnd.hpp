@@ -21,12 +21,24 @@
 
 arma_warn_unused
 inline
-float
+double
 chi2rnd(const double df)
   {
   arma_extra_debug_sigprint();
   
-  return op_chi2rnd::generate(df);
+  #if defined(ARMA_USE_CXX11)
+    {
+    op_chi2rnd_generator<double> generator;
+    
+    return generator(df);
+    }
+  #else
+    {
+    arma_stop_logic_error("chi2rnd(): C++11 compiler required");
+    
+    return double(0);
+    }
+  #endif
   }
 
 

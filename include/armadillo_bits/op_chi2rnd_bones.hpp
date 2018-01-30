@@ -27,11 +27,26 @@ class op_chi2rnd
   
   template<typename T1>
   inline static void apply_noalias(Mat<typename T1::elem_type>& out, const Proxy<T1>& P);
-  
-  template<typename eT>
-  inline static eT generate(const eT val);
   };
 
+
+
+#if defined(ARMA_USE_CXX11)
+
+template<typename eT>
+class op_chi2rnd_generator
+  {
+  public:
+  
+  arma_aligned std::mt19937_64 motor;
+  
+  inline ~op_chi2rnd_generator();
+  inline  op_chi2rnd_generator();
+  
+  inline eT operator()(const eT val);
+  };
+
+#endif
 
 
 //! @}

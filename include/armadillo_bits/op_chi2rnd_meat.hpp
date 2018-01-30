@@ -57,11 +57,7 @@ op_chi2rnd::apply_noalias(Mat<typename T1::elem_type>& out, const Proxy<T1>& P)
     {
     typedef typename T1::elem_type eT;
     
-    typedef std::mt19937_64                 motor_type;
-    typedef std::mt19937_64::result_type    seed_type;
-    typedef std::gamma_distribution<eT>     distr_type;
-    
-    motor_type motor;  motor.seed( seed_type(arma_rng::randi<int>()) );
+    op_chi2rnd_generator<eT> generator;
     
     const uword n_rows = P.get_n_rows();
     const uword n_cols = P.get_n_cols();
@@ -78,18 +74,7 @@ op_chi2rnd::apply_noalias(Mat<typename T1::elem_type>& out, const Proxy<T1>& P)
       
       for(uword i=0; i<N; ++i)
         {
-        const eT val = Pea[i]; 
-        
-        if(val > eT(0))
-          {
-          distr_type distr(eT(0.5)*val, eT(2));
-          
-          out_mem[i] = distr(motor);
-          }
-        else
-          {
-          out_mem[i] = Datum<eT>::nan;
-          }
+        out_mem[i] = generator( Pea[i] );
         }
       }
     else
@@ -97,20 +82,7 @@ op_chi2rnd::apply_noalias(Mat<typename T1::elem_type>& out, const Proxy<T1>& P)
       for(uword col=0; col < n_cols; ++col)
       for(uword row=0; row < n_rows; ++row)
         {
-        const eT val = P.at(row,col);
-        
-        if(val > eT(0))
-          {
-          distr_type distr(eT(0.5)*val, eT(2));
-          
-          (*out_mem) = distr(motor);
-          }
-        else
-          {
-          (*out_mem) = Datum<eT>::nan;
-          }
-        
-        ++out_mem;
+        (*out_mem) = generator( P.at(row,col) );  ++out_mem;
         }
       }
     }
@@ -125,38 +97,58 @@ op_chi2rnd::apply_noalias(Mat<typename T1::elem_type>& out, const Proxy<T1>& P)
 
 
 
+//
+
+
+
+#if defined(ARMA_USE_CXX11)
+
+template<typename eT>
+inline
+op_chi2rnd_generator<eT>::~op_chi2rnd_generator()
+  {
+  arma_extra_debug_sigprint();
+  }
+
+
+
+template<typename eT>
+inline
+op_chi2rnd_generator<eT>::op_chi2rnd_generator()
+  {
+  arma_extra_debug_sigprint();
+  
+  typedef std::mt19937_64::result_type seed_type;
+  
+  motor.seed( seed_type(arma_rng::randi<int>()) );
+  }
+
+
+
 template<typename eT>
 inline
 eT
-op_chi2rnd::generate(const eT val)
+op_chi2rnd_generator<eT>::operator()(const eT val)
   {
-  #if defined(ARMA_USE_CXX11)
+  arma_extra_debug_sigprint();
+  
+  // as C++11 doesn't seem to provide a way to explicitly set the parameter
+  // of an existing chi_squared_distribution object,
+  // we need to create a new object each time
+  
+  if(val > eT(0))
     {
-    typedef std::mt19937_64                 motor_type;
-    typedef std::mt19937_64::result_type    seed_type;
-    typedef std::gamma_distribution<eT>     distr_type;
+    std::chi_squared_distribution<eT> distr(val);
     
-    motor_type motor;  motor.seed( seed_type(arma_rng::randi<int>()) );
-    
-    if(val > eT(0))
-      {
-      distr_type distr(eT(0.5)*val, eT(2));
-      
-      return eT( distr(motor) );
-      }
-    else
-      {
-      return Datum<eT>::nan;
-      }
+    return eT( distr(motor) );
     }
-  #else
+  else
     {
-    arma_stop_logic_error("chi2rnd(): C++11 compiler required");
-    
-    return eT(0);
+    return Datum<eT>::nan;
     }
-  #endif
   }
+
+#endif
 
 
 

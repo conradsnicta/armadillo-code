@@ -128,32 +128,33 @@ glue_wishrnd::apply_noalias(Mat<eT>& out, const Mat<eT>& S, const eT df, const M
       {
       arma_extra_debug_print("standard generator");
       
-      Col<eT> tmp_vec(N);
-      eT*     tmp_vec_mem = tmp_vec.memptr();
+      op_chi2rnd_generator<eT> chi2rnd_gen;
       
-      for(uword i=0; i<N; ++i)  { tmp_vec_mem[i] = df_val - eT(i); }
+      Mat<eT> A(N, N, fill::zeros);
       
-      Mat<eT> tmp_mat(N, N, fill::zeros);
-      
-      tmp_mat.diag() = sqrt( chi2rnd(tmp_vec) );
-      
-      tmp_vec.reset();
+      for(uword i=0; i<N; ++i)
+        {
+        A.at(i,i) = std::sqrt( chi2rnd_gen(df_val - eT(i)) );
+        }
       
       for(uword j=  0; j<N; ++j)
       for(uword i=j+1; i<N; ++i)
         {
-        tmp_mat.at(i,j) = eT( arma_rng::randn<eT>() );
+        A.at(i,j) = eT( arma_rng::randn<eT>() );
         }
       
-      const Mat<eT> tmp_mat2 = D * tmp_mat;
+      const Mat<eT> B = D * A;
       
-      tmp_mat.reset();
+      A.reset();
       
-      out = tmp_mat2 * tmp_mat2.t();
+      out = B * B.t();
       }
     }
   #else
     {
+    arma_ignore(S);
+    arma_ignore(df);
+    arma_ignore(D);
     arma_stop_logic_error("C++11 compiler required");
     out.reset();
     }

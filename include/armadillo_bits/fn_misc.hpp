@@ -675,38 +675,4 @@ affmul(const T1& A, const T2& B)
 
 
 
-template<typename T1>
-arma_inline
-typename
-enable_if2
-  <
-  is_real<typename T1::elem_type>::value,
-  const Glue<T1, T1, glue_wishrnd>
-  >::result
-wishrnd(const Base<typename T1::elem_type, T1>& S, typename T1::elem_type df)
-  {
-  arma_extra_debug_sigprint();
-  
-  return Glue<T1, T1, glue_wishrnd>(S.get_ref(), S.get_ref(), uword(1), df);
-  }
-
-
-
-template<typename T1, typename T2>
-arma_inline
-typename
-enable_if2
-  <
-  is_real<typename T1::elem_type>::value,
-  const Glue<T1, T2, glue_wishrnd>
-  >::result
-wishrnd(const Base<typename T1::elem_type, T1>& S, typename T1::elem_type df, Base<typename T1::elem_type, T2>& D)
-  {
-  arma_extra_debug_sigprint();
-  
-  return Glue<T1, T2, glue_wishrnd>(S.get_ref(), D.get_ref(), uword(2), df);
-  }
-
-
-
 //! @}

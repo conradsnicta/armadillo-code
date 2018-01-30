@@ -27,10 +27,8 @@ glue_wishrnd::apply(Mat<typename T1::elem_type>& out, const Glue<T1,T2,glue_wish
   
   typedef typename T1::elem_type eT;
   
-  const uword mode = expr.aux_uword;
-  const eT    df   = expr.aux;
-  
-  const quasi_unwrap<T2> UB(expr.B);
+  const uword mode  = expr.aux_uword;
+  const eT    df = expr.aux;
   
   if(mode == 1)
     {
@@ -78,7 +76,7 @@ glue_wishrnd::apply_noalias(Mat<eT>& out, const Mat<eT>& S, const eT df)
   {
   arma_extra_debug_sigprint();
   
-  // TODO: check that S is square sized
+  arma_debug_check( (S.is_square() == false), "wishrnd(): given matrix must be square sized" );
   
   Mat<eT> D;
   
@@ -90,7 +88,7 @@ glue_wishrnd::apply_noalias(Mat<eT>& out, const Mat<eT>& S, const eT df)
   if(status == false)
     {
     out.reset();
-    arma_debug_check(true, "wishrnd(): cholesky decomposition failed");
+    arma_debug_check(true, "wishrnd(): matrix is not positive definite");
     }
   
   glue_wishrnd::apply_noalias(out, S, df, D);
@@ -101,10 +99,65 @@ glue_wishrnd::apply_noalias(Mat<eT>& out, const Mat<eT>& S, const eT df)
 template<typename eT>
 inline
 void
-  glue_wishrnd::apply_noalias(Mat<eT>& out, const Mat<eT>& S, const eT df, const Mat<eT>& D)
+glue_wishrnd::apply_noalias(Mat<eT>& out, const Mat<eT>& S, const eT df, const Mat<eT>& D)
   {
   arma_extra_debug_sigprint();
   
+  #if defined(ARMA_USE_CXX11)
+    {
+    arma_debug_check( (S.is_square() == false), "wishrnd(): given matrix must be square sized" );
+    arma_debug_check( (size(S) != size(D)),     "wishrnd(): size mismatch"                     );
+    
+    if(S.is_empty())  { out.reset(); return; }
+    
+    const uword N = S.n_rows;
+    
+    const eT   df_floor  = std::floor(df);
+    const eT   df_val    = (uword(df) < N) ? df_floor : df;
+    const bool df_simple = (df == df_floor);
+    
+    if(df_simple)
+      {
+      arma_extra_debug_print("simple generator");
+      
+      const Mat<eT> tmp = (randn< Mat<eT> >(uword(df_val), N)) * D;
+      
+      out = tmp.t() * tmp;
+      }
+    else
+      {
+      arma_extra_debug_print("standard generator");
+      
+      Col<eT> tmp_vec(N);
+      eT*     tmp_vec_mem = tmp_vec.memptr();
+      
+      for(uword i=0; i<N; ++i)  { tmp_vec_mem[i] = df_val - eT(i); }
+      
+      Mat<eT> tmp_mat(N, N, fill::zeros);
+      
+      tmp_mat.diag() = sqrt( chi2rnd(tmp_vec) );
+      
+      tmp_vec.reset();
+      
+      for(uword j=  0; j<N; ++j)
+      for(uword i=j+1; i<N; ++i)
+        {
+        tmp_mat.at(i,j) = eT( arma_rng::randn<eT>() );
+        }
+      
+      const Mat<eT> tmp_mat2 = D * tmp_mat;
+      
+      tmp_mat.reset();
+      
+      out = tmp_mat2 * tmp_mat2.t();
+      }
+    }
+  #else
+    {
+    arma_stop_logic_error("C++11 compiler required");
+    out.reset();
+    }
+  #endif
   }
 
 

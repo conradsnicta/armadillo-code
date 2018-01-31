@@ -56,4 +56,49 @@ wishrnd(const Base<typename T1::elem_type, T1>& S, typename T1::elem_type df, co
 
 
 
+template<typename T1>
+inline
+typename
+enable_if2
+  <
+  is_real<typename T1::elem_type>::value,
+  bool
+  >::result
+wishrnd(Mat<typename T1::elem_type>& W, const Base<typename T1::elem_type, T1>& S, typename T1::elem_type df)
+  {
+  arma_extra_debug_sigprint();
+  
+  const bool status = op_wishrnd::apply_direct(W, S.get_ref(), df, uword(1));
+  
+  if(status == false)
+    {
+    arma_debug_warn("wishrnd(): given matrix is not positive definite");
+    W.soft_reset();
+    return false;
+    }
+  
+  return true;
+  }
+
+
+
+template<typename T1, typename T2>
+arma_warn_unused
+inline
+typename
+enable_if2
+  <
+  is_real<typename T1::elem_type>::value,
+  bool
+  >::result
+wishrnd(Mat<typename T1::elem_type>& W, const Base<typename T1::elem_type, T1>& S, typename T1::elem_type df, const Base<typename T1::elem_type, T2>& D)
+  {
+  arma_extra_debug_sigprint();
+  arma_ignore(S);
+  
+  return op_wishrnd::apply_direct(W, D.get_ref(), df, uword(2));
+  }
+
+
+
 //! @}

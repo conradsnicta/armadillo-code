@@ -25,11 +25,14 @@ class op_wishrnd
    template<typename T1>
    inline static void apply(Mat<typename T1::elem_type>& out, const Op<T1,op_wishrnd>& expr);
    
-   template<typename eT>
-   inline static void apply_noalias_mode1(Mat<eT>& out, const Mat<eT>& S, const eT df);
+   template<typename T1>
+   inline static bool apply_direct(Mat<typename T1::elem_type>& out, const Base<typename T1::elem_type,T1>& X, const typename T1::elem_type df, const uword mode);
    
    template<typename eT>
-   inline static void apply_noalias_mode2(Mat<eT>& out, const Mat<eT>& D, const eT df);
+   inline static bool apply_noalias_mode1(Mat<eT>& out, const Mat<eT>& S, const eT df);
+   
+   template<typename eT>
+   inline static bool apply_noalias_mode2(Mat<eT>& out, const Mat<eT>& D, const eT df);
    };
 
 

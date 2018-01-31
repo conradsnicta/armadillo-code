@@ -30,57 +30,75 @@ op_wishrnd::apply(Mat<typename T1::elem_type>& out, const Op<T1,op_wishrnd>& exp
   const eT    df   = expr.aux;
   const uword mode = expr.aux_uword_a;
   
-  const quasi_unwrap<T1> U(expr.m);
+  const bool status = op_wishrnd::apply_direct(out, expr.m, df, mode);
+  
+  if(status == false)
+    {
+    out.soft_reset();
+    arma_debug_check(true, "wishrnd(): given matrix is not positive definite");
+    }
+  }
+
+
+
+template<typename T1>
+inline
+bool
+op_wishrnd::apply_direct(Mat<typename T1::elem_type>& out, const Base<typename T1::elem_type,T1>& X, const typename T1::elem_type df, const uword mode)
+  {
+  arma_extra_debug_sigprint();
+  
+  typedef typename T1::elem_type eT;
+  
+  const quasi_unwrap<T1> U(X.get_ref());
+  
+  bool status = false;
   
   if(U.is_alias(out))
     {
     Mat<eT> tmp;
     
-    if(mode == 1)  { op_wishrnd::apply_noalias_mode1(tmp, U.M, df); }
-    if(mode == 2)  { op_wishrnd::apply_noalias_mode2(tmp, U.M, df); }
+    if(mode == 1)  { status = op_wishrnd::apply_noalias_mode1(tmp, U.M, df); }
+    if(mode == 2)  { status = op_wishrnd::apply_noalias_mode2(tmp, U.M, df); }
     
     out.steal_mem(tmp);
     }
   else
     {
-    if(mode == 1)  { op_wishrnd::apply_noalias_mode1(out, U.M, df); }
-    if(mode == 2)  { op_wishrnd::apply_noalias_mode2(out, U.M, df); }
+    if(mode == 1)  { status = op_wishrnd::apply_noalias_mode1(out, U.M, df); }
+    if(mode == 2)  { status = op_wishrnd::apply_noalias_mode2(out, U.M, df); }
     }
+  
+  return status;
   }
+
 
 
 template<typename eT>
 inline
-void
+bool
 op_wishrnd::apply_noalias_mode1(Mat<eT>& out, const Mat<eT>& S, const eT df)
   {
   arma_extra_debug_sigprint();
   
   arma_debug_check( (S.is_square() == false), "wishrnd(): given matrix must be square sized" );
   
-  if(S.is_empty())  { out.reset(); return; }
+  if(S.is_empty())  { out.reset(); return true; }
   
   Mat<eT> D;
   
   const bool status = op_chol::apply_direct(D, S, 0);
   
-  // TODO: overload user-facing function to return bool on success
-  // TODO: pattern after expmat() ?
+  if(status == false)  { return false; }
   
-  if(status == false)
-    {
-    out.reset();
-    arma_debug_check(true, "wishrnd(): matrix is not positive definite");
-    }
-  
-  op_wishrnd::apply_noalias_mode2(out, D, df);
+  return op_wishrnd::apply_noalias_mode2(out, D, df);
   }
 
 
 
 template<typename eT>
 inline
-void
+bool
 op_wishrnd::apply_noalias_mode2(Mat<eT>& out, const Mat<eT>& D, const eT df)
   {
   arma_extra_debug_sigprint();
@@ -92,6 +110,10 @@ op_wishrnd::apply_noalias_mode2(Mat<eT>& out, const Mat<eT>& D, const eT df)
   
   #if defined(ARMA_USE_CXX11)
     {
+    arma_debug_check( (D.is_square() == false), "wishrnd(): given matrix must be square sized" );
+    
+    if(D.is_empty())  { out.reset(); return true; }
+    
     const uword N = D.n_rows;
     
     const eT   df_floor  = std::floor(df);
@@ -131,13 +153,17 @@ op_wishrnd::apply_noalias_mode2(Mat<eT>& out, const Mat<eT>& D, const eT df)
       
       out = B * B.t();
       }
+    
+    return true;
     }
   #else
     {
-    out.reset();
+    out.soft_reset();
     arma_ignore(D);
     arma_ignore(df);
     arma_stop_logic_error("wishrnd(): C++11 compiler required");
+    
+    return false;
     }
   #endif
   }

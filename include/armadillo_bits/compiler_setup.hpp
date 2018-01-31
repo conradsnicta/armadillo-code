@@ -167,7 +167,7 @@
   #define ARMA_GCC_VERSION (__GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__)
   
   #if (ARMA_GCC_VERSION < 40400)
-    #error "*** Need a newer compiler ***"
+    #error "*** newer compiler required ***"
   #endif
   
   #if (ARMA_GCC_VERSION < 40600)
@@ -319,11 +319,11 @@
 #if defined(__INTEL_COMPILER)
   
   #if (__INTEL_COMPILER == 9999)
-    #error "*** Need a newer compiler ***"
+    #error "*** newer compiler required ***"
   #endif
   
   #if (__INTEL_COMPILER < 1300)
-    #error "*** Need a newer compiler ***"
+    #error "*** newer compiler required ***"
   #endif
   
   #undef  ARMA_HAVE_GCC_ASSUME_ALIGNED
@@ -343,7 +343,7 @@
 #if defined(_MSC_VER)
   
   #if (_MSC_VER < 1700)
-    #error "*** Need a newer compiler ***"
+    #error "*** newer compiler required ***"
   #endif
   
   #if (_MSC_VER < 1800)
@@ -415,7 +415,7 @@
   // http://www.oracle.com/technetwork/server-storage/solarisstudio/documentation/cplusplus-faq-355066.html
   
   #if (__SUNPRO_CC < 0x5100)
-    #error "*** Need a newer compiler ***"
+    #error "*** newer compiler required ***"
   #endif
   
   #if defined(ARMA_USE_CXX11)

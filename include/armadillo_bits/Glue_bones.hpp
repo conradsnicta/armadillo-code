@@ -66,13 +66,11 @@ class Glue : public Base<typename T1::elem_type, Glue<T1, T2, glue_type> >
   
   arma_inline  Glue(const T1& in_A, const T2& in_B);
   arma_inline  Glue(const T1& in_A, const T2& in_B, const uword in_aux_uword);
-  arma_inline  Glue(const T1& in_A, const T2& in_B, const uword in_aux_uword, const elem_type in_aux);
   arma_inline ~Glue();
   
-  const T1&       A;          //!< first operand
-  const T2&       B;          //!< second operand
-        uword     aux_uword;  //!< storage of auxiliary data, uword format
-        elem_type aux;        //!< storage of auxiliary data, user defined format
+  const T1&   A;          //!< first operand
+  const T2&   B;          //!< second operand
+        uword aux_uword;  //!< storage of auxiliary data, uword format
   };
 
 

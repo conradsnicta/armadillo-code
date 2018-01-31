@@ -275,6 +275,7 @@ namespace arma
   #include "armadillo_bits/op_logmat_bones.hpp"
   #include "armadillo_bits/op_range_bones.hpp"
   #include "armadillo_bits/op_chi2rnd_bones.hpp"
+  #include "armadillo_bits/op_wishrnd_bones.hpp"
   
   #include "armadillo_bits/glue_times_bones.hpp"
   #include "armadillo_bits/glue_mixed_bones.hpp"
@@ -298,7 +299,6 @@ namespace arma
   #include "armadillo_bits/glue_polyval_bones.hpp"
   #include "armadillo_bits/glue_intersect_bones.hpp"
   #include "armadillo_bits/glue_affmul_bones.hpp"
-  #include "armadillo_bits/glue_wishrnd_bones.hpp"
   
   #include "armadillo_bits/gmm_misc_bones.hpp"
   #include "armadillo_bits/gmm_diag_bones.hpp"
@@ -663,6 +663,7 @@ namespace arma
   #include "armadillo_bits/op_logmat_meat.hpp"
   #include "armadillo_bits/op_range_meat.hpp"
   #include "armadillo_bits/op_chi2rnd_meat.hpp"
+  #include "armadillo_bits/op_wishrnd_meat.hpp"
   
   #include "armadillo_bits/glue_times_meat.hpp"
   #include "armadillo_bits/glue_mixed_meat.hpp"
@@ -686,7 +687,6 @@ namespace arma
   #include "armadillo_bits/glue_polyval_meat.hpp"
   #include "armadillo_bits/glue_intersect_meat.hpp"
   #include "armadillo_bits/glue_affmul_meat.hpp"
-  #include "armadillo_bits/glue_wishrnd_meat.hpp"
   
   #include "armadillo_bits/gmm_misc_meat.hpp"
   #include "armadillo_bits/gmm_diag_meat.hpp"

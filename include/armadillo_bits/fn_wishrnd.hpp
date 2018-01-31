@@ -26,13 +26,13 @@ typename
 enable_if2
   <
   is_real<typename T1::elem_type>::value,
-  const Glue<T1, T1, glue_wishrnd>
+  const Op<T1, op_wishrnd>
   >::result
 wishrnd(const Base<typename T1::elem_type, T1>& S, typename T1::elem_type df)
   {
   arma_extra_debug_sigprint();
   
-  return Glue<T1, T1, glue_wishrnd>(S.get_ref(), S.get_ref(), uword(1), df);
+  return Op<T1, op_wishrnd>(S.get_ref(), df, uword(1), uword(0));
   }
 
 
@@ -44,13 +44,14 @@ typename
 enable_if2
   <
   is_real<typename T1::elem_type>::value,
-  const Glue<T1, T2, glue_wishrnd>
+  const Op<T2, op_wishrnd>
   >::result
-wishrnd(const Base<typename T1::elem_type, T1>& S, typename T1::elem_type df, Base<typename T1::elem_type, T2>& D)
+wishrnd(const Base<typename T1::elem_type, T1>& S, typename T1::elem_type df, const Base<typename T1::elem_type, T2>& D)
   {
   arma_extra_debug_sigprint();
+  arma_ignore(S);
   
-  return Glue<T1, T2, glue_wishrnd>(S.get_ref(), D.get_ref(), uword(2), df);
+  return Op<T2, op_wishrnd>(D.get_ref(), df, uword(2), uword(0));
   }
 
 

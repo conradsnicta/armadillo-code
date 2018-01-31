@@ -132,15 +132,15 @@ glue_wishrnd::apply_noalias(Mat<eT>& out, const Mat<eT>& S, const eT df, const M
       
       Mat<eT> A(N, N, fill::zeros);
       
-      if(false)
       for(uword i=0; i<N; ++i)
         {
         A.at(i,i) = std::sqrt( chi2rnd_gen(df_val - eT(i)) );
         }
       
-      for(uword i=0; i<(N-1); ++i)
+      const uword Nm1 = N-1;
+      for(uword i=0; i < Nm1; ++i)
         {
-        arma_rng::randn<eT>::fill( &(A.at(i+1,i)), N-i-1 );
+        arma_rng::randn<eT>::fill( &(A.at(i+1,i)), Nm1-i );
         }
       
       const Mat<eT> B = D * A;

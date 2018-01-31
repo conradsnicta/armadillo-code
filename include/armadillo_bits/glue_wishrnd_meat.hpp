@@ -128,13 +128,13 @@ glue_wishrnd::apply_noalias(Mat<eT>& out, const Mat<eT>& S, const eT df, const M
       {
       arma_extra_debug_print("standard generator");
       
-      op_chi2rnd_generator<eT> chi2rnd_gen;
+      op_chi2rnd_varying_df<eT> chi2rnd_generator;
       
       Mat<eT> A(N, N, fill::zeros);
       
       for(uword i=0; i<N; ++i)
         {
-        A.at(i,i) = std::sqrt( chi2rnd_gen(df_val - eT(i)) );
+        A.at(i,i) = std::sqrt( chi2rnd_generator(df_val - eT(i)) );
         }
       
       const uword Nm1 = N-1;

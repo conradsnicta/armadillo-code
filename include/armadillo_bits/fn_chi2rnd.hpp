@@ -28,7 +28,7 @@ chi2rnd(const double df)
   
   #if defined(ARMA_USE_CXX11)
     {
-    op_chi2rnd_generator<double> generator;
+    op_chi2rnd_varying_df<double> generator;
     
     return generator(df);
     }
@@ -74,23 +74,21 @@ chi2rnd(const typename obj_type::elem_type df, const uword n_rows, const uword n
   {
   arma_extra_debug_sigprint();
   
-  #if defined(ARMA_USE_CXX11)
+  if(is_Col<obj_type>::value == true)
     {
-    typedef typename obj_type::elem_type eT;
-    
-    return randg<obj_type>(n_rows, n_cols, distr_param(eT(0.5)*df, eT(2)));
+    arma_debug_check( (n_cols != 1), "chi2rnd(): incompatible size" );
     }
-  #else
+  else
+  if(is_Row<obj_type>::value == true)
     {
-    arma_ignore(df);
-    arma_ignore(n_rows);
-    arma_ignore(n_cols);
-    
-    arma_stop_logic_error("chi2rnd(): C++11 compiler required");
-    
-    return obj_type();
+    arma_debug_check( (n_rows != 1), "chi2rnd(): incompatible size" );
     }
-  #endif
+  
+  obj_type out(n_rows, n_cols);
+  
+  op_chi2rnd::fill_constant_df(out, df);
+  
+  return out;
   }
 
 
@@ -108,22 +106,7 @@ chi2rnd(const typename obj_type::elem_type df, const SizeMat& s)
   {
   arma_extra_debug_sigprint();
   
-  #if defined(ARMA_USE_CXX11)
-    {
-    typedef typename obj_type::elem_type eT;
-    
-    return randg<obj_type>(s.n_rows, s.n_cols, distr_param(eT(0.5)*df, eT(2)));
-    }
-  #else
-    {
-    arma_ignore(df);
-    arma_ignore(s);
-    
-    arma_stop_logic_error("chi2rnd(): C++11 compiler required");
-    
-    return obj_type();
-    }
-  #endif
+  return chi2rnd<obj_type>(df, s.n_rows, s.n_cols);
   }
 
 
@@ -141,29 +124,14 @@ chi2rnd(const typename obj_type::elem_type df, const uword n_elem)
   {
   arma_extra_debug_sigprint();
   
-  #if defined(ARMA_USE_CXX11)
+  if(is_Row<obj_type>::value == true)
     {
-    typedef typename obj_type::elem_type eT;
-    
-    if(is_Row<obj_type>::value == true)
-      {
-      return randg<obj_type>(1, n_elem, distr_param(eT(0.5)*df, eT(2)));
-      }
-    else
-      {
-      return randg<obj_type>(n_elem, 1, distr_param(eT(0.5)*df, eT(2)));
-      }
+    return chi2rnd<obj_type>(df, 1, n_elem);
     }
-  #else
+  else
     {
-    arma_ignore(df);
-    arma_ignore(n_elem);
-    
-    arma_stop_logic_error("chi2rnd(): C++11 compiler required");
-    
-    return obj_type();
+    return chi2rnd<obj_type>(df, n_elem, 1);
     }
-  #endif
   }
 
 
@@ -175,21 +143,7 @@ chi2rnd(const double df, const uword n_rows, const uword n_cols)
   {
   arma_extra_debug_sigprint();
   
-  #if defined(ARMA_USE_CXX11)
-    {
-    return randg<mat>(n_rows, n_cols, distr_param(double(0.5)*df, double(2)));
-    }
-  #else
-    {
-    arma_ignore(df);
-    arma_ignore(n_rows);
-    arma_ignore(n_cols);
-    
-    arma_stop_logic_error("chi2rnd(): C++11 compiler required");
-    
-    return mat();
-    }
-  #endif
+  return chi2rnd<mat>(df, n_rows, n_cols);
   }
 
 
@@ -201,20 +155,7 @@ chi2rnd(const double df, const SizeMat& s)
   {
   arma_extra_debug_sigprint();
   
-  #if defined(ARMA_USE_CXX11)
-    {
-    return randg<mat>(s.n_rows, s.n_cols, distr_param(double(0.5)*df, double(2)));
-    }
-  #else
-    {
-    arma_ignore(df);
-    arma_ignore(s);
-    
-    arma_stop_logic_error("chi2rnd(): C++11 compiler required");
-    
-    return mat();
-    }
-  #endif
+  return chi2rnd<mat>(df, s.n_rows, s.n_cols);
   }
 
 
@@ -226,20 +167,7 @@ chi2rnd(const double df, const uword n_elem)
   {
   arma_extra_debug_sigprint();
   
-  #if defined(ARMA_USE_CXX11)
-    {
-    return randg<vec>(n_elem, 1, distr_param(double(0.5)*df, double(2)));
-    }
-  #else
-    {
-    arma_ignore(df);
-    arma_ignore(n_elem);
-    
-    arma_stop_logic_error("chi2rnd(): C++11 compiler required");
-    
-    return vec();
-    }
-  #endif
+  return chi2rnd<vec>(df, n_elem, 1);
   }
 
 

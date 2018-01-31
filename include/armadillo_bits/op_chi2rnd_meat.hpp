@@ -57,7 +57,7 @@ op_chi2rnd::apply_noalias(Mat<typename T1::elem_type>& out, const Proxy<T1>& P)
     {
     typedef typename T1::elem_type eT;
     
-    op_chi2rnd_generator<eT> generator;
+    op_chi2rnd_varying_df<eT> generator;
     
     const uword n_rows = P.get_n_rows();
     const uword n_cols = P.get_n_cols();
@@ -88,9 +88,53 @@ op_chi2rnd::apply_noalias(Mat<typename T1::elem_type>& out, const Proxy<T1>& P)
     }
   #else
     {
-    arma_stop_logic_error("chi2rnd(): C++11 compiler required");
-    
     out.reset();
+    
+    arma_stop_logic_error("chi2rnd(): C++11 compiler required");
+    }
+  #endif
+  }
+
+
+
+template<typename eT>
+inline
+void
+op_chi2rnd::fill_constant_df(Mat<eT>& out, const eT df)
+  {
+  arma_extra_debug_sigprint();
+  
+  #if defined(ARMA_USE_CXX11)
+    {
+    if(df > eT(0))
+      {
+      typedef std::mt19937_64                   motor_type;
+      typedef std::mt19937_64::result_type      seed_type;
+      typedef std::chi_squared_distribution<eT> distr_type;
+      
+      motor_type motor;  motor.seed( seed_type(arma_rng::randi<int>()) );
+      distr_type distr(df);
+      
+      const uword N = out.n_elem;
+      
+      eT* out_mem = out.memptr();
+      
+      for(uword i=0; i<N; ++i)
+        {
+        out_mem[i] = eT( distr(motor) );
+        }
+      }
+    else
+      {
+      out.fill( Datum<eT>::nan );
+      }
+    }
+  #else
+    {
+    out.reset();
+    arma_ignore(df);
+    
+    arma_stop_logic_error("chi2rnd(): C++11 compiler required");
     }
   #endif
   }
@@ -105,7 +149,7 @@ op_chi2rnd::apply_noalias(Mat<typename T1::elem_type>& out, const Proxy<T1>& P)
 
 template<typename eT>
 inline
-op_chi2rnd_generator<eT>::~op_chi2rnd_generator()
+op_chi2rnd_varying_df<eT>::~op_chi2rnd_varying_df()
   {
   arma_extra_debug_sigprint();
   }
@@ -114,7 +158,7 @@ op_chi2rnd_generator<eT>::~op_chi2rnd_generator()
 
 template<typename eT>
 inline
-op_chi2rnd_generator<eT>::op_chi2rnd_generator()
+op_chi2rnd_varying_df<eT>::op_chi2rnd_varying_df()
   {
   arma_extra_debug_sigprint();
   
@@ -128,7 +172,7 @@ op_chi2rnd_generator<eT>::op_chi2rnd_generator()
 template<typename eT>
 inline
 eT
-op_chi2rnd_generator<eT>::operator()(const eT val)
+op_chi2rnd_varying_df<eT>::operator()(const eT df)
   {
   arma_extra_debug_sigprint();
   
@@ -136,9 +180,9 @@ op_chi2rnd_generator<eT>::operator()(const eT val)
   // of an existing chi_squared_distribution object,
   // we need to create a new object each time
   
-  if(val > eT(0))
+  if(df > eT(0))
     {
-    std::chi_squared_distribution<eT> distr(val);
+    std::chi_squared_distribution<eT> distr(df);
     
     return eT( distr(motor) );
     }

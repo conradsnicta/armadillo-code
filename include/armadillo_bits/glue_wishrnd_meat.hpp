@@ -113,7 +113,7 @@ glue_wishrnd::apply_noalias(Mat<eT>& out, const Mat<eT>& S, const eT df, const M
     const uword N = S.n_rows;
     
     const eT   df_floor  = std::floor(df);
-    const eT   df_val    = (uword(df) < N) ? df_floor : df;
+    const eT   df_val    = (df < eT(N)) ? df_floor : df;
     const bool df_simple = (df == df_floor);
     
     if(df_simple)

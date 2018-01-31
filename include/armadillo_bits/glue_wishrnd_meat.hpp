@@ -103,6 +103,11 @@ glue_wishrnd::apply_noalias(Mat<eT>& out, const Mat<eT>& S, const eT df, const M
   {
   arma_extra_debug_sigprint();
   
+  // implementation based on:
+  // Yu-Cheng Ku and Peter Bloomfield.
+  // Generating Random Wishart Matrices with Fractional Degrees of Freedom in OX.
+  // Oxmetrics User Conference, 2010.
+  
   #if defined(ARMA_USE_CXX11)
     {
     arma_debug_check( (S.is_square() == false), "wishrnd(): given matrix must be square sized" );

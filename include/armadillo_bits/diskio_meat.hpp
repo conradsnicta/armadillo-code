@@ -1720,7 +1720,9 @@ diskio::load_csv_ascii(Mat<eT>& x, std::istream& f, std::string&)
   {
   arma_extra_debug_sigprint();
   
-  // TODO: replace with more efficient implementation
+  // TODO: replace with more efficient implementation;
+  // TODO: there is too much overhead using std::stringstream;
+  // TODO: refactor to use strtod(), strtol(), strtoll(), strtoul(), strtoull()
   
   bool load_okay = f.good();
   

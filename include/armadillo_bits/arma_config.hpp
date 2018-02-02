@@ -142,6 +142,13 @@ struct arma_config
   #endif
   
   
+  #if (defined(_POSIX_C_SOURCE) && (_POSIX_C_SOURCE >= 200112L))
+    static const bool posix = true;
+  #else
+    static const bool posix = false;
+  #endif
+  
+  
   #if defined(ARMA_USE_WRAPPER)
     static const bool wrapper = true;
   #else

@@ -1318,6 +1318,7 @@ arma_assert_atlas_size(const T1& A, const T2& B)
         
         out << "@ arma_config::wrapper      = " << arma_config::wrapper      << '\n';
         out << "@ arma_config::cxx11        = " << arma_config::cxx11        << '\n';
+        out << "@ arma_config::posix        = " << arma_config::posix        << '\n';
         out << "@ arma_config::openmp       = " << arma_config::openmp       << '\n';
         out << "@ arma_config::lapack       = " << arma_config::lapack       << '\n';
         out << "@ arma_config::blas         = " << arma_config::blas         << '\n';

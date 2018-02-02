@@ -586,7 +586,7 @@ diskio::guess_file_type(std::istream& f)
   bool has_bracket = false;
   bool has_comma   = false;
   
-  if(load_okay == true)
+  if(load_okay)
     {
     for(uword i=0; i<N; ++i)
       {
@@ -672,6 +672,144 @@ diskio::safe_rename(const std::string& old_name, const std::string& new_name)
 
 template<typename eT>
 inline
+void
+diskio::convert_token(eT& val, const std::string& token)
+  {
+  const size_t N = size_t(token.length());
+  
+  if(N == 0)  { val = eT(0); return; }
+  
+  const char* str = token.c_str();
+  
+  if( (N == 3) || (N == 4) )
+    {
+    const bool neg = (str[0] == '-');
+    const bool pos = (str[0] == '+');
+    
+    const size_t offset = ( (neg || pos) && (N == 4) ) ? 1 : 0;
+    
+    const char sig = str[offset];
+    
+    if( (sig == 'i') || (sig == 'I') )
+      {
+      val = neg ? cond_rel< is_signed<eT>::value >::make_neg(Datum<eT>::inf) : Datum<eT>::inf;
+      
+      return;
+      }
+    else
+    if( (sig == 'n') || (sig == 'N') )
+      {
+      val = Datum<eT>::nan;
+      
+      return;
+      }
+    }
+  
+  
+  
+  if(is_real<eT>::value)
+    {
+    val = eT( std::strtod(str, NULL) );
+    }
+  else
+    {
+    if(is_signed<eT>::value)
+      {
+      // signed integer
+      
+      #if defined(ARMA_USE_CXX11) || (defined(_POSIX_C_SOURCE) && (_POSIX_C_SOURCE >= 200112L))
+        {
+        val = eT( std::strtoll(str, NULL, 10) );
+        }
+      #else
+        {
+        val = eT( std::strtol(str, NULL, 10) );
+        }
+      #endif
+      }
+    else
+      {
+      // unsigned integer
+      
+      if(str[0] == '-')  { val = eT(0);  return; }
+      
+      #if defined(ARMA_USE_CXX11) || (defined(_POSIX_C_SOURCE) && (_POSIX_C_SOURCE >= 200112L))
+        {
+        val = eT( std::strtoull(str, NULL, 10) );
+        }
+      #else
+        {
+        val = eT( std::strtoul(str, NULL, 10) );
+        }
+      #endif
+      }
+    }
+  }
+
+
+
+template<typename T>
+inline
+void
+diskio::convert_token(std::complex<T>& val, const std::string& token)
+  {
+  const size_t N = size_t(token.length());
+  
+  if(N == 0)  { val = std::complex<T>(0); return; }
+  
+  const char* str = token.c_str();
+  
+  if( (token[0] != '(') || (token[N-1] != ')') )
+    {
+    T val_real;
+    
+    diskio::convert_token(val_real, token);
+    
+    val = std::complex<T>(val_real);
+    
+    return;
+    }
+  
+  
+  if(N <= 2)  { val = std::complex<T>(0); return; }
+  
+  
+  size_t comma_loc   = 0;
+  bool   comma_found = false;
+  
+  for(size_t i=0; i<N; ++i)  { if(str[i] == ',')  { comma_loc = i; comma_found = true; break; } }
+  
+  if(comma_found == false)
+    {
+    // only the real part is available
+    
+    const std::string token_real( &(str[1]), &(str[N-1]) );
+    
+    T val_real;
+    
+    diskio::convert_token(val_real, token_real);
+    
+    val = std::complex<T>(val_real);
+    }
+  else
+    {
+    const std::string token_real( &(str[1]),           &(str[comma_loc]) );
+    const std::string token_imag( &(str[comma_loc+1]), &(str[N-1      ]) );
+    
+    T val_real;
+    T val_imag;
+    
+    diskio::convert_token(val_real, token_real);
+    diskio::convert_token(val_imag, token_imag);
+    
+    val = std::complex<T>(val_real, val_imag);
+    }
+  }
+
+
+
+template<typename eT>
+inline
 bool
 diskio::convert_naninf(eT& val, const std::string& token)
   {
@@ -733,12 +871,12 @@ diskio::convert_naninf(std::complex<T>& val, const std::string& token)
     bool success_real = true;
     bool success_imag = true;
     
-    if(ss_real.fail() == true)
+    if(ss_real.fail())
       {
       success_real = diskio::convert_naninf( val_real, token_real );
       }
     
-    if(ss_imag.fail() == true)
+    if(ss_imag.fail())
       {
       success_imag = diskio::convert_naninf( val_imag, token_imag );
       }
@@ -768,17 +906,14 @@ diskio::save_raw_ascii(const Mat<eT>& x, const std::string& final_name)
   
   bool save_okay = f.is_open();
   
-  if(save_okay == true)
+  if(save_okay)
     {
     save_okay = diskio::save_raw_ascii(x, f);
     
     f.flush();
     f.close();
     
-    if(save_okay == true)
-      {
-      save_okay = diskio::safe_rename(tmp_name, final_name);
-      }
+    if(save_okay)  { save_okay = diskio::safe_rename(tmp_name, final_name); }
     }
   
   return save_okay;
@@ -848,17 +983,14 @@ diskio::save_raw_binary(const Mat<eT>& x, const std::string& final_name)
   
   bool save_okay = f.is_open();
   
-  if(save_okay == true)
+  if(save_okay)
     {
     save_okay = diskio::save_raw_binary(x, f);
     
     f.flush();
     f.close();
     
-    if(save_okay == true)
-      {
-      save_okay = diskio::safe_rename(tmp_name, final_name);
-      }
+    if(save_okay)  { save_okay = diskio::safe_rename(tmp_name, final_name); }
     }
   
   return save_okay;
@@ -895,17 +1027,14 @@ diskio::save_arma_ascii(const Mat<eT>& x, const std::string& final_name)
   
   bool save_okay = f.is_open();
 
-  if(save_okay == true)  
+  if(save_okay)  
     {
     save_okay = diskio::save_arma_ascii(x, f);
     
     f.flush();
     f.close();
     
-    if(save_okay == true)
-      {
-      save_okay = diskio::safe_rename(tmp_name, final_name);
-      }
+    if(save_okay)  { save_okay = diskio::safe_rename(tmp_name, final_name); }
     }
   
   return save_okay;
@@ -984,17 +1113,14 @@ diskio::save_csv_ascii(const Mat<eT>& x, const std::string& final_name)
   
   bool save_okay = f.is_open();
   
-  if(save_okay == true)  
+  if(save_okay)  
     {
     save_okay = diskio::save_csv_ascii(x, f);
     
     f.flush();
     f.close();
     
-    if(save_okay == true)
-      {
-      save_okay = diskio::safe_rename(tmp_name, final_name);
-      }
+    if(save_okay)  { save_okay = diskio::safe_rename(tmp_name, final_name); }
     }
   
   return save_okay;
@@ -1111,17 +1237,14 @@ diskio::save_arma_binary(const Mat<eT>& x, const std::string& final_name)
   
   bool save_okay = f.is_open();
   
-  if(save_okay == true)
+  if(save_okay)
     {
     save_okay = diskio::save_arma_binary(x, f);
     
     f.flush();
     f.close();
     
-    if(save_okay == true)
-      {
-      save_okay = diskio::safe_rename(tmp_name, final_name);
-      }
+    if(save_okay)  { save_okay = diskio::safe_rename(tmp_name, final_name); }
     }
   
   return save_okay;
@@ -1162,17 +1285,14 @@ diskio::save_pgm_binary(const Mat<eT>& x, const std::string& final_name)
   
   bool save_okay = f.is_open();
   
-  if(save_okay == true)
+  if(save_okay)
     {
     save_okay = diskio::save_pgm_binary(x, f);
     
     f.flush();
     f.close();
     
-    if(save_okay == true)
-      {
-      save_okay = diskio::safe_rename(tmp_name, final_name);
-      }
+    if(save_okay)  { save_okay = diskio::safe_rename(tmp_name, final_name); }
     }
   
   return save_okay;
@@ -1376,7 +1496,7 @@ diskio::load_raw_ascii(Mat<eT>& x, const std::string& name, std::string& err_msg
   
   bool load_okay = f.is_open();
   
-  if(load_okay == true)
+  if(load_okay)
     {
     load_okay = diskio::load_raw_ascii(x, f, err_msg);
     f.close();
@@ -1410,33 +1530,27 @@ diskio::load_raw_ascii(Mat<eT>& x, std::istream& f, std::string& err_msg)
   
   bool f_n_cols_found = false;
   
-  std::string line_string;
-  std::string token;
-  
+  std::string       line_string;
   std::stringstream line_stream;
   
-  while( (f.good() == true) && (load_okay == true) )
+  std::string token;
+  
+  while( f.good() && load_okay )
     {
     std::getline(f, line_string);
     
-    if(line_string.size() == 0)
-      {
-      break;
-      }
+    if(line_string.size() == 0)  { break; }
     
     line_stream.clear();
     line_stream.str(line_string);
     
     uword line_n_cols = 0;
     
-    while (line_stream >> token)
-      {
-      ++line_n_cols;
-      }
+    while (line_stream >> token)  { ++line_n_cols; }
     
     if(f_n_cols_found == false)
       {
-      f_n_cols = line_n_cols;
+      f_n_cols       = line_n_cols;
       f_n_cols_found = true;
       }
     else
@@ -1450,59 +1564,27 @@ diskio::load_raw_ascii(Mat<eT>& x, std::istream& f, std::string& err_msg)
     
     ++f_n_rows;
     }
-    
-  if(load_okay == true)
+  
+  
+  if(load_okay)
     {
     f.clear();
     f.seekg(pos1);
     
     x.set_size(f_n_rows, f_n_cols);
     
-    std::stringstream ss;
-    
-    for(uword row=0; (row < x.n_rows) && (load_okay == true); ++row)
+    for(uword row=0; row < x.n_rows; ++row)
+    for(uword col=0; col < x.n_cols; ++col)
       {
-      for(uword col=0; (col < x.n_cols) && (load_okay == true); ++col)
-        {
-        f >> token;
-        
-        if( (is_signed<eT>::value == false) && (token.length() > 0) && (token[0] == '-') )
-          {
-          x.at(row,col) = eT(0);
-          }
-        else
-          {
-          ss.clear();
-          ss.str(token);
-          
-          eT val = eT(0);
-          ss >> val;
-          
-          if(ss.fail() == false)
-            {
-            x.at(row,col) = val;
-            }
-          else
-            {
-            const bool success = diskio::convert_naninf( x.at(row,col), token );
-            
-            if(success == false)
-              {
-              load_okay = false;
-              err_msg = "couldn't interpret data in ";
-              }
-            }
-          }
-        }
+      f >> token;
+      
+      diskio::convert_token( x.at(row,col), token );
       }
     }
   
   
   // an empty file indicates an empty matrix
-  if( (f_n_cols_found == false) && (load_okay == true) )
-    {
-    x.reset();
-    }
+  if( (f_n_cols_found == false) && (load_okay == true) )  { x.reset(); }
   
   
   return load_okay;
@@ -1524,7 +1606,7 @@ diskio::load_raw_binary(Mat<eT>& x, const std::string& name, std::string& err_ms
   
   bool load_okay = f.is_open();
   
-  if(load_okay == true)
+  if(load_okay)
     {
     load_okay = diskio::load_raw_binary(x, f, err_msg);
     f.close();
@@ -1581,7 +1663,7 @@ diskio::load_arma_ascii(Mat<eT>& x, const std::string& name, std::string& err_ms
   
   bool load_okay = f.is_open();
   
-  if(load_okay == true)
+  if(load_okay)
     {
     load_okay = diskio::load_arma_ascii(x, f, err_msg);
     f.close();
@@ -1606,8 +1688,8 @@ diskio::load_arma_ascii(Mat<eT>& x, std::istream& f, std::string& err_msg)
   bool load_okay = true;
   
   std::string f_header;
-  uword f_n_rows;
-  uword f_n_cols;
+  uword       f_n_rows;
+  uword       f_n_cols;
   
   f >> f_header;
   f >> f_n_rows;
@@ -1617,30 +1699,14 @@ diskio::load_arma_ascii(Mat<eT>& x, std::istream& f, std::string& err_msg)
     {
     x.zeros(f_n_rows, f_n_cols);
     
-    std::string       token;
-    std::stringstream ss;
+    std::string token;
     
     for(uword row=0; row < x.n_rows; ++row)
+    for(uword col=0; col < x.n_cols; ++col)
       {
-      for(uword col=0; col < x.n_cols; ++col)
-        {
-        f >> token;
-        
-        ss.clear();
-        ss.str(token);
-        
-        eT val = eT(0);
-        ss >> val;
-        
-        if(ss.fail() == false)
-          {
-          x.at(row,col) = val;
-          }
-        else
-          {
-          diskio::convert_naninf( x.at(row,col), token );
-          }
-        }
+      f >> token;
+      
+      diskio::convert_token( x.at(row,col), token );
       }
     
     load_okay = f.good();
@@ -1701,7 +1767,7 @@ diskio::load_csv_ascii(Mat<eT>& x, const std::string& name, std::string& err_msg
   
   bool load_okay = f.is_open();
   
-  if(load_okay == true)
+  if(load_okay)
     {
     load_okay = diskio::load_csv_ascii(x, f, err_msg);
     f.close();
@@ -1720,9 +1786,7 @@ diskio::load_csv_ascii(Mat<eT>& x, std::istream& f, std::string&)
   {
   arma_extra_debug_sigprint();
   
-  // TODO: replace with more efficient implementation;
-  // TODO: there is too much overhead using std::stringstream;
-  // TODO: refactor to use strtod(), strtol(), strtoll(), strtoul(), strtoull()
+  // TODO: replace with more efficient implementation
   
   bool load_okay = f.good();
   
@@ -1735,35 +1799,29 @@ diskio::load_csv_ascii(Mat<eT>& x, std::istream& f, std::string&)
   uword f_n_rows = 0;
   uword f_n_cols = 0;
   
-  std::string line_string;
-  std::string token;
-  
+  std::string       line_string;
   std::stringstream line_stream;
   
-  while( (f.good() == true) && (load_okay == true) )
+  std::string token;
+  
+  while( f.good() && load_okay )
     {
     std::getline(f, line_string);
     
-    if(line_string.size() == 0)
-      {
-      break;
-      }
+    if(line_string.size() == 0)  { break; }
     
     line_stream.clear();
     line_stream.str(line_string);
     
     uword line_n_cols = 0;
     
-    while(line_stream.good() == true)
+    while(line_stream.good())
       {
       std::getline(line_stream, token, ',');
       ++line_n_cols;
       }
     
-    if(f_n_cols < line_n_cols)
-      {
-      f_n_cols = line_n_cols;
-      }
+    if(f_n_cols < line_n_cols)  { f_n_cols = line_n_cols; }
     
     ++f_n_rows;
     }
@@ -1775,47 +1833,22 @@ diskio::load_csv_ascii(Mat<eT>& x, std::istream& f, std::string&)
   
   uword row = 0;
   
-  std::stringstream ss;
-  
-  while(f.good() == true)
+  while(f.good())
     {
     std::getline(f, line_string);
     
-    if(line_string.size() == 0)
-      {
-      break;
-      }
+    if(line_string.size() == 0)  { break; }
     
     line_stream.clear();
     line_stream.str(line_string);
     
     uword col = 0;
     
-    while(line_stream.good() == true)
+    while(line_stream.good())
       {
       std::getline(line_stream, token, ',');
       
-      if( (is_signed<eT>::value == false) && (token.length() > 0) && (token[0] == '-') )
-        {
-        x.at(row,col) = eT(0);
-        }
-      else
-        {
-        ss.clear();
-        ss.str(token);
-        
-        eT val = eT(0);
-        ss >> val;
-        
-        if(ss.fail() == false)
-          {
-          x.at(row,col) = val;
-          }
-        else
-          {
-          diskio::convert_naninf( x.at(row,col), token );
-          }
-        }
+      diskio::convert_token( x.at(row,col), token );
       
       ++col;
       }
@@ -1837,6 +1870,7 @@ diskio::load_csv_ascii(Mat< std::complex<T> >& x, std::istream& f, std::string&)
   arma_extra_debug_sigprint();
   
   // TODO: replace with more efficient implementation
+  // TODO: fix loading of non-complex matrices with +-inf
   
   bool load_okay = f.good();
   
@@ -1849,35 +1883,29 @@ diskio::load_csv_ascii(Mat< std::complex<T> >& x, std::istream& f, std::string&)
   uword f_n_rows = 0;
   uword f_n_cols = 0;
   
-  std::string line_string;
-  std::string token;
-  
+  std::string       line_string;
   std::stringstream line_stream;
   
-  while( (f.good() == true) && (load_okay == true) )
+  std::string token;
+  
+  while( f.good() && load_okay )
     {
     std::getline(f, line_string);
     
-    if(line_string.size() == 0)
-      {
-      break;
-      }
+    if(line_string.size() == 0)  { break; }
     
     line_stream.clear();
     line_stream.str(line_string);
     
     uword line_n_cols = 0;
     
-    while(line_stream.good() == true)
+    while(line_stream.good())
       {
       std::getline(line_stream, token, ',');
       ++line_n_cols;
       }
     
-    if(f_n_cols < line_n_cols)
-      {
-      f_n_cols = line_n_cols;
-      }
+    if(f_n_cols < line_n_cols)  { f_n_cols = line_n_cols; }
     
     ++f_n_rows;
     }
@@ -1889,25 +1917,21 @@ diskio::load_csv_ascii(Mat< std::complex<T> >& x, std::istream& f, std::string&)
   
   uword row = 0;
   
-  std::stringstream ss;
-  std::string       str_real;
-  std::string       str_imag;
+  std::string str_real;
+  std::string str_imag;
   
-  while(f.good() == true)
+  while(f.good())
     {
     std::getline(f, line_string);
     
-    if(line_string.size() == 0)
-      {
-      break;
-      }
+    if(line_string.size() == 0)  { break; }
     
     line_stream.clear();
     line_stream.str(line_string);
     
     uword col = 0;
     
-    while(line_stream.good() == true)
+    while(line_stream.good())
       {
       std::getline(line_stream, token, ',');
       
@@ -1998,49 +2022,18 @@ diskio::load_csv_ascii(Mat< std::complex<T> >& x, std::istream& f, std::string&)
         
         if(found_x)
           {
-          if(loc_x > 0)                { str_real = token.substr(0,loc_x);                     } else { str_real.clear(); }
+          if( loc_x    > 0           ) { str_real = token.substr(0,loc_x);                     } else { str_real.clear(); }
           if((loc_x+1) < token.size()) { str_imag = token.substr(loc_x, token.size()-loc_x-1); } else { str_imag.clear(); }
           }
         }
       
-      T val_real_1 = T(0);
-      T val_real_2 = T(0);
+      T val_real = T(0);
+      T val_imag = T(0);
       
-      T val_imag_1 = T(0);
-      T val_imag_2 = T(0);
+      diskio::convert_token(val_real, str_real);
+      diskio::convert_token(val_imag, str_imag);
       
-      ss.clear();
-      ss.str(str_real);
-      ss >> val_real_1;
-      
-      if(ss.fail() == false)
-        {
-        val_real_2 = val_real_1;
-        }
-      else
-        {
-        T val_tmp = T(0);
-        diskio::convert_naninf(val_tmp, str_real);
-        val_real_2 = val_tmp;
-        }
-      
-      
-      ss.clear();
-      ss.str(str_imag);
-      ss >> val_imag_1;
-      
-      if(ss.fail() == false)
-        {
-        val_imag_2 = val_imag_1;
-        }
-      else
-        {
-        T val_tmp = T(0);
-        diskio::convert_naninf(val_tmp, str_real);
-        val_imag_2 = val_tmp;
-        }
-      
-      x.at(row,col) = std::complex<T>(val_real_2, val_imag_2);
+      x.at(row,col) = std::complex<T>(val_real, val_imag);
       
       ++col;
       }
@@ -2067,7 +2060,7 @@ diskio::load_arma_binary(Mat<eT>& x, const std::string& name, std::string& err_m
   
   bool load_okay = f.is_open();
   
-  if(load_okay == true)
+  if(load_okay)
     {
     load_okay = diskio::load_arma_binary(x, f, err_msg);
     f.close();
@@ -2090,8 +2083,8 @@ diskio::load_arma_binary(Mat<eT>& x, std::istream& f, std::string& err_msg)
   bool load_okay = true;
   
   std::string f_header;
-  uword f_n_rows;
-  uword f_n_cols;
+  uword       f_n_rows;
+  uword       f_n_cols;
   
   f >> f_header;
   f >> f_n_rows;
@@ -2186,7 +2179,7 @@ diskio::load_pgm_binary(Mat<eT>& x, const std::string& name, std::string& err_ms
   
   bool load_okay = f.is_open();
   
-  if(load_okay == true)
+  if(load_okay)
     {
     load_okay = diskio::load_pgm_binary(x, f, err_msg);
     f.close();
@@ -2206,6 +2199,7 @@ diskio::load_pgm_binary(Mat<eT>& x, std::istream& f, std::string& err_msg)
   bool load_okay = true;
   
   std::string f_header;
+  
   f >> f_header;
   
   if(f_header == "P5")
@@ -2471,7 +2465,7 @@ diskio::load_auto_detect(Mat<eT>& x, const std::string& name, std::string& err_m
   
   bool load_okay = f.is_open();
   
-  if(load_okay == true)
+  if(load_okay)
     {
     load_okay = diskio::load_auto_detect(x, f, err_msg);
     f.close();
@@ -2569,17 +2563,14 @@ diskio::save_coord_ascii(const SpMat<eT>& x, const std::string& final_name)
 
   bool save_okay = f.is_open();
 
-  if(save_okay == true)
+  if(save_okay)
     {
     save_okay = diskio::save_coord_ascii(x, f);
 
     f.flush();
     f.close();
 
-    if(save_okay == true)
-      {
-      save_okay = diskio::safe_rename(tmp_name, final_name);
-      }
+    if(save_okay)  { save_okay = diskio::safe_rename(tmp_name, final_name); }
     }
 
   return save_okay;
@@ -2699,17 +2690,14 @@ diskio::save_arma_binary(const SpMat<eT>& x, const std::string& final_name)
 
   bool save_okay = f.is_open();
 
-  if(save_okay == true)
+  if(save_okay)
     {
     save_okay = diskio::save_arma_binary(x, f);
 
     f.flush();
     f.close();
 
-    if(save_okay == true)
-      {
-      save_okay = diskio::safe_rename(tmp_name, final_name);
-      }
+    if(save_okay)  { save_okay = diskio::safe_rename(tmp_name, final_name); }
     }
 
   return save_okay;
@@ -2750,7 +2738,7 @@ diskio::load_coord_ascii(SpMat<eT>& x, const std::string& name, std::string& err
   
   bool load_okay = f.is_open();
   
-  if(load_okay == true)
+  if(load_okay)
     {
     load_okay = diskio::load_coord_ascii(x, f, err_msg);
     f.close();
@@ -2782,12 +2770,11 @@ diskio::load_coord_ascii(SpMat<eT>& x, std::istream& f, std::string& err_msg)
   bool size_found = false;
   
   std::string       line_string;
-  std::string       token;
-  
   std::stringstream line_stream;
-  std::stringstream ss;
   
-  while( (f.good() == true) && (load_okay == true) )
+  std::string token;
+  
+  while( f.good() && load_okay )
     {
     std::getline(f, line_string);
     
@@ -2840,34 +2827,16 @@ diskio::load_coord_ascii(SpMat<eT>& x, std::istream& f, std::string& err_msg)
       line_stream >> line_row;
       line_stream >> line_col;
       
-      eT final_val = eT(0);
+      eT val = eT(0);
       
       line_stream >> token;
       
       if(line_stream.fail() == false)
         {
-        eT val = eT(0);
-        
-        ss.clear();
-        ss.str(token);
-        
-        ss >> val;
-        
-        if(ss.fail() == false)
-          {
-          final_val = val;
-          }
-        else
-          {
-          val = eT(0);
-          
-          const bool success = diskio::convert_naninf( val, token );
-          
-          if(success)  { final_val = val; }
-          }
+        diskio::convert_token( val, token );
         }
       
-      if(final_val != eT(0))  { tmp(line_row,line_col) = final_val; }
+      if(val != eT(0))  { tmp(line_row,line_col) = val; }
       }
     
     x = tmp;
@@ -2898,14 +2867,13 @@ diskio::load_coord_ascii(SpMat< std::complex<T> >& x, std::istream& f, std::stri
   
   bool size_found = false;
   
-  std::string line_string;
+  std::string       line_string;
+  std::stringstream line_stream;
+  
   std::string token_real;
   std::string token_imag;
   
-  std::stringstream line_stream;
-  std::stringstream ss;
-  
-  while( (f.good() == true) && (load_okay == true) )
+  while( f.good() && load_okay )
     {
     std::getline(f, line_string);
     
@@ -2931,10 +2899,8 @@ diskio::load_coord_ascii(SpMat< std::complex<T> >& x, std::istream& f, std::stri
     if(f_n_cols < line_col)  f_n_cols = line_col;
     }
   
-  
   // take into account that indices start at 0
   if(size_found)  { ++f_n_rows;  ++f_n_cols; }
-  
   
   if(load_okay)
     {
@@ -2947,10 +2913,7 @@ diskio::load_coord_ascii(SpMat< std::complex<T> >& x, std::istream& f, std::stri
       {
       std::getline(f, line_string);
       
-      if(line_string.size() == 0)
-        {
-        break;
-        }
+      if(line_string.size() == 0)  { break; }
       
       line_stream.clear();
       line_stream.str(line_string);
@@ -2961,36 +2924,14 @@ diskio::load_coord_ascii(SpMat< std::complex<T> >& x, std::istream& f, std::stri
       line_stream >> line_row;
       line_stream >> line_col;
       
-      T final_val_real = T(0);
-      T final_val_imag = T(0);
-      
+      T val_real = T(0);
+      T val_imag = T(0);
       
       line_stream >> token_real;
       
       if(line_stream.fail() == false)
         {
-        T val_real = T(0);
-        
-        ss.clear();
-        ss.str(token_real);
-        
-        ss >> val_real;
-        
-        if(ss.fail() == false)
-          {
-          final_val_real = val_real;
-          }
-        else
-          {
-          val_real = T(0);
-          
-          const bool success = diskio::convert_naninf( val_real, token_real );
-          
-          if(success == true)
-            {
-            final_val_real = val_real;
-            }
-          }
+        diskio::convert_token( val_real, token_real );
         }
       
       
@@ -2998,34 +2939,12 @@ diskio::load_coord_ascii(SpMat< std::complex<T> >& x, std::istream& f, std::stri
       
       if(line_stream.fail() == false)
         {
-        T val_imag = T(0);
-        
-        ss.clear();
-        ss.str(token_imag);
-        
-        ss >> val_imag;
-        
-        if(ss.fail() == false)
-          {
-          final_val_imag = val_imag;
-          }
-        else
-          {
-          val_imag = T(0);
-          
-          const bool success = diskio::convert_naninf( val_imag, token_imag );
-          
-          if(success == true)
-            {
-            final_val_imag = val_imag;
-            }
-          }
+        diskio::convert_token( val_imag, token_imag );
         }
       
+      const std::complex<T> val = std::complex<T>(val_real, val_imag);
       
-      const std::complex<T> final_val = std::complex<T>(final_val_real, final_val_imag);
-      
-      if(final_val != std::complex<T>(0))  { tmp(line_row,line_col) = final_val; }
+      if(val != std::complex<T>(0))  { tmp(line_row,line_col) = val; }
       }
     
     x = tmp;
@@ -3050,7 +2969,7 @@ diskio::load_arma_binary(SpMat<eT>& x, const std::string& name, std::string& err
 
   bool load_okay = f.is_open();
 
-  if(load_okay == true)
+  if(load_okay)
     {
     load_okay = diskio::load_arma_binary(x, f, err_msg);
     f.close();
@@ -3178,17 +3097,14 @@ diskio::save_raw_ascii(const Cube<eT>& x, const std::string& final_name)
   
   bool save_okay = f.is_open();
   
-  if(save_okay == true)
+  if(save_okay)
     {
     save_okay = save_raw_ascii(x, f);
     
     f.flush();
     f.close();
     
-    if(save_okay == true)
-      {
-      save_okay = diskio::safe_rename(tmp_name, final_name);
-      }
+    if(save_okay)  { save_okay = diskio::safe_rename(tmp_name, final_name); }
     }
   
   return save_okay;
@@ -3260,17 +3176,14 @@ diskio::save_raw_binary(const Cube<eT>& x, const std::string& final_name)
   
   bool save_okay = f.is_open();
   
-  if(save_okay == true)
+  if(save_okay)
     {
     save_okay = diskio::save_raw_binary(x, f);
     
     f.flush();
     f.close();
     
-    if(save_okay == true)
-      {
-      save_okay = diskio::safe_rename(tmp_name, final_name);
-      }
+    if(save_okay)  { save_okay = diskio::safe_rename(tmp_name, final_name); }
     }
   
   return save_okay;
@@ -3307,17 +3220,14 @@ diskio::save_arma_ascii(const Cube<eT>& x, const std::string& final_name)
   
   bool save_okay = f.is_open();
   
-  if(save_okay == true)
+  if(save_okay)
     {
     save_okay = diskio::save_arma_ascii(x, f);
     
     f.flush();
     f.close();
     
-    if(save_okay == true)
-      {
-      save_okay = diskio::safe_rename(tmp_name, final_name);
-      }
+    if(save_okay)  { save_okay = diskio::safe_rename(tmp_name, final_name); }
     }
   
   return save_okay;
@@ -3400,17 +3310,14 @@ diskio::save_arma_binary(const Cube<eT>& x, const std::string& final_name)
   
   bool save_okay = f.is_open();
   
-  if(save_okay == true)
+  if(save_okay)
     {
     save_okay = diskio::save_arma_binary(x, f);
     
     f.flush();
     f.close();
     
-    if(save_okay == true)
-      {
-      save_okay = diskio::safe_rename(tmp_name, final_name);
-      }
+    if(save_okay)  { save_okay = diskio::safe_rename(tmp_name, final_name); }
     }
   
   return save_okay;
@@ -3563,7 +3470,7 @@ diskio::load_raw_ascii(Cube<eT>& x, const std::string& name, std::string& err_ms
   Mat<eT> tmp;
   const bool load_okay = diskio::load_raw_ascii(tmp, name, err_msg);
   
-  if(load_okay == true)
+  if(load_okay)
     {
     if(tmp.is_empty() == false)
       {
@@ -3594,7 +3501,7 @@ diskio::load_raw_ascii(Cube<eT>& x, std::istream& f, std::string& err_msg)
   Mat<eT> tmp;
   const bool load_okay = diskio::load_raw_ascii(tmp, f, err_msg);
   
-  if(load_okay == true)
+  if(load_okay)
     {
     if(tmp.is_empty() == false)
       {
@@ -3627,7 +3534,7 @@ diskio::load_raw_binary(Cube<eT>& x, const std::string& name, std::string& err_m
   
   bool load_okay = f.is_open();
   
-  if(load_okay == true)
+  if(load_okay)
     {
     load_okay = diskio::load_raw_binary(x, f, err_msg);
     f.close();
@@ -3684,7 +3591,7 @@ diskio::load_arma_ascii(Cube<eT>& x, const std::string& name, std::string& err_m
   
   bool load_okay = f.is_open();
   
-  if(load_okay == true)
+  if(load_okay)
     {
     load_okay = diskio::load_arma_ascii(x, f, err_msg);
     f.close();
@@ -3709,9 +3616,9 @@ diskio::load_arma_ascii(Cube<eT>& x, std::istream& f, std::string& err_msg)
   bool load_okay = true;
   
   std::string f_header;
-  uword f_n_rows;
-  uword f_n_cols;
-  uword f_n_slices;
+  uword       f_n_rows;
+  uword       f_n_cols;
+  uword       f_n_slices;
   
   f >> f_header;
   f >> f_n_rows;
@@ -3722,15 +3629,11 @@ diskio::load_arma_ascii(Cube<eT>& x, std::istream& f, std::string& err_msg)
     {
     x.set_size(f_n_rows, f_n_cols, f_n_slices);
 
-    for(uword slice=0; slice < x.n_slices; ++slice)
+    for(uword slice = 0; slice < x.n_slices; ++slice)
+    for(uword   row = 0;   row < x.n_rows;   ++row  )
+    for(uword   col = 0;   col < x.n_cols;   ++col  )
       {
-      for(uword row=0; row < x.n_rows; ++row)
-        {
-        for(uword col=0; col < x.n_cols; ++col)
-          {
-          f >> x.at(row,col,slice);
-          }
-        }
+      f >> x.at(row,col,slice);
       }
     
     load_okay = f.good();
@@ -3792,7 +3695,7 @@ diskio::load_arma_binary(Cube<eT>& x, const std::string& name, std::string& err_
   
   bool load_okay = f.is_open();
   
-  if(load_okay == true)
+  if(load_okay)
     {
     load_okay = diskio::load_arma_binary(x, f, err_msg);
     f.close();
@@ -3815,9 +3718,9 @@ diskio::load_arma_binary(Cube<eT>& x, std::istream& f, std::string& err_msg)
   bool load_okay = true;
   
   std::string f_header;
-  uword f_n_rows;
-  uword f_n_cols;
-  uword f_n_slices;
+  uword       f_n_rows;
+  uword       f_n_cols;
+  uword       f_n_slices;
   
   f >> f_header;
   f >> f_n_rows;
@@ -4018,7 +3921,7 @@ diskio::load_auto_detect(Cube<eT>& x, const std::string& name, std::string& err_
   
   bool load_okay = f.is_open();
   
-  if(load_okay == true)
+  if(load_okay)
     {
     load_okay = diskio::load_auto_detect(x, f, err_msg);
     f.close();
@@ -4115,17 +4018,14 @@ diskio::save_arma_binary(const field<T1>& x, const std::string& final_name)
   
   bool save_okay = f.is_open();
   
-  if(save_okay == true)
+  if(save_okay)
     {
     save_okay = diskio::save_arma_binary(x, f);
     
     f.flush();
     f.close();
     
-    if(save_okay == true)
-      {
-      save_okay = diskio::safe_rename(tmp_name, final_name);
-      }
+    if(save_okay)  { save_okay = diskio::safe_rename(tmp_name, final_name); }
     }
   
   return save_okay;
@@ -4145,15 +4045,15 @@ diskio::save_arma_binary(const field<T1>& x, std::ostream& f)
   if(x.n_slices <= 1)
     {
     f << "ARMA_FLD_BIN" << '\n';
-    f << x.n_rows << '\n';
-    f << x.n_cols << '\n';
+    f << x.n_rows       << '\n';
+    f << x.n_cols       << '\n';
     }
   else
     {
     f << "ARMA_FL3_BIN" << '\n';
-    f << x.n_rows   << '\n';
-    f << x.n_cols   << '\n';
-    f << x.n_slices << '\n';
+    f << x.n_rows       << '\n';
+    f << x.n_cols       << '\n';
+    f << x.n_slices     << '\n';
     }
   
   bool save_okay = true;
@@ -4162,10 +4062,7 @@ diskio::save_arma_binary(const field<T1>& x, std::ostream& f)
     {
     save_okay = diskio::save_arma_binary(x[i], f);
     
-    if(save_okay == false)
-      {
-      break;
-      }
+    if(save_okay == false)  { break; }
     }
   
   return save_okay;
@@ -4184,7 +4081,7 @@ diskio::load_arma_binary(field<T1>& x, const std::string& name, std::string& err
   
   bool load_okay = f.is_open();
   
-  if(load_okay == true)
+  if(load_okay)
     {
     load_okay = diskio::load_arma_binary(x, f, err_msg);
     f.close();
@@ -4225,10 +4122,7 @@ diskio::load_arma_binary(field<T1>& x, std::istream& f, std::string& err_msg)
       {
       load_okay = diskio::load_arma_binary(x[i], f, err_msg);
       
-      if(load_okay == false)
-        {
-        break;
-        }
+      if(load_okay == false)  { break; }
       }
     }
   else
@@ -4250,10 +4144,7 @@ diskio::load_arma_binary(field<T1>& x, std::istream& f, std::string& err_msg)
       {
       load_okay = diskio::load_arma_binary(x[i], f, err_msg);
       
-      if(load_okay == false)
-        {
-        break;
-        }
+      if(load_okay == false)  { break; }
       }
     }
   else
@@ -4279,17 +4170,14 @@ diskio::save_std_string(const field<std::string>& x, const std::string& final_na
   
   bool save_okay = f.is_open();
   
-  if(save_okay == true)
+  if(save_okay)
     {
     save_okay = diskio::save_std_string(x, f);
     
     f.flush();
     f.close();
     
-    if(save_okay == true)
-      {
-      save_okay = diskio::safe_rename(tmp_name, final_name);
-      }
+    if(save_okay)  { save_okay = diskio::safe_rename(tmp_name, final_name); }
     }
   
   return save_okay;
@@ -4333,7 +4221,7 @@ diskio::load_std_string(field<std::string>& x, const std::string& name, std::str
   
   bool load_okay = f.is_open();
   
-  if(load_okay == true)
+  if(load_okay)
     {
     load_okay = diskio::load_std_string(x, f, err_msg);
     f.close();
@@ -4363,17 +4251,17 @@ diskio::load_std_string(field<std::string>& x, std::istream& f, std::string& err
   std::string line_string;
   std::string token;
   
-  while( (f.good() == true) && (load_okay == true) )
+  while( f.good() && load_okay )
     {
     std::getline(f, line_string);
-    if(line_string.size() == 0)
-      break;
+    
+    if(line_string.size() == 0)  { break; }
     
     std::stringstream line_stream(line_string);
     
     uword line_n_cols = 0;
-    while (line_stream >> token)
-      line_n_cols++;
+    
+    while (line_stream >> token)  { line_n_cols++; }
     
     if(f_n_cols_found == false)
       {
@@ -4392,7 +4280,7 @@ diskio::load_std_string(field<std::string>& x, std::istream& f, std::string& err
     ++f_n_rows;
     }
     
-  if(load_okay == true)
+  if(load_okay)
     {
     f.clear();
     f.seekg(0, ios::beg);
@@ -4401,18 +4289,13 @@ diskio::load_std_string(field<std::string>& x, std::istream& f, std::string& err
     x.set_size(f_n_rows, f_n_cols);
   
     for(uword row=0; row < x.n_rows; ++row)
+    for(uword col=0; col < x.n_cols; ++col)
       {
-      for(uword col=0; col < x.n_cols; ++col)
-        {
-        f >> x.at(row,col);
-        }
+      f >> x.at(row,col);
       }
     }
   
-  if(f.good() == false)
-    {
-    load_okay = false; 
-    }
+  if(f.good() == false)  { load_okay = false; }
   
   return load_okay;
   }
@@ -4432,7 +4315,7 @@ diskio::load_auto_detect(field<T1>& x, const std::string& name, std::string& err
   
   bool load_okay = f.is_open();
   
-  if(load_okay == true)
+  if(load_okay)
     {
     load_okay = diskio::load_auto_detect(x, f, err_msg);
     f.close();
@@ -4509,7 +4392,7 @@ diskio::load_ppm_binary(Cube<eT>& x, const std::string& name, std::string& err_m
   
   bool load_okay = f.is_open();
   
-  if(load_okay == true)
+  if(load_okay)
     {
     load_okay = diskio::load_ppm_binary(x, f, err_msg);
     f.close();
@@ -4530,6 +4413,7 @@ diskio::load_ppm_binary(Cube<eT>& x, std::istream& f, std::string& err_msg)
   bool load_okay = true;
   
   std::string f_header;
+  
   f >> f_header;
   
   if(f_header == "P6")
@@ -4608,11 +4492,7 @@ diskio::load_ppm_binary(Cube<eT>& x, std::istream& f, std::string& err_msg)
       err_msg = "currently no code available to handle loading ";
       }
       
-    if(f.good() == false)
-      {
-      load_okay = false;
-      }
-    
+    if(f.good() == false)  { load_okay = false; }
     }
   else
     {
@@ -4638,17 +4518,14 @@ diskio::save_ppm_binary(const Cube<eT>& x, const std::string& final_name)
   
   bool save_okay = f.is_open();
   
-  if(save_okay == true)
+  if(save_okay)
     {
     save_okay = diskio::save_ppm_binary(x, f);
     
     f.flush();
     f.close();
     
-    if(save_okay == true)
-      {
-      save_okay = diskio::safe_rename(tmp_name, final_name);
-      }
+    if(save_okay)  { save_okay = diskio::safe_rename(tmp_name, final_name); }
     }
   
   return save_okay;
@@ -4710,7 +4587,7 @@ diskio::load_ppm_binary(field<T1>& x, const std::string& name, std::string& err_
   
   bool load_okay = f.is_open();
   
-  if(load_okay == true)
+  if(load_okay)
     {
     load_okay = diskio::load_ppm_binary(x, f, err_msg);
     f.close();
@@ -4734,6 +4611,7 @@ diskio::load_ppm_binary(field<T1>& x, std::istream& f, std::string& err_msg)
   bool load_okay = true;
   
   std::string f_header;
+  
   f >> f_header;
   
   if(f_header == "P6")
@@ -4819,10 +4697,7 @@ diskio::load_ppm_binary(field<T1>& x, std::istream& f, std::string& err_msg)
       err_msg = "currently no code available to handle loading ";
       }
     
-    if(f.good() == false)
-      {
-      load_okay = false;
-      }
+    if(f.good() == false)  { load_okay = false; }
     
     }
   else
@@ -4848,17 +4723,14 @@ diskio::save_ppm_binary(const field<T1>& x, const std::string& final_name)
   
   bool save_okay = f.is_open();
   
-  if(save_okay == true)
+  if(save_okay)
     {
     save_okay = diskio::save_ppm_binary(x, f);
     
     f.flush();
     f.close();
     
-    if(save_okay == true)
-      {
-      save_okay = diskio::safe_rename(tmp_name, final_name);
-      }
+    if(save_okay)  { save_okay = diskio::safe_rename(tmp_name, final_name); }
     }
   
   return save_okay;

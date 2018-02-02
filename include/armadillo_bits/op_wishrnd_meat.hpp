@@ -18,6 +18,12 @@
 //! @{
 
 
+// implementation based on:
+// Yu-Cheng Ku and Peter Bloomfield.
+// Generating Random Wishart Matrices with Fractional Degrees of Freedom in OX.
+// Oxmetrics User Conference, 2010.
+  
+
 template<typename T1>
 inline
 void
@@ -35,7 +41,7 @@ op_wishrnd::apply(Mat<typename T1::elem_type>& out, const Op<T1,op_wishrnd>& exp
   if(status == false)
     {
     out.soft_reset();
-    arma_debug_check(true, "wishrnd(): given matrix is not positive definite");
+    arma_debug_check(true, "wishrnd(): given matrix is not symmetric positive definite");
     }
   }
 
@@ -102,11 +108,6 @@ bool
 op_wishrnd::apply_noalias_mode2(Mat<eT>& out, const Mat<eT>& D, const eT df)
   {
   arma_extra_debug_sigprint();
-  
-  // implementation based on:
-  // Yu-Cheng Ku and Peter Bloomfield.
-  // Generating Random Wishart Matrices with Fractional Degrees of Freedom in OX.
-  // Oxmetrics User Conference, 2010.
   
   #if defined(ARMA_USE_CXX11)
     {
@@ -186,12 +187,12 @@ op_iwishrnd::apply(Mat<typename T1::elem_type>& out, const Op<T1,op_iwishrnd>& e
   const eT    df   = expr.aux;
   const uword mode = expr.aux_uword_a;
   
-  const bool status = op_wishrnd::apply_direct(out, expr.m, df, mode);
+  const bool status = op_iwishrnd::apply_direct(out, expr.m, df, mode);
   
   if(status == false)
     {
     out.soft_reset();
-    arma_debug_check(true, "wishrnd(): given matrix is not positive definite");
+    arma_debug_check(true, "iwishrnd(): given matrix is not symmetric positive definite");
     }
   }
 
@@ -279,6 +280,8 @@ op_iwishrnd::apply_noalias_mode2(Mat<eT>& out, const Mat<eT>& Dinv, const eT df)
     const bool inv_status = auxlib::inv_sympd(out, tmp);
     
     if(inv_status == false)  { return false;}
+    
+    return true;
     }
   #else
     {

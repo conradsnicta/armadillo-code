@@ -72,7 +72,7 @@ wishrnd(Mat<typename T1::elem_type>& W, const Base<typename T1::elem_type, T1>& 
   
   if(status == false)
     {
-    arma_debug_warn("wishrnd(): given matrix is not positive definite");
+    arma_debug_warn("wishrnd(): given matrix is not symmetric positive definite");
     W.soft_reset();
     return false;
     }
@@ -158,7 +158,7 @@ iwishrnd(Mat<typename T1::elem_type>& W, const Base<typename T1::elem_type, T1>&
   
   if(status == false)
     {
-    arma_debug_warn("iwishrnd(): given matrix is not positive definite");
+    arma_debug_warn("iwishrnd(): given matrix is not symmetric positive definite");
     W.soft_reset();
     return false;
     }
@@ -177,12 +177,12 @@ enable_if2
   is_real<typename T1::elem_type>::value,
   bool
   >::result
-iwishrnd(Mat<typename T1::elem_type>& W, const Base<typename T1::elem_type, T1>& S, typename T1::elem_type df, const Base<typename T1::elem_type, T2>& D)
+iwishrnd(Mat<typename T1::elem_type>& W, const Base<typename T1::elem_type, T1>& S, typename T1::elem_type df, const Base<typename T1::elem_type, T2>& Dinv)
   {
   arma_extra_debug_sigprint();
   arma_ignore(S);
   
-  return op_iwishrnd::apply_direct(W, D.get_ref(), df, uword(2));
+  return op_iwishrnd::apply_direct(W, Dinv.get_ref(), df, uword(2));
   }
 
 

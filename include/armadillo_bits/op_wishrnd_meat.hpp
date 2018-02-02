@@ -158,10 +158,134 @@ op_wishrnd::apply_noalias_mode2(Mat<eT>& out, const Mat<eT>& D, const eT df)
     }
   #else
     {
-    out.soft_reset();
+    arma_ignore(out);
     arma_ignore(D);
     arma_ignore(df);
     arma_stop_logic_error("wishrnd(): C++11 compiler required");
+    
+    return false;
+    }
+  #endif
+  }
+
+
+
+//
+
+
+
+template<typename T1>
+inline
+void
+op_iwishrnd::apply(Mat<typename T1::elem_type>& out, const Op<T1,op_iwishrnd>& expr)
+  {
+  arma_extra_debug_sigprint();
+  
+  typedef typename T1::elem_type eT;
+  
+  const eT    df   = expr.aux;
+  const uword mode = expr.aux_uword_a;
+  
+  const bool status = op_wishrnd::apply_direct(out, expr.m, df, mode);
+  
+  if(status == false)
+    {
+    out.soft_reset();
+    arma_debug_check(true, "wishrnd(): given matrix is not positive definite");
+    }
+  }
+
+
+
+template<typename T1>
+inline
+bool
+op_iwishrnd::apply_direct(Mat<typename T1::elem_type>& out, const Base<typename T1::elem_type,T1>& X, const typename T1::elem_type df, const uword mode)
+  {
+  arma_extra_debug_sigprint();
+  
+  typedef typename T1::elem_type eT;
+  
+  const quasi_unwrap<T1> U(X.get_ref());
+  
+  bool status = false;
+  
+  if(U.is_alias(out))
+    {
+    Mat<eT> tmp;
+    
+    if(mode == 1)  { status = op_iwishrnd::apply_noalias_mode1(tmp, U.M, df); }
+    if(mode == 2)  { status = op_iwishrnd::apply_noalias_mode2(tmp, U.M, df); }
+    
+    out.steal_mem(tmp);
+    }
+  else
+    {
+    if(mode == 1)  { status = op_iwishrnd::apply_noalias_mode1(out, U.M, df); }
+    if(mode == 2)  { status = op_iwishrnd::apply_noalias_mode2(out, U.M, df); }
+    }
+  
+  return status;
+  }
+
+
+
+template<typename eT>
+inline
+bool
+op_iwishrnd::apply_noalias_mode1(Mat<eT>& out, const Mat<eT>& T, const eT df)
+  {
+  arma_extra_debug_sigprint();
+  
+  arma_debug_check( (T.is_square() == false), "iwishrnd(): given matrix must be square sized" );
+  
+  if(T.is_empty())  { out.reset(); return true; }
+  
+  Mat<eT> Tinv;
+  Mat<eT> Dinv;
+  
+  const bool inv_status = auxlib::inv_sympd(Tinv, T);
+  
+  if(inv_status == false)  { return false; }
+  
+  const bool chol_status = op_chol::apply_direct(Dinv, Tinv, 0);
+  
+  if(chol_status == false)  { return false; }
+  
+  return op_iwishrnd::apply_noalias_mode2(out, Dinv, df);
+  }
+
+
+
+template<typename eT>
+inline
+bool
+op_iwishrnd::apply_noalias_mode2(Mat<eT>& out, const Mat<eT>& Dinv, const eT df)
+  {
+  arma_extra_debug_sigprint();
+  
+  #if defined(ARMA_USE_CXX11)
+    {
+    arma_debug_check( (Dinv.is_square() == false), "iwishrnd(): given matrix must be square sized" );
+    
+    if(Dinv.is_empty())  { out.reset(); return true; }
+    
+    Mat<eT> tmp;
+    
+    const bool wishrnd_status = op_wishrnd::apply_noalias_mode2(tmp, Dinv, df);
+    
+    if(wishrnd_status == false)  { return false; }
+    
+    const bool inv_status = auxlib::inv_sympd(out, tmp);
+    
+    if(inv_status == false)  { return false;}
+    }
+  #else
+    {
+    arma_ignore(out);
+    arma_ignore(Dinv);
+    arma_ignore(df);
+    arma_stop_logic_error("iwishrnd(): C++11 compiler required");
     
     return false;
     }

@@ -548,6 +548,7 @@ diskio::gen_bin_header(const Cube<eT>& x)
 
 
 inline
+arma_cold
 file_type
 diskio::guess_file_type(std::istream& f)
   {
@@ -811,89 +812,6 @@ diskio::convert_token(std::complex<T>& val, const std::string& token)
     
     val = std::complex<T>(val_real, val_imag);
     }
-  }
-
-
-
-template<typename eT>
-inline
-bool
-diskio::convert_naninf(eT& val, const std::string& token)
-  {
-  // see if the token represents a NaN or Inf
-  
-  if( (token.length() == 3) || (token.length() == 4) )
-    {
-    const bool neg = (token[0] == '-');
-    const bool pos = (token[0] == '+');
-    
-    const size_t offset = ( (neg || pos) && (token.length() == 4) ) ? 1 : 0;
-    
-    const std::string token2 = token.substr(offset, 3);
-    
-    if( (token2 == "inf") || (token2 == "Inf") || (token2 == "INF") )
-      {
-      val = neg ? cond_rel< is_signed<eT>::value >::make_neg(Datum<eT>::inf) : Datum<eT>::inf;
-      
-      return true;
-      }
-    else
-    if( (token2 == "nan") || (token2 == "Nan") || (token2 == "NaN") || (token2 == "NAN") )
-      {
-      val = Datum<eT>::nan;
-      
-      return true;
-      }
-    }
-    
-  return false;
-  }
-
-
-
-template<typename T>
-inline
-bool
-diskio::convert_naninf(std::complex<T>& val, const std::string& token)
-  {
-  if( token.length() >= 5 )
-    {
-    std::stringstream ss( token.substr(1, token.length()-2) );  // strip '(' at the start and ')' at the end
-    
-    std::string token_real;
-    std::string token_imag;
-    
-    std::getline(ss, token_real, ',');
-    std::getline(ss, token_imag);
-    
-    std::stringstream ss_real(token_real);
-    std::stringstream ss_imag(token_imag);
-    
-    T val_real = T(0);
-    T val_imag = T(0);
-    
-    ss_real >> val_real;
-    ss_imag >> val_imag;
-    
-    bool success_real = true;
-    bool success_imag = true;
-    
-    if(ss_real.fail())
-      {
-      success_real = diskio::convert_naninf( val_real, token_real );
-      }
-    
-    if(ss_imag.fail())
-      {
-      success_imag = diskio::convert_naninf( val_imag, token_imag );
-      }
-    
-    val = std::complex<T>(val_real, val_imag);
-    
-    return (success_real && success_imag);
-    }
-  
-  return false;
   }
 
 

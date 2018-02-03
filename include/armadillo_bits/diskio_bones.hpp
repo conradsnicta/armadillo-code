@@ -31,7 +31,7 @@ class diskio
   template<typename eT> inline static std::string gen_txt_header(const Cube<eT>& x);
   template<typename eT> inline static std::string gen_bin_header(const Cube<eT>& x);
   
-  inline static file_type guess_file_type(std::istream& f);
+  inline arma_cold static file_type guess_file_type(std::istream& f);
   
   inline arma_cold static std::string gen_tmp_name(const std::string& x);
   
@@ -39,9 +39,6 @@ class diskio
   
   template<typename eT> inline static void convert_token(eT&              val, const std::string& token);
   template<typename  T> inline static void convert_token(std::complex<T>& val, const std::string& token);
-  
-  template<typename eT> inline static bool convert_naninf(eT&              val, const std::string& token);
-  template<typename  T> inline static bool convert_naninf(std::complex<T>& val, const std::string& token);
   
   //
   // matrix saving

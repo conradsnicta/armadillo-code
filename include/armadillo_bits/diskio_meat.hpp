@@ -753,26 +753,33 @@ inline
 void
 diskio::convert_token(std::complex<T>& val, const std::string& token)
   {
-  const size_t N = size_t(token.length());
+  const size_t N   = size_t(token.length());
+  const size_t Nm1 = N-1;
   
   if(N == 0)  { val = std::complex<T>(0); return; }
   
   const char* str = token.c_str();
   
-  if( (token[0] != '(') || (token[N-1] != ')') )
+  // valid complex number formats:
+  // (real,imag)
+  // (real)
+  // ()
+  
+  if( (token[0] != '(') || (token[Nm1] != ')') )
     {
+    // no brackets, so treat the token as a non-complex number
+    
     T val_real;
     
-    diskio::convert_token(val_real, token);
+    diskio::convert_token(val_real, token);  // use the non-complex version of this function
     
     val = std::complex<T>(val_real);
     
     return;
     }
   
-  
+  // does the token contain more than the () brackets?
   if(N <= 2)  { val = std::complex<T>(0); return; }
-  
   
   size_t comma_loc   = 0;
   bool   comma_found = false;
@@ -783,18 +790,18 @@ diskio::convert_token(std::complex<T>& val, const std::string& token)
     {
     // only the real part is available
     
-    const std::string token_real( &(str[1]), &(str[N-1]) );
+    const std::string token_real( &(str[1]), (Nm1 - 1) );
     
     T val_real;
     
-    diskio::convert_token(val_real, token_real);
+    diskio::convert_token(val_real, token_real);  // use the non-complex version of this function
     
     val = std::complex<T>(val_real);
     }
   else
     {
-    const std::string token_real( &(str[1]),           &(str[comma_loc]) );
-    const std::string token_imag( &(str[comma_loc+1]), &(str[N-1      ]) );
+    const std::string token_real( &(str[1]),           (comma_loc - 1      ) );
+    const std::string token_imag( &(str[comma_loc+1]), (Nm1 - 1 - comma_loc) );
     
     T val_real;
     T val_imag;

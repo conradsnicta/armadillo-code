@@ -68,8 +68,7 @@ template<typename eT, typename TB> class subview_cube_each2;
 class SizeMat;
 class SizeCube;
 
-class  arma_empty_class {};
-struct unused_diff_type {};
+class arma_empty_class {};
 
 class diskio;
 

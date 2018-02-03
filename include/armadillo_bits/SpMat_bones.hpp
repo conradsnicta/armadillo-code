@@ -379,7 +379,7 @@ class SpMat : public SpBase< eT, SpMat<eT> >
     // so that we satisfy the STL iterator types
     typedef std::bidirectional_iterator_tag iterator_category;
     typedef eT                              value_type;
-    typedef unused_diff_type                difference_type;
+    typedef std::ptrdiff_t                  difference_type;  // TODO: not certain on this one
     typedef const eT*                       pointer;
     typedef const eT&                       reference;
     };

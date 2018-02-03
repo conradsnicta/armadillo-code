@@ -204,7 +204,7 @@ class subview : public Base<eT, subview<eT> >
     // So that we satisfy the STL iterator types.
     typedef std::forward_iterator_tag iterator_category;
     typedef eT                        value_type;
-    typedef unused_diff_type          difference_type;
+    typedef std::ptrdiff_t            difference_type;  // TODO: not certain on this one
     typedef eT*                       pointer;
     typedef eT&                       reference;
     
@@ -240,7 +240,7 @@ class subview : public Base<eT, subview<eT> >
     // So that we satisfy the STL iterator types.
     typedef std::forward_iterator_tag iterator_category;
     typedef eT                        value_type;
-    typedef unused_diff_type          difference_type;
+    typedef std::ptrdiff_t            difference_type;  // TODO: not certain on this one
     typedef const eT*                 pointer;
     typedef const eT&                 reference;
     
@@ -275,7 +275,7 @@ class subview : public Base<eT, subview<eT> >
     
     typedef std::forward_iterator_tag iterator_category;
     typedef eT                        value_type;
-    typedef unused_diff_type          difference_type;
+    typedef std::ptrdiff_t            difference_type;  // TODO: not certain on this one
     typedef eT*                       pointer;
     typedef eT&                       reference;
     
@@ -310,7 +310,7 @@ class subview : public Base<eT, subview<eT> >
     
     typedef std::forward_iterator_tag iterator_category;
     typedef eT                        value_type;
-    typedef unused_diff_type          difference_type;
+    typedef std::ptrdiff_t            difference_type;  // TODO: not certain on this one
     typedef const eT*                 pointer;
     typedef const eT&                 reference;
     

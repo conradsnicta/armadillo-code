@@ -18,7 +18,7 @@
 //! @{
 
 
-//! class for saving and loading matrices and fields
+//! class for saving and loading matrices and fields - INTERNAL USE ONLY!
 class diskio
   {
   public:
@@ -39,6 +39,9 @@ class diskio
   
   template<typename eT> inline static void convert_token(eT&              val, const std::string& token);
   template<typename  T> inline static void convert_token(std::complex<T>& val, const std::string& token);
+  
+  template<typename eT> arma_deprecated inline static bool convert_naninf(eT& val, const std::string& token);
+  
   
   //
   // matrix saving

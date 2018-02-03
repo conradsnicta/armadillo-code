@@ -816,6 +816,24 @@ diskio::convert_token(std::complex<T>& val, const std::string& token)
 
 
 
+template<typename eT>
+arma_deprecated
+inline
+bool
+diskio::convert_naninf(eT& val, const std::string& token)
+  {
+  // TODO: remove this function;
+  // TODO: this function is kept only to allow compilation of old versions of mlpack
+  
+  arma_debug_warn("*** arma::diskio::convert_naninf() is an internal armadillo function subject to removal ***");
+  
+  diskio::convert_token(val, token);
+  
+  return true;
+  }
+
+
+
 //! Save a matrix as raw text (no header, human readable).
 //! Matrices can be loaded in Matlab and Octave, as long as they don't have complex elements.
 template<typename eT>

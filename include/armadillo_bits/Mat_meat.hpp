@@ -6404,7 +6404,6 @@ Mat<eT>::replace(const eT old_val, const eT new_val)
 
 //! fill the matrix with the specified value
 template<typename eT>
-arma_hot
 inline
 const Mat<eT>&
 Mat<eT>::fill(const eT val)
@@ -6421,7 +6420,6 @@ Mat<eT>::fill(const eT val)
 //! fill the matrix with the specified value
 template<typename eT>
 template<typename fill_type>
-arma_hot
 inline
 const Mat<eT>&
 Mat<eT>::fill(const fill::fill_class<fill_type>&)
@@ -7390,6 +7388,7 @@ Mat<eT>::row_iterator::row_iterator(Mat<eT>& in_M, const uword in_row)
 
 template<typename eT>
 inline
+arma_warn_unused
 eT&
 Mat<eT>::row_iterator::operator*()
   {
@@ -7424,6 +7423,7 @@ Mat<eT>::row_iterator::operator++()
 
 template<typename eT>
 inline
+arma_warn_unused
 typename Mat<eT>::row_iterator
 Mat<eT>::row_iterator::operator++(int)
   {
@@ -7465,6 +7465,7 @@ Mat<eT>::row_iterator::operator--()
 
 template<typename eT>
 inline
+arma_warn_unused
 typename Mat<eT>::row_iterator
 Mat<eT>::row_iterator::operator--(int)
   {
@@ -7479,6 +7480,7 @@ Mat<eT>::row_iterator::operator--(int)
 
 template<typename eT>
 inline
+arma_warn_unused
 bool
 Mat<eT>::row_iterator::operator!=(const typename Mat<eT>::row_iterator& X) const
   {
@@ -7489,6 +7491,7 @@ Mat<eT>::row_iterator::operator!=(const typename Mat<eT>::row_iterator& X) const
 
 template<typename eT>
 inline
+arma_warn_unused
 bool
 Mat<eT>::row_iterator::operator==(const typename Mat<eT>::row_iterator& X) const
   {
@@ -7499,6 +7502,7 @@ Mat<eT>::row_iterator::operator==(const typename Mat<eT>::row_iterator& X) const
 
 template<typename eT>
 inline
+arma_warn_unused
 bool
 Mat<eT>::row_iterator::operator!=(const typename Mat<eT>::const_row_iterator& X) const
   {
@@ -7509,6 +7513,7 @@ Mat<eT>::row_iterator::operator!=(const typename Mat<eT>::const_row_iterator& X)
 
 template<typename eT>
 inline
+arma_warn_unused
 bool
 Mat<eT>::row_iterator::operator==(const typename Mat<eT>::const_row_iterator& X) const
   {
@@ -7572,6 +7577,7 @@ Mat<eT>::const_row_iterator::const_row_iterator(const Mat<eT>& in_M, const uword
 
 template<typename eT>
 inline
+arma_warn_unused
 const eT&
 Mat<eT>::const_row_iterator::operator*() const
   {
@@ -7606,6 +7612,7 @@ Mat<eT>::const_row_iterator::operator++()
 
 template<typename eT>
 inline
+arma_warn_unused
 typename Mat<eT>::const_row_iterator
 Mat<eT>::const_row_iterator::operator++(int)
   {
@@ -7647,6 +7654,7 @@ Mat<eT>::const_row_iterator::operator--()
 
 template<typename eT>
 inline
+arma_warn_unused
 typename Mat<eT>::const_row_iterator
 Mat<eT>::const_row_iterator::operator--(int)
   {
@@ -7661,6 +7669,7 @@ Mat<eT>::const_row_iterator::operator--(int)
 
 template<typename eT>
 inline
+arma_warn_unused
 bool
 Mat<eT>::const_row_iterator::operator!=(const typename Mat<eT>::row_iterator& X) const
   {
@@ -7671,6 +7680,7 @@ Mat<eT>::const_row_iterator::operator!=(const typename Mat<eT>::row_iterator& X)
 
 template<typename eT>
 inline
+arma_warn_unused
 bool
 Mat<eT>::const_row_iterator::operator==(const typename Mat<eT>::row_iterator& X) const
   {
@@ -7681,6 +7691,7 @@ Mat<eT>::const_row_iterator::operator==(const typename Mat<eT>::row_iterator& X)
 
 template<typename eT>
 inline
+arma_warn_unused
 bool
 Mat<eT>::const_row_iterator::operator!=(const typename Mat<eT>::const_row_iterator& X) const
   {
@@ -7691,6 +7702,7 @@ Mat<eT>::const_row_iterator::operator!=(const typename Mat<eT>::const_row_iterat
 
 template<typename eT>
 inline
+arma_warn_unused
 bool
 Mat<eT>::const_row_iterator::operator==(const typename Mat<eT>::const_row_iterator& X) const
   {
@@ -7741,6 +7753,7 @@ Mat<eT>::row_col_iterator::row_col_iterator(Mat<eT>& in_M, const uword in_row, c
 
 template<typename eT>
 inline
+arma_warn_unused
 eT&
 Mat<eT>::row_col_iterator::operator*()
   {
@@ -7771,6 +7784,7 @@ Mat<eT>::row_col_iterator::operator++()
 
 template<typename eT>
 inline
+arma_warn_unused
 typename Mat<eT>::row_col_iterator
 Mat<eT>::row_col_iterator::operator++(int)
   {
@@ -7807,6 +7821,7 @@ Mat<eT>::row_col_iterator::operator--()
 
 template<typename eT>
 inline
+arma_warn_unused
 typename Mat<eT>::row_col_iterator
 Mat<eT>::row_col_iterator::operator--(int)
   {
@@ -7821,6 +7836,7 @@ Mat<eT>::row_col_iterator::operator--(int)
 
 template<typename eT>
 inline
+arma_warn_unused
 uword
 Mat<eT>::row_col_iterator::row() const
   {
@@ -7831,6 +7847,7 @@ Mat<eT>::row_col_iterator::row() const
 
 template<typename eT>
 inline
+arma_warn_unused
 uword
 Mat<eT>::row_col_iterator::col() const
   {
@@ -7841,6 +7858,7 @@ Mat<eT>::row_col_iterator::col() const
 
 template<typename eT>
 inline
+arma_warn_unused
 bool
 Mat<eT>::row_col_iterator::operator==(const row_col_iterator& rhs) const
   {
@@ -7851,6 +7869,7 @@ Mat<eT>::row_col_iterator::operator==(const row_col_iterator& rhs) const
 
 template<typename eT>
 inline
+arma_warn_unused
 bool
 Mat<eT>::row_col_iterator::operator!=(const row_col_iterator& rhs) const
   {
@@ -7861,6 +7880,7 @@ Mat<eT>::row_col_iterator::operator!=(const row_col_iterator& rhs) const
 
 template<typename eT>
 inline
+arma_warn_unused
 bool
 Mat<eT>::row_col_iterator::operator==(const const_row_col_iterator& rhs) const
   {
@@ -7871,6 +7891,7 @@ Mat<eT>::row_col_iterator::operator==(const const_row_col_iterator& rhs) const
 
 template<typename eT>
 inline
+arma_warn_unused
 bool
 Mat<eT>::row_col_iterator::operator!=(const const_row_col_iterator& rhs) const
   {
@@ -7934,6 +7955,7 @@ Mat<eT>::const_row_col_iterator::const_row_col_iterator(const Mat<eT>& in_M, con
 
 template<typename eT>
 inline
+arma_warn_unused
 const eT&
 Mat<eT>::const_row_col_iterator::operator*() const
   {
@@ -7964,6 +7986,7 @@ Mat<eT>::const_row_col_iterator::operator++()
 
 template<typename eT>
 inline
+arma_warn_unused
 typename Mat<eT>::const_row_col_iterator
 Mat<eT>::const_row_col_iterator::operator++(int)
   {
@@ -8001,6 +8024,7 @@ Mat<eT>::const_row_col_iterator::operator--()
 
 template<typename eT>
 inline
+arma_warn_unused
 typename Mat<eT>::const_row_col_iterator
 Mat<eT>::const_row_col_iterator::operator--(int)
   {
@@ -8015,6 +8039,7 @@ Mat<eT>::const_row_col_iterator::operator--(int)
 
 template<typename eT>
 inline
+arma_warn_unused
 uword
 Mat<eT>::const_row_col_iterator::row() const
   {
@@ -8025,6 +8050,7 @@ Mat<eT>::const_row_col_iterator::row() const
 
 template<typename eT>
 inline
+arma_warn_unused
 uword
 Mat<eT>::const_row_col_iterator::col() const
   {
@@ -8035,6 +8061,7 @@ Mat<eT>::const_row_col_iterator::col() const
 
 template<typename eT>
 inline
+arma_warn_unused
 bool
 Mat<eT>::const_row_col_iterator::operator==(const const_row_col_iterator& rhs) const
   {
@@ -8045,6 +8072,7 @@ Mat<eT>::const_row_col_iterator::operator==(const const_row_col_iterator& rhs) c
 
 template<typename eT>
 inline
+arma_warn_unused
 bool
 Mat<eT>::const_row_col_iterator::operator!=(const const_row_col_iterator& rhs) const
   {
@@ -8055,6 +8083,7 @@ Mat<eT>::const_row_col_iterator::operator!=(const const_row_col_iterator& rhs) c
   
 template<typename eT>
 inline
+arma_warn_unused
 bool
 Mat<eT>::const_row_col_iterator::operator==(const row_col_iterator& rhs) const
   {
@@ -8065,6 +8094,7 @@ Mat<eT>::const_row_col_iterator::operator==(const row_col_iterator& rhs) const
 
 template<typename eT>
 inline
+arma_warn_unused
 bool
 Mat<eT>::const_row_col_iterator::operator!=(const row_col_iterator& rhs) const
   {
@@ -8864,7 +8894,6 @@ Mat<eT>::fixed<fixed_n_rows, fixed_n_cols>::is_vec() const
 
 template<typename eT>
 template<uword fixed_n_rows, uword fixed_n_cols>
-arma_hot
 inline
 const Mat<eT>&
 Mat<eT>::fixed<fixed_n_rows, fixed_n_cols>::fill(const eT val)
@@ -8882,7 +8911,6 @@ Mat<eT>::fixed<fixed_n_rows, fixed_n_cols>::fill(const eT val)
 
 template<typename eT>
 template<uword fixed_n_rows, uword fixed_n_cols>
-arma_hot
 inline
 const Mat<eT>&
 Mat<eT>::fixed<fixed_n_rows, fixed_n_cols>::zeros()
@@ -8900,7 +8928,6 @@ Mat<eT>::fixed<fixed_n_rows, fixed_n_cols>::zeros()
 
 template<typename eT>
 template<uword fixed_n_rows, uword fixed_n_cols>
-arma_hot
 inline
 const Mat<eT>&
 Mat<eT>::fixed<fixed_n_rows, fixed_n_cols>::ones()

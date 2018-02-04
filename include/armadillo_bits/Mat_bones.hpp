@@ -446,10 +446,10 @@ class Mat : public Base< eT, Mat<eT> >
   
   inline const Mat& replace(const eT old_val, const eT new_val);
   
-  arma_hot inline const Mat& fill(const eT val);
+  inline const Mat& fill(const eT val);
   
   template<typename fill_type>
-  arma_hot inline const Mat& fill(const fill::fill_class<fill_type>& f);
+  inline const Mat& fill(const fill::fill_class<fill_type>& f);
   
   inline const Mat& zeros();
   inline const Mat& zeros(const uword in_elem);
@@ -531,18 +531,18 @@ class Mat : public Base< eT, Mat<eT> >
     inline row_iterator(const row_iterator& X);
     inline row_iterator(Mat<eT>& in_M, const uword in_row);
     
-    inline eT& operator* ();
+    inline arma_warn_unused eT& operator* ();
     
-    inline row_iterator& operator++();
-    inline row_iterator  operator++(int);
+    inline                  row_iterator& operator++();
+    inline arma_warn_unused row_iterator  operator++(int);
     
-    inline row_iterator& operator--();
-    inline row_iterator  operator--(int);
+    inline                  row_iterator& operator--();
+    inline arma_warn_unused row_iterator  operator--(int);
     
-    inline bool operator!=(const       row_iterator& X) const;
-    inline bool operator==(const       row_iterator& X) const;
-    inline bool operator!=(const const_row_iterator& X) const;
-    inline bool operator==(const const_row_iterator& X) const;
+    inline arma_warn_unused bool operator!=(const       row_iterator& X) const;
+    inline arma_warn_unused bool operator==(const       row_iterator& X) const;
+    inline arma_warn_unused bool operator!=(const const_row_iterator& X) const;
+    inline arma_warn_unused bool operator==(const const_row_iterator& X) const;
     
     typedef std::bidirectional_iterator_tag iterator_category;
     typedef eT                              value_type;
@@ -566,18 +566,18 @@ class Mat : public Base< eT, Mat<eT> >
     inline const_row_iterator(const const_row_iterator& X);
     inline const_row_iterator(const Mat<eT>& in_M, const uword in_row);
     
-    inline const eT& operator*() const;
+    inline arma_warn_unused const eT& operator*() const;
     
-    inline const_row_iterator& operator++();
-    inline const_row_iterator  operator++(int);
+    inline                  const_row_iterator& operator++();
+    inline arma_warn_unused const_row_iterator  operator++(int);
     
-    inline const_row_iterator& operator--();
-    inline const_row_iterator  operator--(int);
+    inline                  const_row_iterator& operator--();
+    inline arma_warn_unused const_row_iterator  operator--(int);
     
-    inline bool operator!=(const       row_iterator& X) const;
-    inline bool operator==(const       row_iterator& X) const;
-    inline bool operator!=(const const_row_iterator& X) const;
-    inline bool operator==(const const_row_iterator& X) const;
+    inline arma_warn_unused bool operator!=(const       row_iterator& X) const;
+    inline arma_warn_unused bool operator==(const       row_iterator& X) const;
+    inline arma_warn_unused bool operator!=(const const_row_iterator& X) const;
+    inline arma_warn_unused bool operator==(const const_row_iterator& X) const;
     
     typedef std::bidirectional_iterator_tag iterator_category;
     typedef eT                              value_type;
@@ -602,20 +602,21 @@ class Mat : public Base< eT, Mat<eT> >
     inline row_col_iterator(const row_col_iterator& in_it);
     inline row_col_iterator(Mat<eT>& in_M, const uword row = 0, const uword col = 0);
     
-    inline arma_hot eT& operator*();
+    inline arma_warn_unused eT& operator*();
     
-    inline arma_hot row_col_iterator& operator++();
-    inline arma_hot row_col_iterator  operator++(int);
-    inline arma_hot row_col_iterator& operator--();
-    inline arma_hot row_col_iterator  operator--(int);
+    inline                  row_col_iterator& operator++();
+    inline arma_warn_unused row_col_iterator  operator++(int);
     
-    inline uword row() const;
-    inline uword col() const;
+    inline                  row_col_iterator& operator--();
+    inline arma_warn_unused row_col_iterator  operator--(int);
     
-    inline arma_hot bool operator==(const       row_col_iterator& rhs) const;
-    inline arma_hot bool operator!=(const       row_col_iterator& rhs) const;
-    inline arma_hot bool operator==(const const_row_col_iterator& rhs) const;
-    inline arma_hot bool operator!=(const const_row_col_iterator& rhs) const;
+    inline arma_warn_unused uword row() const;
+    inline arma_warn_unused uword col() const;
+    
+    inline arma_warn_unused bool operator==(const       row_col_iterator& rhs) const;
+    inline arma_warn_unused bool operator!=(const       row_col_iterator& rhs) const;
+    inline arma_warn_unused bool operator==(const const_row_col_iterator& rhs) const;
+    inline arma_warn_unused bool operator!=(const const_row_col_iterator& rhs) const;
     
     // So that we satisfy the STL iterator types.
     typedef std::bidirectional_iterator_tag iterator_category;
@@ -640,20 +641,21 @@ class Mat : public Base< eT, Mat<eT> >
     inline const_row_col_iterator(const const_row_col_iterator& in_it);
     inline const_row_col_iterator(const Mat<eT>& in_M, const uword row = 0, const uword col = 0);
     
-    inline arma_hot const eT& operator*() const;
+    inline arma_warn_unused const eT& operator*() const;
     
-    inline arma_hot const_row_col_iterator& operator++();
-    inline arma_hot const_row_col_iterator  operator++(int);
-    inline arma_hot const_row_col_iterator& operator--();
-    inline arma_hot const_row_col_iterator  operator--(int);
+    inline                  const_row_col_iterator& operator++();
+    inline arma_warn_unused const_row_col_iterator  operator++(int);
     
-    inline uword row() const;
-    inline uword col() const;
+    inline                  const_row_col_iterator& operator--();
+    inline arma_warn_unused const_row_col_iterator  operator--(int);
     
-    inline arma_hot bool operator==(const const_row_col_iterator& rhs) const;
-    inline arma_hot bool operator!=(const const_row_col_iterator& rhs) const;
-    inline arma_hot bool operator==(const       row_col_iterator& rhs) const;
-    inline arma_hot bool operator!=(const       row_col_iterator& rhs) const;
+    inline arma_warn_unused uword row() const;
+    inline arma_warn_unused uword col() const;
+    
+    inline arma_warn_unused bool operator==(const const_row_col_iterator& rhs) const;
+    inline arma_warn_unused bool operator!=(const const_row_col_iterator& rhs) const;
+    inline arma_warn_unused bool operator==(const       row_col_iterator& rhs) const;
+    inline arma_warn_unused bool operator!=(const       row_col_iterator& rhs) const;
     
     // So that we satisfy the STL iterator types.
     typedef std::bidirectional_iterator_tag iterator_category;
@@ -835,9 +837,9 @@ class Mat<eT>::fixed : public Mat<eT>
   
   arma_inline arma_warn_unused bool is_vec() const;
   
-  arma_hot inline const Mat<eT>& fill(const eT val);
-  arma_hot inline const Mat<eT>& zeros();
-  arma_hot inline const Mat<eT>& ones();
+  inline const Mat<eT>& fill(const eT val);
+  inline const Mat<eT>& zeros();
+  inline const Mat<eT>& ones();
   };
 
 

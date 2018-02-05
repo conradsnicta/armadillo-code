@@ -6676,10 +6676,6 @@ Usage:
 </li>
 <br>
 <li>
-<b>Caveat:</b> <i>randg()</i> is available only when using a C++11 compiler
-</li>
-<br>
-<li>
 To change the RNG seed, use <i>arma_rng::set_seed(value)</i> or <i>arma_rng::set_seed_random()</i> functions
 </li>
 <br>
@@ -6697,6 +6693,7 @@ mat X = randg&lt;mat&gt;(10, 10, distr_param(2,1));
 <ul>
 <li><a href="#randu_randn_standalone">randu() &amp; randn()</a></li>
 <li><a href="#randi">randi()</a></li>
+<li><a href="#chi2rnd">chi2rnd()</a></li>
 <li><a href="#imbue">.imbue()</a></li>
 <li><a href="#size">size()</a></li>
 <li><a href="http://en.wikipedia.org/wiki/Gamma_distribution">gamma distribution in Wikipedia</a></li>
@@ -13088,6 +13085,70 @@ See also:
 </ul>
 
 <div class="pagebreak"></div><div class="noprint"><hr class="greyline"><br></div>
+<a name="chi2rnd"></a>
+<b>chi2rnd( DF )</b>
+<br>
+<b>chi2rnd( DF_scalar )</b>
+<br>
+<b>chi2rnd( DF_scalar, n_elem )</b>
+<br>
+<b>chi2rnd( DF_scalar, n_rows, n_cols )</b>
+<br>
+<b>chi2rnd( DF_scalar, size(X) )</b>
+<br>
+<ul>
+<li>
+Generate a random scalar, vector or matrix with elements sampled from a chi-squared distribution with the degrees of freedom specified by parameter <i>DF</i> or <i>DF_scalar</i>
+</li>
+<br>
+<li><i>DF</i> is a vector or matrix, while <i>DF_scalar</i> is a scalar</li>
+<br>
+<li>Each value in <i>DF</i> and <i>DF_scalar</i> must be greater than zero</li>
+<br>
+<li>
+For the <i>chi2rnd(DF)</i> form, the output vector/matrix has the same size and type as <i>DF</i>; each element in <i>DF</i> specifies a separate degree of freedom
+</li>
+<br>
+<li>
+Usage:
+<ul>
+<li><i>vector_type</i> v = chi2rnd( DF ), where the type of DF is a real <i>vector_type</i></li>
+<li><i>matrix_type</i> X = chi2rnd( DF ), where the type of DF is a real <i>matrix_type</i></li>
+<br>
+<li><i>double</i> s = chi2rnd( DF_scalar )</li>
+<br>
+<li><i>vector_type</i> v = chi2rnd&lt;<i>vector_type</i>&gt;( DF_scalar, n_elem )</li>
+<li><i>matrix_type</i> X = chi2rnd&lt;<i>matrix_type</i>&gt;( DF_scalar, n_rows, n_cols )</li>
+<li><i>matrix_type</i> Y = chi2rnd&lt;<i>matrix_type</i>&gt;( DF_scalar, size(X) )</li>
+</ul>
+</li>
+<br>
+<li>
+Examples:
+<ul>
+<pre>
+mat X = chi2rnd(2, 5, 6);
+
+mat A = randi&lt;mat&gt;(5, 6, distr_param(1, 10));
+mat B = chi2rnd(A);
+</pre>
+</ul>
+</li>
+<br>
+<li>
+See also:
+<ul>
+<li><a href="#randg">randg()</a></li>
+<li><a href="#randu_randn_standalone">randn()</a></li>
+<li><a href="#wishrnd">wishrnd()</a></li>
+<li><a href="#size">size()</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Chi-squared_distribution">chi-squared distribution in Wikipedia</a></li>
+</ul>
+</li>
+<br>
+</ul>
+
+<div class="pagebreak"></div><div class="noprint"><hr class="greyline"><br></div>
 <a name="wishrnd"></a>
 <b>W = wishrnd(S, df)</b>
 <br>
@@ -13101,7 +13162,7 @@ See also:
 <li>
 Generate a random matrix sampled from the Wishart distribution with parameters <i>S</i> and <i>df</i>:
 <ul>
-<li><i>S</i> is a symmetric positive definite matrix (typically a covariance matrix)</li>
+<li><i>S</i> is a symmetric positive definite matrix (eg. a covariance matrix)</li>
 <li><i>df</i> is a scalar specifying the degrees of freedom; it can be a non-integer value</li>
 </ul>
 </li>
@@ -13132,9 +13193,11 @@ mat W = wishrnd(S, 6.7);
 See also:
 <ul>
 <li><a href="#iwishrnd">iwishrnd()</a></li>
+<li><a href="#chi2rnd">chi2rnd()</a></li>
 <li><a href="#chol">chol()</a></li>
 <li><a href="#cov">cov()</a></li>
 <li><a href="#randu_randn_standalone">randn()</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Wishart_distribution">Wishart distribution in Wikipedia</a></li>
 </ul>
 </li>
 <br>
@@ -13187,6 +13250,7 @@ See also:
 <li><a href="#wishrnd">wishrnd()</a></li>
 <li><a href="#chol">chol()</a></li>
 <li><a href="#inv_sympd">inv_sympd()</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Inverse-Wishart_distribution">inverse Wishart distribution in Wikipedia</a></li>
 </ul>
 </li>
 <br>
@@ -16905,7 +16969,7 @@ and may change or be removed without notice.
 <br>
 <li>
 <a name="deprecated"></a>
-List of deprecated functionality; this functionality will be <b>removed</b> in version 5.0:
+List of deprecated functionality; this functionality will be <b>removed</b> in version A.B:
 <ul>
 <li>
 ...
@@ -16931,6 +16995,7 @@ List of additions and changes for each version:
 <li>expanded <a href="#kron">kron()</a> to handle sparse matrices</li>
 <li>expanded <a href="#index_min_and_index_max_standalone">index_min()</a> and <a href="#index_min_and_index_max_standalone">index_max()</a> to handle cubes</li>
 <li>added <a href="#normcdf">normcdf()</a></li>
+<li>added <a href="#chi2rnd">chi2rnd()</a></li>
 <li>added <a href="#wishrnd">wishrnd()</a> and <a href="#iwishrnd">iwishrnd()</a></li>
 </ul>
 </li>

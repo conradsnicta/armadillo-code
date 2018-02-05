@@ -184,7 +184,7 @@ randg(const distr_param& param = distr_param())
 template<typename eT>
 arma_warn_unused
 inline
-typename arma_real_only<eT>::result
+typename arma_real_or_cx_only<eT>::result
 randg(const distr_param& param = distr_param())
   {
   return eT( as_scalar( randg< Col<eT> >(uword(1), uword(1), param) ) );

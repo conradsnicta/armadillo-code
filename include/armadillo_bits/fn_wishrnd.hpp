@@ -177,10 +177,10 @@ enable_if2
   is_real<typename T1::elem_type>::value,
   bool
   >::result
-iwishrnd(Mat<typename T1::elem_type>& W, const Base<typename T1::elem_type, T1>& S, typename T1::elem_type df, const Base<typename T1::elem_type, T2>& Dinv)
+iwishrnd(Mat<typename T1::elem_type>& W, const Base<typename T1::elem_type, T1>& T, typename T1::elem_type df, const Base<typename T1::elem_type, T2>& Dinv)
   {
   arma_extra_debug_sigprint();
-  arma_ignore(S);
+  arma_ignore(T);
   
   return op_iwishrnd::apply_direct(W, Dinv.get_ref(), df, uword(2));
   }

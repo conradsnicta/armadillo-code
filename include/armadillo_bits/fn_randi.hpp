@@ -138,7 +138,49 @@ randi(const uword n_elem, const distr_param& param = distr_param())
   {
   arma_extra_debug_sigprint();
   
-  return randi<ivec>(n_elem, param);
+  return randi<ivec>(n_elem, uword(1), param);
+  }
+
+
+
+arma_warn_unused
+inline
+sword
+randi(const distr_param& param)
+  {
+  return as_scalar( randi<ivec>(uword(1), uword(1), param) );
+  }
+
+
+
+template<typename eT>
+arma_warn_unused
+inline
+typename arma_scalar_only<eT>::result
+randi(const distr_param& param)
+  {
+  return eT( as_scalar( randi< Col<eT> >(uword(1), uword(1), param) ) );
+  }
+
+
+
+arma_warn_unused
+inline
+sword
+randi()
+  {
+  return sword( arma_rng::randi<sword>() );
+  }
+
+
+
+template<typename eT>
+arma_warn_unused
+inline
+typename arma_scalar_only<eT>::result
+randi()
+  {
+  return eT( arma_rng::randi<eT>() );
   }
 
 

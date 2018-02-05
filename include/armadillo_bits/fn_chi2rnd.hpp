@@ -43,6 +43,31 @@ chi2rnd(const double df)
 
 
 
+template<typename eT>
+arma_warn_unused
+inline
+typename arma_real_only<eT>::result
+chi2rnd(const eT df)
+  {
+  arma_extra_debug_sigprint();
+  
+  #if defined(ARMA_USE_CXX11)
+    {
+    op_chi2rnd_varying_df<eT> generator;
+    
+    return generator(df);
+    }
+  #else
+    {
+    arma_stop_logic_error("chi2rnd(): C++11 compiler required");
+    
+    return eT(0);
+    }
+  #endif
+  }
+
+
+
 template<typename T1>
 arma_warn_unused
 inline

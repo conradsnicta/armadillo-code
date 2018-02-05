@@ -164,7 +164,30 @@ randg(const uword n_elem, const distr_param& param = distr_param())
   {
   arma_extra_debug_sigprint();
   
-  return randg<vec>(n_elem, param);
+  return randg<vec>(n_elem, uword(1), param);
+  }
+
+
+
+arma_warn_unused
+inline
+double
+randg(const distr_param& param = distr_param())
+  {
+  arma_extra_debug_sigprint();
+  
+  return as_scalar( randg<vec>(uword(1), uword(1), param) );
+  }
+
+
+
+template<typename eT>
+arma_warn_unused
+inline
+typename arma_real_only<eT>::result
+randg(const distr_param& param = distr_param())
+  {
+  return eT( as_scalar( randg< Col<eT> >(uword(1), uword(1), param) ) );
   }
 
 

@@ -18,6 +18,7 @@
 //! @{
 
 
+
 arma_warn_unused
 inline
 double
@@ -27,10 +28,11 @@ randn()
   }
 
 
+
 template<typename eT>
 arma_warn_unused
 inline
-typename arma_scalar_only<eT>::result
+typename arma_real_or_cx_only<eT>::result
 randn()
   {
   return eT(arma_rng::randn<eT>());

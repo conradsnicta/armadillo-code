@@ -18,19 +18,21 @@
 //! @{
 
 
+
 arma_warn_unused
 inline
 double
 randu()
   {
-  return arma_rng::randu<double>();
+  return double(arma_rng::randu<double>());
   }
+
 
 
 template<typename eT>
 arma_warn_unused
 inline
-typename arma_scalar_only<eT>::result
+typename arma_real_or_cx_only<eT>::result
 randu()
   {
   return eT(arma_rng::randu<eT>());

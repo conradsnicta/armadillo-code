@@ -2568,7 +2568,7 @@ TEST_CASE("spmat_const_row_col_iterator_test")
   mat::const_row_col_iterator it;
   // Make sure ++ operator, operator* and comparison operators work fine.
   size_t count = 0;
-  for (it = X.begin_row_col(); it != X.end_row_col(); it++)
+  for (it = X.begin_row_col(); it != X.end_row_col(); ++it)
     {
     // Check iterator value.
     REQUIRE( *it == (count % 5) * 3 + (count / 5) );
@@ -2617,7 +2617,7 @@ TEST_CASE("spmat_row_col_iterator_test")
   mat::row_col_iterator it;
   // Make sure ++ operator, operator* and comparison operators work fine.
   size_t count = 0;
-  for (it = X.begin_row_col(); it != X.end_row_col(); it++)
+  for (it = X.begin_row_col(); it != X.end_row_col(); ++it)
     {
     // Check iterator value.
     REQUIRE( *it == (count % 5) * 3 + (count / 5) );
@@ -2665,7 +2665,7 @@ TEST_CASE("spmat_const_sprow_col_iterator_test")
   sp_mat::const_row_col_iterator it;
   // Make sure ++ operator, operator* and comparison operators work fine.
   size_t count = 1;
-  for (it = X.begin_row_col(); it != X.end_row_col(); it++)
+  for (it = X.begin_row_col(); it != X.end_row_col(); ++it)
     {
     // Check iterator value.
     REQUIRE( *it == (count % 5) * 3 + (count / 5) );
@@ -2713,7 +2713,7 @@ TEST_CASE("spmat_sprow_col_iterator_test")
   sp_mat::row_col_iterator it;
   // Make sure ++ operator, operator* and comparison operators work fine.
   size_t count = 1;
-  for (it = X.begin_row_col(); it != X.end_row_col(); it++)
+  for (it = X.begin_row_col(); it != X.end_row_col(); ++it)
     {
     // Check iterator value.
     REQUIRE( *it == (count % 5) * 3 + (count / 5) );

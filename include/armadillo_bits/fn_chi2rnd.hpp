@@ -74,12 +74,12 @@ chi2rnd(const typename obj_type::elem_type df, const uword n_rows, const uword n
   {
   arma_extra_debug_sigprint();
   
-  if(is_Col<obj_type>::value == true)
+  if(is_Col<obj_type>::value)
     {
     arma_debug_check( (n_cols != 1), "chi2rnd(): incompatible size" );
     }
   else
-  if(is_Row<obj_type>::value == true)
+  if(is_Row<obj_type>::value)
     {
     arma_debug_check( (n_rows != 1), "chi2rnd(): incompatible size" );
     }
@@ -124,7 +124,7 @@ chi2rnd(const typename obj_type::elem_type df, const uword n_elem)
   {
   arma_extra_debug_sigprint();
   
-  if(is_Row<obj_type>::value == true)
+  if(is_Row<obj_type>::value)
     {
     return chi2rnd<obj_type>(df, 1, n_elem);
     }

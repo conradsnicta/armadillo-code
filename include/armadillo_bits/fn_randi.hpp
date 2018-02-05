@@ -30,12 +30,12 @@ randi(const uword n_rows, const uword n_cols, const distr_param& param = distr_p
   
   typedef typename obj_type::elem_type eT;
   
-  if(is_Col<obj_type>::value == true)
+  if(is_Col<obj_type>::value)
     {
     arma_debug_check( (n_cols != 1), "randi(): incompatible size" );
     }
   else
-  if(is_Row<obj_type>::value == true)
+  if(is_Row<obj_type>::value)
     {
     arma_debug_check( (n_rows != 1), "randi(): incompatible size" );
     }
@@ -95,7 +95,7 @@ randi(const uword n_elem, const distr_param& param = distr_param(), const arma_e
   arma_ignore(junk1);
   arma_ignore(junk2);
   
-  if(is_Row<obj_type>::value == true)
+  if(is_Row<obj_type>::value)
     {
     return randi<obj_type>(1, n_elem, param);
     }

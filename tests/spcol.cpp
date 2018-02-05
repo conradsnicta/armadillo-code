@@ -51,51 +51,51 @@ TEST_CASE("col_iterator_test")
   REQUIRE( (double) *it == Approx(4.2) );
   REQUIRE( it.row() == 0 );
   REQUIRE( it.col() == 0 );
-  it++;
+  ++it;
 
   REQUIRE( (double) *it == Approx(5.5) );
   REQUIRE( it.row() == 1);
   REQUIRE( it.col() == 0);
-  it++;
+  ++it;
 
   REQUIRE( (double) *it == Approx(4.5) );
   REQUIRE( it.row() == 2 );
   REQUIRE( it.col() == 0 );
-  it++;
+  ++it;
 
   REQUIRE( (double) *it == Approx(3.1) );
   REQUIRE( it.row() == 3 );
   REQUIRE( it.col() == 0 );
-  it++;
+  ++it;
 
   REQUIRE( (double) *it == Approx(6.4) );
   REQUIRE( it.row() == 4 );
   REQUIRE( it.col() == 0 );
-  it++;
+  ++it;
 
   REQUIRE( it == x.end() );
 
   // Now let's go backwards.
-  it--; // Get it off the end.
+  --it; // Get it off the end.
   REQUIRE( (double) *it == Approx(6.4) );
   REQUIRE( it.row() == 4 );
   REQUIRE( it.col() == 0 );
-  it--;
+  --it;
 
   REQUIRE( (double) *it == Approx(3.1) );
   REQUIRE( it.row() == 3);
   REQUIRE( it.col() == 0);
-  it--;
+  --it;
 
   REQUIRE( (double) *it == Approx(4.5) );
   REQUIRE( it.row() == 2);
   REQUIRE( it.col() == 0);
-  it--;
+  --it;
 
   REQUIRE( (double) *it == Approx(5.5) );
   REQUIRE( it.row() == 1 );
   REQUIRE( it.col() == 0 );
-  it--;
+  --it;
 
   REQUIRE( (double) *it == Approx(4.2) );
   REQUIRE( it.row() == 0 );
@@ -104,8 +104,8 @@ TEST_CASE("col_iterator_test")
   REQUIRE( it == x.begin() );
 
   // Try removing an element we iterated to.
-  it++;
-  it++;
+  ++it;
+  ++it;
   *it = 0;
   REQUIRE( x.n_nonzero == 4 );
   }

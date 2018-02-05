@@ -6548,11 +6548,13 @@ arma_rng::set_seed_random();  // set the seed to a random value
 
 <div class="pagebreak"></div><div class="noprint"><hr class="greyline"><br></div>
 <a name="randu_randn_standalone"></a>
-<b>randu( n_elem )</b> 
+<b>randu( )</b>
+<br><b>randu( n_elem )</b>
 <br><b>randu( n_rows, n_cols )</b>
 <br><b>randu( n_rows, n_cols, n_slices )</b>
 <br><b>randu( size(X) )</b>
 <br>
+<br><b>randn( )</b>
 <br><b>randn( n_elem )</b>
 <br><b>randn( n_rows, n_cols )</b>
 <br><b>randn( n_rows, n_cols, n_slices )</b>
@@ -6571,6 +6573,7 @@ Generate a vector, matrix or cube with the elements set to random <b>floating po
 <li>
 Usage:
 <ul>
+<li>double s = randu( )</li>
 <li><i>vector_type</i> v = randu&lt;<i>vector_type</i>&gt;( n_elem )</li>
 <li><i>matrix_type</i> X = randu&lt;<i>matrix_type</i>&gt;( n_rows, n_cols )</li>
 <li><i>matrix_type</i> Y = randu&lt;<i>matrix_type</i>&gt;( size(X) )</li>

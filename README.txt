@@ -1,10 +1,10 @@
 Armadillo C++ Linear Algebra Library
 http://arma.sourceforge.net
 
-Copyright 2008-2017 Conrad Sanderson (http://conradsanderson.id.au)
+Copyright 2008-2018 Conrad Sanderson (http://conradsanderson.id.au)
 Copyright 2008-2016 National ICT Australia (NICTA)
-Copyright 2017      Arroyo Consortium
-Copyright 2017      Data61, CSIRO
+Copyright 2017-2018 Arroyo Consortium
+Copyright 2017-2018 Data61, CSIRO
 
 
 
@@ -467,7 +467,7 @@ Octave/Matlab with C++ code that uses Armadillo matrices.
   http://mlpack.org
   
 * SigPack: C++ signal processing library using Armadillo
-  https://sourceforge.net/projects/sigpack/
+  http://sigpack.sourceforge.net
   
 * matlab2cpp: conversion of Matlab code to Armadillo based C++ code
   https://github.com/jonathf/matlab2cpp

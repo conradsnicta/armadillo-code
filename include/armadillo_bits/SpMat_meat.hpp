@@ -3986,6 +3986,7 @@ SpMat<eT>::set_imag(const SpBase<typename SpMat<eT>::pod_type,T1>& X)
 //! save the matrix to a file
 template<typename eT>
 inline
+arma_cold
 bool
 SpMat<eT>::save(const std::string name, const file_type type, const bool print_status) const
   {
@@ -4028,6 +4029,7 @@ SpMat<eT>::save(const std::string name, const file_type type, const bool print_s
 //! save the matrix to a stream
 template<typename eT>
 inline
+arma_cold
 bool
 SpMat<eT>::save(std::ostream& os, const file_type type, const bool print_status) const
   {
@@ -4070,6 +4072,7 @@ SpMat<eT>::save(std::ostream& os, const file_type type, const bool print_status)
 //! load a matrix from a file
 template<typename eT>
 inline
+arma_cold
 bool
 SpMat<eT>::load(const std::string name, const file_type type, const bool print_status)
   {
@@ -4132,6 +4135,7 @@ SpMat<eT>::load(const std::string name, const file_type type, const bool print_s
 //! load a matrix from a stream
 template<typename eT>
 inline
+arma_cold
 bool
 SpMat<eT>::load(std::istream& is, const file_type type, const bool print_status)
   {
@@ -4194,6 +4198,7 @@ SpMat<eT>::load(std::istream& is, const file_type type, const bool print_status)
 //! save the matrix to a file, without printing any error messages
 template<typename eT>
 inline
+arma_cold
 bool
 SpMat<eT>::quiet_save(const std::string name, const file_type type) const
   {
@@ -4207,6 +4212,7 @@ SpMat<eT>::quiet_save(const std::string name, const file_type type) const
 //! save the matrix to a stream, without printing any error messages
 template<typename eT>
 inline
+arma_cold
 bool
 SpMat<eT>::quiet_save(std::ostream& os, const file_type type) const
   {
@@ -4220,6 +4226,7 @@ SpMat<eT>::quiet_save(std::ostream& os, const file_type type) const
 //! load a matrix from a file, without printing any error messages
 template<typename eT>
 inline
+arma_cold
 bool
 SpMat<eT>::quiet_load(const std::string name, const file_type type)
   {
@@ -4233,6 +4240,7 @@ SpMat<eT>::quiet_load(const std::string name, const file_type type)
 //! load a matrix from a stream, without printing any error messages
 template<typename eT>
 inline
+arma_cold
 bool
 SpMat<eT>::quiet_load(std::istream& is, const file_type type)
   {

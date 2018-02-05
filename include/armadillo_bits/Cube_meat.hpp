@@ -3716,6 +3716,7 @@ Cube<eT>::max(uword& row_of_max_val, uword& col_of_max_val, uword& slice_of_max_
 //! save the cube to a file
 template<typename eT>
 inline
+arma_cold
 bool
 Cube<eT>::save(const std::string name, const file_type type, const bool print_status) const
   {
@@ -3767,6 +3768,7 @@ Cube<eT>::save(const std::string name, const file_type type, const bool print_st
 
 template<typename eT>
 inline
+arma_cold
 bool
 Cube<eT>::save(const hdf5_name& spec, const file_type type, const bool print_status) const
   {
@@ -3826,6 +3828,7 @@ Cube<eT>::save(const hdf5_name& spec, const file_type type, const bool print_sta
 //! save the cube to a stream
 template<typename eT>
 inline
+arma_cold
 bool
 Cube<eT>::save(std::ostream& os, const file_type type, const bool print_status) const
   {
@@ -3870,6 +3873,7 @@ Cube<eT>::save(std::ostream& os, const file_type type, const bool print_status) 
 //! load a cube from a file
 template<typename eT>
 inline
+arma_cold
 bool
 Cube<eT>::load(const std::string name, const file_type type, const bool print_status)
   {
@@ -3941,6 +3945,7 @@ Cube<eT>::load(const std::string name, const file_type type, const bool print_st
 
 template<typename eT>
 inline
+arma_cold
 bool
 Cube<eT>::load(const hdf5_name& spec, const file_type type, const bool print_status)
   {
@@ -3997,6 +4002,7 @@ Cube<eT>::load(const hdf5_name& spec, const file_type type, const bool print_sta
 //! load a cube from a stream
 template<typename eT>
 inline
+arma_cold
 bool
 Cube<eT>::load(std::istream& is, const file_type type, const bool print_status)
   {
@@ -4061,6 +4067,7 @@ Cube<eT>::load(std::istream& is, const file_type type, const bool print_status)
 //! save the cube to a file, without printing any error messages
 template<typename eT>
 inline
+arma_cold
 bool
 Cube<eT>::quiet_save(const std::string name, const file_type type) const
   {
@@ -4073,6 +4080,7 @@ Cube<eT>::quiet_save(const std::string name, const file_type type) const
 
 template<typename eT>
 inline
+arma_cold
 bool
 Cube<eT>::quiet_save(const hdf5_name& spec, const file_type type) const
   {
@@ -4086,6 +4094,7 @@ Cube<eT>::quiet_save(const hdf5_name& spec, const file_type type) const
 //! save the cube to a stream, without printing any error messages
 template<typename eT>
 inline
+arma_cold
 bool
 Cube<eT>::quiet_save(std::ostream& os, const file_type type) const
   {
@@ -4099,6 +4108,7 @@ Cube<eT>::quiet_save(std::ostream& os, const file_type type) const
 //! load a cube from a file, without printing any error messages
 template<typename eT>
 inline
+arma_cold
 bool
 Cube<eT>::quiet_load(const std::string name, const file_type type)
   {
@@ -4111,6 +4121,7 @@ Cube<eT>::quiet_load(const std::string name, const file_type type)
 
 template<typename eT>
 inline
+arma_cold
 bool
 Cube<eT>::quiet_load(const hdf5_name& spec, const file_type type)
   {
@@ -4124,6 +4135,7 @@ Cube<eT>::quiet_load(const hdf5_name& spec, const file_type type)
 //! load a cube from a stream, without printing any error messages
 template<typename eT>
 inline
+arma_cold
 bool
 Cube<eT>::quiet_load(std::istream& is, const file_type type)
   {

@@ -171,7 +171,7 @@ SpMat<eT>::const_iterator::operator++()
 
 template<typename eT>
 inline
-arma_hot
+arma_warn_unused
 typename SpMat<eT>::const_iterator
 SpMat<eT>::const_iterator::operator++(int)
   {
@@ -214,7 +214,7 @@ SpMat<eT>::const_iterator::operator--()
 
 template<typename eT>
 inline
-arma_hot
+arma_warn_unused
 typename SpMat<eT>::const_iterator
 SpMat<eT>::const_iterator::operator--(int)
   {
@@ -348,7 +348,7 @@ SpMat<eT>::iterator::operator++()
 
 template<typename eT>
 inline
-arma_hot
+arma_warn_unused
 typename SpMat<eT>::iterator
 SpMat<eT>::iterator::operator++(int)
   {
@@ -375,7 +375,7 @@ SpMat<eT>::iterator::operator--()
 
 template<typename eT>
 inline
-arma_hot
+arma_warn_unused
 typename SpMat<eT>::iterator
 SpMat<eT>::iterator::operator--(int)
   {
@@ -571,7 +571,7 @@ SpMat<eT>::const_row_iterator::operator++()
  */
 template<typename eT>
 inline
-arma_hot
+arma_warn_unused
 typename SpMat<eT>::const_row_iterator
 SpMat<eT>::const_row_iterator::operator++(int)
   {
@@ -631,7 +631,7 @@ SpMat<eT>::const_row_iterator::operator--()
  */
 template<typename eT>
 inline
-arma_hot
+arma_warn_unused
 typename SpMat<eT>::const_row_iterator
 SpMat<eT>::const_row_iterator::operator--(int)
   {
@@ -765,7 +765,7 @@ SpMat<eT>::row_iterator::operator++()
 
 template<typename eT>
 inline
-arma_hot
+arma_warn_unused
 typename SpMat<eT>::row_iterator
 SpMat<eT>::row_iterator::operator++(int)
   {
@@ -792,7 +792,7 @@ SpMat<eT>::row_iterator::operator--()
 
 template<typename eT>
 inline
-arma_hot
+arma_warn_unused
 typename SpMat<eT>::row_iterator
 SpMat<eT>::row_iterator::operator--(int)
   {

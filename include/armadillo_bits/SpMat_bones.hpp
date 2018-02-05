@@ -396,11 +396,11 @@ class SpMat : public SpBase< eT, SpMat<eT> >
     inline const_iterator(const SpMat& in_M, uword in_row, uword in_col, uword in_pos);
     inline const_iterator(const const_iterator& other);
     
-    inline arma_hot const_iterator& operator++();
-    inline arma_hot const_iterator  operator++(int);
+    inline arma_hot         const_iterator& operator++();
+    inline arma_warn_unused const_iterator  operator++(int);
     
-    inline arma_hot const_iterator& operator--();
-    inline arma_hot const_iterator  operator--(int);
+    inline arma_hot         const_iterator& operator--();
+    inline arma_warn_unused const_iterator  operator--(int);
     
     inline arma_hot bool operator==(const const_iterator& rhs) const;
     inline arma_hot bool operator!=(const const_iterator& rhs) const;
@@ -433,11 +433,11 @@ class SpMat : public SpBase< eT, SpMat<eT> >
     inline arma_hot SpValProxy<SpMat<eT> > operator*();
     
     // overloads needed for return type correctness
-    inline arma_hot iterator& operator++();
-    inline arma_hot iterator  operator++(int);
+    inline arma_hot         iterator& operator++();
+    inline arma_warn_unused iterator  operator++(int);
     
-    inline arma_hot iterator& operator--();
-    inline arma_hot iterator  operator--(int);
+    inline arma_hot         iterator& operator--();
+    inline arma_warn_unused iterator  operator--(int);
     
     // this has a different value_type than iterator_base
     typedef SpValProxy<SpMat<eT> >         value_type;
@@ -455,11 +455,11 @@ class SpMat : public SpBase< eT, SpMat<eT> >
     inline const_row_iterator(const SpMat& in_M, uword in_row, uword in_col);
     inline const_row_iterator(const const_row_iterator& other);
     
-    inline arma_hot const_row_iterator& operator++();
-    inline arma_hot const_row_iterator  operator++(int);
+    inline arma_hot         const_row_iterator& operator++();
+    inline arma_warn_unused const_row_iterator  operator++(int);
     
-    inline arma_hot const_row_iterator& operator--();
-    inline arma_hot const_row_iterator  operator--(int);
+    inline arma_hot         const_row_iterator& operator--();
+    inline arma_warn_unused const_row_iterator  operator--(int);
     
     uword internal_row; // hold row internally because we use internal_pos differently
     uword actual_pos;   // actual position in matrix
@@ -494,11 +494,11 @@ class SpMat : public SpBase< eT, SpMat<eT> >
     inline arma_hot SpValProxy<SpMat<eT> > operator*();
     
     // overloads required for return type correctness
-    inline arma_hot row_iterator& operator++();
-    inline arma_hot row_iterator  operator++(int);
+    inline arma_hot         row_iterator& operator++();
+    inline arma_warn_unused row_iterator  operator++(int);
     
-    inline arma_hot row_iterator& operator--();
-    inline arma_hot row_iterator  operator--(int);
+    inline arma_hot         row_iterator& operator--();
+    inline arma_warn_unused row_iterator  operator--(int);
     
     // this has a different value_type than iterator_base
     typedef SpValProxy<SpMat<eT> >         value_type;

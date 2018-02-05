@@ -2374,6 +2374,7 @@ subview_cube<eT>::iterator::iterator(subview_cube<eT>& in_sv, const uword in_row
 
 template<typename eT>
 inline
+arma_warn_unused
 eT&
 subview_cube<eT>::iterator::operator*()
   {
@@ -2414,6 +2415,7 @@ subview_cube<eT>::iterator::operator++()
 
 template<typename eT>
 inline
+arma_warn_unused
 typename subview_cube<eT>::iterator
 subview_cube<eT>::iterator::operator++(int)
   {
@@ -2428,6 +2430,7 @@ subview_cube<eT>::iterator::operator++(int)
 
 template<typename eT>
 inline
+arma_warn_unused
 bool
 subview_cube<eT>::iterator::operator==(const iterator& rhs) const
   {
@@ -2438,6 +2441,7 @@ subview_cube<eT>::iterator::operator==(const iterator& rhs) const
 
 template<typename eT>
 inline
+arma_warn_unused
 bool
 subview_cube<eT>::iterator::operator!=(const iterator& rhs) const
   {
@@ -2448,6 +2452,7 @@ subview_cube<eT>::iterator::operator!=(const iterator& rhs) const
 
 template<typename eT>
 inline
+arma_warn_unused
 bool
 subview_cube<eT>::iterator::operator==(const const_iterator& rhs) const
   {
@@ -2458,6 +2463,7 @@ subview_cube<eT>::iterator::operator==(const const_iterator& rhs) const
 
 template<typename eT>
 inline
+arma_warn_unused
 bool
 subview_cube<eT>::iterator::operator!=(const const_iterator& rhs) const
   {
@@ -2547,6 +2553,7 @@ subview_cube<eT>::const_iterator::const_iterator(const subview_cube<eT>& in_sv, 
 
 template<typename eT>
 inline
+arma_warn_unused
 const eT&
 subview_cube<eT>::const_iterator::operator*()
   {
@@ -2587,6 +2594,7 @@ subview_cube<eT>::const_iterator::operator++()
 
 template<typename eT>
 inline
+arma_warn_unused
 typename subview_cube<eT>::const_iterator
 subview_cube<eT>::const_iterator::operator++(int)
   {
@@ -2601,6 +2609,7 @@ subview_cube<eT>::const_iterator::operator++(int)
 
 template<typename eT>
 inline
+arma_warn_unused
 bool
 subview_cube<eT>::const_iterator::operator==(const iterator& rhs) const
   {
@@ -2611,6 +2620,7 @@ subview_cube<eT>::const_iterator::operator==(const iterator& rhs) const
 
 template<typename eT>
 inline
+arma_warn_unused
 bool
 subview_cube<eT>::const_iterator::operator!=(const iterator& rhs) const
   {
@@ -2621,6 +2631,7 @@ subview_cube<eT>::const_iterator::operator!=(const iterator& rhs) const
 
 template<typename eT>
 inline
+arma_warn_unused
 bool
 subview_cube<eT>::const_iterator::operator==(const const_iterator& rhs) const
   {
@@ -2631,6 +2642,7 @@ subview_cube<eT>::const_iterator::operator==(const const_iterator& rhs) const
 
 template<typename eT>
 inline
+arma_warn_unused
 bool
 subview_cube<eT>::const_iterator::operator!=(const const_iterator& rhs) const
   {

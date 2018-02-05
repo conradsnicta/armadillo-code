@@ -144,15 +144,15 @@ class subview_cube : public BaseCube<eT, subview_cube<eT> >
     inline iterator(const iterator& X);
     inline iterator(subview_cube<eT>& in_sv, const uword in_row, const uword in_col, const uword in_slice);
     
-    inline eT& operator*();
+    inline arma_warn_unused eT& operator*();
     
-    inline iterator& operator++();
-    inline iterator  operator++(int);
+    inline                  iterator& operator++();
+    inline arma_warn_unused iterator  operator++(int);
     
-    inline bool operator==(const       iterator& rhs) const;
-    inline bool operator!=(const       iterator& rhs) const;
-    inline bool operator==(const const_iterator& rhs) const;
-    inline bool operator!=(const const_iterator& rhs) const;
+    inline arma_warn_unused bool operator==(const       iterator& rhs) const;
+    inline arma_warn_unused bool operator!=(const       iterator& rhs) const;
+    inline arma_warn_unused bool operator==(const const_iterator& rhs) const;
+    inline arma_warn_unused bool operator!=(const const_iterator& rhs) const;
     
     // So that we satisfy the STL iterator types.
     typedef std::forward_iterator_tag iterator_category;
@@ -184,15 +184,15 @@ class subview_cube : public BaseCube<eT, subview_cube<eT> >
     inline const_iterator(const const_iterator& X);
     inline const_iterator(const subview_cube<eT>& in_sv, const uword in_row, const uword in_col, const uword in_slice);
     
-    inline const eT& operator*();
+    inline arma_warn_unused const eT& operator*();
     
-    inline const_iterator& operator++();
-    inline const_iterator  operator++(int);
+    inline                  const_iterator& operator++();
+    inline arma_warn_unused const_iterator  operator++(int);
     
-    inline bool operator==(const       iterator& rhs) const;
-    inline bool operator!=(const       iterator& rhs) const;
-    inline bool operator==(const const_iterator& rhs) const;
-    inline bool operator!=(const const_iterator& rhs) const;
+    inline arma_warn_unused bool operator==(const       iterator& rhs) const;
+    inline arma_warn_unused bool operator!=(const       iterator& rhs) const;
+    inline arma_warn_unused bool operator==(const const_iterator& rhs) const;
+    inline arma_warn_unused bool operator!=(const const_iterator& rhs) const;
     
     // So that we satisfy the STL iterator types.
     typedef std::forward_iterator_tag iterator_category;

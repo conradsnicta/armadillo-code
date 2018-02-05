@@ -191,15 +191,15 @@ class subview : public Base<eT, subview<eT> >
     inline iterator(const iterator& X);
     inline iterator(subview<eT>& in_sv, const uword in_row, const uword in_col);
     
-    inline eT& operator*();
+    inline arma_warn_unused eT& operator*();
     
-    inline iterator& operator++();
-    inline iterator  operator++(int);
+    inline                  iterator& operator++();
+    inline arma_warn_unused iterator  operator++(int);
     
-    inline bool operator==(const       iterator& rhs) const;
-    inline bool operator!=(const       iterator& rhs) const;
-    inline bool operator==(const const_iterator& rhs) const;
-    inline bool operator!=(const const_iterator& rhs) const;
+    inline arma_warn_unused bool operator==(const       iterator& rhs) const;
+    inline arma_warn_unused bool operator!=(const       iterator& rhs) const;
+    inline arma_warn_unused bool operator==(const const_iterator& rhs) const;
+    inline arma_warn_unused bool operator!=(const const_iterator& rhs) const;
     
     // So that we satisfy the STL iterator types.
     typedef std::forward_iterator_tag iterator_category;
@@ -227,15 +227,15 @@ class subview : public Base<eT, subview<eT> >
     inline const_iterator(const const_iterator& X);
     inline const_iterator(const subview<eT>& in_sv, const uword in_row, const uword in_col);
     
-    inline const eT& operator*();
+    inline arma_warn_unused const eT& operator*();
     
-    inline const_iterator& operator++();
-    inline const_iterator  operator++(int);
+    inline                  const_iterator& operator++();
+    inline arma_warn_unused const_iterator  operator++(int);
     
-    inline bool operator==(const       iterator& rhs) const;
-    inline bool operator!=(const       iterator& rhs) const;
-    inline bool operator==(const const_iterator& rhs) const;
-    inline bool operator!=(const const_iterator& rhs) const;
+    inline arma_warn_unused bool operator==(const       iterator& rhs) const;
+    inline arma_warn_unused bool operator!=(const       iterator& rhs) const;
+    inline arma_warn_unused bool operator==(const const_iterator& rhs) const;
+    inline arma_warn_unused bool operator!=(const const_iterator& rhs) const;
     
     // So that we satisfy the STL iterator types.
     typedef std::forward_iterator_tag iterator_category;
@@ -253,6 +253,7 @@ class subview : public Base<eT, subview<eT> >
     arma_aligned const uword aux_row2_p1;
     };
   
+  
   class const_row_iterator;
   
   class row_iterator
@@ -263,15 +264,15 @@ class subview : public Base<eT, subview<eT> >
     inline row_iterator(const row_iterator& X);
     inline row_iterator(subview<eT>& in_sv, const uword in_row, const uword in_col);
     
-    inline eT& operator* ();
+    inline arma_warn_unused eT& operator* ();
     
-    inline row_iterator& operator++();
-    inline row_iterator  operator++(int);
+    inline                  row_iterator& operator++();
+    inline arma_warn_unused row_iterator  operator++(int);
     
-    inline bool operator!=(const       row_iterator& X) const;
-    inline bool operator==(const       row_iterator& X) const;
-    inline bool operator!=(const const_row_iterator& X) const;
-    inline bool operator==(const const_row_iterator& X) const;
+    inline arma_warn_unused bool operator!=(const       row_iterator& X) const;
+    inline arma_warn_unused bool operator==(const       row_iterator& X) const;
+    inline arma_warn_unused bool operator!=(const const_row_iterator& X) const;
+    inline arma_warn_unused bool operator==(const const_row_iterator& X) const;
     
     typedef std::forward_iterator_tag iterator_category;
     typedef eT                        value_type;
@@ -298,15 +299,15 @@ class subview : public Base<eT, subview<eT> >
     inline const_row_iterator(const const_row_iterator& X);
     inline const_row_iterator(const subview<eT>& in_sv, const uword in_row, const uword in_col);
     
-    inline const eT& operator*() const;
+    inline arma_warn_unused const eT& operator*() const;
     
-    inline const_row_iterator& operator++();
-    inline const_row_iterator  operator++(int);
+    inline                  const_row_iterator& operator++();
+    inline arma_warn_unused const_row_iterator  operator++(int);
     
-    inline bool operator!=(const       row_iterator& X) const;
-    inline bool operator==(const       row_iterator& X) const;
-    inline bool operator!=(const const_row_iterator& X) const;
-    inline bool operator==(const const_row_iterator& X) const;
+    inline arma_warn_unused bool operator!=(const       row_iterator& X) const;
+    inline arma_warn_unused bool operator==(const       row_iterator& X) const;
+    inline arma_warn_unused bool operator!=(const const_row_iterator& X) const;
+    inline arma_warn_unused bool operator==(const const_row_iterator& X) const;
     
     typedef std::forward_iterator_tag iterator_category;
     typedef eT                        value_type;

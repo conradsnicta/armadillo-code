@@ -204,8 +204,10 @@ arma_ostream::modify_stream(std::ostream& o, typename SpMat<eT>::const_iterator 
 
   for(typename SpMat<eT>::const_iterator it = begin; it.pos() < n_elem; ++it)
     {
-    const eT val = *it;
-
+    const eT val = (*it);
+    
+    if(arma_isfinite(val) == false)  { continue; }
+    
     if(
       val >= eT(+100) ||
       ( (is_signed<eT>::value == true) && (val <= eT(-100)) ) ||

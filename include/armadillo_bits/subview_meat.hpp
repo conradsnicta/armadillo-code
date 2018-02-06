@@ -2422,7 +2422,7 @@ subview<eT>::iterator::iterator()
   , aux_row2_p1(0   )
   {
   arma_extra_debug_sigprint();
-  // Technically this iterator is invalid (it does not point to a real element)
+  // Technically this iterator is invalid (it does not point to a valid element)
   }
 
 
@@ -2568,7 +2568,7 @@ subview<eT>::const_iterator::const_iterator()
   , aux_row2_p1(0   )
   {
   arma_extra_debug_sigprint();
-  // Technically this iterator is invalid (it does not point to a real element)
+  // Technically this iterator is invalid (it does not point to a valid element)
   }
 
 
@@ -2729,7 +2729,7 @@ subview<eT>::row_iterator::row_iterator()
   , aux_col2_p1(0   )
   {
   arma_extra_debug_sigprint();
-  // Technically this iterator is invalid (it does not point to a real element)
+  // Technically this iterator is invalid (it does not point to a valid element)
   }
 
 
@@ -2875,7 +2875,7 @@ subview<eT>::const_row_iterator::const_row_iterator()
   , aux_col2_p1(0   )
   {
   arma_extra_debug_sigprint();
-  // Technically this iterator is invalid (it does not point to a real element)
+  // Technically this iterator is invalid (it does not point to a valid element)
   }
 
 

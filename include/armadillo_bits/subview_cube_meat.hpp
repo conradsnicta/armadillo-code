@@ -2331,7 +2331,7 @@ subview_cube<eT>::iterator::iterator()
   , aux_col2_p1  (0   )
   {
   arma_extra_debug_sigprint();
-  // Technically this iterator is invalid (it does not point to a real element)
+  // Technically this iterator is invalid (it does not point to a valid element)
   }
 
 
@@ -2492,7 +2492,7 @@ subview_cube<eT>::const_iterator::const_iterator()
   , aux_col2_p1  (0   )
   {
   arma_extra_debug_sigprint();
-  // Technically this iterator is invalid (it does not point to a real element)
+  // Technically this iterator is invalid (it does not point to a valid element)
   }
 
 

@@ -30,7 +30,7 @@ SpMat<eT>::iterator_base::iterator_base()
   , internal_col(0)
   , internal_pos(0)
   {
-  // Technically this iterator is invalid (it may not point to a real element)
+  // Technically this iterator is invalid (it does not point to a valid element)
   }
 
 
@@ -42,7 +42,7 @@ SpMat<eT>::iterator_base::iterator_base(const SpMat<eT>& in_M)
   , internal_col(0)
   , internal_pos(0)
   {
-  // Technically this iterator is invalid (it may not point to a real element)
+  // Technically this iterator is invalid (it may not point to a valid element)
   }
 
 

@@ -30,7 +30,7 @@ SpSubview<eT>::iterator_base::iterator_base(const SpSubview<eT>& in_M)
   , internal_pos(0)
   , skip_pos(0)
   {
-  // Technically this iterator is invalid (it may not point to a real element).
+  // Technically this iterator is invalid (it may not point to a valid element)
   }
 
 

@@ -7367,7 +7367,7 @@ Mat<eT>::row_iterator::row_iterator()
   , current_col(0   )
   {
   arma_extra_debug_sigprint();
-  // Technically this iterator is invalid (it does not point to a real element)
+  // Technically this iterator is invalid (it does not point to a valid element)
   }
 
 
@@ -7543,7 +7543,7 @@ Mat<eT>::const_row_iterator::const_row_iterator()
   , current_col(0   )
   {
   arma_extra_debug_sigprint();
-  // Technically this iterator is invalid (it does not point to a real element)
+  // Technically this iterator is invalid (it does not point to a valid element)
   }
 
 
@@ -7732,7 +7732,7 @@ Mat<eT>::row_col_iterator::row_col_iterator()
   , current_row(0   )
   {
   arma_extra_debug_sigprint();
-  // Technically this iterator is invalid (it does not point to a real element)
+  // Technically this iterator is invalid (it does not point to a valid element)
   }
 
 
@@ -7921,7 +7921,7 @@ Mat<eT>::const_row_col_iterator::const_row_col_iterator()
   , current_row(0   )
   {
   arma_extra_debug_sigprint();
-  // Technically this iterator is invalid (it does not point to a real element)
+  // Technically this iterator is invalid (it does not point to a valid element)
   }
 
 

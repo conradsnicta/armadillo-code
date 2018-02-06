@@ -2136,7 +2136,7 @@ diskio::pnm_skip_comments(std::istream& f)
   
     if(f.peek() == '#')
       {
-      while( (f.peek() != '\r') && (f.peek()!='\n') )  { f.get(); }
+      while( (f.peek() != '\r') && (f.peek() != '\n') )  { f.get(); }
       }
     }
   }
@@ -2908,9 +2908,10 @@ diskio::load_coord_ascii(SpMat< std::complex<T> >& x, std::istream& f, std::stri
         diskio::convert_token( val_imag, token_imag );
         }
       
-      const std::complex<T> val = std::complex<T>(val_real, val_imag);
-      
-      if(val != std::complex<T>(0))  { tmp(line_row,line_col) = val; }
+      if( (val_real != T(0)) || (val_imag != T(0)) )
+        {
+        tmp(line_row,line_col) = std::complex<T>(val_real, val_imag);
+        }
       }
     
     x = tmp;

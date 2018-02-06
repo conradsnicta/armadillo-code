@@ -1414,8 +1414,9 @@ diskio::save_hdf5_binary(const Mat<eT>& x, const hdf5_name& spec, std::string& e
     {
     arma_ignore(x);
     arma_ignore(spec);
+    arma_ignore(err_msg);
     
-    arma_stop_logic_error("Mat::save(): use of HDF5 needs to be enabled");
+    arma_stop_logic_error("Mat::save(): use of HDF5 must be enabled");
     
     return false;
     }
@@ -1878,7 +1879,48 @@ diskio::load_csv_ascii(Mat< std::complex<T> >& x, std::istream& f, std::string&)
       {
       std::getline(line_stream, token, ',');
       
-      if(token.length() == 0)  { col++; continue; }
+      const size_t token_len = size_t( token.length() );
+      
+      if(token_len == 0)  { col++; continue; }
+      
+      // handle special cases: inf and nan, without the imaginary part
+      if( (token_len == 3) || (token_len == 4) )
+        {
+        const char* str = token.c_str();
+        
+        const bool neg = (str[0] == '-');
+        const bool pos = (str[0] == '+');
+        
+        const size_t offset = ( (neg || pos) && (token_len == 4) ) ? 1 : 0;
+        
+        const char sig_a = str[offset  ];
+        const char sig_b = str[offset+1];
+        const char sig_c = str[offset+2];
+        
+        bool found_val_real = false;
+        T          val_real = T(0);
+        
+        if( ((sig_a == 'i') || (sig_a == 'I')) && ((sig_b == 'n') || (sig_b == 'N')) && ((sig_c == 'f') || (sig_c == 'F')) )
+          {
+          val_real = (neg) ? -(Datum<T>::inf) : Datum<T>::inf;
+          
+          found_val_real = true;
+          }
+        else
+        if( ((sig_a == 'n') || (sig_a == 'N')) && ((sig_b == 'a') || (sig_b == 'A')) && ((sig_c == 'n') || (sig_c == 'N')) )
+          {
+          val_real = Datum<T>::nan;
+          
+          found_val_real = true;
+          }
+        
+        if(found_val_real)
+          {
+          x.at(row,col) = std::complex<T>(val_real, T(0));
+          
+          col++; continue;  // get next token
+          }
+        }
       
       bool found_x = false;
       std::string::size_type loc_x = 0;  // location of the separator (+ or -) between the real and imaginary part
@@ -1967,6 +2009,11 @@ diskio::load_csv_ascii(Mat< std::complex<T> >& x, std::istream& f, std::string&)
           {
           if( loc_x    > 0           ) { str_real = token.substr(0,loc_x);                     } else { str_real.clear(); }
           if((loc_x+1) < token.size()) { str_imag = token.substr(loc_x, token.size()-loc_x-1); } else { str_imag.clear(); }
+          }
+        else
+          {
+          str_real.clear();
+          str_imag.clear();
           }
         }
       
@@ -2381,7 +2428,7 @@ diskio::load_hdf5_binary(Mat<eT>& x, const hdf5_name& spec, std::string& err_msg
     arma_ignore(spec);
     arma_ignore(err_msg);
 
-    arma_stop_logic_error("Mat::load(): use of HDF5 needs to be enabled");
+    arma_stop_logic_error("Mat::load(): use of HDF5 must be enabled");
 
     return false;
     }
@@ -3391,9 +3438,10 @@ diskio::save_hdf5_binary(const Cube<eT>& x, const hdf5_name& spec, std::string& 
     {
     arma_ignore(x);
     arma_ignore(spec);
-
-    arma_stop_logic_error("Cube::save(): use of HDF5 needs to be enabled");
-
+    arma_ignore(err_msg);
+    
+    arma_stop_logic_error("Cube::save(): use of HDF5 must be enabled");
+    
     return false;
     }
   #endif
@@ -3836,9 +3884,9 @@ diskio::load_hdf5_binary(Cube<eT>& x, const hdf5_name& spec, std::string& err_ms
     arma_ignore(x);
     arma_ignore(spec);
     arma_ignore(err_msg);
-
-    arma_stop_logic_error("Cube::load(): use of HDF5 needs to be enabled");
-
+    
+    arma_stop_logic_error("Cube::load(): use of HDF5 must be enabled");
+    
     return false;
     }
   #endif

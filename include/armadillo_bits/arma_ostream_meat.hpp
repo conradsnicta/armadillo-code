@@ -68,6 +68,8 @@ arma_ostream::modify_stream(std::ostream& o, const eT* data, const uword n_elem)
     {
     const eT val = data[i];
     
+    if(arma_isfinite(val) == false)  { continue; }
+    
     if(
       ( cond_rel< (sizeof(eT) > 4) && (is_same_type<uword,eT>::yes || is_same_type<sword,eT>::yes) >::geq(val, eT(+10000000000)) )
       ||

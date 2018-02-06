@@ -37,8 +37,8 @@ class diskio
   
   inline arma_cold static bool safe_rename(const std::string& old_name, const std::string& new_name);
   
-  template<typename eT> inline static void convert_token(eT&              val, const std::string& token);
-  template<typename  T> inline static void convert_token(std::complex<T>& val, const std::string& token);
+  template<typename eT> inline static bool convert_token(eT&              val, const std::string& token);
+  template<typename  T> inline static bool convert_token(std::complex<T>& val, const std::string& token);
   
   template<typename eT> arma_deprecated inline static bool convert_naninf(eT& val, const std::string& token);
   

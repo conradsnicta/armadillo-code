@@ -673,12 +673,12 @@ diskio::safe_rename(const std::string& old_name, const std::string& new_name)
 
 template<typename eT>
 inline
-void
+bool
 diskio::convert_token(eT& val, const std::string& token)
   {
   const size_t N = size_t(token.length());
   
-  if(N == 0)  { val = eT(0); return; }
+  if(N == 0)  { val = eT(0); return true; }
   
   const char* str = token.c_str();
   
@@ -697,22 +697,23 @@ diskio::convert_token(eT& val, const std::string& token)
       {
       val = neg ? cond_rel< is_signed<eT>::value >::make_neg(Datum<eT>::inf) : Datum<eT>::inf;
       
-      return;
+      return true;
       }
     else
     if( ((sig_a == 'n') || (sig_a == 'N')) && ((sig_b == 'a') || (sig_b == 'A')) && ((sig_c == 'n') || (sig_c == 'N')) )
       {
       val = Datum<eT>::nan;
       
-      return;
+      return true;
       }
     }
   
   
+  char* endptr = NULL;
   
   if(is_real<eT>::value)
     {
-    val = eT( std::strtod(str, NULL) );
+    val = eT( std::strtod(str, &endptr) );
     }
   else
     {
@@ -722,11 +723,11 @@ diskio::convert_token(eT& val, const std::string& token)
       
       #if defined(ARMA_USE_CXX11) || (defined(_POSIX_C_SOURCE) && (_POSIX_C_SOURCE >= 200112L))
         {
-        val = eT( std::strtoll(str, NULL, 10) );
+        val = eT( std::strtoll(str, &endptr, 10) );
         }
       #else
         {
-        val = eT( std::strtol(str, NULL, 10) );
+        val = eT( std::strtol(str, &endptr, 10) );
         }
       #endif
       }
@@ -734,32 +735,36 @@ diskio::convert_token(eT& val, const std::string& token)
       {
       // unsigned integer
       
-      if(str[0] == '-')  { val = eT(0);  return; }
+      if(str[0] == '-')  { val = eT(0);  return true; }
       
       #if defined(ARMA_USE_CXX11) || (defined(_POSIX_C_SOURCE) && (_POSIX_C_SOURCE >= 200112L))
         {
-        val = eT( std::strtoull(str, NULL, 10) );
+        val = eT( std::strtoull(str, &endptr, 10) );
         }
       #else
         {
-        val = eT( std::strtoul(str, NULL, 10) );
+        val = eT( std::strtoul(str, &endptr, 10) );
         }
       #endif
       }
     }
+  
+  if(str == endptr)  { return false; }
+  
+  return true;
   }
 
 
 
 template<typename T>
 inline
-void
+bool
 diskio::convert_token(std::complex<T>& val, const std::string& token)
   {
   const size_t N   = size_t(token.length());
   const size_t Nm1 = N-1;
   
-  if(N == 0)  { val = std::complex<T>(0); return; }
+  if(N == 0)  { val = std::complex<T>(0); return true; }
   
   const char* str = token.c_str();
   
@@ -774,20 +779,22 @@ diskio::convert_token(std::complex<T>& val, const std::string& token)
     
     T val_real;
     
-    diskio::convert_token(val_real, token);  // use the non-complex version of this function
+    const bool state = diskio::convert_token(val_real, token);  // use the non-complex version of this function
     
     val = std::complex<T>(val_real);
     
-    return;
+    return state;
     }
   
-  // does the token contain more than the () brackets?
-  if(N <= 2)  { val = std::complex<T>(0); return; }
+  // does the token contain only the () brackets?
+  if(N <= 2)  { val = std::complex<T>(0); return true; }
   
   size_t comma_loc   = 0;
   bool   comma_found = false;
   
   for(size_t i=0; i<N; ++i)  { if(str[i] == ',')  { comma_loc = i; comma_found = true; break; } }
+  
+  bool state = false;
   
   if(comma_found == false)
     {
@@ -797,7 +804,7 @@ diskio::convert_token(std::complex<T>& val, const std::string& token)
     
     T val_real;
     
-    diskio::convert_token(val_real, token_real);  // use the non-complex version of this function
+    state = diskio::convert_token(val_real, token_real);  // use the non-complex version of this function
     
     val = std::complex<T>(val_real);
     }
@@ -809,11 +816,15 @@ diskio::convert_token(std::complex<T>& val, const std::string& token)
     T val_real;
     T val_imag;
     
-    diskio::convert_token(val_real, token_real);
-    diskio::convert_token(val_imag, token_imag);
+    const bool state_real = diskio::convert_token(val_real, token_real);
+    const bool state_imag = diskio::convert_token(val_imag, token_imag);
+    
+    state = ((state_real == true) && (state_imag == true));
     
     val = std::complex<T>(val_real, val_imag);
     }
+  
+  return state;
   }
 
 
@@ -829,9 +840,7 @@ diskio::convert_naninf(eT& val, const std::string& token)
   
   arma_debug_warn("*** arma::diskio::convert_naninf() is an internal armadillo function subject to removal ***");
   
-  diskio::convert_token(val, token);
-  
-  return true;
+  return diskio::convert_token(val, token);
   }
 
 
@@ -1495,8 +1504,8 @@ diskio::load_raw_ascii(Mat<eT>& x, std::istream& f, std::string& err_msg)
       {
       if(line_n_cols != f_n_cols)
         {
-        err_msg = "inconsistent number of columns in ";
         load_okay = false;
+        err_msg = "inconsistent number of columns in ";
         }
       }
     
@@ -1511,12 +1520,16 @@ diskio::load_raw_ascii(Mat<eT>& x, std::istream& f, std::string& err_msg)
     
     x.set_size(f_n_rows, f_n_cols);
     
-    for(uword row=0; row < x.n_rows; ++row)
-    for(uword col=0; col < x.n_cols; ++col)
+    for(uword row=0; ((row < x.n_rows) && load_okay); ++row)
+    for(uword col=0; ((col < x.n_cols) && load_okay); ++col)
       {
       f >> token;
       
-      diskio::convert_token( x.at(row,col), token );
+      if(diskio::convert_token(x.at(row,col), token) == false)
+        {
+        load_okay = false;
+        err_msg = "couldn't interpret data in ";
+        }
       }
     }
   

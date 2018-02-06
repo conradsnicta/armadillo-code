@@ -689,16 +689,18 @@ diskio::convert_token(eT& val, const std::string& token)
     
     const size_t offset = ( (neg || pos) && (N == 4) ) ? 1 : 0;
     
-    const char sig = str[offset];
+    const char sig_a = str[offset  ];
+    const char sig_b = str[offset+1];
+    const char sig_c = str[offset+2];
     
-    if( (sig == 'i') || (sig == 'I') )
+    if( ((sig_a == 'i') || (sig_a == 'I')) && ((sig_b == 'n') || (sig_b == 'N')) && ((sig_c == 'f') || (sig_c == 'F')) )
       {
       val = neg ? cond_rel< is_signed<eT>::value >::make_neg(Datum<eT>::inf) : Datum<eT>::inf;
       
       return;
       }
     else
-    if( (sig == 'n') || (sig == 'N') )
+    if( ((sig_a == 'n') || (sig_a == 'N')) && ((sig_b == 'a') || (sig_b == 'A')) && ((sig_c == 'n') || (sig_c == 'N')) )
       {
       val = Datum<eT>::nan;
       

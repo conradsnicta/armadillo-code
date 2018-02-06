@@ -896,10 +896,7 @@ diskio::save_raw_ascii(const Mat<eT>& x, std::ostream& f)
       {
       f.put(' ');
       
-      if(is_real<eT>::value)
-        {
-        f.width(std::streamsize(cell_width));
-        }
+      if(is_real<eT>::value)  { f.width(std::streamsize(cell_width)); }
       
       arma_ostream::print_elem(f, x.at(row,col), false);
       }
@@ -1022,10 +1019,7 @@ diskio::save_arma_ascii(const Mat<eT>& x, std::ostream& f)
       {
       f.put(' ');
       
-      if(is_real<eT>::value)
-        {
-        f.width(std::streamsize(cell_width));
-        }
+      if(is_real<eT>::value)  { f.width(std::streamsize(cell_width)); }
       
       arma_ostream::print_elem(f, x.at(row,col), false);
       }
@@ -1266,12 +1260,10 @@ diskio::save_pgm_binary(const Mat<eT>& x, std::ostream& f)
   uword i = 0;
   
   for(uword row=0; row < x.n_rows; ++row)
+  for(uword col=0; col < x.n_cols; ++col)
     {
-    for(uword col=0; col < x.n_cols; ++col)
-      {
-      tmp[i] = u8( x.at(row,col) );  // TODO: add round() ?
-      ++i;
-      }
+    tmp[i] = u8( x.at(row,col) );  // TODO: add round() ?
+    ++i;
     }
   
   f.write(reinterpret_cast<const char*>(tmp.mem), std::streamsize(n_elem) );
@@ -1814,7 +1806,6 @@ diskio::load_csv_ascii(Mat< std::complex<T> >& x, std::istream& f, std::string&)
   arma_extra_debug_sigprint();
   
   // TODO: replace with more efficient implementation
-  // TODO: fix loading of non-complex matrices with +-inf
   
   bool load_okay = f.good();
   
@@ -2139,17 +2130,11 @@ diskio::pnm_skip_comments(std::istream& f)
   {
   while( isspace(f.peek()) )
     {
-    while( isspace(f.peek()) )
-      {
-      f.get();
-      }
+    while( isspace(f.peek()) )  { f.get(); }
   
     if(f.peek() == '#')
       {
-      while( (f.peek() != '\r') && (f.peek()!='\n') )
-        {
-        f.get();
-        }
+      while( (f.peek() != '\r') && (f.peek()!='\n') )  { f.get(); }
       }
     }
   }
@@ -2225,16 +2210,12 @@ diskio::load_pgm_binary(Mat<eT>& x, std::istream& f, std::string& err_msg)
         //cout << "f_n_cols = " << f_n_cols << endl;
         //cout << "f_n_rows = " << f_n_rows << endl;
         
-        
         for(uword row=0; row < f_n_rows; ++row)
+        for(uword col=0; col < f_n_cols; ++col)
           {
-          for(uword col=0; col < f_n_cols; ++col)
-            {
-            x.at(row,col) = eT(tmp[i]);
-            ++i;
-            }
+          x.at(row,col) = eT(tmp[i]);
+          ++i;
           }
-          
         }
       else
         {
@@ -2246,16 +2227,12 @@ diskio::load_pgm_binary(Mat<eT>& x, std::istream& f, std::string& err_msg)
         uword i = 0;
         
         for(uword row=0; row < f_n_rows; ++row)
+        for(uword col=0; col < f_n_cols; ++col)
           {
-          for(uword col=0; col < f_n_cols; ++col)
-            {
-            x.at(row,col) = eT(tmp[i]);
-            ++i;
-            }
+          x.at(row,col) = eT(tmp[i]);
+          ++i;
           }
-        
         }
-      
       }
     else
       {
@@ -2263,10 +2240,7 @@ diskio::load_pgm_binary(Mat<eT>& x, std::istream& f, std::string& err_msg)
       err_msg = "functionality unimplemented to handle loading ";
       }
     
-    if(f.good() == false)
-      {
-      load_okay = false;
-      }
+    if(f.good() == false)  { load_okay = false; }
     }
   else
     {
@@ -4440,17 +4414,13 @@ diskio::load_ppm_binary(Cube<eT>& x, std::istream& f, std::string& err_msg)
         //cout << "f_n_cols = " << f_n_cols << endl;
         //cout << "f_n_rows = " << f_n_rows << endl;
         
-        
         for(uword row=0; row < f_n_rows; ++row)
+        for(uword col=0; col < f_n_cols; ++col)
           {
-          for(uword col=0; col < f_n_cols; ++col)
-            {
-            x.at(row,col,0) = eT(tmp[i+0]);
-            x.at(row,col,1) = eT(tmp[i+1]);
-            x.at(row,col,2) = eT(tmp[i+2]);
-            i+=3;
-            }
-          
+          x.at(row,col,0) = eT(tmp[i+0]);
+          x.at(row,col,1) = eT(tmp[i+1]);
+          x.at(row,col,2) = eT(tmp[i+2]);
+          i+=3;
           }
         }
       else
@@ -4463,19 +4433,14 @@ diskio::load_ppm_binary(Cube<eT>& x, std::istream& f, std::string& err_msg)
         uword i = 0;
         
         for(uword row=0; row < f_n_rows; ++row)
+        for(uword col=0; col < f_n_cols; ++col)
           {
-          for(uword col=0; col < f_n_cols; ++col)
-            {
-            x.at(row,col,0) = eT(tmp[i+0]);
-            x.at(row,col,1) = eT(tmp[i+1]);
-            x.at(row,col,2) = eT(tmp[i+2]);
-            i+=3;
-            }
-          
+          x.at(row,col,0) = eT(tmp[i+0]);
+          x.at(row,col,1) = eT(tmp[i+1]);
+          x.at(row,col,2) = eT(tmp[i+2]);
+          i+=3;
           }
-        
         }
-      
       }
     else
       {
@@ -4668,19 +4633,14 @@ diskio::load_ppm_binary(field<T1>& x, std::istream& f, std::string& err_msg)
         uword i = 0;
         
         for(uword row=0; row < f_n_rows; ++row)
+        for(uword col=0; col < f_n_cols; ++col)
           {
-          for(uword col=0; col < f_n_cols; ++col)
-            {
-            R.at(row,col) = eT(tmp[i+0]);
-            G.at(row,col) = eT(tmp[i+1]);
-            B.at(row,col) = eT(tmp[i+2]);
-            i+=3;
-            }
-          
+          R.at(row,col) = eT(tmp[i+0]);
+          G.at(row,col) = eT(tmp[i+1]);
+          B.at(row,col) = eT(tmp[i+2]);
+          i+=3;
           }
-        
         }
-      
       }
     else
       {
@@ -4689,7 +4649,6 @@ diskio::load_ppm_binary(field<T1>& x, std::istream& f, std::string& err_msg)
       }
     
     if(f.good() == false)  { load_okay = false; }
-    
     }
   else
     {
@@ -4768,15 +4727,13 @@ diskio::save_ppm_binary(const field<T1>& x, std::ostream& f)
 
   uword i = 0;
   for(uword row=0; row < R.n_rows; ++row)
+  for(uword col=0; col < R.n_cols; ++col)
     {
-    for(uword col=0; col < R.n_cols; ++col)
-      {
-      tmp[i+0] = u8( access::tmp_real( R.at(row,col) ) );
-      tmp[i+1] = u8( access::tmp_real( G.at(row,col) ) );
-      tmp[i+2] = u8( access::tmp_real( B.at(row,col) ) );
-      
-      i+=3;
-      }
+    tmp[i+0] = u8( access::tmp_real( R.at(row,col) ) );
+    tmp[i+1] = u8( access::tmp_real( G.at(row,col) ) );
+    tmp[i+2] = u8( access::tmp_real( B.at(row,col) ) );
+    
+    i+=3;
     }
   
   f.write( reinterpret_cast<const char*>(tmp.mem), std::streamsize(n_elem) );

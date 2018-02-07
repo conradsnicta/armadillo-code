@@ -17,6 +17,10 @@
 
 #ifdef ARMA_USE_LAPACK
 
+#if defined(dgetrf) || defined(DGETRF)
+  #pragma message ("WARNING: detected possible interference with definitions of LAPACK functions;")
+  #pragma message ("WARNING: include the armadillo header before any other header as a workaround")
+#endif
 
 #if !defined(ARMA_BLAS_CAPITALS)
   

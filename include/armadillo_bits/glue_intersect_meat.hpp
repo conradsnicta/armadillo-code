@@ -86,7 +86,7 @@ glue_intersect::apply(Mat<typename T1::elem_type>& out, uvec& iA, uvec& iB, cons
   
   if(calc_indx)
     {
-    C_sorted_indx = sort_index(C);
+    C_sorted_indx = stable_sort_index(C);
     C_sorted      = C.elem(C_sorted_indx);
     }
   else

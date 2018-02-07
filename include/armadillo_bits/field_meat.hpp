@@ -1712,6 +1712,7 @@ field<oT>::in_range(const uword in_row, const uword in_col, const uword in_slice
 
 template<typename oT>
 inline
+arma_cold
 bool
 field<oT>::save(const std::string name, const file_type type, const bool print_status) const
   {
@@ -1739,6 +1740,7 @@ field<oT>::save(const std::string name, const file_type type, const bool print_s
 
 template<typename oT>
 inline
+arma_cold
 bool
 field<oT>::save(std::ostream& os, const file_type type, const bool print_status) const
   {
@@ -1766,6 +1768,7 @@ field<oT>::save(std::ostream& os, const file_type type, const bool print_status)
 
 template<typename oT>
 inline
+arma_cold
 bool
 field<oT>::load(const std::string name, const file_type type, const bool print_status)
   {
@@ -1798,6 +1801,7 @@ field<oT>::load(const std::string name, const file_type type, const bool print_s
 
 template<typename oT>
 inline
+arma_cold
 bool
 field<oT>::load(std::istream& is, const file_type type, const bool print_status)
   {
@@ -1830,6 +1834,7 @@ field<oT>::load(std::istream& is, const file_type type, const bool print_status)
 
 template<typename oT>
 inline
+arma_cold
 bool
 field<oT>::quiet_save(const std::string name, const file_type type) const
   {
@@ -1842,6 +1847,7 @@ field<oT>::quiet_save(const std::string name, const file_type type) const
 
 template<typename oT>
 inline
+arma_cold
 bool
 field<oT>::quiet_save(std::ostream& os, const file_type type) const
   {
@@ -1854,6 +1860,7 @@ field<oT>::quiet_save(std::ostream& os, const file_type type) const
 
 template<typename oT>
 inline
+arma_cold
 bool
 field<oT>::quiet_load(const std::string name, const file_type type)
   {
@@ -1866,6 +1873,7 @@ field<oT>::quiet_load(const std::string name, const file_type type)
 
 template<typename oT>
 inline
+arma_cold
 bool
 field<oT>::quiet_load(std::istream& is, const file_type type)
   {

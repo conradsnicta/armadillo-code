@@ -65,6 +65,7 @@ class Op : public Base<typename T1::elem_type, Op<T1, op_type> >
       || is_same_type<op_type, op_unique>::yes
       || is_same_type<op_type, op_diff_default>::yes
       || is_same_type<op_type, op_normalise_vec>::yes
+      || is_same_type<op_type, op_chi2rnd>::yes
       )
     )
     ||
@@ -101,6 +102,7 @@ class Op : public Base<typename T1::elem_type, Op<T1, op_type> >
       || is_same_type<op_type, op_unique>::yes
       || is_same_type<op_type, op_diff_default>::yes
       || is_same_type<op_type, op_normalise_vec>::yes
+      || is_same_type<op_type, op_chi2rnd>::yes
       )
     )
     ||

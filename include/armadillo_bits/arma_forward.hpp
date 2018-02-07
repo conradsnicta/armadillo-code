@@ -110,6 +110,7 @@ class op_unique;
 class op_unique_index;
 class op_diff_default;
 class op_hist;
+class op_chi2rnd;
 
 class eop_conj;
 

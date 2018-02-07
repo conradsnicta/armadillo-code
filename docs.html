@@ -2137,7 +2137,7 @@ Meanings:
 <li>
 <b>Caveat:</b> operators involving an equality comparison (ie. <code><b>==</b></code>, <code><b>!=</b></code>, <code><b>&gt;=</b></code>, <code><b>&lt;=</b></code>)
 are not recommended for matrices of type <i>mat</i> or <i>fmat</i>, due to the necessarily <a href="https://en.wikipedia.org/wiki/Floating_point">limited precision</a> of the underlying element types;
-you may wish to use <a href="#approx_equal">approx_equal()</a> instead
+consider using <a href="#approx_equal">approx_equal()</a> instead
 </li>
 <br>
 <li>
@@ -13181,7 +13181,10 @@ Generate a random matrix sampled from the Wishart distribution with parameters <
 </ul>
 </li>
 <br>
-<li><i>D</i> is an optional argument; it specifies the Cholesky decomposition of <i>S</i>; if <i>D</i> is provided, <i>S</i> is ignored</li>
+<li>
+<i>D</i> is an optional argument; it specifies the Cholesky decomposition of <i>S</i>; if <i>D</i> is provided, <i>S</i> is ignored;
+<br>using <i>D</i> is more efficient if you need to use <i>wishrnd()</i> many times for the same <i>S</i> matrix
+</li>
 <br>
 <li>If generating the random matrix fails:
 <ul>
@@ -13236,7 +13239,10 @@ Generate a random matrix sampled from the inverse Wishart distribution with para
 </ul>
 </li>
 <br>
-<li><i>Dinv</i> is an optional argument; it specifies the Cholesky decomposition of the inverse of <i>T</i>; if <i>Dinv</i> is provided, <i>T</i> is ignored</li>
+<li>
+<i>Dinv</i> is an optional argument; it specifies the Cholesky decomposition of the inverse of <i>T</i>; if <i>Dinv</i> is provided, <i>T</i> is ignored
+<br>using <i>Dinv</i> is more efficient if you need to use <i>iwishrnd()</i> many times for the same <i>T</i> matrix
+</li>
 <br>
 <li>If generating the random matrix fails:
 <ul>

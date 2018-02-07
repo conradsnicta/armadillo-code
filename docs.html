@@ -8326,8 +8326,8 @@ to work around this bug, preface Armadillo's <i>imag()</i> and <i>real()</i> wit
 <a name="ind2sub"></a>
 <table>
 <tbody>
-<tr><td>uvec</td><td>&nbsp;sub&nbsp;=&nbsp;<b>ind2sub(&nbsp;size(</b>X<b>),</b>&nbsp;index&nbsp;<b>)</b></td></tr>
-<tr><td>umat</td><td>&nbsp;sub&nbsp;=&nbsp;<b>ind2sub(&nbsp;size(</b>X<b>),</b>&nbsp;vector_of_indices&nbsp;<b>)</b></td></tr>
+<tr><td>uvec</td><td>&nbsp;sub&nbsp;=&nbsp;<b>ind2sub(&nbsp;size(</b>X<b>),</b>&nbsp;index&nbsp;<b>)</b></td><td>&nbsp;&nbsp;&nbsp;</td><td>(form 1)</td></tr>
+<tr><td>umat</td><td>&nbsp;sub&nbsp;=&nbsp;<b>ind2sub(&nbsp;size(</b>X<b>),</b>&nbsp;vector_of_indices&nbsp;<b>)</b></td><td>&nbsp;&nbsp;&nbsp;</td><td>(form 2)</td></tr>
 </tbody>
 </table>
 <ul>
@@ -8344,11 +8344,11 @@ A&nbsp;<i>std::logic_error</i> exception is thrown if an index is out of range
 </li>
 <br>
 <li>
-When only one index is given, the subscripts are returned in a vector of type <a href="#Col">uvec</a>
+When only one index is given (form 1), the subscripts are returned in a vector of type <a href="#Col">uvec</a>
 </li>
 <br>
 <li>
-When a vector of indices (of type <a href="#Col">uvec</a>) is given, the corresponding subscripts are returned in each column of an <i>m&nbsp;x&nbsp;n</i> matrix of type <a href="#Mat">umat</a>;
+When a vector of indices (of type <a href="#Col">uvec</a>) is given (form 2), the corresponding subscripts are returned in each column of an <i>m&nbsp;x&nbsp;n</i> matrix of type <a href="#Mat">umat</a>;
 <i>m=2</i> for matrix subscripts, while <i>m=3</i> for cube subscripts
 </li>
 <br>

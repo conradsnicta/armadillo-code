@@ -287,8 +287,10 @@ Conrad Sanderson and Ryan Curtin.
 <tr><td><a href="#memptr">.memptr</a></td><td>&nbsp;</td><td>raw pointer to memory</td></tr>
 <tr><td><a href="#colptr">.colptr</a></td><td>&nbsp;</td><td>raw pointer to memory used by specified column</td></tr>
 <tr><td><small><small>&nbsp;</small></small></td><td><small><small>&nbsp;</small></small></td><td><small><small>&nbsp;</small></small></td></tr>
-<tr><td><a href="#iterators_mat">iterators&nbsp;(matrices)</a></td><td>&nbsp;</td><td>STL-style iterators and associated member functions for matrices and vectors</td></tr>
-<tr><td><a href="#iterators_cube">iterators&nbsp;(cubes)</a></td><td>&nbsp;</td><td>STL-style iterators and associated member functions for cubes</td></tr>
+<tr><td><a href="#iterators_mat">iterators&nbsp;(matrices)</a></td><td>&nbsp;</td><td>iterators and associated member functions for dense matrices and vectors</td></tr>
+<tr><td><a href="#iterators_cube">iterators&nbsp;(cubes)</a></td><td>&nbsp;</td><td>iterators and associated member functions for cubes</td></tr>
+<tr><td><a href="#iterators_spmat">iterators&nbsp;(sparse matrices)</a></td><td>&nbsp;</td><td>iterators and associated member functions for sparse matrices</td></tr>
+<tr><td><a href="#iterators_submat">iterators&nbsp;(submatrices)</a></td><td>&nbsp;</td><td>iterators and associated member functions for submatrices &amp; subcubes</td></tr>
 <tr><td><a href="#stl_container_fns">STL&nbsp;container&nbsp;functions</a></td><td>&nbsp;</td><td>STL-style container functions</td></tr>
 <tr><td><small><small>&nbsp;</small></small></td><td><small><small>&nbsp;</small></small></td><td><small><small>&nbsp;</small></small></td></tr>
 <tr><td><a href="#t_st_members">.t&nbsp;/&nbsp;.st&nbsp;</a></td><td>&nbsp;</td><td>return matrix transpose</td></tr>
@@ -836,7 +838,7 @@ See also:
 <li><a href="#submat">submatrix views</a></li>
 <li><a href="#save_load_mat">saving &amp; loading matrices</a></li>
 <li><a href="#print">printing matrices</a></li>
-<li><a href="#iterators_mat">STL-style element iterators</a></li>
+<li><a href="#iterators_mat">element iterators</a></li>
 <li><a href="#eval_member">.eval()</a></li>
 <li><a href="#conv_to">conv_to()</a> (convert between matrix types)</li>
 <li><a href="http://www.cplusplus.com/doc/tutorial/other_data_types/">explanation of <i>typedef</i></a> (cplusplus.com)
@@ -1670,7 +1672,7 @@ See also:
 <li><a href="#operators">math &amp; relational operators</a></li>
 <li><a href="#subcube">subcube views and slices</a></li>
 <li><a href="#save_load_mat">saving &amp; loading cubes</a></li>
-<li><a href="#iterators_cube">STL-style element iterators</a></li>
+<li><a href="#iterators_cube">element iterators</a></li>
 <li><a href="#field">field class</a></li>
 <li><a href="#Mat">Mat class</a></li>
 </ul>
@@ -2463,8 +2465,9 @@ double z = p[9];
 <li><a href="#sub2ind">sub2ind()</a></li>
 <li><a href="#submat">submatrix views</a></li>
 <li><a href="#memptr">.memptr()</a></li>
-<li><a href="#iterators_mat">iterators (matrices)</a></li>
+<li><a href="#iterators_mat">iterators (dense matrices)</a></li>
 <li><a href="#iterators_cube">iterators (cubes)</a></li>
+<li><a href="#iterators_spmat">iterators (sparse matrices)</a></li>
 <li><a href="#config_hpp">config.hpp</a></li>
 </ul>
 </li>
@@ -4443,7 +4446,7 @@ See also:
 <ul>
 <li><a href="#colptr">.colptr()</a></li>
 <li><a href="#element_access">element access</a></li>
-<li><a href="#iterators_mat">iterators (matrices)</a></li>
+<li><a href="#iterators_mat">iterators (dense matrices)</a></li>
 <li><a href="#iterators_cube">iterators (cubes)</a></li>
 <li><a href="#adv_constructors_mat">advanced constructors (matrices)</a></li>
 <li><a href="#adv_constructors_cube">advanced constructors (cubes)</a></li>
@@ -4490,7 +4493,7 @@ See also:
 <li><a href="#memptr">.memptr()</a></li>
 <li><a href="#submat">submatrix views</a></li>
 <li><a href="#element_access">element access</a></li>
-<li><a href="#iterators_mat">iterators (matrices)</a></li>
+<li><a href="#iterators_mat">iterators (dense matrices)</a></li>
 <li><a href="#adv_constructors_mat">advanced constructors (matrices)</a></li>
 </ul>
 </li>
@@ -4499,10 +4502,14 @@ See also:
 
 <div class="pagebreak"></div><div class="noprint"><hr class="greyline"><br></div>
 <a name="iterators_mat"></a>
-<b>iterators (matrices &amp; vectors)</b>
+<b>iterators (dense matrices &amp; vectors)</b>
 <ul>
 <li>
-STL-style iterators and associated member functions of <i>Mat</i>, <i>Col</i>, <i>Row</i> and <i>SpMat</i>
+Iterators and associated member functions of <i>Mat</i>, <i>Col</i>, <i>Row</i>
+</li>
+<br>
+<li>
+Iterators for dense matrices and vectors traverse over all elements within the specified range
 </li>
 <br>
 <li>
@@ -4513,7 +4520,7 @@ Member functions:
 <table style="text-align: left;" border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td style="vertical-align: top;">
+      <td style="vertical-align: top; text-align: right;">
       <b>.begin()</b>
       </td>
       <td style="vertical-align: top;">&nbsp;<br>
@@ -4523,7 +4530,7 @@ Member functions:
       </td>
     </tr>
     <tr>
-      <td style="vertical-align: top;">
+      <td style="vertical-align: top; text-align: right;">
       <b>.end()</b>
       </td>
       <td style="vertical-align: top;">&nbsp;<br>
@@ -4538,32 +4545,7 @@ Member functions:
       </td>
     </tr>
     <tr>
-      <td style="vertical-align: top;">
-      <b>.begin_row(&nbsp;row_number&nbsp;)</b>
-      </td>
-      <td style="vertical-align: top;">&nbsp;<br>
-      </td>
-      <td style="vertical-align: top;">
-        iterator referring to the first element of the specified row
-      </td>
-    </tr>
-    <tr>
-      <td style="vertical-align: top;">
-      <b>.end_row(&nbsp;row_number&nbsp;)</b>
-      </td>
-      <td style="vertical-align: top;">&nbsp;<br>
-      </td>
-      <td style="vertical-align: top;">
-        iterator referring to the <i>past-the-end</i> element of the specified row
-      </td>
-    </tr>
-    <tr>
-      <td>
-      &nbsp;
-      </td>
-    </tr>
-    <tr>
-      <td style="vertical-align: top;">
+      <td style="vertical-align: top; text-align: right;">
       <b>.begin_col(&nbsp;col_number&nbsp;)</b>
       </td>
       <td style="vertical-align: top;">&nbsp;<br>
@@ -4573,7 +4555,7 @@ Member functions:
       </td>
     </tr>
     <tr>
-      <td style="vertical-align: top;">
+      <td style="vertical-align: top; text-align: right;">
       <b>.end_col(&nbsp;col_number&nbsp;)</b>
       </td>
       <td style="vertical-align: top;">&nbsp;<br>
@@ -4582,18 +4564,34 @@ Member functions:
         iterator referring to the <i>past-the-end</i> element of the specified column
       </td>
     </tr>
+    <tr>
+      <td>
+      &nbsp;
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right;">
+      <b>.begin_row(&nbsp;row_number&nbsp;)</b>
+      </td>
+      <td style="vertical-align: top;">&nbsp;<br>
+      </td>
+      <td style="vertical-align: top;">
+        iterator referring to the first element of the specified row
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right;">
+      <b>.end_row(&nbsp;row_number&nbsp;)</b>
+      </td>
+      <td style="vertical-align: top;">&nbsp;<br>
+      </td>
+      <td style="vertical-align: top;">
+        iterator referring to the <i>past-the-end</i> element of the specified row
+      </td>
+    </tr>
   </tbody>
 </table>
 </ul>
-</li>
-<br>
-<li>
-Iterators for dense matrices and vectors traverse over all elements within the specified range
-</li>
-<br>
-<li>
-Iterators for sparse matrices traverse over non-zero elements within the specified range;
-<br><b>caveat:</b> writing a zero value into a sparse matrix through an iterator will invalidate all current iterators associated with the sparse matrix
 </li>
 <br>
 <li>
@@ -4604,20 +4602,17 @@ Iterator types:
 <table style="text-align: left;" border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td style="vertical-align: top;">
+      <td style="vertical-align: top; text-align: right;">
       <b>mat::iterator</b>
       <br>
       <b>vec::iterator</b>
       <br>
       <b>rowvec::iterator</b>
-      <br>
-      <b>sp_mat::iterator</b>
       </td>
       <td style="vertical-align: top;">&nbsp;<br>
       </td>
       <td style="vertical-align: top;">
-        random access iterators, for read/write access to elements
-        (which are stored column by column)
+        random access iterators, for read/write access to elements (which are stored column by column)
       </td>
     </tr>
     <tr>
@@ -4631,20 +4626,17 @@ Iterator types:
       </td>
     </tr>
     <tr>
-      <td style="vertical-align: top;">
+      <td style="vertical-align: top; text-align: right;">
       <b>mat::const_iterator</b>
       <br>
       <b>vec::const_iterator</b>
       <br>
       <b>rowvec::const_iterator</b>
-      <br>
-      <b>sp_mat::const_iterator</b>
       </td>
       <td style="vertical-align: top;">&nbsp;<br>
       </td>
       <td style="vertical-align: top;">
-        random access iterators, for read-only access to elements
-        (which are stored column by column)
+        random access iterators, for read-only access to elements (which are stored column by column)
       </td>
     </tr>
     <tr>
@@ -4658,7 +4650,7 @@ Iterator types:
       </td>
     </tr>
     <tr>
-      <td style="vertical-align: top;">
+      <td style="vertical-align: top; text-align: right;">
       <b>mat::col_iterator</b>
       <br>
       <b>vec::col_iterator</b>
@@ -4668,7 +4660,7 @@ Iterator types:
       <td style="vertical-align: top;">&nbsp;<br>
       </td>
       <td style="vertical-align: top;">
-        random access iterators, for read/write access to the elements of a specific column
+        random access iterators, for read/write access to the elements of specified columns
       </td>
     </tr>
     <tr>
@@ -4682,7 +4674,7 @@ Iterator types:
       </td>
     </tr>
     <tr>
-      <td style="vertical-align: top;">
+      <td style="vertical-align: top; text-align: right;">
       <b>mat::const_col_iterator</b>
       <br>
       <b>vec::const_col_iterator</b>
@@ -4692,7 +4684,7 @@ Iterator types:
       <td style="vertical-align: top;">&nbsp;<br>
       </td>
       <td style="vertical-align: top;">
-        random access iterators, for read-only access to the elements of a specific column
+        random access iterators, for read-only access to the elements of specified columns
       </td>
     </tr>
     <tr>
@@ -4706,15 +4698,13 @@ Iterator types:
       </td>
     </tr>
     <tr>
-      <td style="vertical-align: top;">
+      <td style="vertical-align: top; text-align: right;">
       <b>mat::row_iterator</b>
-      <br>
-      <b>sp_mat::row_iterator</b>
       </td>
       <td style="vertical-align: top;">&nbsp;<br>
       </td>
       <td style="vertical-align: top;">
-        rudimentary forward iterator, for read/write access to the elements of a specific row
+        bidirectional iterator, for read/write access to the elements of specified rows
       </td>
     </tr>
     <tr>
@@ -4728,15 +4718,13 @@ Iterator types:
       </td>
     </tr>
     <tr>
-      <td style="vertical-align: top;">
+      <td style="vertical-align: top; text-align: right;">
       <b>mat::const_row_iterator</b>
-      <br>
-      <b>sp_mat::const_row_iterator</b>
       </td>
       <td style="vertical-align: top;">&nbsp;<br>
       </td>
       <td style="vertical-align: top;">
-        rudimentary forward iterator, for read-only access to the elements of a specific row
+        bidirectional iterator, for read-only access to the elements of specified rows
       </td>
     </tr>
     <tr>
@@ -4750,7 +4738,7 @@ Iterator types:
       </td>
     </tr>
     <tr>
-      <td style="vertical-align: top;">
+      <td style="vertical-align: top; text-align: right;">
       <b>vec::row_iterator</b>
       <br>
       <b>rowvec::row_iterator</b>
@@ -4758,7 +4746,7 @@ Iterator types:
       <td style="vertical-align: top;">&nbsp;<br>
       </td>
       <td style="vertical-align: top;">
-        random access iterators, for read/write access to the elements of a specific row
+        random access iterators, for read/write access to the elements of specified rows
       </td>
     </tr>
     <tr>
@@ -4772,7 +4760,7 @@ Iterator types:
       </td>
     </tr>
     <tr>
-      <td style="vertical-align: top;">
+      <td style="vertical-align: top; text-align: right;">
       <b>vec::const_row_iterator</b>
       <br>
       <b>rowvec::const_row_iterator</b>
@@ -4780,7 +4768,7 @@ Iterator types:
       <td style="vertical-align: top;">&nbsp;<br>
       </td>
       <td style="vertical-align: top;">
-        random access iterators, for read-only access to the elements of a specific row
+        random access iterators, for read-only access to the elements of specified rows
       </td>
     </tr>
   </tbody>
@@ -4817,12 +4805,15 @@ for(; col_it != col_it_end; ++col_it)
 <li>
 See also:
 <ul>
-<li><a href="#stl_container_fns">STL-style container functions</a></li>
-<li><a href="http://cplusplus.com/reference/std/iterator/">iterator at cplusplus.com</a></li>
 <li><a href="#element_access">element access</a></li>
+<li><a href="#for_each">.for_each()</a></li>
 <li><a href="#memptr">.memptr()</a></li>
 <li><a href="#colptr">.colptr()</a></li>
 <li><a href="#submat">submatrix views</a></li>
+<li><a href="#iterators_submat">iterators (submatrices)</a></li>
+<li><a href="#iterators_cube">iterators (cubes)</a></li>
+<li><a href="#iterators_spmat">iterators (sparse matrices)</a></li>
+<li><a href="http://cplusplus.com/reference/std/iterator/">iterator at cplusplus.com</a></li>
 </ul>
 </li>
 <br>
@@ -4833,7 +4824,11 @@ See also:
 <b>iterators (cubes)</b>
 <ul>
 <li>
-STL-style iterators and associated member functions of <i>Cube</i>
+Iterators and associated member functions of <i>Cube</i>
+</li>
+<br>
+<li>
+Iterators for cubes traverse over all elements within the specified range
 </li>
 <br>
 <li>
@@ -4844,7 +4839,7 @@ Member functions:
 <table style="text-align: left;" border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td style="vertical-align: top;">
+      <td style="vertical-align: top; text-align: right;">
       <b>.begin()</b>
       </td>
       <td style="vertical-align: top;">&nbsp;<br>
@@ -4854,7 +4849,7 @@ Member functions:
       </td>
     </tr>
     <tr>
-      <td style="vertical-align: top;">
+      <td style="vertical-align: top; text-align: right;">
       <b>.end()</b>
       </td>
       <td style="vertical-align: top;">&nbsp;<br>
@@ -4869,7 +4864,7 @@ Member functions:
       </td>
     </tr>
     <tr>
-      <td style="vertical-align: top;">
+      <td style="vertical-align: top; text-align: right;">
       <b>.begin_slice( slice_number )</b>
       </td>
       <td style="vertical-align: top;">&nbsp;<br>
@@ -4879,7 +4874,7 @@ Member functions:
       </td>
     </tr>
     <tr>
-      <td style="vertical-align: top;">
+      <td style="vertical-align: top; text-align: right;">
       <b>.end_slice( slice_number )</b>
       </td>
       <td style="vertical-align: top;">&nbsp;<br>
@@ -4901,7 +4896,7 @@ Iterator types:
 <table style="text-align: left;" border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td style="vertical-align: top;">
+      <td style="vertical-align: top; text-align: right;">
       <b>cube::iterator</b>
       </td>
       <td style="vertical-align: top;">&nbsp;<br>
@@ -4923,13 +4918,13 @@ Iterator types:
       </td>
     </tr>
     <tr>
-      <td style="vertical-align: top;">
+      <td style="vertical-align: top; text-align: right;">
       <b>cube::const_iterator</b>
       </td>
       <td style="vertical-align: top;">&nbsp;<br>
       </td>
       <td style="vertical-align: top;">
-        random access iterators, for read-only access to elements
+        random access iterator, for read-only access to elements
       </td>
     </tr>
     <tr>
@@ -4943,7 +4938,7 @@ Iterator types:
       </td>
     </tr>
     <tr>
-      <td style="vertical-align: top;">
+      <td style="vertical-align: top; text-align: right;">
       <b>cube::slice_iterator</b>
       </td>
       <td style="vertical-align: top;">&nbsp;<br>
@@ -4964,13 +4959,13 @@ Iterator types:
       </td>
     </tr>
     <tr>
-      <td style="vertical-align: top;">
+      <td style="vertical-align: top; text-align: right;">
       <b>cube::const_slice_iterator</b>
       </td>
       <td style="vertical-align: top;">&nbsp;<br>
       </td>
       <td style="vertical-align: top;">
-        random access iterators, for read-only access to the elements of a particular slice
+        random access iterator, for read-only access to the elements of a particular slice
       </td>
     </tr>
   </tbody>
@@ -4984,23 +4979,21 @@ Examples:
 <pre>
 cube X = randu&lt;cube&gt;(2,3,4);
 
+cube::iterator it     = X.begin();
+cube::iterator it_end = X.end();
 
-cube::iterator a = X.begin();
-cube::iterator b = X.end();
-
-for(cube::iterator i=a; i!=b; ++i)
+for(; it != it_end; ++it)
   {
-  cout &lt;&lt; *i &lt;&lt; endl;
+  cout &lt;&lt; (*it) &lt;&lt; endl;
   }
 
+cube::slice_iterator s_it     = X.begin_slice(1);  // start of slice 1
+cube::slice_iterator s_it_end = X.end_slice(2);    // end of slice 2
 
-cube::slice_iterator c = X.begin_slice(1);  // start of slice 1
-cube::slice_iterator d = X.end_slice(2);    // end of slice 2
-
-for(cube::slice_iterator i=c; i!=d; ++i)
+for(; s_it != s_it_end; ++s_it)
   {
-  cout &lt;&lt; *i &lt;&lt; endl;
-  (*i) = 123.0;
+  cout &lt;&lt; (*s_it) &lt;&lt; endl;
+  (*s_it) = 123.0;
   }
 </pre>
 </ul>
@@ -5009,8 +5002,318 @@ for(cube::slice_iterator i=c; i!=d; ++i)
 <li>
 See also:
 <ul>
-<li><a href="http://cplusplus.com/reference/std/iterator/">iterator at cplusplus.com</a></li>
 <li><a href="#element_access">element access</a></li>
+<li><a href="#for_each">.for_each()</a></li>
+<li><a href="#memptr">.memptr()</a></li>
+<li><a href="#subcube">subcube views</a></li>
+<li><a href="#iterators_submat">iterators (subcubes)</a></li>
+<li><a href="#iterators_mat">iterators (dense matrices)</a></li>
+<li><a href="http://cplusplus.com/reference/std/iterator/">iterator at cplusplus.com</a></li>
+</ul>
+</li>
+<br>
+</ul>
+
+<div class="pagebreak"></div><div class="noprint"><hr class="greyline"><br></div>
+<a name="iterators_spmat"></a>
+<b>iterators (sparse matrices)</b>
+<ul>
+<li>
+Iterators and associated member functions of <i>SpMat</i>
+</li>
+<br>
+<li>
+Iterators for sparse matrices traverse over non-zero elements within the specified range
+</li>
+<br>
+<li>
+<b>Caveat:</b> writing a zero value into a sparse matrix through an iterator will invalidate all current iterators associated with the sparse matrix
+</li>
+<br>
+<li>
+Member functions:
+<br>
+<br>
+<ul>
+<table style="text-align: left;" border="0" cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top; text-align: right;">
+      <b>.begin()</b>
+      </td>
+      <td style="vertical-align: top;">&nbsp;<br>
+      </td>
+      <td style="vertical-align: top;">
+        iterator referring to the first element
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right;">
+      <b>.end()</b>
+      </td>
+      <td style="vertical-align: top;">&nbsp;<br>
+      </td>
+      <td style="vertical-align: top;">
+        iterator referring to the <i>past-the-end</i> element
+      </td>
+    </tr>
+    <tr>
+      <td>
+      &nbsp;
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right;">
+      <b>.begin_col(&nbsp;col_number&nbsp;)</b>
+      </td>
+      <td style="vertical-align: top;">&nbsp;<br>
+      </td>
+      <td style="vertical-align: top;">
+        iterator referring to the first element of the specified column
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right;">
+      <b>.end_col(&nbsp;col_number&nbsp;)</b>
+      </td>
+      <td style="vertical-align: top;">&nbsp;<br>
+      </td>
+      <td style="vertical-align: top;">
+        iterator referring to the <i>past-the-end</i> element of the specified column
+      </td>
+    </tr>
+    <tr>
+      <td>
+      &nbsp;
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right;">
+      <b>.begin_row(&nbsp;row_number&nbsp;)</b>
+      </td>
+      <td style="vertical-align: top;">&nbsp;<br>
+      </td>
+      <td style="vertical-align: top;">
+        iterator referring to the first element of the specified row;
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right;">
+      <b>.end_row(&nbsp;row_number&nbsp;)</b>
+      </td>
+      <td style="vertical-align: top;">&nbsp;<br>
+      </td>
+      <td style="vertical-align: top;">
+        iterator referring to the <i>past-the-end</i> element of the specified row
+        <br>
+        <b>caveat</b>: sparse matrix row iterators are inefficient
+      </td>
+    </tr>
+  </tbody>
+</table>
+</ul>
+</li>
+<br>
+<li>
+Iterator types:
+<br>
+<br>
+<ul>
+<table style="text-align: left;" border="0" cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top; text-align: right;">
+      <b>sp_mat::iterator</b>
+      </td>
+      <td style="vertical-align: top;">&nbsp;<br>
+      </td>
+      <td style="vertical-align: top;">
+        bidirectional iterator, for read/write access to elements (which are stored column by column)
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">
+      &nbsp;
+      </td>
+      <td style="vertical-align: top;">&nbsp;<br>
+      </td>
+      <td style="vertical-align: top;">
+      &nbsp;
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right;">
+      <b>sp_mat::const_iterator</b>
+      </td>
+      <td style="vertical-align: top;">&nbsp;<br>
+      </td>
+      <td style="vertical-align: top;">
+        bidirectional iterator, for read-only access to elements (which are stored column by column)
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">
+      &nbsp;
+      </td>
+      <td style="vertical-align: top;">&nbsp;<br>
+      </td>
+      <td style="vertical-align: top;">
+      &nbsp;
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right;">
+      <b>sp_mat::col_iterator</b>
+      </td>
+      <td style="vertical-align: top;">&nbsp;<br>
+      </td>
+      <td style="vertical-align: top;">
+        bidirectional iterator, for read/write access to the elements of a specific column
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">
+      &nbsp;
+      </td>
+      <td style="vertical-align: top;">&nbsp;<br>
+      </td>
+      <td style="vertical-align: top;">
+      &nbsp;
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right;">
+      <b>sp_mat::const_col_iterator</b>
+      </td>
+      <td style="vertical-align: top;">&nbsp;<br>
+      </td>
+      <td style="vertical-align: top;">
+        bidirectional iterator, for read-only access to the elements of a specific column
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">
+      &nbsp;
+      </td>
+      <td style="vertical-align: top;">&nbsp;<br>
+      </td>
+      <td style="vertical-align: top;">
+      &nbsp;
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right;">
+      <b>sp_mat::row_iterator</b>
+      </td>
+      <td style="vertical-align: top;">&nbsp;<br>
+      </td>
+      <td style="vertical-align: top;">
+        bidirectional iterator, for read/write access to the elements of a specific row;
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">
+      &nbsp;
+      </td>
+      <td style="vertical-align: top;">&nbsp;<br>
+      </td>
+      <td style="vertical-align: top;">
+      &nbsp;
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right;">
+      <b>sp_mat::const_row_iterator</b>
+      </td>
+      <td style="vertical-align: top;">&nbsp;<br>
+      </td>
+      <td style="vertical-align: top;">
+        bidirectional iterator, for read-only access to the elements of a specific row;
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">
+      &nbsp;
+      </td>
+      <td style="vertical-align: top;">&nbsp;<br>
+      </td>
+      <td style="vertical-align: top;">
+      &nbsp;
+      </td>
+    </tr>
+  </tbody>
+</table>
+</ul>
+</li>
+<br>
+<li>
+Examples:
+<ul>
+<pre>
+sp_mat X = sprandu&lt;sp_mat&gt;(1000, 2000, 0.1);
+
+sp_mat::iterator it     = X.begin();
+sp_mat::iterator it_end = X.end();
+
+for(; it != it_end; ++it)
+  {
+  cout &lt;&lt; (*it) &lt;&lt; endl;
+  }
+</pre>
+</ul>
+</li>
+<br>
+<li>
+See also:
+<ul>
+<li><a href="#element_access">element access</a></li>
+<li><a href="#submat">submatrix views</a></li>
+<li><a href="#iterators_mat">iterators (dense matrices)</a></li>
+<li><a href="http://cplusplus.com/reference/std/iterator/">iterator at cplusplus.com</a></li>
+</ul>
+</li>
+<br>
+</ul>
+
+<div class="pagebreak"></div><div class="noprint"><hr class="greyline"><br></div>
+<a name="iterators_submat"></a>
+<b>iterators (dense submatrices &amp; subcubes)</b> &nbsp; <i>(C++11 only)</i>
+<ul>
+<li>
+iterators for dense <a href="#submat">submatrix</a> and <a href="#subcube">subcube</a> views,
+allowing range-based for loops
+</li>
+<br>
+<li>
+<b>Caveat:</b>
+These iterators are intended <b>only</b> to be used with range-based for loops. Any other use is not supported.
+For example, the direct use of the <i>begin()</i> and <i>end()</i> functions, as well as the underlying iterators types is not supported.
+The implementation of submatrices and subcubes uses short-lived temporary objects that are subject to automatic deletion, and as such are error-prone to handle manually.
+</li>
+<br>
+<li>
+Examples:
+<ul>
+<pre>
+mat X(100, 200, fill::randu);
+
+for( double&amp; val : X(span(40,60), span(50,100)) )
+  {
+  cout &lt;&lt; val &lt;&lt; endl;
+  val = 123.0;
+  }
+</pre>
+</ul>
+</li>
+<br>
+<li>
+See also:
+<ul>
+<li><a href="#submat">submatrix views</a></li>
+<li><a href="#for_each">.for_each()</a></li>
+<li><a href="#iterators_mat">iterators (dense matrices)</a></li>
+<li><a href="#iterators_cube">iterators (cubes)</a></li>
+<li><a href="http://en.cppreference.com/w/cpp/language/range-for">range-based for</a> (cppreference.com)</li>
 </ul>
 </li>
 <br>
@@ -5020,7 +5323,7 @@ See also:
 <a name="stl_container_fns"></a>
 <b>STL-style container functions</b>
 <ul>
-<li>Member functions that mimic the containers in the C++ Standard Template Library:<br>
+<li>Member functions that mimic the containers in the C++ standard library:<br>
 <br>
 
 <table style="text-align: left; width: 100%;" border="0" cellpadding="2" cellspacing="2">
@@ -5075,7 +5378,9 @@ cout &lt;&lt; A.empty() &lt;&lt; endl;
 <li>
 See also:
 <ul>
-<li><a href="#iterators_mat">iterators (matrices)</a></li>
+<li><a href="#iterators_mat">iterators (dense matrices)</a></li>
+<li><a href="#iterators_cube">iterators (cubes)</a></li>
+<li><a href="#iterators_spmat">iterators (sparse matrices)</a></li>
 <li><a href="#attributes">matrix and vector attributes</a></li>
 <li><a href="#is_empty">.is_empty()</a></li>
 <li><a href="#reset">.reset()</a></li>
@@ -6089,7 +6394,7 @@ if a blank dataset name is specified (ie. ""), it's assumed to be "dataset"
 <table>
 <tr style="vertical-align: top;"><td><code>hdf5_opts::trans  </code></td><td>&nbsp;&nbsp;&nbsp;</td><td>save/load the data with columns transposed to rows (and vice versa)</td></tr>
 <tr style="vertical-align: top;"><td><code>hdf5_opts::append </code></td><td>&nbsp;&nbsp;&nbsp;</td><td>instead of overwriting the file, append the specified dataset to the file;<br>the specified dataset must not already exist in the file</td></tr>
-<tr style="vertical-align: top;"><td><code>hdf5_opts::replace</code></td><td>&nbsp;&nbsp;&nbsp;</td><td>instead of overwriting the file, replace the specified dataset in the file<br><b>caveat:</b> HDF5 v1.8 may not automaticaly reclaim deleted space; use <a href="https://support.hdfgroup.org/HDF5/Tutor/cmdtooledit.html">h5repack</a> to clean HDF5 files</td></tr>
+<tr style="vertical-align: top;"><td><code>hdf5_opts::replace</code></td><td>&nbsp;&nbsp;&nbsp;</td><td>instead of overwriting the file, replace the specified dataset in the file<br><b>caveat:</b> HDF5 v1.8 may not automatically reclaim deleted space; use <a href="https://support.hdfgroup.org/HDF5/Tutor/cmdtooledit.html">h5repack</a> to clean HDF5 files</td></tr>
 </table>
 <br>
 the above settings can be combined using the <code>+</code> operator; for example: <code>hdf5_opts::trans&nbsp;+&nbsp;hdf5_opts::append</code>
@@ -16233,7 +16538,7 @@ Disable use of BLAS. Overrides <i>ARMA_USE_BLAS</i>
       &nbsp;
     </td>
     <td style="vertical-align: top;">
-Enable use of the built-in reimplementation of ARPACK (Armadillo 7.x).
+Enable use of the built-in reimplementation of ARPACK (Armadillo 7.x and 8.x).
 This is used for the eigen decomposition of real (non-complex) sparse matrices, ie. <a href="#eigs_gen">eigs_gen()</a>, <a href="#eigs_sym">eigs_sym()</a> and <a href="#svds">svds().</a>
 Requires ARMA_USE_LAPACK to be enabled.
     </td>
@@ -17016,6 +17321,7 @@ List of additions and changes for each version:
 <li>expanded <a href="#kron">kron()</a> to handle sparse matrices</li>
 <li>expanded <a href="#index_min_and_index_max_standalone">index_min()</a> and <a href="#index_min_and_index_max_standalone">index_max()</a> to handle cubes</li>
 <li>expanded <a href="#randi">randi()</a>, <a href="#randu_randn_standalone">randu()</a>, <a href="#randu_randn_standalone">randn()</a>, <a href="#randg">randg()</a> to output single scalars</li>
+<li>added <a href="#iterators_submat">submatrix &amp; subcube iterators</a></li>
 <li>added <a href="#normcdf">normcdf()</a></li>
 <li>added <a href="#chi2rnd">chi2rnd()</a></li>
 <li>added <a href="#wishrnd">wishrnd()</a> and <a href="#iwishrnd">iwishrnd()</a></li>

@@ -563,57 +563,48 @@ diskio::guess_file_type(std::istream& f)
   f.clear();
   const std::fstream::pos_type pos2 = f.tellg();
   
-  const uword N = ( (pos1 >= 0) && (pos2 >= 0) && (pos2 > pos1) ) ? uword(pos2 - pos1) : 0;
+  const uword N_max = ( (pos1 >= 0) && (pos2 >= 0) && (pos2 > pos1) ) ? uword(pos2 - pos1) : uword(0);
   
   f.clear();
   f.seekg(pos1);
   
-  if(N == 0)  { return file_type_unknown; }
+  if(N_max == 0)  { return file_type_unknown; }
   
-  podarray<unsigned char> data(N);
+  const uword N_use = (std::min)(N_max, uword(4096));
+  
+  podarray<unsigned char> data(N_use);
   data.zeros();
   
-  unsigned char* ptr = data.memptr();
+  unsigned char* data_mem = data.memptr();
   
   f.clear();
-  f.read( reinterpret_cast<char*>(ptr), std::streamsize(N) );
+  f.read( reinterpret_cast<char*>(data_mem), std::streamsize(N_use) );
   
   const bool load_okay = f.good();
   
   f.clear();
   f.seekg(pos1);
   
+  if(load_okay == false)  { return file_type_unknown; }
+  
   bool has_binary  = false;
   bool has_bracket = false;
   bool has_comma   = false;
   
-  if(load_okay)
+  for(uword i=0; i<N_use; ++i)
     {
-    for(uword i=0; i<N; ++i)
-      {
-      const unsigned char val = ptr[i];
-      
-      if( (val <=   8) || (val >= 123) )  { has_binary  = true; break; }  // the range checking can be made more elaborate
-      
-      if( (val == '(') || (val == ')') )  { has_bracket = true;        }
-      
-      if( (val == ',')                 )  { has_comma   = true;        }
-      }
-    }
-  else
-    {
-    return file_type_unknown;
+    const unsigned char val = data_mem[i];
+    
+    if( (val <=   8) || (val >= 123) )  { has_binary  = true; break; }  // the range checking can be made more elaborate
+    
+    if( (val == '(') || (val == ')') )  { has_bracket = true;        }
+    
+    if( (val == ',')                 )  { has_comma   = true;        }
     }
   
-  if(has_binary)
-    {
-    return raw_binary;
-    }
+  if(has_binary)  { return raw_binary; }
   
-  if(has_comma && (has_bracket == false))
-    {
-    return csv_ascii;
-    }
+  if(has_comma && (has_bracket == false))  { return csv_ascii; }
   
   return raw_ascii;
   }
@@ -2463,33 +2454,37 @@ diskio::load_auto_detect(Mat<eT>& x, std::istream& f, std::string& err_msg)
   {
   arma_extra_debug_sigprint();
   
-  static const std::string ARMA_MAT_TXT = "ARMA_MAT_TXT";
-  static const std::string ARMA_MAT_BIN = "ARMA_MAT_BIN";
-  static const std::string           P5 = "P5";
+  const char* ARMA_MAT_TXT_str = "ARMA_MAT_TXT";
+  const char* ARMA_MAT_BIN_str = "ARMA_MAT_BIN";
+  const char*           P5_str = "P5";
   
-  podarray<char> raw_header( uword(ARMA_MAT_TXT.length()) + 1);
+  const uword ARMA_MAT_TXT_len = uword(12);
+  const uword ARMA_MAT_BIN_len = uword(12);
+  const uword           P5_len = uword(2);
+  
+  podarray<char> header(ARMA_MAT_TXT_len + 1);
+  
+  char* header_mem = header.memptr();
   
   std::streampos pos = f.tellg();
     
-  f.read( raw_header.memptr(), std::streamsize(ARMA_MAT_TXT.length()) );
-  raw_header[uword(ARMA_MAT_TXT.length())] = '\0';
-  
+  f.read( header_mem, std::streamsize(ARMA_MAT_TXT_len) );
   f.clear();
   f.seekg(pos);
   
-  const std::string header = raw_header.mem;
+  header_mem[ARMA_MAT_TXT_len] = '\0';
   
-  if(ARMA_MAT_TXT == header.substr(0,ARMA_MAT_TXT.length()))
+  if( std::strncmp(ARMA_MAT_TXT_str, header_mem, size_t(ARMA_MAT_TXT_len)) == 0 )
     {
     return load_arma_ascii(x, f, err_msg);
     }
   else
-  if(ARMA_MAT_BIN == header.substr(0,ARMA_MAT_BIN.length()))
+  if( std::strncmp(ARMA_MAT_BIN_str, header_mem, size_t(ARMA_MAT_BIN_len)) == 0 )
     {
     return load_arma_binary(x, f, err_msg);
     }
   else
-  if(P5 == header.substr(0,P5.length()))
+  if( std::strncmp(P5_str, header_mem, size_t(P5_len)) == 0 )
     {
     return load_pgm_binary(x, f, err_msg);
     }
@@ -3921,33 +3916,37 @@ diskio::load_auto_detect(Cube<eT>& x, std::istream& f, std::string& err_msg)
   {
   arma_extra_debug_sigprint();
   
-  static const std::string ARMA_CUB_TXT = "ARMA_CUB_TXT";
-  static const std::string ARMA_CUB_BIN = "ARMA_CUB_BIN";
-  static const std::string           P6 = "P6";
+  const char* ARMA_CUB_TXT_str = "ARMA_CUB_TXT";
+  const char* ARMA_CUB_BIN_str = "ARMA_CUB_BIN";
+  const char*           P6_str = "P6";
   
-  podarray<char> raw_header(uword(ARMA_CUB_TXT.length()) + 1);
+  const uword ARMA_CUB_TXT_len = uword(12);
+  const uword ARMA_CUB_BIN_len = uword(12);
+  const uword           P6_len = uword(2);
+  
+  podarray<char> header(ARMA_CUB_TXT_len + 1);
+  
+  char* header_mem = header.memptr();
   
   std::streampos pos = f.tellg();
   
-  f.read( raw_header.memptr(), std::streamsize(ARMA_CUB_TXT.length()) );
-  raw_header[uword(ARMA_CUB_TXT.length())] = '\0';
-  
+  f.read( header_mem, std::streamsize(ARMA_CUB_TXT_len) );
   f.clear();
   f.seekg(pos);
   
-  const std::string header = raw_header.mem;
+  header_mem[ARMA_CUB_TXT_len] = '\0';
   
-  if(ARMA_CUB_TXT == header.substr(0, ARMA_CUB_TXT.length()))
+  if( std::strncmp(ARMA_CUB_TXT_str, header_mem, size_t(ARMA_CUB_TXT_len)) == 0 )
     {
     return load_arma_ascii(x, f, err_msg);
     }
   else
-  if(ARMA_CUB_BIN == header.substr(0, ARMA_CUB_BIN.length()))
+  if( std::strncmp(ARMA_CUB_BIN_str, header_mem, size_t(ARMA_CUB_BIN_len)) == 0 )
     {
     return load_arma_binary(x, f, err_msg);
     }
   else
-  if(P6 == header.substr(0, P6.length()))
+  if( std::strncmp(P6_str, header_mem, size_t(P6_len)) == 0 )
     {
     return load_ppm_binary(x, f, err_msg);
     }

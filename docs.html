@@ -291,7 +291,7 @@ Conrad Sanderson and Ryan Curtin.
 <tr><td><a href="#iterators_cube">iterators&nbsp;(cubes)</a></td><td>&nbsp;</td><td>iterators and associated member functions for cubes</td></tr>
 <tr><td><a href="#iterators_spmat">iterators&nbsp;(sparse matrices)</a></td><td>&nbsp;</td><td>iterators and associated member functions for sparse matrices</td></tr>
 <tr><td><a href="#iterators_submat">iterators&nbsp;(submatrices)</a></td><td>&nbsp;</td><td>iterators and associated member functions for submatrices &amp; subcubes</td></tr>
-<tr><td><a href="#stl_container_fns">STL&nbsp;container&nbsp;functions</a></td><td>&nbsp;</td><td>STL-style container functions</td></tr>
+<tr><td><a href="#compat_container_fns">compat.&nbsp;container&nbsp;functions</a></td><td>&nbsp;</td><td>compatibility container functions</td></tr>
 <tr><td><small><small>&nbsp;</small></small></td><td><small><small>&nbsp;</small></small></td><td><small><small>&nbsp;</small></small></td></tr>
 <tr><td><a href="#t_st_members">.t&nbsp;/&nbsp;.st&nbsp;</a></td><td>&nbsp;</td><td>return matrix transpose</td></tr>
 <tr><td><a href="#i_member">.i&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a></td><td>&nbsp;</td><td>return inverse of square matrix</td></tr>
@@ -1975,7 +1975,7 @@ the following subset of operations currently works with sparse matrices:
 <li>generated matrices: <a href="#speye">speye()</a>, <a href="#spones">spones()</a>, <a href="#sprandu_sprandn">sprandu()/sprandn()</a></li>
 <li>eigen and svd decomposition: <a href="#eigs_sym">eigs_sym()</a>, <a href="#eigs_gen">eigs_gen()</a>, <a href="#svds">svds()</a></li>
 <li>solution of sparse linear systems: <a href="#spsolve">spsolve()</a>
-<li>miscellaneous: <a href="#print">print()</a></li>
+<li>miscellaneous: <a href="#element_access">element access</a>, <a href="#iterators_spmat">element iterators</a>, <a href="#print">print()</a></li>
 </ul>
 </li>
 </ul>
@@ -2012,7 +2012,8 @@ sp_mat X(locations, values);
 <li>
 See also:
 <ul>
-<li><a href="#element_access">accessing elements</a></li>
+<li><a href="#element_access">element access</a></li>
+<li><a href="#iterators_spmat">element iterators (sparse matrices)</a></li>
 <li><a href="#print">printing matrices</a></li>
 <!--
 <li><a href="#SpCol">SpCol class</a> (TODO: add to documentation)</li>
@@ -5094,7 +5095,7 @@ Member functions:
       <td style="vertical-align: top;">&nbsp;<br>
       </td>
       <td style="vertical-align: top;">
-        iterator referring to the first element of the specified row;
+        iterator referring to the first element of the specified row
       </td>
     </tr>
     <tr>
@@ -5208,7 +5209,7 @@ Iterator types:
       <td style="vertical-align: top;">&nbsp;<br>
       </td>
       <td style="vertical-align: top;">
-        bidirectional iterator, for read/write access to the elements of a specific row;
+        bidirectional iterator, for read/write access to the elements of a specific row
       </td>
     </tr>
     <tr>
@@ -5228,7 +5229,7 @@ Iterator types:
       <td style="vertical-align: top;">&nbsp;<br>
       </td>
       <td style="vertical-align: top;">
-        bidirectional iterator, for read-only access to the elements of a specific row;
+        bidirectional iterator, for read-only access to the elements of a specific row
       </td>
     </tr>
     <tr>
@@ -5247,6 +5248,11 @@ Iterator types:
 </li>
 <br>
 <li>
+The iterators have <i>.row()</i> and <i>.col()</i> functions which return the row and column of the current element;
+the returned values are of type <a href="#uword">uword</a>
+</li>
+<br>
+<li>
 Examples:
 <ul>
 <pre>
@@ -5257,7 +5263,9 @@ sp_mat::iterator it_end = X.end();
 
 for(; it != it_end; ++it)
   {
-  cout &lt;&lt; (*it) &lt;&lt; endl;
+  cout &lt;&lt; "val: " &lt;&lt; (*it)    &lt;&lt; endl;
+  cout &lt;&lt; "row: " &lt;&lt; it.row() &lt;&lt; endl;
+  cout &lt;&lt; "col: " &lt;&lt; it.col() &lt;&lt; endl;
   }
 </pre>
 </ul>
@@ -5320,10 +5328,10 @@ See also:
 </ul>
 
 <div class="pagebreak"></div><div class="noprint"><hr class="greyline"><br></div>
-<a name="stl_container_fns"></a>
-<b>STL-style container functions</b>
+<a name="compat_container_fns"></a>
+<b>compatibility container functions</b>
 <ul>
-<li>Member functions that mimic the containers in the C++ standard library:<br>
+<li>Member functions to mimic the functionality of containers in the C++ standard library:<br>
 <br>
 
 <table style="text-align: left; width: 100%;" border="0" cellpadding="2" cellspacing="2">

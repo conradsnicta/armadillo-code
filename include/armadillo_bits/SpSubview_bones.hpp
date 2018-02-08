@@ -165,7 +165,6 @@ class SpSubview : public SpBase<eT, SpSubview<eT> >
     arma_aligned       uword      internal_pos;
     arma_aligned       uword      skip_pos; // not used in row_iterator or const_row_iterator
 
-    // So that we satisfy the STL iterator types.
     typedef std::bidirectional_iterator_tag iterator_category;
     typedef eT                              value_type;
     typedef std::ptrdiff_t                  difference_type;  // TODO: not certain on this one

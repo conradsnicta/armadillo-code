@@ -376,7 +376,6 @@ class SpMat : public SpBase< eT, SpMat<eT> >
     arma_aligned       uword  internal_col;
     arma_aligned       uword  internal_pos;
     
-    // so that we satisfy the STL iterator types
     typedef std::bidirectional_iterator_tag iterator_category;
     typedef eT                              value_type;
     typedef std::ptrdiff_t                  difference_type;  // TODO: not certain on this one

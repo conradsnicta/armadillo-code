@@ -618,7 +618,6 @@ class Mat : public Base< eT, Mat<eT> >
     inline arma_warn_unused bool operator==(const const_row_col_iterator& rhs) const;
     inline arma_warn_unused bool operator!=(const const_row_col_iterator& rhs) const;
     
-    // So that we satisfy the STL iterator types.
     typedef std::bidirectional_iterator_tag iterator_category;
     typedef eT                              value_type;
     typedef std::ptrdiff_t                  difference_type;  // TODO: not certain on this one

@@ -154,7 +154,6 @@ class subview_cube : public BaseCube<eT, subview_cube<eT> >
     inline arma_warn_unused bool operator==(const const_iterator& rhs) const;
     inline arma_warn_unused bool operator!=(const const_iterator& rhs) const;
     
-    // So that we satisfy the STL iterator types.
     typedef std::forward_iterator_tag iterator_category;
     typedef eT                        value_type;
     typedef std::ptrdiff_t            difference_type;  // TODO: not certain on this one

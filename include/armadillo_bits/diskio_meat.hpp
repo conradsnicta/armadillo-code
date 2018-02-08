@@ -29,7 +29,6 @@ std::string
 diskio::gen_txt_header(const Mat<eT>& x)
   {
   arma_type_check(( is_supported_elem_type<eT>::value == false ));
-
   arma_ignore(x);
   
   if(is_u8<eT>::value)
@@ -119,7 +118,6 @@ diskio::gen_txt_header(const Mat<eT>& x)
     {
     return std::string();
     }
-  
   }
 
 
@@ -135,7 +133,6 @@ std::string
 diskio::gen_bin_header(const Mat<eT>& x)
   {
   arma_type_check(( is_supported_elem_type<eT>::value == false ));
-  
   arma_ignore(x);
   
   if(is_u8<eT>::value)
@@ -225,7 +222,6 @@ diskio::gen_bin_header(const Mat<eT>& x)
     {
     return std::string();
     }
-  
   }
 
 
@@ -241,7 +237,6 @@ std::string
 diskio::gen_bin_header(const SpMat<eT>& x)
   {
   arma_type_check(( is_supported_elem_type<eT>::value == false ));
-
   arma_ignore(x);
 
   if(is_u8<eT>::value)
@@ -331,7 +326,6 @@ diskio::gen_bin_header(const SpMat<eT>& x)
     {
     return std::string();
     }
-
   }
 
 
@@ -346,7 +340,6 @@ std::string
 diskio::gen_txt_header(const Cube<eT>& x)
   {
   arma_type_check(( is_supported_elem_type<eT>::value == false ));
-  
   arma_ignore(x);
 
   if(is_u8<eT>::value)
@@ -436,7 +429,6 @@ diskio::gen_txt_header(const Cube<eT>& x)
     {
     return std::string();
     }
-  
   }
 
 
@@ -452,7 +444,6 @@ std::string
 diskio::gen_bin_header(const Cube<eT>& x)
   {
   arma_type_check(( is_supported_elem_type<eT>::value == false ));
-  
   arma_ignore(x);
   
   if(is_u8<eT>::value)
@@ -542,7 +533,6 @@ diskio::gen_bin_header(const Cube<eT>& x)
     {
     return std::string();
     }
-  
   }
 
 
@@ -612,12 +602,7 @@ diskio::guess_file_type(std::istream& f)
 
 
 //! Append a quasi-random string to the given filename.
-//! The rand() function is deliberately not used,
-//! as rand() has an internal state that changes
-//! from call to call. Such states should not be
-//! modified in scientific applications, where the
-//! results should be reproducable and not affected 
-//! by saving data.
+//! Avoiding use of rand() to preserve its state. 
 inline
 arma_cold
 std::string
@@ -1477,6 +1462,7 @@ diskio::load_raw_ascii(Mat<eT>& x, std::istream& f, std::string& err_msg)
     {
     std::getline(f, line_string);
     
+    // TODO: does it make sense to stop processing the file if an empty line is found ?
     if(line_string.size() == 0)  { break; }
     
     line_stream.clear();

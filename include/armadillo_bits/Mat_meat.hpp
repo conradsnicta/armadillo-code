@@ -410,7 +410,8 @@ Mat<eT>::operator=(const std::string& text)
 
 //! internal function to create the matrix from a textual description
 template<typename eT>
-inline 
+inline
+arma_cold
 void
 Mat<eT>::init(const std::string& text_orig)
   {
@@ -430,12 +431,14 @@ Mat<eT>::init(const std::string& text_orig)
   uword t_n_rows = 0;
   uword t_n_cols = 0;
   
-  bool t_n_cols_found = false;
+  bool has_semicolon = false;
+  bool has_token     = false;
   
   std::string token;
   
   std::string::size_type line_start = 0;
-  std::string::size_type   line_end = 0;
+  std::string::size_type line_end   = 0;
+  std::string::size_type line_len   = 0;
   
   std::stringstream line_stream;
   
@@ -445,44 +448,50 @@ Mat<eT>::init(const std::string& text_orig)
     
     if(line_end == std::string::npos)
       {
-      line_end = text.length()-1;
+      has_semicolon = false;
+      line_end      = text.length()-1;
+      line_len      = line_end - line_start + 1;
       }
-    
-    std::string::size_type line_len = line_end - line_start + 1;
+    else
+      {
+      has_semicolon = true;
+      line_len      = line_end - line_start;  // omit the ';' character
+      }
     
     line_stream.clear();
     line_stream.str( text.substr(line_start,line_len) );
     
+    has_token = false;
+    
     uword line_n_cols = 0;
-    while(line_stream >> token)
+    
+    while(line_stream >> token)  { has_token = true; ++line_n_cols; }
+    
+    if(t_n_rows == 0)
       {
-      ++line_n_cols;
+      t_n_cols = line_n_cols;
+      }
+    else
+      {
+      if(has_semicolon || has_token)  { arma_check( (line_n_cols != t_n_cols), "Mat::init(): inconsistent number of columns in given string"); }
       }
     
-    if(line_n_cols > 0)
-      {
-      if(t_n_cols_found == false)
-        {
-        t_n_cols       = line_n_cols;
-        t_n_cols_found = true;
-        }
-      else
-        {
-        arma_check( (line_n_cols != t_n_cols), "Mat::init(): inconsistent number of columns in given string");
-        }
-      
-      ++t_n_rows;
-      }
-      
+    ++t_n_rows;
+    
     line_start = line_end+1;
     }
   
+  // if the last line was empty, ignore it
+  if( (has_semicolon == false) && (has_token == false) && (t_n_rows >= 1) )  { --t_n_rows; }
   
-  Mat<eT>& x = *this;
+  Mat<eT>& x = (*this);
   x.set_size(t_n_rows, t_n_cols);
+  
+  if(x.is_empty())  { return; }
   
   line_start = 0;
   line_end   = 0;
+  line_len   = 0;
   
   uword urow = 0;
   
@@ -493,25 +502,20 @@ Mat<eT>::init(const std::string& text_orig)
     if(line_end == std::string::npos)
       {
       line_end = text.length()-1;
+      line_len = line_end - line_start + 1;
       }
-    
-    std::string::size_type line_len = line_end - line_start + 1;
+    else
+      {
+      line_len = line_end - line_start;  // omit the ';' character
+      }
     
     line_stream.clear();
     line_stream.str( text.substr(line_start,line_len) );
     
-//     uword ucol = 0;
-//     while(line_stream >> token)
-//       {
-//       x.at(urow,ucol) = strtod(token.c_str(), 0);
-//       ++ucol;
-//       }
-    
     uword ucol = 0;
-    eT val;
-    while(line_stream >> val)
+    while(line_stream >> token)
       {
-      x(urow,ucol) = val;
+      diskio::convert_token( x.at(urow,ucol), token );
       ++ucol;
       }
     

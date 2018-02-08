@@ -717,7 +717,7 @@ class Mat : public Base< eT, Mat<eT> >
   inline void init_cold();
   inline void init_warm(uword in_rows, uword in_cols);
   
-  inline void init(const std::string& text);
+  inline arma_cold void init(const std::string& text);
   
   #if defined(ARMA_USE_CXX11)
     inline void init(const std::initializer_list<eT>& list);

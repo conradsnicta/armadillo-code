@@ -277,9 +277,11 @@ op_iwishrnd::apply_noalias_mode2(Mat<eT>& out, const Mat<eT>& Dinv, const eT df)
     
     if(wishrnd_status == false)  { return false; }
     
-    const bool inv_status = auxlib::inv_sympd(out, tmp);
+    const bool inv_status1 = auxlib::inv_sympd(out, tmp);
     
-    if(inv_status == false)  { return false;}
+    const bool inv_status2 = (inv_status1) ? bool(true) : bool(auxlib::inv(out, tmp));
+    
+    if(inv_status2 == false)  { return false; }
     
     return true;
     }

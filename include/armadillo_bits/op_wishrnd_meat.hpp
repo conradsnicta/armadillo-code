@@ -117,13 +117,18 @@ op_wishrnd::apply_noalias_mode2(Mat<eT>& out, const Mat<eT>& D, const eT df)
     
     const uword N = D.n_rows;
     
+    if(df <= eT(0))
+      {
+      out.zeros(N,N);
+      }
+    else
     if(df < eT(N))
       {
       arma_extra_debug_print("simple generator");
       
-      const eT df_floor = std::floor(df);
+      const uword df_floor = uword(std::floor(df));
       
-      const Mat<eT> tmp = (randn< Mat<eT> >(uword(df_floor), N)) * D;
+      const Mat<eT> tmp = (randn< Mat<eT> >(df_floor, N)) * D;
       
       out = tmp.t() * tmp;
       }

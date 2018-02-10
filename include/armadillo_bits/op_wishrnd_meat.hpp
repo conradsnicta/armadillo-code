@@ -117,15 +117,13 @@ op_wishrnd::apply_noalias_mode2(Mat<eT>& out, const Mat<eT>& D, const eT df)
     
     const uword N = D.n_rows;
     
-    const eT   df_floor  = std::floor(df);
-    const eT   df_val    = (df < eT(N)) ? df_floor : df;
-    const bool df_simple = (df == df_floor);
-    
-    if(df_simple)
+    if(df < eT(N))
       {
       arma_extra_debug_print("simple generator");
       
-      const Mat<eT> tmp = (randn< Mat<eT> >(uword(df_val), N)) * D;
+      const eT df_floor = std::floor(df);
+      
+      const Mat<eT> tmp = (randn< Mat<eT> >(uword(df_floor), N)) * D;
       
       out = tmp.t() * tmp;
       }
@@ -139,7 +137,7 @@ op_wishrnd::apply_noalias_mode2(Mat<eT>& out, const Mat<eT>& D, const eT df)
       
       for(uword i=0; i<N; ++i)
         {
-        A.at(i,i) = std::sqrt( chi2rnd_generator(df_val - eT(i)) );
+        A.at(i,i) = std::sqrt( chi2rnd_generator(df - eT(i)) );
         }
       
       const uword Nm1 = N-1;

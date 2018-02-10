@@ -195,7 +195,7 @@ op_iwishrnd::apply(Mat<typename T1::elem_type>& out, const Op<T1,op_iwishrnd>& e
   if(status == false)
     {
     out.soft_reset();
-    arma_debug_check(true, "iwishrnd(): given matrix is not symmetric positive definite");
+    arma_debug_check(true, "iwishrnd(): given matrix is not symmetric positive definite and/or df is too low");
     }
   }
 

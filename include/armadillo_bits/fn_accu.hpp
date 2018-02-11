@@ -156,11 +156,6 @@ accu_proxy_at_mp(const Proxy<T1>& P)
   
   typedef typename T1::elem_type eT;
   
-  if(P.get_n_elem() == uword(0))
-    {
-    return eT(0);
-    }
-  
   eT val = eT(0);
   
   #if defined(ARMA_USE_OPENMP)
@@ -239,6 +234,10 @@ accu_proxy_at_mp(const Proxy<T1>& P)
       
       val = arrayops::accumulate(col_accs.memptr(), n_cols);
       }
+    }
+  #else
+    {
+    arma_ignore(P);
     }
   #endif
   
@@ -633,6 +632,10 @@ accu_cube_proxy_at_mp(const ProxyCube<T1>& P)
       }
     
     val = arrayops::accumulate(slice_accs.memptr(), slice_accs.n_elem);
+    }
+  #else
+    {
+    arma_ignore(P);
     }
   #endif
   

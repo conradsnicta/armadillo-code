@@ -482,19 +482,25 @@ SpMat<eT>::const_row_iterator::const_row_iterator(const SpMat<eT>& in_M, uword i
   , internal_row(0)
   , actual_pos(0)
   {
-  // This is slow.  It needs to be rewritten.
-  // So we have a destination we want to be just after, but don't know what position that is.  Make another iterator to find out...
+  // TODO: replace with more efficient implementation
+  
+  // So we have a destination we want to be just after,
+  // but don't know what position that is.
+  // Make another iterator to find out.
+  
   const_row_iterator it(in_M, 0);
+  
   while((it.row() < in_row) || ((it.row() == in_row) && (it.col() < in_col)))
     {
-    it++;
+    ++it;
     }
-
+  
   // Now that it is at the right place, take its position.
   iterator_base::internal_col = it.internal_col;
   iterator_base::internal_pos = it.internal_pos;
+  
   internal_row = it.internal_row;
-  actual_pos = it.actual_pos;
+  actual_pos   = it.actual_pos;
   }
 
 

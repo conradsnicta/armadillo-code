@@ -3494,7 +3494,7 @@ SpMat<eT>::reshape(const uword in_rows, const uword in_cols)
   
   arrayops::inplace_set(new_col_ptrs, uword(0), in_cols + 1);
   
-  for(const_iterator it = begin(); it != end(); it++)
+  for(const_iterator it = begin(); it != end(); ++it)
     {
     uword vector_position = (it.col() * n_rows) + it.row();
     new_row_indices[it.pos()] = vector_position % in_rows;
@@ -3557,7 +3557,7 @@ SpMat<eT>::reshape(const uword in_rows, const uword in_cols, const uword dim)
     // Row-wise reshaping.  This is more tedious and we will use a separate sparse matrix to do it.
     SpMat<eT> tmp(in_rows, in_cols);
     
-    for(const_row_iterator it = begin_row(); it.pos() < n_nonzero; it++)
+    for(const_row_iterator it = begin_row(); it.pos() < n_nonzero; ++it)
       {
       uword vector_position = (it.row() * n_cols) + it.col();
       

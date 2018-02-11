@@ -1016,9 +1016,10 @@ SpMat<eT>::operator*=(const Base<eT, T1>& y)
 
   for(uword lcol = 0; lcol < n_cols; ++lcol)
     {
-    const_iterator it = begin();
+    const_iterator it     = begin();
+    const_iterator it_end = end();
 
-    while(it != end())
+    while(it != it_end)
       {
       const eT value = (*it);
 
@@ -1097,11 +1098,12 @@ SpMat<eT>::operator%=(const Base<eT, T1>& x)
   arma_debug_assert_same_size(n_rows, n_cols, p.get_n_rows(), p.get_n_cols(), "element-wise multiplication");
   
   // Count the number of elements we will need.
-  SpMat<eT> tmp(n_rows, n_cols);
-  const_iterator it = begin();
+  const_iterator it     = begin();
+  const_iterator it_end = end();
+  
   uword new_n_nonzero = 0;
-
-  while(it != end())
+  
+  while(it != it_end)
     {
     // use_at == false can't save us any work here
     if(((*it) * p.at(it.row(), it.col())) != eT(0))
@@ -1110,13 +1112,16 @@ SpMat<eT>::operator%=(const Base<eT, T1>& x)
       }
     ++it;
     }
-
-  // Resize.
+  
+  SpMat<eT> tmp(n_rows, n_cols);
   tmp.mem_resize(new_n_nonzero);
 
-  const_iterator c_it = begin();
+  const_iterator c_it     = begin();
+  const_iterator c_it_end = end();
+  
   uword cur_pos = 0;
-  while(c_it != end())
+  
+  while(c_it != c_it_end)
     {
     // use_at == false can't save us any work here
     const eT val = (*c_it) * p.at(c_it.row(), c_it.col());
@@ -3494,7 +3499,10 @@ SpMat<eT>::reshape(const uword in_rows, const uword in_cols)
   
   arrayops::inplace_set(new_col_ptrs, uword(0), in_cols + 1);
   
-  for(const_iterator it = begin(); it != end(); ++it)
+  const_iterator it     = begin();
+  const_iterator it_end = end();
+  
+  for(; it != it_end; ++it)
     {
     uword vector_position = (it.col() * n_rows) + it.row();
     new_row_indices[it.pos()] = vector_position % in_rows;

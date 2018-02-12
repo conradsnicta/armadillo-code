@@ -38,11 +38,7 @@ op_wishrnd::apply(Mat<typename T1::elem_type>& out, const Op<T1,op_wishrnd>& exp
   
   const bool status = op_wishrnd::apply_direct(out, expr.m, df, mode);
   
-  if(status == false)
-    {
-    out.soft_reset();
-    arma_debug_check(true, "wishrnd(): given matrix is not symmetric positive definite");
-    }
+  arma_debug_check( (status == false), "wishrnd(): given matrix is not symmetric positive definite" );
   }
 
 
@@ -74,6 +70,8 @@ op_wishrnd::apply_direct(Mat<typename T1::elem_type>& out, const Base<typename T
     if(mode == 1)  { status = op_wishrnd::apply_noalias_mode1(out, U.M, df); }
     if(mode == 2)  { status = op_wishrnd::apply_noalias_mode2(out, U.M, df); }
     }
+  
+  if(status == false)  { out.soft_reset(); }
   
   return status;
   }
@@ -111,17 +109,13 @@ op_wishrnd::apply_noalias_mode2(Mat<eT>& out, const Mat<eT>& D, const eT df)
   
   #if defined(ARMA_USE_CXX11)
     {
+    arma_debug_check( (df <= eT(0)),            "df must be greater than zero"                 );
     arma_debug_check( (D.is_square() == false), "wishrnd(): given matrix must be square sized" );
     
     if(D.is_empty())  { out.reset(); return true; }
     
     const uword N = D.n_rows;
     
-    if(df <= eT(0))
-      {
-      out.zeros(N,N);
-      }
-    else
     if(df < eT(N))
       {
       arma_extra_debug_print("simple generator");
@@ -192,11 +186,7 @@ op_iwishrnd::apply(Mat<typename T1::elem_type>& out, const Op<T1,op_iwishrnd>& e
   
   const bool status = op_iwishrnd::apply_direct(out, expr.m, df, mode);
   
-  if(status == false)
-    {
-    out.soft_reset();
-    arma_debug_check(true, "iwishrnd(): given matrix is not symmetric positive definite and/or df is too low");
-    }
+  arma_debug_check( (status == false), "iwishrnd(): given matrix is not symmetric positive definite and/or df is too low" );
   }
 
 
@@ -228,6 +218,8 @@ op_iwishrnd::apply_direct(Mat<typename T1::elem_type>& out, const Base<typename 
     if(mode == 1)  { status = op_iwishrnd::apply_noalias_mode1(out, U.M, df); }
     if(mode == 2)  { status = op_iwishrnd::apply_noalias_mode2(out, U.M, df); }
     }
+  
+  if(status == false)  { out.soft_reset(); }
   
   return status;
   }
@@ -270,6 +262,7 @@ op_iwishrnd::apply_noalias_mode2(Mat<eT>& out, const Mat<eT>& Dinv, const eT df)
   
   #if defined(ARMA_USE_CXX11)
     {
+    arma_debug_check( (df <= eT(0)),               "df must be greater than zero"                  );
     arma_debug_check( (Dinv.is_square() == false), "iwishrnd(): given matrix must be square sized" );
     
     if(Dinv.is_empty())  { out.reset(); return true; }

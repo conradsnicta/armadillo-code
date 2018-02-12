@@ -38,7 +38,10 @@ op_wishrnd::apply(Mat<typename T1::elem_type>& out, const Op<T1,op_wishrnd>& exp
   
   const bool status = op_wishrnd::apply_direct(out, expr.m, df, mode);
   
-  arma_debug_check( (status == false), "wishrnd(): given matrix is not symmetric positive definite" );
+  if(status == false)
+    {
+    arma_stop_runtime_error("wishrnd(): given matrix is not symmetric positive definite");
+    }
   }
 
 
@@ -186,7 +189,10 @@ op_iwishrnd::apply(Mat<typename T1::elem_type>& out, const Op<T1,op_iwishrnd>& e
   
   const bool status = op_iwishrnd::apply_direct(out, expr.m, df, mode);
   
-  arma_debug_check( (status == false), "iwishrnd(): given matrix is not symmetric positive definite and/or df is too low" );
+  if(status == false)
+    {
+    arma_stop_runtime_error("iwishrnd(): given matrix is not symmetric positive definite and/or df is too low");
+    }
   }
 
 

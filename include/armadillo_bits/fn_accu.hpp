@@ -105,51 +105,6 @@ template<typename T1>
 arma_hot
 inline
 typename T1::elem_type
-accu_proxy_at(const Proxy<T1>& P)
-  {
-  arma_extra_debug_sigprint();
-  
-  typedef typename T1::elem_type eT;
-  
-  if(arma_config::openmp && Proxy<T1>::use_mp && mp_gate<eT>::eval(P.get_n_elem()))
-    {
-    return accu_proxy_at_mp(P);
-    }
-  
-  const uword n_rows = P.get_n_rows();
-  const uword n_cols = P.get_n_cols();
-  
-  eT val = eT(0);
-  
-  if(n_rows != 1)
-    {
-    eT val1 = eT(0);
-    eT val2 = eT(0);
-    
-    for(uword col=0; col < n_cols; ++col)
-      {
-      uword i,j;
-      for(i=0, j=1; j < n_rows; i+=2, j+=2)  { val1 += P.at(i,col); val2 += P.at(j,col); }
-      
-      if(i < n_rows)  { val1 += P.at(i,col); }
-      }
-    
-    val = val1 + val2;
-    }
-  else
-    {
-    for(uword col=0; col < n_cols; ++col)  { val += P.at(0,col); }
-    }
-  
-  return val;
-  }
-
-
-
-template<typename T1>
-arma_hot
-inline
-typename T1::elem_type
 accu_proxy_at_mp(const Proxy<T1>& P)
   {
   arma_extra_debug_sigprint();
@@ -240,6 +195,51 @@ accu_proxy_at_mp(const Proxy<T1>& P)
     arma_ignore(P);
     }
   #endif
+  
+  return val;
+  }
+
+
+
+template<typename T1>
+arma_hot
+inline
+typename T1::elem_type
+accu_proxy_at(const Proxy<T1>& P)
+  {
+  arma_extra_debug_sigprint();
+  
+  typedef typename T1::elem_type eT;
+  
+  if(arma_config::openmp && Proxy<T1>::use_mp && mp_gate<eT>::eval(P.get_n_elem()))
+    {
+    return accu_proxy_at_mp(P);
+    }
+  
+  const uword n_rows = P.get_n_rows();
+  const uword n_cols = P.get_n_cols();
+  
+  eT val = eT(0);
+  
+  if(n_rows != 1)
+    {
+    eT val1 = eT(0);
+    eT val2 = eT(0);
+    
+    for(uword col=0; col < n_cols; ++col)
+      {
+      uword i,j;
+      for(i=0, j=1; j < n_rows; i+=2, j+=2)  { val1 += P.at(i,col); val2 += P.at(j,col); }
+      
+      if(i < n_rows)  { val1 += P.at(i,col); }
+      }
+    
+    val = val1 + val2;
+    }
+  else
+    {
+    for(uword col=0; col < n_cols; ++col)  { val += P.at(0,col); }
+    }
   
   return val;
   }
@@ -560,42 +560,6 @@ template<typename T1>
 arma_hot
 inline
 typename T1::elem_type
-accu_cube_proxy_at(const ProxyCube<T1>& P)
-  {
-  arma_extra_debug_sigprint();
-  
-  typedef typename T1::elem_type eT;
-  
-  if(arma_config::openmp && ProxyCube<T1>::use_mp && mp_gate<eT>::eval(P.get_n_elem()))
-    {
-    return accu_cube_proxy_at_mp(P);
-    }
-  
-  const uword n_rows   = P.get_n_rows();
-  const uword n_cols   = P.get_n_cols();
-  const uword n_slices = P.get_n_slices();
-  
-  eT val1 = eT(0);
-  eT val2 = eT(0);
-  
-  for(uword slice = 0; slice < n_slices; ++slice)
-  for(uword col   = 0; col   < n_cols;   ++col  )
-    {
-    uword i,j;
-    for(i=0, j=1; j<n_rows; i+=2, j+=2)  { val1 += P.at(i,col,slice); val2 += P.at(j,col,slice); }
-    
-    if(i < n_rows)  { val1 += P.at(i,col,slice); }
-    }
-  
-  return (val1 + val2);
-  }
-
-
-
-template<typename T1>
-arma_hot
-inline
-typename T1::elem_type
 accu_cube_proxy_at_mp(const ProxyCube<T1>& P)
   {
   arma_extra_debug_sigprint();
@@ -640,6 +604,42 @@ accu_cube_proxy_at_mp(const ProxyCube<T1>& P)
   #endif
   
   return val;
+  }
+
+
+
+template<typename T1>
+arma_hot
+inline
+typename T1::elem_type
+accu_cube_proxy_at(const ProxyCube<T1>& P)
+  {
+  arma_extra_debug_sigprint();
+  
+  typedef typename T1::elem_type eT;
+  
+  if(arma_config::openmp && ProxyCube<T1>::use_mp && mp_gate<eT>::eval(P.get_n_elem()))
+    {
+    return accu_cube_proxy_at_mp(P);
+    }
+  
+  const uword n_rows   = P.get_n_rows();
+  const uword n_cols   = P.get_n_cols();
+  const uword n_slices = P.get_n_slices();
+  
+  eT val1 = eT(0);
+  eT val2 = eT(0);
+  
+  for(uword slice = 0; slice < n_slices; ++slice)
+  for(uword col   = 0; col   < n_cols;   ++col  )
+    {
+    uword i,j;
+    for(i=0, j=1; j<n_rows; i+=2, j+=2)  { val1 += P.at(i,col,slice); val2 += P.at(j,col,slice); }
+    
+    if(i < n_rows)  { val1 += P.at(i,col,slice); }
+    }
+  
+  return (val1 + val2);
   }
 
 

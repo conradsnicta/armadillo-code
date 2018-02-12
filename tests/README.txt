@@ -1,4 +1,4 @@
-- The tests in this directory are intended to be run only on Linux or Mac OS X
+- The tests in this directory are intended to be run only on Linux or macOS
 - The tests are a work-in-progress
 - Armadillo must be installed before the tests can be compiled
 - C++11 compiler is required to compile the tests

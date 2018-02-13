@@ -1,0 +1,13 @@
+*.o
+*.so*
+CMakeCache.txt
+cmake_install.cmake
+ArmadilloConfig.cmake
+ArmadilloConfigVersion.cmake
+Makefile
+CMakeFiles/
+InstallFiles/
+tmp/
+tests/main
+
+# TODO: examples/Makefile is overwritten by the cmake installer, but we need to keep track of the default version

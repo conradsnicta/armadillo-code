@@ -89,8 +89,8 @@ TEST_CASE("sum4")
   {
   mat X(100,101, fill::randu);
 
-  REQUIRE( (sum(sum(X))/X.n_elem)                      == Approx(0.5).epsilon(0.01) );
-  REQUIRE( (sum(sum(X(span::all,span::all)))/X.n_elem) == Approx(0.5).epsilon(0.01) );
+  REQUIRE( (sum(sum(X))/X.n_elem)                      == Approx(0.5).epsilon(0.02) );
+  REQUIRE( (sum(sum(X(span::all,span::all)))/X.n_elem) == Approx(0.5).epsilon(0.02) );
   }
 
 

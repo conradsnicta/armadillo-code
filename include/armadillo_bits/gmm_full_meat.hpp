@@ -1014,6 +1014,8 @@ gmm_full<eT>::init_constants(const bool calc_chol)
       }
     else
       {
+      // last resort: treat the covariance matrix as diagonal
+      
       inv_fcov.zeros();
       
       log_det_val = eT(0);
@@ -1064,6 +1066,8 @@ gmm_full<eT>::init_constants(const bool calc_chol)
         }
       else
         {
+        // last resort: treat the covariance matrix as diagonal
+        
         chol_fcov.zeros();
         
         for(uword d=0; d < N_dims; ++d)

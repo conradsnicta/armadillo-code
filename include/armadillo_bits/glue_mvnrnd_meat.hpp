@@ -18,6 +18,13 @@
 //! @{
 
 
+// implementation based on:
+// James E. Gentle.
+// Generation of Random Numbers.
+// Computational Statistics, pp. 305-331, 2009.
+// http://dx.doi.org/10.1007/978-0-387-98144-4_7
+
+
 template<typename T1, typename T2>
 inline
 void
@@ -82,11 +89,11 @@ glue_mvnrnd::apply_noalias(Mat<eT>& out, const Mat<eT>& M, const Mat<eT>& C, con
   
   Mat<eT> D;
   
-  const bool chol_status = op_chol::apply_direct(D, C, 1);
+  const bool chol_status = op_chol::apply_direct(D, C, 1);  // '1' means "lower triangular"
   
   if(chol_status == false)
     {
-    // C is not symmetric positive definite, so try approximation based on diagonalisation
+    // C is not symmetric positive definite, so find approximate square root of C
     
     Col<eT> eigval;  // NOTE: eT is constrained to be real (ie. float or double) in fn_mvnrnd.hpp
     Mat<eT> eigvec;
@@ -104,11 +111,6 @@ glue_mvnrnd::apply_noalias(Mat<eT>& out, const Mat<eT>& M, const Mat<eT>& C, con
     
     if(arma_isfinite(tol) == false)  { return false; }
     
-    // cout << "*** eps: " << Datum<eT>::eps << endl;
-    // cout << "*** tol: " << tol << endl;
-    // eigval.print("*** eigval:");
-    // eigvec.print("*** eigvec:");
-    
     for(uword i=0; i<eigval_n_elem; ++i)
       {
       const eT val = eigval_mem[i];
@@ -118,17 +120,12 @@ glue_mvnrnd::apply_noalias(Mat<eT>& out, const Mat<eT>& M, const Mat<eT>& C, con
     
     for(uword i=0; i<eigval_n_elem; ++i)  { if(eigval_mem[i] < eT(0))  { eigval_mem[i] = eT(0); } }
     
-    // eigval.print("*** cleaned eigval:");
     Mat<eT> DD = eigvec * diagmat(sqrt(eigval));
     
     D.steal_mem(DD);
-    
-    D.print("*** D:");
     }
   
   out = D * randn< Mat<eT> >(M.n_rows, N);
-  
-  // out.print("*** partial out:");
   
   if(N == 1)
     {

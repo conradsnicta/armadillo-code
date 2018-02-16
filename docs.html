@@ -492,13 +492,14 @@ Conrad Sanderson and Ryan Curtin.
 <tr><td><a href="#princomp">princomp</a></td><td>&nbsp;</td><td>principal component analysis</td></tr>
 <tr style="background-color: #F5F5F5;"><td><a href="#normpdf">normpdf</a></td><td>&nbsp;</td><td>probability density function of normal distribution</td></tr>
 <tr style="background-color: #F5F5F5;"><td><a href="#normcdf">normcdf</a></td><td>&nbsp;</td><td>cumulative distribution function of normal distribution</td></tr>
-<tr style="background-color: #F5F5F5;"><td><a href="#chi2rnd">chi2rnd</a></td><td>&nbsp;</td><td>random numbers from chi-squared distribution</td></tr>
+<tr style="background-color: #F5F5F5;"><td><a href="#mvnrnd">mvnrnd</a></td><td>&nbsp;</td><td>random vectors from multivariate normal distribution</td></tr>
+<tr><td><a href="#chi2rnd">chi2rnd</a></td><td>&nbsp;</td><td>random numbers from chi-squared distribution</td></tr>
 <tr><td><a href="#wishrnd">wishrnd</a></td><td>&nbsp;</td><td>random matrix from Wishart distribution</td></tr>
 <tr><td><a href="#iwishrnd">iwishrnd</a></td><td>&nbsp;</td><td>random matrix from inverse Wishart distribution</td></tr>
-<tr><td><a href="#running_stat">running_stat</a></td><td>&nbsp;</td><td>running statistics of one dimensional process/signal</td></tr>
+<tr style="background-color: #F5F5F5;"><td><a href="#running_stat">running_stat</a></td><td>&nbsp;</td><td>running statistics of one dimensional process/signal</td></tr>
 <tr style="background-color: #F5F5F5;"><td><a href="#running_stat_vec">running_stat_vec</a></td><td>&nbsp;</td><td>running statistics of multi-dimensional process/signal</td></tr>
 <tr style="background-color: #F5F5F5;"><td><a href="#kmeans">kmeans</a></td><td>&nbsp;</td><td>cluster data into disjoint sets</td></tr>
-<tr style="background-color: #F5F5F5;"><td><a href="#gmm_diag">gmm_diag/gmm_full</a></td><td>&nbsp;</td><td>model and evaluate data using Gaussian Mixture Models (GMMs)</td></tr>
+<tr><td><a href="#gmm_diag">gmm_diag/gmm_full</a></td><td>&nbsp;</td><td>model and evaluate data using Gaussian Mixture Models (GMMs)</td></tr>
 </tbody>
 </table>
 </ul>
@@ -6927,8 +6928,8 @@ arma_rng::set_seed_random();  // set the seed to a random value
 <li><a href="#randu_randn_member">.randu() &amp; .randn()</a> (member functions)</li>
 <li><a href="#randi">randi()</a></li>
 <li><a href="#randg">randg()</a></li>
+<li><a href="#mvnrnd">mvnrnd()</a></li>
 <li><a href="#normpdf">normpdf()</a></li>
-<li><a href="#wishrnd">wishrnd()</a></li>
 <li><a href="#imbue">.imbue()</a></li>
 <li><a href="#ones_standalone">ones()</a></li>
 <li><a href="#zeros_standalone">zeros()</a></li>
@@ -13413,6 +13414,53 @@ See also:
 </ul>
 
 <div class="pagebreak"></div><div class="noprint"><hr class="greyline"><br></div>
+<a name="mvnrnd"></a>
+<b>X = mvnrnd(M, C)</b>
+<br><b>X = mvnrnd(M, C, N)</b>
+<br>
+<br>
+<b>mvnrnd(X, M, C)</b>
+<br><b>mvnrnd(X, M, C, N)</b>
+<ul>
+<li>
+Generate random column vectors from multivariate Gaussian (normal) distribution with mean vector <i>M</i> and covariance matrix <i>C</i>
+</li>
+<br>
+<li><i>M</i> must be a column vector</li>
+<br>
+<li><i>C</i> must be a symmetric positive semi-definite matrix (preferably positive definite)</li>
+<br>
+<li><i>N</i> is the number of column vectors to generate; if <i>N</i> is omitted, it is assumed to be 1</li>
+<br>
+<li>
+<b>Caveat:</b> repeated generation of one vector (or a small number of vectors) using the same <i>M</i> and <i>C</i> arguments can be inefficient;
+<br>for repeated generation consider using the <i>generate()</i> function in the <a href="#gmm_diag">gmm_diag</a> and <a href="#gmm_full">gmm_full</a> classes
+</li>
+<br>
+<li>
+Examples:
+<ul>
+<pre>
+TODO
+</pre>
+</ul>
+</li>
+<br>
+<li>
+See also:
+<ul>
+<li><a href="#randu_randn_standalone">randn()</a></li>
+<li><a href="#chi2rnd">chi2rnd()</a></li>
+<li><a href="#wishrnd">wishrnd()</a></li>
+<li><a href="#cov">cov()</a></li>
+<li><a href="#gmm_diag">gmm_diag</a> &amp; <a href="#gmm_full">gmm_full</a> - classes for modelling data as a Gaussian mixture model</li>
+<li><a href="http://en.wikipedia.org/wiki/Normal_distribution">normal distribution in Wikipedia</a></li>
+</ul>
+</li>
+<br>
+</ul>
+
+<div class="pagebreak"></div><div class="noprint"><hr class="greyline"><br></div>
 <a name="chi2rnd"></a>
 <b>chi2rnd( DF )</b>
 <br>
@@ -13467,6 +13515,7 @@ See also:
 <ul>
 <li><a href="#randg">randg()</a></li>
 <li><a href="#randu_randn_standalone">randn()</a></li>
+<li><a href="#mvnrnd">mvnrnd()</a></li>
 <li><a href="#wishrnd">wishrnd()</a></li>
 <li><a href="#size">size()</a></li>
 <li><a href="https://en.wikipedia.org/wiki/Chi-squared_distribution">chi-squared distribution in Wikipedia</a></li>
@@ -13524,6 +13573,7 @@ See also:
 <ul>
 <li><a href="#iwishrnd">iwishrnd()</a></li>
 <li><a href="#chi2rnd">chi2rnd()</a></li>
+<li><a href="#mvnrnd">mvnrnd()</a></li>
 <li><a href="#chol">chol()</a></li>
 <li><a href="#cov">cov()</a></li>
 <li><a href="#randu_randn_standalone">randn()</a></li>
@@ -14759,6 +14809,7 @@ model.save("my_model.gmm");
 <li>See also:
 <ul>
 <li><a href="#normpdf">normpdf()</a></li>
+<li><a href="#mvnrnd">mvnrnd()</a></li>
 <li><a href="#stats_fns">statistics functions</a></li>
 <li><a href="#running_stat_vec">running_stat_vec</a></li>
 <li><a href="#kmeans">kmeans()</a></li>
@@ -17331,6 +17382,7 @@ List of additions and changes for each version:
 <li>expanded <a href="#randi">randi()</a>, <a href="#randu_randn_standalone">randu()</a>, <a href="#randu_randn_standalone">randn()</a>, <a href="#randg">randg()</a> to output single scalars</li>
 <li>added <a href="#iterators_submat">submatrix &amp; subcube iterators</a></li>
 <li>added <a href="#normcdf">normcdf()</a></li>
+<li>added <a href="#mvnrnd">mvnrnd()</a></li>
 <li>added <a href="#chi2rnd">chi2rnd()</a></li>
 <li>added <a href="#wishrnd">wishrnd()</a> and <a href="#iwishrnd">iwishrnd()</a></li>
 </ul>

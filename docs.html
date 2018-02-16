@@ -13011,7 +13011,7 @@ See also:
 <li><a href="#min_and_max">min() &amp; max()</a></li>
 <li><a href="#running_stat">running_stat</a> - class for running statistics of scalars</li>
 <li><a href="#running_stat_vec">running_stat_vec</a> - class for running statistics of vectors</li>
-<li><a href="#gmm_diag">gmm_diag</a> - class for modelling data as a Gaussian mixture model</li>
+<li><a href="#gmm_diag">gmm_diag</a> &amp; <a href="#gmm_full">gmm_full</a> - classes for modelling and evaluating data as a Gaussian mixture model</li>
 <li><a href="#kmeans">kmeans()</a></li>
 </ul>
 </li>
@@ -13362,7 +13362,7 @@ See also:
 <ul>
 <li><a href="#normcdf">normcdf()</a></li>
 <li><a href="#randu_randn_standalone">randn()</a></li>
-<li><a href="#gmm_diag">gmm_diag</a> - class for modelling data as a Gaussian mixture model</li>
+<li><a href="#gmm_diag">gmm_diag</a> - class for modelling and evaluating data as a Gaussian mixture model</li>
 <li><a href="http://en.wikipedia.org/wiki/Normal_distribution">normal distribution in Wikipedia</a></li>
 </ul>
 </li>
@@ -13406,7 +13406,7 @@ See also:
 <ul>
 <li><a href="#normpdf">normpdf()</a></li>
 <li><a href="#randu_randn_standalone">randn()</a></li>
-<li><a href="#gmm_diag">gmm_diag</a> - class for modelling data as a Gaussian mixture model</li>
+<li><a href="#gmm_diag">gmm_diag</a> - class for modelling and evaluating data as a Gaussian mixture model</li>
 <li><a href="http://en.wikipedia.org/wiki/Normal_distribution">normal distribution in Wikipedia</a></li>
 </ul>
 </li>
@@ -13423,25 +13423,37 @@ See also:
 <br><b>mvnrnd(X, M, C, N)</b>
 <ul>
 <li>
-Generate random column vectors from multivariate Gaussian (normal) distribution with mean vector <i>M</i> and covariance matrix <i>C</i>
+Generate a matrix with random column vectors from a multivariate Gaussian (normal) distribution with parameters <i>M</i> and <i>C</i>:
+<ul>
+<li><i>M</i> is the mean; must be a column vector</li>
+<li><i>C</i> is the covariance matrix; must be symmetric positive semi-definite (preferably positive definite)</li>
+</ul>
 </li>
-<br>
-<li><i>M</i> must be a column vector</li>
-<br>
-<li><i>C</i> must be a symmetric positive semi-definite matrix (preferably positive definite)</li>
 <br>
 <li><i>N</i> is the number of column vectors to generate; if <i>N</i> is omitted, it is assumed to be 1</li>
 <br>
 <li>
-<b>Caveat:</b> repeated generation of one vector (or a small number of vectors) using the same <i>M</i> and <i>C</i> arguments can be inefficient;
+<b>Caveat:</b> repeated generation of one vector (or a small number of vectors) using the same <i>M</i> and <i>C</i> parameters can be inefficient;
 <br>for repeated generation consider using the <i>generate()</i> function in the <a href="#gmm_diag">gmm_diag</a> and <a href="#gmm_full">gmm_full</a> classes
+</li>
+<br>
+<li>If generating the random vectors fails:
+<ul>
+<li><i>X = mvnrnd(M, C)</i> and <i>X = mvnrnd(M, C, N)</i> reset <i>X</i> and throw a <i>std::runtime_error</i> exception</li>
+<li><i>mvnrnd(X, M, C)</i> and <i>mvnrnd(X, M, C, N)</i> reset <i>X</i> and return a bool set to <i>false</i> (exception is not thrown)</li>
+</ul>
 </li>
 <br>
 <li>
 Examples:
 <ul>
 <pre>
-TODO
+vec M(5, fill::randu);
+
+mat B(5, 5, fill::randu);
+mat C = B.t() * B;
+
+mat X = mvnrnd(M, C, 100);
 </pre>
 </ul>
 </li>
@@ -13453,8 +13465,8 @@ See also:
 <li><a href="#chi2rnd">chi2rnd()</a></li>
 <li><a href="#wishrnd">wishrnd()</a></li>
 <li><a href="#cov">cov()</a></li>
-<li><a href="#gmm_diag">gmm_diag</a> &amp; <a href="#gmm_full">gmm_full</a> - classes for modelling data as a Gaussian mixture model</li>
-<li><a href="http://en.wikipedia.org/wiki/Normal_distribution">normal distribution in Wikipedia</a></li>
+<li><a href="#gmm_diag">gmm_diag</a> &amp; <a href="#gmm_full">gmm_full</a> - classes for modelling and evaluating data as a Gaussian mixture model</li>
+<li><a href="https://en.wikipedia.org/wiki/Multivariate_normal_distribution">multivariate normal distribution in Wikipedia</a></li>
 </ul>
 </li>
 <br>
@@ -14817,7 +14829,7 @@ model.save("my_model.gmm");
 <li><a href="https://en.wikipedia.org/wiki/Covariance_matrix">covariance matrix in Wikipedia</a></li>
 <li><a href="http://mathworld.wolfram.com/CovarianceMatrix.html">covariance matrix in MathWorld</a></li>
 <li><a href="http://en.wikipedia.org/wiki/Mahalanobis_distance">Mahalanobis distance in Wikipedia</a></li>
-<li><a href="http://en.wikipedia.org/wiki/Normal_distribution">normal distribution in Wikipedia</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Multivariate_normal_distribution">multivariate normal distribution in Wikipedia</a></li>
 <li><a href="http://en.wikipedia.org/wiki/Mixture_model">mixture model in Wikipedia</a></li>
 <li><a href="http://en.wikipedia.org/wiki/K-means_clustering">k-means clustering in Wikipedia</a></li>
 <li><a href="http://mathworld.wolfram.com/K-MeansClusteringAlgorithm.html">k-means clustering in MathWorld</a></li>

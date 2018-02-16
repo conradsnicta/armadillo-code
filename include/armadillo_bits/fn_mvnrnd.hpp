@@ -28,24 +28,6 @@ enable_if2
   is_real<typename T1::elem_type>::value,
   const Glue<T1, T2, glue_mvnrnd>
   >::result
-mvnrnd(const Base<typename T1::elem_type, T1>& M, const Base<typename T1::elem_type, T2>& C, const uword N)
-  {
-  arma_extra_debug_sigprint();
-  
-  return Glue<T1, T2, glue_mvnrnd>(M.get_ref(), C.get_ref(), N);
-  }
-
-
-
-template<typename T1, typename T2>
-arma_warn_unused
-inline
-typename
-enable_if2
-  <
-  is_real<typename T1::elem_type>::value,
-  const Glue<T1, T2, glue_mvnrnd>
-  >::result
 mvnrnd(const Base<typename T1::elem_type, T1>& M, const Base<typename T1::elem_type, T2>& C)
   {
   arma_extra_debug_sigprint();
@@ -62,13 +44,31 @@ typename
 enable_if2
   <
   is_real<typename T1::elem_type>::value,
-  bool
+  const Glue<T1, T2, glue_mvnrnd>
   >::result
-mvnrnd(Mat<typename T1::elem_type>& out, const Base<typename T1::elem_type, T1>& M, const Base<typename T1::elem_type, T2>& C, const uword N)
+mvnrnd(const Base<typename T1::elem_type, T1>& M, const Base<typename T1::elem_type, T2>& C, const uword N)
   {
   arma_extra_debug_sigprint();
   
-  const bool status = glue_mvnrnd::apply_direct_mode1(out, M.get_ref(), C.get_ref(), N);
+  return Glue<T1, T2, glue_mvnrnd>(M.get_ref(), C.get_ref(), N);
+  }
+
+
+
+template<typename T1, typename T2>
+arma_warn_unused
+inline
+typename
+enable_if2
+  <
+  is_real<typename T1::elem_type>::value,
+  bool
+  >::result
+mvnrnd(Mat<typename T1::elem_type>& out, const Base<typename T1::elem_type, T1>& M, const Base<typename T1::elem_type, T2>& C)
+  {
+  arma_extra_debug_sigprint();
+  
+  const bool status = glue_mvnrnd::apply_direct(out, M.get_ref(), C.get_ref(), uword(1));
   
   if(status == false)
     {
@@ -90,53 +90,19 @@ enable_if2
   is_real<typename T1::elem_type>::value,
   bool
   >::result
-mvnrnd(Mat<typename T1::elem_type>& out, const Base<typename T1::elem_type, T1>& M, const Base<typename T1::elem_type, T2>& C)
+mvnrnd(Mat<typename T1::elem_type>& out, const Base<typename T1::elem_type, T1>& M, const Base<typename T1::elem_type, T2>& C, const uword N)
   {
   arma_extra_debug_sigprint();
   
-  return mvnrnd(out, M.get_ref(), C.get_ref(), uword(1));
-  }
-
-
-
-template<typename T1, typename T2, typename T3>
-arma_warn_unused
-inline
-typename
-enable_if2
-  <
-  is_real<typename T1::elem_type>::value,
-  Mat<typename T1::elem_type>
-  >::result
-mvnrnd(const Base<typename T1::elem_type, T1>& M, const Base<typename T1::elem_type, T2>& C, const uword N, const Base<typename T1::elem_type, T3>& D)
-  {
-  arma_extra_debug_sigprint();
-  arma_ignore(C);
+  const bool status = glue_mvnrnd::apply_direct(out, M.get_ref(), C.get_ref(), N);
   
-  Mat<typename T1::elem_type> out;
+  if(status == false)
+    {
+    arma_debug_warn("mvnrnd(): given covariance matrix is not symmetric positive semi-definite");
+    return false;
+    }
   
-  glue_mvnrnd::apply_direct_mode2(out, M.get_ref(), D.get_ref(), N);
-  
-  return out;
-  }
-
-
-
-template<typename T1, typename T2, typename T3>
-arma_warn_unused
-inline
-typename
-enable_if2
-  <
-  is_real<typename T1::elem_type>::value,
-  bool
-  >::result
-mvnrnd(Mat<typename T1::elem_type>& out, const Base<typename T1::elem_type, T1>& M, const Base<typename T1::elem_type, T2>& C, const uword N, const Base<typename T1::elem_type, T3>& D)
-  {
-  arma_extra_debug_sigprint();
-  arma_ignore(C);
-  
-  return glue_mvnrnd::apply_direct_mode2(out, M.get_ref(), D.get_ref(), N);
+  return true;
   }
 
 

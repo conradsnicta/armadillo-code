@@ -26,16 +26,10 @@ class glue_mvnrnd
    inline static void apply(Mat<typename T1::elem_type>& out, const Glue<T1,T2,glue_mvnrnd>& expr);
    
    template<typename T1, typename T2>
-   inline static bool apply_direct_mode1(Mat<typename T1::elem_type>& out, const Base<typename T1::elem_type,T1>& M, const Base<typename T1::elem_type,T2>& C, const uword N);
-   
-   template<typename T1, typename T2>
-   inline static bool apply_direct_mode2(Mat<typename T1::elem_type>& out, const Base<typename T1::elem_type,T1>& M, const Base<typename T1::elem_type,T2>& D, const uword N);
+   inline static bool apply_direct(Mat<typename T1::elem_type>& out, const Base<typename T1::elem_type,T1>& M, const Base<typename T1::elem_type,T2>& C, const uword N);
    
    template<typename eT>
-   inline static bool apply_noalias_mode1(Mat<eT>& out, const Mat<eT>& M, const Mat<eT>& C, const uword N);
-   
-   template<typename eT>
-   inline static bool apply_noalias_mode2(Mat<eT>& out, const Mat<eT>& M, const Mat<eT>& D, const uword N);
+   inline static bool apply_noalias(Mat<eT>& out, const Mat<eT>& M, const Mat<eT>& C, const uword N);
    };
 
 

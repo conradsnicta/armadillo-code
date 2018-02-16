@@ -25,7 +25,7 @@ glue_mvnrnd::apply(Mat<typename T1::elem_type>& out, const Glue<T1,T2,glue_mvnrn
   {
   arma_extra_debug_sigprint();
   
-  const bool status = glue_mvnrnd::apply_direct_mode1(out, expr.A, expr.B, expr.aux_uword);
+  const bool status = glue_mvnrnd::apply_direct(out, expr.A, expr.B, expr.aux_uword);
   
   if(status == false)
     {
@@ -38,7 +38,7 @@ glue_mvnrnd::apply(Mat<typename T1::elem_type>& out, const Glue<T1,T2,glue_mvnrn
 template<typename T1, typename T2>
 inline
 bool
-glue_mvnrnd::apply_direct_mode1(Mat<typename T1::elem_type>& out, const Base<typename T1::elem_type,T1>& M, const Base<typename T1::elem_type,T2>& C, const uword N)
+glue_mvnrnd::apply_direct(Mat<typename T1::elem_type>& out, const Base<typename T1::elem_type,T1>& M, const Base<typename T1::elem_type,T2>& C, const uword N)
   {
   arma_extra_debug_sigprint();
   
@@ -57,51 +57,13 @@ glue_mvnrnd::apply_direct_mode1(Mat<typename T1::elem_type>& out, const Base<typ
     {
     Mat<eT> tmp;
     
-    status = glue_mvnrnd::apply_noalias_mode1(tmp, UM.M, UC.M, N);
+    status = glue_mvnrnd::apply_noalias(tmp, UM.M, UC.M, N);
     
     out.steal_mem(tmp);
     }
   else
     {
-    status = glue_mvnrnd::apply_noalias_mode1(out, UM.M, UC.M, N);
-    }
-  
-  if(status == false)  { out.soft_reset(); }
-  
-  return status;
-  }
-
-
-
-template<typename T1, typename T2>
-inline
-bool
-glue_mvnrnd::apply_direct_mode2(Mat<typename T1::elem_type>& out, const Base<typename T1::elem_type,T1>& M, const Base<typename T1::elem_type,T2>& D, const uword N)
-  {
-  arma_extra_debug_sigprint();
-  
-  typedef typename T1::elem_type eT;
-  
-  const quasi_unwrap<T1> UM(M.get_ref());
-  const quasi_unwrap<T2> UD(D.get_ref());
-  
-  arma_debug_check( (UM.M.is_colvec() == false),  "mvnrnd(): given mean must be a column vector"                                 );
-  arma_debug_check( (UD.M.is_square() == false),  "mvnrnd(): given cholesky matrix must be square sized"                         );
-  arma_debug_check( (UM.M.n_rows != UD.M.n_rows), "mvnrnd(): number of rows in given mean vector and cholesky matrix must match" );
-  
-  bool status = false;
-  
-  if(UM.is_alias(out) || UD.is_alias(out))
-    {
-    Mat<eT> tmp;
-    
-    status = glue_mvnrnd::apply_noalias_mode2(tmp, UM.M, UD.M, N);
-    
-    out.steal_mem(tmp);
-    }
-  else
-    {
-    status = glue_mvnrnd::apply_noalias_mode2(out, UM.M, UD.M, N);
+    status = glue_mvnrnd::apply_noalias(out, UM.M, UC.M, N);
     }
   
   if(status == false)  { out.soft_reset(); }
@@ -114,7 +76,7 @@ glue_mvnrnd::apply_direct_mode2(Mat<typename T1::elem_type>& out, const Base<typ
 template<typename eT>
 inline
 bool
-glue_mvnrnd::apply_noalias_mode1(Mat<eT>& out, const Mat<eT>& M, const Mat<eT>& C, const uword N)
+glue_mvnrnd::apply_noalias(Mat<eT>& out, const Mat<eT>& M, const Mat<eT>& C, const uword N)
   {
   arma_extra_debug_sigprint();
   
@@ -145,6 +107,7 @@ glue_mvnrnd::apply_noalias_mode1(Mat<eT>& out, const Mat<eT>& M, const Mat<eT>& 
     // cout << "*** eps: " << Datum<eT>::eps << endl;
     // cout << "*** tol: " << tol << endl;
     // eigval.print("*** eigval:");
+    // eigvec.print("*** eigvec:");
     
     for(uword i=0; i<eigval_n_elem; ++i)
       {
@@ -155,24 +118,17 @@ glue_mvnrnd::apply_noalias_mode1(Mat<eT>& out, const Mat<eT>& M, const Mat<eT>& 
     
     for(uword i=0; i<eigval_n_elem; ++i)  { if(eigval_mem[i] < eT(0))  { eigval_mem[i] = eT(0); } }
     
-    D = eigvec * diagmat(sqrt(eigval));
+    // eigval.print("*** cleaned eigval:");
+    Mat<eT> DD = eigvec * diagmat(sqrt(eigval));
     
-    // D.print("***D:");
+    D.steal_mem(DD);
+    
+    D.print("*** D:");
     }
   
-  return glue_mvnrnd::apply_noalias_mode2(out, M, D, N);
-  }
-
-
-
-template<typename eT>
-inline
-bool
-glue_mvnrnd::apply_noalias_mode2(Mat<eT>& out, const Mat<eT>& M, const Mat<eT>& D, const uword N)
-  {
-  arma_extra_debug_sigprint();
-  
   out = D * randn< Mat<eT> >(M.n_rows, N);
+  
+  // out.print("*** partial out:");
   
   if(N == 1)
     {

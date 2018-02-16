@@ -54,9 +54,15 @@ glue_mvnrnd::apply_direct(Mat<typename T1::elem_type>& out, const Base<typename 
   const quasi_unwrap<T1> UM(M.get_ref());
   const quasi_unwrap<T2> UC(C.get_ref());
   
-  arma_debug_check( (UM.M.is_colvec() == false),  "mvnrnd(): given mean must be a column vector"                                   );
+  arma_debug_check( (UM.M.is_colvec() == false) && (UM.M.is_empty() == false),  "mvnrnd(): given mean must be a column vector"     );
   arma_debug_check( (UC.M.is_square() == false),  "mvnrnd(): given covariance matrix must be square sized"                         );
   arma_debug_check( (UM.M.n_rows != UC.M.n_rows), "mvnrnd(): number of rows in given mean vector and covariance matrix must match" );
+  
+  if( UM.M.is_empty() || UC.M.is_empty() )
+    {
+    out.set_size(0,N);
+    return true;
+    }
   
   bool status = false;
   
@@ -126,7 +132,7 @@ glue_mvnrnd::apply_noalias(Mat<eT>& out, const Mat<eT>& M, const Mat<eT>& C, con
     }
   
   out = D * randn< Mat<eT> >(M.n_rows, N);
-  
+    
   if(N == 1)
     {
     out += M;

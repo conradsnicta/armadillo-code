@@ -129,7 +129,7 @@
 //// change the number to the size of your vectors.
 
 #if !defined(ARMA_OPENMP_THRESHOLD)
-  #define ARMA_OPENMP_THRESHOLD 384
+  #define ARMA_OPENMP_THRESHOLD 320
 #endif
 //// The minimum number of elements in a matrix to allow OpenMP based parallelisation;
 //// it must be an integer that is at least 1.

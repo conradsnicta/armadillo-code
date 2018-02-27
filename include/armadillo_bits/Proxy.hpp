@@ -18,8 +18,37 @@
 //! @{
 
 
-// ea_type is the "element accessor" type,
-// which can provide access to elements via operator[]
+// within each specialisation of the Proxy class:
+// 
+// elem_type        = the type of the elements obtained from object Q
+// pod_type         = the underlying type of elements if elem_type is std::complex
+// stored_type      = the type of the Q object
+// ea_type          = the type of the object that provides access to elements via operator[i]
+// aligned_ea_type  = the type of the object that provides access to elements via at_alt(i)
+// 
+// use_at           = boolean indicating whether at(row,col) must be used to get elements
+// use_mp           = boolean indicating whether OpenMP can be used while processing elements
+// has_subview      = boolean indicating whether the Q object has a subview
+// fake_mat         = boolean indicating whether the Q object is a matrix using memory from another object
+// 
+// is_row           = boolean indicating whether the Q object can be treated a row vector
+// is_col           = boolean indicating whether the Q object can be treated a column vector
+// 
+// Q                = object that can be unwrapped via the unwrap family of classes (ie. Q must be convertible to Mat)
+// 
+// get_n_rows()     = return the number of rows in Q
+// get_n_cols()     = return the number of columns in Q
+// get_n_elem()     = return the number of elements in Q
+// 
+// operator[i]      = linear element accessor; valid only if the 'use_at' boolean is false
+// at(row,col)      = access elements via (row,col); valid only if the 'use_at' boolean is true
+// at_alt(i)        = aligned linear element accessor; valid only if the 'use_at' boolean is false and is_aligned() returns true
+// 
+// get_ea()         = return the object that provides linear access to elements via operator[i]
+// get_aligned_ea() = return the object that provides linear access to elements via at_alt(i); valid only if is_aligned() returns true
+// 
+// is_alias(X)      = return true/false indicating whether the Q object aliases X
+// is_aligned()     = return true/false indicating whether the Q object has aligned memory
 
 
 

@@ -2878,7 +2878,7 @@ See also:
 <b>.fill( value )</b>
 <ul>
 <li>
-Member function of <i>Mat</i>, <i>Col</i>, <i>Row</i>, <i>Cube</i>
+Member function of <i>Mat</i>, <i>Col</i>, <i>Row</i>, <i>Cube</i>, <i>field</i>
 </li>
 <br>
 <li>Sets the elements to a specified value</li>
@@ -2890,8 +2890,17 @@ Member function of <i>Mat</i>, <i>Col</i>, <i>Row</i>, <i>Cube</i>
 Examples:
 <ul>
 <pre>
-mat A(5,5);
+mat A(5, 6);
 A.fill(123.0);
+</pre>
+</ul>
+</li>
+<br>
+<li>
+<b>Note:</b> to explicitly set all elements to zero during object construction, use the following more compact form:
+<ul>
+<pre>
+mat A(5, 6, fill::zeros);
 </pre>
 </ul>
 </li>

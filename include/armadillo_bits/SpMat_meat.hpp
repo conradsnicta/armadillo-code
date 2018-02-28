@@ -5386,30 +5386,58 @@ SpMat<eT>::get_value(const uword in_row, const uword in_col)
   {
   sync_csc();
   
-  const uword colptr      = col_ptrs[in_col];
-  const uword next_colptr = col_ptrs[in_col + 1];
-
-  // Step through the row indices to see if our element exists.
-  for (uword i = colptr; i < next_colptr; ++i)
+  const uword      col_offset = col_ptrs[in_col    ];
+  const uword next_col_offset = col_ptrs[in_col + 1];
+  
+  const uword* start_ptr = &row_indices[     col_offset];
+  const uword*   end_ptr = &row_indices[next_col_offset];
+  
+  const uword* pos_ptr = std::lower_bound(start_ptr, end_ptr, in_row);  // binary search
+  
+  uword index       = 0;
+  bool  index_valid = false;
+  
+  if( (pos_ptr != end_ptr) && ((*pos_ptr) == in_row) )
     {
-    const uword row_index = row_indices[i];
+    const uword offset = pos_ptr - start_ptr;
     
-    // First check that we have not stepped past it.
-    if (in_row < row_index) // If we have, then it doesn't exist: return 0.
-      {
-      return SpValProxy<SpMat<eT> >(in_row, in_col, *this); // Proxy for a zero value.
-      }
-
-    // Now check if we are at the correct place.
-    if (in_row == row_index) // If we are, return a reference to the value.
-      {
-      return SpValProxy<SpMat<eT> >(in_row, in_col, *this, &access::rw(values[i]));
-      }
-
+    index       = offset + col_offset;
+    index_valid = true;
     }
-
-  // We did not find it, so it does not exist: return 0.
-  return SpValProxy<SpMat<eT> >(in_row, in_col, *this);
+  
+  // to help the optimiser, use only one return statement
+  
+  return (index_valid) ? SpValProxy< SpMat<eT> >(in_row, in_col, *this, &access::rw(values[index])) : SpValProxy< SpMat<eT> >(in_row, in_col, *this); // the latter represents a zero value
+  
+  
+  // // OLD METHOD - LINEAR SEARCH
+  // 
+  // sync_csc();
+  // 
+  // const uword colptr      = col_ptrs[in_col];
+  // const uword next_colptr = col_ptrs[in_col + 1];
+  // 
+  // // Step through the row indices to see if our element exists.
+  // for (uword i = colptr; i < next_colptr; ++i)
+  //   {
+  //   const uword row_index = row_indices[i];
+  //   
+  //   // First check that we have not stepped past it.
+  //   if (in_row < row_index) // If we have, then it doesn't exist: return 0.
+  //     {
+  //     return SpValProxy<SpMat<eT> >(in_row, in_col, *this); // Proxy for a zero value.
+  //     }
+  // 
+  //   // Now check if we are at the correct place.
+  //   if (in_row == row_index) // If we are, return a reference to the value.
+  //     {
+  //     return SpValProxy<SpMat<eT> >(in_row, in_col, *this, &access::rw(values[i]));
+  //     }
+  // 
+  //   }
+  // 
+  // // We did not find it, so it does not exist: return 0.
+  // return SpValProxy<SpMat<eT> >(in_row, in_col, *this);
   }
 
 
@@ -5423,29 +5451,52 @@ SpMat<eT>::get_value(const uword in_row, const uword in_col) const
   {
   sync_csc();
   
-  const uword colptr      = col_ptrs[in_col];
-  const uword next_colptr = col_ptrs[in_col + 1];
+  const uword      col_offset = col_ptrs[in_col    ];
+  const uword next_col_offset = col_ptrs[in_col + 1];
   
-  // Step through the row indices to see if our element exists.
-  for (uword i = colptr; i < next_colptr; ++i)
+  const uword* start_ptr = &row_indices[     col_offset];
+  const uword*   end_ptr = &row_indices[next_col_offset];
+  
+  const uword* pos_ptr = std::lower_bound(start_ptr, end_ptr, in_row);  // binary search
+  
+  if( (pos_ptr != end_ptr) && ((*pos_ptr) == in_row) )
     {
-    const uword row_index = row_indices[i];
+    const uword offset = pos_ptr - start_ptr;
+    const uword index  = offset + col_offset;
     
-    // First check that we have not stepped past it.
-    if (in_row < row_index) // If we have, then it doesn't exist: return 0.
-      {
-      return eT(0);
-      }
-    
-    // Now check if we are at the correct place.
-    if (in_row == row_index) // If we are, return the value.
-      {
-      return values[i];
-      }
+    return values[index];
     }
   
-  // We did not find it, so it does not exist: return 0.
   return eT(0);
+  
+  
+  // // OLD METHOD - LINEAR SEARCH
+  // 
+  // sync_csc();
+  // 
+  // const uword colptr      = col_ptrs[in_col];
+  // const uword next_colptr = col_ptrs[in_col + 1];
+  // 
+  // // Step through the row indices to see if our element exists.
+  // for (uword i = colptr; i < next_colptr; ++i)
+  //   {
+  //   const uword row_index = row_indices[i];
+  //   
+  //   // First check that we have not stepped past it.
+  //   if (in_row < row_index) // If we have, then it doesn't exist: return 0.
+  //     {
+  //     return eT(0);
+  //     }
+  //   
+  //   // Now check if we are at the correct place.
+  //   if (in_row == row_index) // If we are, return the value.
+  //     {
+  //     return values[i];
+  //     }
+  //   }
+  // 
+  // // We did not find it, so it does not exist: return 0.
+  // return eT(0);
   }
 
 

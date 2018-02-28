@@ -2786,12 +2786,13 @@ SpMat<eT>::shed_cols(const uword in_col1, const uword in_col2)
 template<typename eT>
 arma_inline
 arma_warn_unused
-MapMat_elem<eT>
+SpMat_MapMat_elem<eT>
 SpMat<eT>::operator[](const uword i)
   {
-  sync_cache();
+  const uword in_col = i / n_rows;
+  const uword in_row = i % n_rows;
   
-  return cache.elem(i, sync_state, access::rw(n_nonzero));
+  return SpMat_MapMat_elem<eT>((*this), cache, in_row, in_col);
   }
 
 
@@ -2810,12 +2811,13 @@ SpMat<eT>::operator[](const uword i) const
 template<typename eT>
 arma_inline
 arma_warn_unused
-MapMat_elem<eT>
+SpMat_MapMat_elem<eT>
 SpMat<eT>::at(const uword i)
   {
-  sync_cache();
+  const uword in_col = i / n_rows;
+  const uword in_row = i % n_rows;
   
-  return cache.elem(i, sync_state, access::rw(n_nonzero));
+  return SpMat_MapMat_elem<eT>((*this), cache, in_row, in_col);
   }
 
 
@@ -2834,14 +2836,15 @@ SpMat<eT>::at(const uword i) const
 template<typename eT>
 arma_inline
 arma_warn_unused
-MapMat_elem<eT>
+SpMat_MapMat_elem<eT>
 SpMat<eT>::operator()(const uword i)
   {
   arma_debug_check( (i >= n_elem), "SpMat::operator(): out of bounds");
   
-  sync_cache();
+  const uword in_col = i / n_rows;
+  const uword in_row = i % n_rows;
   
-  return cache.elem(i, sync_state, access::rw(n_nonzero));
+  return SpMat_MapMat_elem<eT>((*this), cache, in_row, in_col);
   }
 
 
@@ -2867,12 +2870,10 @@ SpMat<eT>::operator()(const uword i) const
 template<typename eT>
 arma_inline
 arma_warn_unused
-MapMat_elem<eT>
+SpMat_MapMat_elem<eT>
 SpMat<eT>::at(const uword in_row, const uword in_col)
   {
-  sync_cache();
-  
-  return cache.elem(in_row, in_col, sync_state, access::rw(n_nonzero));
+  return SpMat_MapMat_elem<eT>((*this), cache, in_row, in_col);
   }
 
 
@@ -2891,14 +2892,12 @@ SpMat<eT>::at(const uword in_row, const uword in_col) const
 template<typename eT>
 arma_inline
 arma_warn_unused
-MapMat_elem<eT>
+SpMat_MapMat_elem<eT>
 SpMat<eT>::operator()(const uword in_row, const uword in_col)
   {
   arma_debug_check( ((in_row >= n_rows) || (in_col >= n_cols)), "SpMat::operator(): out of bounds");
   
-  sync_cache();
-  
-  return cache.elem(in_row, in_col, sync_state, access::rw(n_nonzero));
+  return SpMat_MapMat_elem<eT>((*this), cache, in_row, in_col);
   }
 
 

@@ -31,9 +31,9 @@ class MapMat
   static const bool is_row = false;
   static const bool is_col = false;
   
-  const uword n_rows;    //!< number of rows     (read-only)
-  const uword n_cols;    //!< number of columns  (read-only)
-  const uword n_elem;    //!< number of elements (read-only)
+  arma_aligned const uword n_rows;    //!< number of rows     (read-only)
+  arma_aligned const uword n_cols;    //!< number of columns  (read-only)
+  arma_aligned const uword n_elem;    //!< number of elements (read-only)
   
   
   private:
@@ -80,10 +80,6 @@ class MapMat
   inline void speye(const uword in_n_rows, const uword in_n_cols);
   inline void speye(const SizeMat& s);
   
-  arma_inline MapMat_elem<eT> elem(const uword index,                      state_type& sync_state, uword& n_nonzero);
-  arma_inline MapMat_elem<eT> elem(const uword in_row, const uword in_col, state_type& sync_state, uword& n_nonzero);
-  arma_inline MapMat_svel<eT> svel(const uword in_row, const uword in_col, state_type& sync_state, uword& n_nonzero, uword& sv_n_nonzero);
-  
   arma_inline arma_warn_unused MapMat_val<eT> operator[](const uword index);
   arma_inline arma_warn_unused            eT  operator[](const uword index) const;
   
@@ -121,8 +117,8 @@ class MapMat
   
   
   friend class MapMat_val<eT>;
-  friend class MapMat_elem<eT>;
-  friend class MapMat_svel<eT>;
+  friend class SpMat_MapMat_elem<eT>;
+  friend class SpSubview_MapMat_elem<eT>;
   friend class SpMat<eT>;
   };
 
@@ -163,18 +159,19 @@ class MapMat_val
 
 
 template<typename eT>
-class MapMat_elem
+class SpMat_MapMat_elem
   {
   private:
   
-  arma_aligned MapMat<eT>& parent;
+  arma_aligned  SpMat<eT>& s_parent;
+  arma_aligned MapMat<eT>& m_parent;
   
-  arma_aligned const uword       index;
-  arma_aligned       state_type& sync_state;
-  arma_aligned       uword&      n_nonzero;
+  arma_aligned const uword row;
+  arma_aligned const uword col;
   
-  inline MapMat_elem(MapMat<eT>& in_parent, const uword in_index, state_type& in_sync_state, uword& in_n_nonzero);
+  inline SpMat_MapMat_elem(SpMat<eT>& in_s_parent, MapMat<eT>& in_m_parent, const uword in_row, const uword in_col);
   
+  friend class  SpMat<eT>;
   friend class MapMat<eT>;
   
   
@@ -182,59 +179,60 @@ class MapMat_elem
   
   arma_inline operator eT() const;
   
-  arma_inline MapMat_elem<eT>& operator= (const MapMat_elem<eT>& x);
+  arma_inline SpMat_MapMat_elem<eT>& operator= (const SpMat_MapMat_elem<eT>& x);
   
-  arma_inline MapMat_elem<eT>& operator= (const eT in_val);
-  arma_inline MapMat_elem<eT>& operator+=(const eT in_val);
-  arma_inline MapMat_elem<eT>& operator-=(const eT in_val);
-  arma_inline MapMat_elem<eT>& operator*=(const eT in_val);
-  arma_inline MapMat_elem<eT>& operator/=(const eT in_val);
+  inline SpMat_MapMat_elem<eT>& operator= (const eT in_val);
+  inline SpMat_MapMat_elem<eT>& operator+=(const eT in_val);
+  inline SpMat_MapMat_elem<eT>& operator-=(const eT in_val);
+  inline SpMat_MapMat_elem<eT>& operator*=(const eT in_val);
+  inline SpMat_MapMat_elem<eT>& operator/=(const eT in_val);
   
-  arma_inline MapMat_elem<eT>& operator++();
-  arma_inline eT               operator++(int);
+  inline SpMat_MapMat_elem<eT>& operator++();
+  inline eT                     operator++(int);
   
-  arma_inline MapMat_elem<eT>& operator--();
-  arma_inline eT               operator--(int);
+  inline SpMat_MapMat_elem<eT>& operator--();
+  inline eT                     operator--(int);
   };
 
 
 
 template<typename eT>
-class MapMat_svel
+class SpSubview_MapMat_elem
   {
   private:
   
-  arma_aligned MapMat<eT>& parent;
+  arma_aligned SpSubview<eT>& v_parent;
+  arma_aligned    MapMat<eT>& m_parent;
   
-  arma_aligned const uword       index;
-  arma_aligned       state_type& sync_state;
-  arma_aligned       uword&      n_nonzero;
-  arma_aligned       uword&      sv_n_nonzero;
+  arma_aligned const uword row;
+  arma_aligned const uword col;
   
-  inline MapMat_svel(MapMat<eT>& in_parent, const uword in_index, state_type& in_sync_state, uword& in_n_nonzero, uword& in_sv_n_nonzero);
+  arma_inline SpSubview_MapMat_elem(SpSubview<eT>& in_v_parent, MapMat<eT>& in_m_parent, const uword in_row, const uword in_col);
   
   arma_inline void update_n_nonzeros();
   
-  friend class MapMat<eT>;
+  friend class SpSubview<eT>;
+  friend class     SpMat<eT>;
+  friend class    MapMat<eT>;
   
   
   public:
   
   arma_inline operator eT() const;
   
-  arma_inline MapMat_svel<eT>& operator= (const MapMat_svel<eT>& x);
+  arma_inline SpSubview_MapMat_elem<eT>& operator= (const SpSubview_MapMat_elem<eT>& x);
   
-  arma_inline MapMat_svel<eT>& operator= (const eT in_val);
-  arma_inline MapMat_svel<eT>& operator+=(const eT in_val);
-  arma_inline MapMat_svel<eT>& operator-=(const eT in_val);
-  arma_inline MapMat_svel<eT>& operator*=(const eT in_val);
-  arma_inline MapMat_svel<eT>& operator/=(const eT in_val);
+  inline SpSubview_MapMat_elem<eT>& operator= (const eT in_val);
+  inline SpSubview_MapMat_elem<eT>& operator+=(const eT in_val);
+  inline SpSubview_MapMat_elem<eT>& operator-=(const eT in_val);
+  inline SpSubview_MapMat_elem<eT>& operator*=(const eT in_val);
+  inline SpSubview_MapMat_elem<eT>& operator/=(const eT in_val);
   
-  arma_inline MapMat_svel<eT>& operator++();
-  arma_inline eT               operator++(int);
+  inline SpSubview_MapMat_elem<eT>& operator++();
+  inline eT                         operator++(int);
   
-  arma_inline MapMat_svel<eT>& operator--();
-  arma_inline eT               operator--(int);
+  inline SpSubview_MapMat_elem<eT>& operator--();
+  inline eT                         operator--(int);
   };
 
 

@@ -763,7 +763,7 @@ spdiagview<eT>::extract(Mat<eT>& out, const spdiagview<eT>& in)
 
 template<typename eT>
 inline
-MapMat_elem<eT>
+SpMat_MapMat_elem<eT>
 spdiagview<eT>::operator[](const uword i)
   {
   return (const_cast< SpMat<eT>& >(m)).at(i+row_offset, i+col_offset);
@@ -783,7 +783,7 @@ spdiagview<eT>::operator[](const uword i) const
 
 template<typename eT>
 inline
-MapMat_elem<eT>
+SpMat_MapMat_elem<eT>
 spdiagview<eT>::at(const uword i)
   {
   return (const_cast< SpMat<eT>& >(m)).at(i+row_offset, i+col_offset);
@@ -803,7 +803,7 @@ spdiagview<eT>::at(const uword i) const
 
 template<typename eT>
 inline
-MapMat_elem<eT>
+SpMat_MapMat_elem<eT>
 spdiagview<eT>::operator()(const uword i)
   {
   arma_debug_check( (i >= n_elem), "spdiagview::operator(): out of bounds" );
@@ -827,7 +827,7 @@ spdiagview<eT>::operator()(const uword i) const
 
 template<typename eT>
 inline
-MapMat_elem<eT>
+SpMat_MapMat_elem<eT>
 spdiagview<eT>::at(const uword row, const uword)
   {
   return (const_cast< SpMat<eT>& >(m)).at(row+row_offset, row+col_offset);
@@ -847,7 +847,7 @@ spdiagview<eT>::at(const uword row, const uword) const
 
 template<typename eT>
 inline
-MapMat_elem<eT>
+SpMat_MapMat_elem<eT>
 spdiagview<eT>::operator()(const uword row, const uword col)
   {
   arma_debug_check( ((row >= n_elem) || (col > 0)), "spdiagview::operator(): out of bounds" );

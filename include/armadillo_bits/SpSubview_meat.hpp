@@ -979,7 +979,7 @@ SpSubview<eT>::eye()
 template<typename eT>
 arma_hot
 inline
-MapMat_svel<eT>
+SpSubview_MapMat_elem<eT>
 SpSubview<eT>::operator[](const uword i)
   {
   const uword lrow = i % n_rows;
@@ -1007,7 +1007,7 @@ SpSubview<eT>::operator[](const uword i) const
 template<typename eT>
 arma_hot
 inline
-MapMat_svel<eT>
+SpSubview_MapMat_elem<eT>
 SpSubview<eT>::operator()(const uword i)
   {
   arma_debug_check( (i >= n_elem), "SpSubview::operator(): index out of bounds");
@@ -1039,7 +1039,7 @@ SpSubview<eT>::operator()(const uword i) const
 template<typename eT>
 arma_hot
 inline
-MapMat_svel<eT>
+SpSubview_MapMat_elem<eT>
 SpSubview<eT>::operator()(const uword in_row, const uword in_col)
   {
   arma_debug_check( (in_row >= n_rows) || (in_col >= n_cols), "SpSubview::operator(): index out of bounds");
@@ -1065,7 +1065,7 @@ SpSubview<eT>::operator()(const uword in_row, const uword in_col) const
 template<typename eT>
 arma_hot
 inline
-MapMat_svel<eT>
+SpSubview_MapMat_elem<eT>
 SpSubview<eT>::at(const uword i)
   {
   const uword lrow = i % n_rows;
@@ -1093,12 +1093,10 @@ SpSubview<eT>::at(const uword i) const
 template<typename eT>
 arma_hot
 inline
-MapMat_svel<eT>
+SpSubview_MapMat_elem<eT>
 SpSubview<eT>::at(const uword in_row, const uword in_col)
   {
-  m.sync_cache();
-  
-  return m.cache.svel(aux_row1 + in_row, aux_col1 + in_col, m.sync_state, access::rw(m.n_nonzero), access::rw(n_nonzero));
+  return SpSubview_MapMat_elem<eT>((*this), m.cache, aux_row1 + in_row, aux_col1 + in_col);
   }
 
 

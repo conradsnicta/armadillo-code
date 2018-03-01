@@ -5393,20 +5393,17 @@ SpMat<eT>::get_value(const uword in_row, const uword in_col)
   
   const uword* pos_ptr = std::lower_bound(start_ptr, end_ptr, in_row);  // binary search
   
-  uword index       = 0;
-  bool  index_valid = false;
+  eT* val_ptr = NULL;
   
   if( (pos_ptr != end_ptr) && ((*pos_ptr) == in_row) )
     {
     const uword offset = pos_ptr - start_ptr;
+    const uword index  = offset + col_offset;
     
-    index       = offset + col_offset;
-    index_valid = true;
+    val_ptr = &access::rw(values[index]);
     }
   
-  // to help the optimiser, use only one return statement
-  
-  return (index_valid) ? SpValProxy< SpMat<eT> >(in_row, in_col, *this, &access::rw(values[index])) : SpValProxy< SpMat<eT> >(in_row, in_col, *this); // the latter represents a zero value
+  return SpValProxy< SpMat<eT> >(in_row, in_col, *this, val_ptr);
   
   
   // // OLD METHOD - LINEAR SEARCH

@@ -676,12 +676,12 @@ Constructors:
 <br><code>mat(size(<i>X</i>))</code>
 <br><code>mat(size(<i>X</i>), <i>fill_type</i>)</code>
 <br><code>mat(mat)</code>
-<br><code>mat(sp_mat)</code>
 <br><code>mat(vec)</code>
 <br><code>mat(rowvec)</code>
 <br><code>mat(initializer_list)</code>
 <br><code>mat(string)</code>
 <br><code>mat(std::vector)</code> &nbsp; (treated as a column vector)
+<br><code>mat(sp_mat)</code> &nbsp; (for converting a sparse matrix to a dense matrix)
 <br><code>cx_mat(mat,mat)</code> &nbsp; (for constructing a complex matrix out of two real matrices)
 </ul>
 </li>
@@ -1895,7 +1895,7 @@ Constructors:
 <br><code>sp_mat(<i>n_rows</i>, <i>n_cols</i>)</code>
 <br><code>sp_mat(size(<i>X</i>))</code>
 <br><code>sp_mat(sp_mat)</code>
-<br><code>sp_mat(mat)</code>
+<br><code>sp_mat(mat)</code> &nbsp; (for converting a dense matrix to a sparse matrix)
 <br><code>sp_cx_mat(sp_mat,sp_mat)</code> &nbsp; (for constructing a complex matrix out of two real matrices)
 </ul>
 <br>

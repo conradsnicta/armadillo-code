@@ -167,7 +167,7 @@ For example, for GCC and Clang compilers use -O2 or -O3
   
   By default, cmake assumes that the Armadillo library and the
   corresponding header files are going to be installed in the default 
-  system directory, eg. in the /usr hierarchy in Linux-based systems.
+  system directory (eg. in the /usr hierarchy in Linux-based systems).
   If you wish to install the library and headers in a different directory,
   use the additional option CMAKE_INSTALL_PREFIX in this form:
   
@@ -196,14 +196,14 @@ For example, for GCC and Clang compilers use -O2 or -O3
   make
   
 * Step 6:
-  If you didn't use CMAKE_INSTALL_PREFIX option, and have access to
-  root/administrator/superuser privileges (ie. able to use "sudo"),
+  If you and have access to root/administrator/superuser privileges
+  (ie. able to use "sudo") and didn't use the CMAKE_INSTALL_PREFIX option,
   type the following command:
   
   sudo make install
   
   If you don't have root/administrator/superuser privileges,
-  make sure that you used the CMAKE_PREFIX_PATH option in Step 4,
+  make sure that you use the CMAKE_PREFIX_PATH option in Step 4,
   and type the following command:
   
   make install

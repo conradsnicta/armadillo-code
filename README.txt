@@ -132,12 +132,12 @@ For example, for GCC and Clang compilers use -O2 or -O3
   You can download it from http://www.cmake.org
   or (preferably) install it using your package manager.
   
-  On Linux-based systems, you can get CMake using yum, dnf, apt, aptitude, ...
+  On Linux-based systems, you can get CMake using dnf, yum, apt, aptitude, ...
   
   On macOS systems, you can get CMake through MacPorts or Homebrew.
   
 * Step 3:
-  Ensure LAPACK and BLAS are installed on your system.
+  Ensure LAPACK and BLAS (or preferably OpenBLAS) are installed on your system.
   On macOS this is not necessary.
   
   For better performance, we recommend installing the OpenBLAS library.
@@ -157,54 +157,58 @@ For example, for GCC and Clang compilers use -O2 or -O3
   by unpacking the armadillo archive, and type the following command:
   
   cmake .
-
+  
   The full stop separated from "cmake" by a space is important.
   CMake will detect which relevant libraries are installed on your system
   (eg. OpenBLAS, LAPACK, SuperLU, ARPACK, etc)
   and will modify Armadillo's configuration correspondingly.
+  CMake will also generate the Armadillo run-time library,
+  which is a wrapper for all the detected libraries.
   
-  By default, cmake assumes that the Armadillo library is going to
-  be installed in system folders, e.g. /usr in Linux. If you wish to
-  install the library in a different directoy use the additional
-  option CMAKE_INSTALL_PREFIX in this form:
-
+  By default, cmake assumes that the Armadillo library and the
+  corresponding header files are going to be installed in the default 
+  system directory, eg. in the /usr hierarchy in Linux-based systems.
+  If you wish to install the library and headers in a different directory,
+  use the additional option CMAKE_INSTALL_PREFIX in this form:
+  
   cmake . -DCMAKE_INSTALL_PREFIX:PATH=my_directory
   
   where "my_directory" is an alternative directory for storing
   C++ headers and library files.
-
+  
   If you need to re-run cmake, it's a good idea to first delete the
   "CMakeCache.txt" file (not "CMakeLists.txt").
-
+  
   Caveat: out-of-tree builds are currently not fully supported;
   eg, creating a sub-directory called "build" and running cmake ..
   from within "build" is currently not supported.
-
-  Caveat: If you will be installing the Armadillo library in a
-  non-system directory, make sure your C++ compiler is configured to
-  use the "lib" and "include" sub-directories present within this
-  directory.  Note that the "lib" directory might be named differently
-  on your system.  On recent 64 bit Debian & Ubuntu systems it is
-  "lib/x86_64-linux-gnu".  On recent 64 bit Fedora & RHEL systems it
-  is "lib64".
-
+  
+  Caveat: if you are installing Armadillo in a non-system directory,
+  make sure your C++ compiler is configured to use the "lib" and "include"
+  sub-directories present within this directory.  Note that the "lib"
+  directory might be named differently on your system.
+  On recent 64 bit Debian & Ubuntu systems it is "lib/x86_64-linux-gnu".
+  On recent 64 bit Fedora & RHEL systems it is "lib64".
+  
 * Step 5:
-  To generate a run-time armadillo library, which is a wrapper for all
-  the detected libraries run:
-
+  To generate the run-time armadillo library, type the following command:
+  
   make
-
+  
 * Step 6:
-  If you left the option CMAKE_INSTALL_PREFIX to be selected by default,
-  and have access to root/administrator/superuser privileges (ie. able
-  to use "sudo"), type the following command:
+  If you didn't use CMAKE_INSTALL_PREFIX option, and have access to
+  root/administrator/superuser privileges (ie. able to use "sudo"),
+  type the following command:
   
   sudo make install
   
-  If you don't have root/administrator/superuser privileges, make sure
-  that you used the CMAKE_PREFIX_PATH option in step 4. Now type:
+  If you don't have root/administrator/superuser privileges,
+  make sure that you used the CMAKE_PREFIX_PATH option in Step 4,
+  and type the following command:
   
   make install
+
+
 
 6: Linux and macOS: Compiling & Linking
 ==========================================

@@ -154,45 +154,57 @@ For example, for GCC and Clang compilers use -O2 or -O3
   
 * Step 4:
   Open a terminal window, change into the directory that was created
-  by unpacking the armadillo archive, and type the following commands:
+  by unpacking the armadillo archive, and type the following command:
   
   cmake .
-  make 
-  
+
   The full stop separated from "cmake" by a space is important.
   CMake will detect which relevant libraries are installed on your system
   (eg. OpenBLAS, LAPACK, SuperLU, ARPACK, etc)
   and will modify Armadillo's configuration correspondingly.
-  CMake will also generate a run-time armadillo library,
-  which is a wrapper for all the detected libraries.
   
-  If you need to re-run cmake, it's a good idea to first delete the
-  "CMakeCache.txt" file (not "CMakeLists.txt").
-  
-  Caveat: out-of-tree builds are currently not fully supported;
-  eg, creating a sub-directory called "build" and running cmake ..
-  from within "build" is currently not supported.
-  
-* Step 5:
-  If you have access to root/administrator/superuser privileges
-  (ie. able to use "sudo"), type the following command:
-  
-  sudo make install
-  
-  If you don't have root/administrator/superuser privileges, 
-  type the following command:
-  
-  make install DESTDIR=my_directory
+  By default, cmake assumes that the Armadillo library is going to
+  be installed in system folders, e.g. /usr in Linux. If you wish to
+  install the library in a different directoy use the additional
+  option CMAKE_INSTALL_PREFIX in this form:
+
+  cmake . -DCMAKE_INSTALL_PREFIX:PATH=my_directory
   
   where "my_directory" is an alternative directory for storing
   C++ headers and library files.
-  Caveat: make sure your C++ compiler is configured to use the
-  "lib" and "include" sub-directories present within this directory.
-  Note that the "lib" directory might be named differently on your system.
-  On recent 64 bit Debian & Ubuntu systems it is "lib/x86_64-linux-gnu".
-  On recent 64 bit Fedora & RHEL systems it is "lib64".
 
+  If you need to re-run cmake, it's a good idea to first delete the
+  "CMakeCache.txt" file (not "CMakeLists.txt").
 
+  Caveat: out-of-tree builds are currently not fully supported;
+  eg, creating a sub-directory called "build" and running cmake ..
+  from within "build" is currently not supported.
+
+  Caveat: If you will be installing the Armadillo library in a
+  non-system directory, make sure your C++ compiler is configured to
+  use the "lib" and "include" sub-directories present within this
+  directory.  Note that the "lib" directory might be named differently
+  on your system.  On recent 64 bit Debian & Ubuntu systems it is
+  "lib/x86_64-linux-gnu".  On recent 64 bit Fedora & RHEL systems it
+  is "lib64".
+
+* Step 5:
+  To generate a run-time armadillo library, which is a wrapper for all
+  the detected libraries run:
+
+  make
+
+* Step 6:
+  If you left the option CMAKE_INSTALL_PREFIX to be selected by default,
+  and have access to root/administrator/superuser privileges (ie. able
+  to use "sudo"), type the following command:
+  
+  sudo make install
+  
+  If you don't have root/administrator/superuser privileges, make sure
+  that you used the CMAKE_PREFIX_PATH option in step 4. Now type:
+  
+  make install
 
 6: Linux and macOS: Compiling & Linking
 ==========================================

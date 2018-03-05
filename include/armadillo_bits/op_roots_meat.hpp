@@ -65,8 +65,9 @@ op_roots::apply_noalias(Mat< std::complex<typename get_pod_type<eT>::result> >& 
   
   // typedef std::complex<typename get_pod_type<eT>::result> out_eT;
   
-  arma_debug_check( (X.is_vec()    == false), "roots(): given object must be a vector"      );
-  arma_debug_check( (X.is_finite() == false), "roots(): given object has non-finite values" );
+  arma_debug_check( (X.is_vec() == false), "roots(): given object must be a vector" );
+  
+  if(X.is_finite() == false)  { return false; }
   
   // treat X as a column vector
   

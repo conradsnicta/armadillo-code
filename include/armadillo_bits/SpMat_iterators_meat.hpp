@@ -95,7 +95,6 @@ SpMat<eT>::const_iterator::const_iterator(const SpMat<eT>& in_M, uword initial_p
   // Determine which column we should be in.
   while(iterator_base::M->col_ptrs[iterator_base::internal_col + 1] <= iterator_base::internal_pos)
     {
-    std::cout << "colptr for next col " << iterator_base::internal_col + 1 << " is " << iterator_base::M->col_ptrs[iterator_base::internal_col + 1] << ", target pos " << iterator_base::internal_pos << "\n";
     iterator_base::internal_col++;
     }
   }

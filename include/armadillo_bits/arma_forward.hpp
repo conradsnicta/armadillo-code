@@ -111,6 +111,7 @@ class op_unique_index;
 class op_diff_default;
 class op_hist;
 class op_chi2rnd;
+class op_roots;
 
 class eop_conj;
 

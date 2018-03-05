@@ -410,6 +410,9 @@ class SpMat : public SpBase< eT, SpMat<eT> >
     inline arma_hot bool operator==(const const_row_iterator& rhs) const;
     inline arma_hot bool operator!=(const const_row_iterator& rhs) const;
     
+    inline arma_hot bool operator==(const row_iterator& rhs) const;
+    inline arma_hot bool operator!=(const row_iterator& rhs) const;
+    
     inline arma_hot bool operator==(const typename SpSubview<eT>::const_row_iterator& rhs) const;
     inline arma_hot bool operator!=(const typename SpSubview<eT>::const_row_iterator& rhs) const;
     };
@@ -444,7 +447,8 @@ class SpMat : public SpBase< eT, SpMat<eT> >
     typedef const SpValProxy<SpMat<eT> >&  reference;
     };
   
-  class const_row_iterator : public iterator_base
+  // Note that the use of this will copy and transpose the matrix for speed reasons.
+  class const_row_iterator
     {
     public:
     
@@ -453,6 +457,7 @@ class SpMat : public SpBase< eT, SpMat<eT> >
     //! once initialised, will be at the first nonzero value after the given position (using forward row-wise traversal)
     inline const_row_iterator(const SpMat& in_M, uword in_row, uword in_col);
     inline const_row_iterator(const const_row_iterator& other);
+    inline const_row_iterator(const row_iterator& other);
     
     inline arma_hot         const_row_iterator& operator++();
     inline arma_warn_unused const_row_iterator  operator++(int);
@@ -460,12 +465,15 @@ class SpMat : public SpBase< eT, SpMat<eT> >
     inline arma_hot         const_row_iterator& operator--();
     inline arma_warn_unused const_row_iterator  operator--(int);
     
-    uword internal_row; // hold row internally because we use internal_pos differently
-    uword actual_pos;   // actual position in matrix
+    const SpMat<eT>* orig_m;
+    SpMat<eT> trans_m;
+    const_iterator it;
     
-    arma_inline eT operator*() const { return iterator_base::M->values[actual_pos]; }
+    arma_inline eT operator*() const { return (*it); }
     
-    arma_inline uword row() const { return internal_row; }
+    arma_inline uword row() const { return it.col(); }
+    arma_inline uword col() const { return it.row(); }
+    arma_inline uword pos() const { return it.pos(); }
     
     inline arma_hot bool operator==(const const_iterator& rhs) const;
     inline arma_hot bool operator!=(const const_iterator& rhs) const;
@@ -476,21 +484,28 @@ class SpMat : public SpBase< eT, SpMat<eT> >
     inline arma_hot bool operator==(const const_row_iterator& rhs) const;
     inline arma_hot bool operator!=(const const_row_iterator& rhs) const;
     
+    inline arma_hot bool operator==(const row_iterator& rhs) const;
+    inline arma_hot bool operator!=(const row_iterator& rhs) const;
+    
     inline arma_hot bool operator==(const typename SpSubview<eT>::const_row_iterator& rhs) const;
     inline arma_hot bool operator!=(const typename SpSubview<eT>::const_row_iterator& rhs) const;
+
+    typedef std::bidirectional_iterator_tag iterator_category;
+    typedef eT                              value_type;
+    typedef std::ptrdiff_t                  difference_type;  // TODO: not certain on this one
+    typedef const eT*                       pointer;
+    typedef const eT&                       reference;
     };
   
-  class row_iterator : public const_row_iterator
+  class row_iterator
     {
     public:
     
-    inline row_iterator() : const_row_iterator() {}
-    inline row_iterator(SpMat& in_M, uword initial_pos = 0) : const_row_iterator(in_M, initial_pos) { }
+    inline row_iterator();
+    inline row_iterator(SpMat& in_M, uword initial_pos = 0);
     //! once initialised, will be at the first nonzero value after the given position (using forward row-wise traversal)
-    inline row_iterator(SpMat& in_M, uword in_row, uword in_col) : const_row_iterator(in_M, in_row, in_col) { }
-    inline row_iterator(const row_iterator& other) : const_row_iterator(other) { }
-    
-    inline arma_hot SpValProxy<SpMat<eT> > operator*();
+    inline row_iterator(SpMat& in_M, uword in_row, uword in_col);
+    inline row_iterator(const row_iterator& other);
     
     // overloads required for return type correctness
     inline arma_hot         row_iterator& operator++();
@@ -498,9 +513,35 @@ class SpMat : public SpBase< eT, SpMat<eT> >
     
     inline arma_hot         row_iterator& operator--();
     inline arma_warn_unused row_iterator  operator--(int);
+
+    SpMat<eT>* orig_m;
+    SpMat<eT> trans_m;
+    iterator it;
+
+    inline arma_hot SpValProxy<SpMat<eT> > operator*() { return orig_m->get_value(it.col(), it.row()); }
+
+    arma_inline uword row() const { return it.col(); }
+    arma_inline uword col() const { return it.row(); }
+    arma_inline uword pos() const { return it.pos(); }
     
-    // this has a different value_type than iterator_base
+    inline arma_hot bool operator==(const const_iterator& rhs) const;
+    inline arma_hot bool operator!=(const const_iterator& rhs) const;
+    
+    inline arma_hot bool operator==(const typename SpSubview<eT>::const_iterator& rhs) const;
+    inline arma_hot bool operator!=(const typename SpSubview<eT>::const_iterator& rhs) const;
+    
+    inline arma_hot bool operator==(const const_row_iterator& rhs) const;
+    inline arma_hot bool operator!=(const const_row_iterator& rhs) const;
+    
+    inline arma_hot bool operator==(const row_iterator& rhs) const;
+    inline arma_hot bool operator!=(const row_iterator& rhs) const;
+    
+    inline arma_hot bool operator==(const typename SpSubview<eT>::const_row_iterator& rhs) const;
+    inline arma_hot bool operator!=(const typename SpSubview<eT>::const_row_iterator& rhs) const;
+    
+    typedef std::bidirectional_iterator_tag iterator_category;
     typedef SpValProxy<SpMat<eT> >         value_type;
+    typedef std::ptrdiff_t                  difference_type;  // TODO: not certain on this one
     typedef const SpValProxy<SpMat<eT> >*  pointer;
     typedef const SpValProxy<SpMat<eT> >&  reference;
     };

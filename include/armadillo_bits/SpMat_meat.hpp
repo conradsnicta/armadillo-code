@@ -3566,6 +3566,8 @@ SpMat<eT>::reshape(const uword in_rows, const uword in_cols, const uword dim)
     
     for(const_row_iterator it = begin_row(); it.pos() < n_nonzero; ++it)
       {
+      std::cout << "iterator " << it.row() << ", " << it.col() << ", pos " <<
+it.pos() << "\n";
       uword vector_position = (it.row() * n_cols) + it.col();
       
       tmp((vector_position / in_cols), (vector_position % in_cols)) = (*it);

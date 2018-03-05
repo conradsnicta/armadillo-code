@@ -457,7 +457,11 @@ class SpMat : public SpBase< eT, SpMat<eT> >
     //! once initialised, will be at the first nonzero value after the given position (using forward row-wise traversal)
     inline const_row_iterator(const SpMat& in_M, uword in_row, uword in_col);
     inline const_row_iterator(const const_row_iterator& other);
+    inline const_row_iterator(const_row_iterator&& other);
     inline const_row_iterator(const row_iterator& other);
+
+    inline const_row_iterator& operator=(const const_row_iterator& other);
+    inline const_row_iterator& operator=(const_row_iterator&& other);
     
     inline arma_hot         const_row_iterator& operator++();
     inline arma_warn_unused const_row_iterator  operator++(int);
@@ -506,6 +510,10 @@ class SpMat : public SpBase< eT, SpMat<eT> >
     //! once initialised, will be at the first nonzero value after the given position (using forward row-wise traversal)
     inline row_iterator(SpMat& in_M, uword in_row, uword in_col);
     inline row_iterator(const row_iterator& other);
+    inline row_iterator(row_iterator&& other);
+
+    inline row_iterator& operator=(const row_iterator& other);
+    inline row_iterator& operator=(row_iterator&& other);
     
     // overloads required for return type correctness
     inline arma_hot         row_iterator& operator++();

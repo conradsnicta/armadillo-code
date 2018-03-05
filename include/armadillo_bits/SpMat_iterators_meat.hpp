@@ -95,6 +95,7 @@ SpMat<eT>::const_iterator::const_iterator(const SpMat<eT>& in_M, uword initial_p
   // Determine which column we should be in.
   while(iterator_base::M->col_ptrs[iterator_base::internal_col + 1] <= iterator_base::internal_pos)
     {
+    std::cout << "colptr for next col " << iterator_base::internal_col + 1 << " is " << iterator_base::M->col_ptrs[iterator_base::internal_col + 1] << ", target pos " << iterator_base::internal_pos << "\n";
     iterator_base::internal_col++;
     }
   }
@@ -459,9 +460,22 @@ inline
 SpMat<eT>::const_row_iterator::const_row_iterator(const typename SpMat<eT>::const_row_iterator& other)
   : orig_m(other.orig_m)
   , trans_m(other.trans_m)
-  , it(trans_m, other.it.row(), other.it.col())
   {
-  // Nothing to do.
+  it.M = &trans_m;
+  it.internal_pos = other.it.internal_pos;
+  it.internal_col = other.it.internal_col;
+  }
+
+
+
+template<typename eT>
+inline
+SpMat<eT>::const_row_iterator::const_row_iterator(typename SpMat<eT>::const_row_iterator&& other)
+  : orig_m(other.orig_m)
+  , trans_m(std::move(other.trans_m))
+  , it(std::move(other.it))
+  {
+  other.it.M = &trans_m;
   }
 
 
@@ -471,8 +485,47 @@ inline
 SpMat<eT>::const_row_iterator::const_row_iterator(const typename SpMat<eT>::row_iterator& other)
   : orig_m(other.orig_m)
   , trans_m(other.trans_m)
-  , it(trans_m, other.it.row(), other.it.col())
-  { /* Nothing to do. */ }
+  {
+  it.M = &trans_m;
+  it.internal_pos = other.it.internal_pos;
+  it.internal_col = other.it.internal_col;
+  }
+
+
+
+template<typename eT>
+inline
+typename SpMat<eT>::const_row_iterator&
+SpMat<eT>::const_row_iterator::operator=(const typename SpMat<eT>::const_row_iterator& other)
+  {
+  if (this == &other)
+    return *this;
+
+  orig_m = other.orig_m;
+  trans_m = other.trans_m;
+  it = other.it;
+  it.M = &trans_m;
+
+  return *this;
+  }
+
+
+
+template<typename eT>
+inline
+typename SpMat<eT>::const_row_iterator&
+SpMat<eT>::const_row_iterator::operator=(typename SpMat<eT>::const_row_iterator&& other)
+  {
+  if (this == &other)
+    return *this;
+
+  orig_m = other.orig_m;
+  trans_m = std::move(other.trans_m);
+  it = std::move(other.it);
+  it.M = &trans_m;
+
+  return *this;
+  }
 
 
 
@@ -690,9 +743,58 @@ inline
 SpMat<eT>::row_iterator::row_iterator(const typename SpMat<eT>::row_iterator& other)
   : orig_m(other.orig_m)
   , trans_m(other.trans_m)
-  , it(trans_m, other.it.row(), other.it.col())
   {
-  // Nothing to do.
+  it.M = &trans_m;
+  it.internal_pos = other.it.internal_pos;
+  it.internal_col = other.it.internal_col;
+  }
+
+
+
+template<typename eT>
+inline
+SpMat<eT>::row_iterator::row_iterator(typename SpMat<eT>::row_iterator&& other)
+  : orig_m(other.orig_m)
+  , trans_m(std::move(other.trans_m))
+  , it(std::move(other.it))
+  {
+  it.M = &trans_m;
+  }
+
+
+
+template<typename eT>
+inline
+typename SpMat<eT>::row_iterator&
+SpMat<eT>::row_iterator::operator=(const typename SpMat<eT>::row_iterator& other)
+  {
+  if (this == &other)
+    return *this;
+
+  orig_m = other.orig_m;
+  trans_m = other.trans_m;
+  it = other.it;
+  it.M = &trans_m;
+
+  return *this;
+  }
+
+
+
+template<typename eT>
+inline
+typename SpMat<eT>::row_iterator&
+SpMat<eT>::row_iterator::operator=(typename SpMat<eT>::row_iterator&& other)
+  {
+  if (this == &other)
+    return *this;
+
+  orig_m = other.orig_m;
+  trans_m = std::move(other.trans_m);
+  it = std::move(other.it);
+  it.M = &trans_m;
+
+  return *this;
   }
 
 

@@ -1032,22 +1032,26 @@ Main exceptions are functions which require square matrices
 <li>
 Constructors
 <ul>
-<code>vec()</code>
-<br><code>vec(<i>n_elem</i>)</code>
-<br><code>vec(<i>n_elem</i>, <i>fill_type</i>)</code>
-<br><code>vec(size(<i>X</i>))</code>
-<br><code>vec(size(<i>X</i>), <i>fill_type</i>)</code>
-<br><code>vec(vec)</code>
-<br><code>vec(mat)</code> &nbsp; (a <i>std::logic_error</i> exception is thrown if the given matrix has more than one column)
-<br><code>vec(initializer_list)</code>
-<br><code>vec(string)</code> &nbsp; (elements separated by spaces)
-<br><code>vec(std::vector)</code>
-<br><code>cx_vec(vec,vec)</code> &nbsp; (for constructing a complex vector out of two real vectors)
+<table>
+<tbody>
+<tr><td><code>vec()</code></td><td>&nbsp;</td><td>&nbsp;</td></tr>
+<tr><td><code>vec(<i>n_elem</i>)</code></td><td>&nbsp;</td><td>(memory is not initialised)</td></tr>
+<tr><td><code>vec(<i>n_elem</i>, <i>fill_type</i>)</code></td><td>&nbsp;</td><td>&nbsp;</td></tr>
+<tr><td><code>vec(size(<i>X</i>))</code></td><td>&nbsp;</td><td>(memory is not initialised)</td></tr>
+<tr><td><code>vec(size(<i>X</i>), <i>fill_type</i>)</code></td><td>&nbsp;</td><td>&nbsp;</td></tr>
+<tr><td><code>vec(vec)</code></td><td>&nbsp;</td><td>&nbsp;</td></tr>
+<tr><td><code>vec(mat)</code></td><td>&nbsp;</td><td>(a <i>std::logic_error</i> exception is thrown if the given matrix has more than one column)</td></tr>
+<tr><td><code>vec(initializer_list)</code></td><td>&nbsp;</td><td>&nbsp;</td></tr>
+<tr><td><code>vec(string)</code></td><td>&nbsp;</td><td>(elements separated by spaces)</td></tr>
+<tr><td><code>vec(std::vector)</code></td><td>&nbsp;</td><td>&nbsp;</td></tr>
+<tr><td><code>cx_vec(vec,vec)</code></td><td>&nbsp;</td><td>(for constructing a complex vector out of two real vectors)</td></tr>
+</tbody>
+</table>
 </ul>
 </li>
 <br>
 <li>
-When specifying the size with <i>n_elem</i>, by default the memory is uninitialised;
+When specifying the size with <i>n_elem</i>, by default the memory is <b>uninitialised</b> (ie. may contain garbage);
 memory can be initialised by specifying the <i>fill_type</i>,
 as per the <a href="#Mat">Mat class</a>
 </li>
@@ -1300,7 +1304,7 @@ Constructors
 </li>
 <br>
 <li>
-When specifying the size with <i>n_elem</i>, by default the memory is uninitialised;
+Note: when specifying the size with <i>n_elem</i>, by default the memory is uninitialised;
 memory can be initialised by specifying the <i>fill_type</i>,
 as per the <a href="#Mat">Mat class</a>
 </li>

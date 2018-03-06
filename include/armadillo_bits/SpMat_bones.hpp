@@ -460,8 +460,8 @@ class SpMat : public SpBase< eT, SpMat<eT> >
     inline arma_hot         const_row_iterator& operator--();
     inline arma_warn_unused const_row_iterator  operator--(int);
     
-    uword internal_row; // hold row internally because we use internal_pos differently
-    uword actual_pos;   // actual position in matrix
+    uword internal_row; // hold row internally
+    uword actual_pos; // this holds the true position we are at in the matrix, as column-major indexing
     
     arma_inline eT operator*() const { return iterator_base::M->values[actual_pos]; }
     

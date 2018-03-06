@@ -106,11 +106,13 @@ spglue_times::apply_noalias(SpMat<eT>& c, const SpProxy<T1>& pa, const SpProxy<T
     
     while(x_it.col() == y_it_row)
       {
+      const uword x_it_row = x_it.row();
+      
       // A point at x(i, j) and y(j, k) implies a point at c(i, k).
-      if(index[x_it.row()] == x_n_rows)
+      if(index[x_it_row] == x_n_rows)
         {
-        index[x_it.row()] = last_ind;
-        last_ind = x_it.row();
+        index[x_it_row] = last_ind;
+        last_ind = x_it_row;
         ++cur_col_length;
         }
 
@@ -184,24 +186,28 @@ spglue_times::apply_noalias(SpMat<eT>& c, const SpProxy<T1>& pa, const SpProxy<T
     
     while(y_col_it.col() == cur_col)
       {
+      const uword y_col_it_row = y_col_it.row();
+      
       // Check all elements in the column of the other matrix corresponding to
       // the row of this column.
-      typename SpProxy<T1>::const_iterator_type x_col_it = pa.begin_col(y_col_it.row());
+      typename SpProxy<T1>::const_iterator_type x_col_it = pa.begin_col(y_col_it_row);
 
       const eT y_value = (*y_col_it);
 
-      while(x_col_it.col() == y_col_it.row())
+      while(x_col_it.col() == y_col_it_row)
         {
+        const uword x_col_it_row = x_col_it.row();
+        
         // A point at x(i, j) and y(j, k) implies a point at c(i, k).
         // Add to partial sum.
         const eT x_value = (*x_col_it);
-        sums[x_col_it.row()] += (x_value * y_value);
+        sums[x_col_it_row] += (x_value * y_value);
 
         // Add point if it hasn't already been marked.
-        if(index[x_col_it.row()] == x_n_rows)
+        if(index[x_col_it_row] == x_n_rows)
           {
-          index[x_col_it.row()] = last_ind;
-          last_ind = x_col_it.row();
+          index[x_col_it_row] = last_ind;
+          last_ind = x_col_it_row;
           }
 
         ++x_col_it;

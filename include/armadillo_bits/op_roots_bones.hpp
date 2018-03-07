@@ -26,6 +26,9 @@ class op_roots
   template<typename T1>
   inline static void apply(Mat< std::complex<typename T1::pod_type> >& out, const mtOp<std::complex<typename T1::pod_type>, T1, op_roots>& expr);
   
+  template<typename T1>
+  inline static bool apply_direct(Mat< std::complex<typename T1::pod_type> >& out, const Base<typename T1::elem_type, T1>& X);
+  
   template<typename eT>
   inline static bool apply_noalias(Mat< std::complex<typename get_pod_type<eT>::result> >& out, const Mat<eT>& X);
   };

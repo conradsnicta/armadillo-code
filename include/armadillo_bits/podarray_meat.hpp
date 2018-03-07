@@ -342,14 +342,23 @@ podarray<eT>::copy_row(const Mat<eT>& A, const uword row)
       break;
     
     case 8:  out[7] = A.at(row, 7);
+    // fallthrough
     case 7:  out[6] = A.at(row, 6);
+    // fallthrough
     case 6:  out[5] = A.at(row, 5);
+    // fallthrough
     case 5:  out[4] = A.at(row, 4);
+    // fallthrough
     case 4:  out[3] = A.at(row, 3);
+    // fallthrough
     case 3:  out[2] = A.at(row, 2);
+    // fallthrough
     case 2:  out[1] = A.at(row, 1);
+    // fallthrough
     case 1:  out[0] = A.at(row, 0);
+    // fallthrough
     case 0:  ;
+    // fallthrough
     }
   }
 

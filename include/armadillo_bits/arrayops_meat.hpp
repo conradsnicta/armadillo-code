@@ -46,14 +46,23 @@ arrayops::copy_small(eT* dest, const eT* src, const uword n_elem)
   switch(n_elem)
     {
     case  9:  dest[ 8] = src[ 8];
+    // fallthrough
     case  8:  dest[ 7] = src[ 7];
+    // fallthrough
     case  7:  dest[ 6] = src[ 6];
+    // fallthrough
     case  6:  dest[ 5] = src[ 5];
+    // fallthrough
     case  5:  dest[ 4] = src[ 4];
+    // fallthrough
     case  4:  dest[ 3] = src[ 3];
+    // fallthrough
     case  3:  dest[ 2] = src[ 2];
+    // fallthrough
     case  2:  dest[ 1] = src[ 1];
+    // fallthrough
     case  1:  dest[ 0] = src[ 0];
+    // fallthrough
     default:  ;
     }
   }
@@ -667,14 +676,23 @@ arrayops::inplace_set_small(eT* dest, const eT val, const uword n_elem)
   switch(n_elem)
     {
     case  9: dest[ 8] = val;
+    // fallthrough
     case  8: dest[ 7] = val;
+    // fallthrough
     case  7: dest[ 6] = val;
+    // fallthrough
     case  6: dest[ 5] = val;
+    // fallthrough
     case  5: dest[ 4] = val;
+    // fallthrough
     case  4: dest[ 3] = val;
+    // fallthrough
     case  3: dest[ 2] = val;
+    // fallthrough
     case  2: dest[ 1] = val;
+    // fallthrough
     case  1: dest[ 0] = val;
+    // fallthrough
     default:;
     }
   }

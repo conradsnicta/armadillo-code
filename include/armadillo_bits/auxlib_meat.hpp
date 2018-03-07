@@ -4069,6 +4069,8 @@ auxlib::solve_band_refine(Mat< std::complex<typename T1::pod_type> >& out, typen
     arma_ignore(out);
     arma_ignore(out_rcond);
     arma_ignore(A);
+    arma_ignore(KL);
+    arma_ignore(KU);
     arma_ignore(B_expr);
     arma_ignore(equilibrate);
     arma_stop_logic_error("solve(): use of LAPACK must be enabled");
@@ -4133,6 +4135,7 @@ auxlib::schur(Mat<eT>& U, Mat<eT>& S, const Base<eT,T1>& X, const bool calc_U)
     arma_ignore(U);
     arma_ignore(S);
     arma_ignore(X);
+    arma_ignore(calc_U);
     arma_stop_logic_error("schur(): use of LAPACK must be enabled");
     return false;
     }

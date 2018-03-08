@@ -656,7 +656,7 @@ arma_ostream::print_dense(std::ostream& o, const SpMat<eT>& m, const bool modify
     {
     if(m.n_nonzero > 0)
       {
-      cell_width = modify_stream<eT>(o, m.begin(), m.n_nonzero);
+      cell_width = arma_ostream::modify_stream<eT>(o, m.begin(), m.n_nonzero);
       }
     else
       {
@@ -743,7 +743,7 @@ arma_ostream::print(std::ostream& o, const SpMat<eT>& m, const bool modify)
   
   if(m_n_nonzero > 0)
     {
-    const std::streamsize cell_width = modify ? modify_stream<eT>(o, m.begin(), m_n_nonzero) : o.width();
+    const std::streamsize cell_width = modify ? arma_ostream::modify_stream<eT>(o, m.begin(), m_n_nonzero) : o.width();
     
     typename SpMat<eT>::const_iterator begin = m.begin();
     typename SpMat<eT>::const_iterator m_end = m.end();

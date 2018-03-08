@@ -506,6 +506,9 @@ class SpMat : public SpBase< eT, SpMat<eT> >
     };
   
   
+  typedef       iterator       col_iterator;
+  typedef const_iterator const_col_iterator;
+  
   typedef       iterator       row_col_iterator;
   typedef const_iterator const_row_col_iterator;
   
@@ -516,11 +519,11 @@ class SpMat : public SpBase< eT, SpMat<eT> >
   inline       iterator     end();
   inline const_iterator     end() const;
   
-  inline       iterator     begin_col(const uword col_num);
-  inline const_iterator     begin_col(const uword col_num) const;
+  inline       col_iterator begin_col(const uword col_num);
+  inline const_col_iterator begin_col(const uword col_num) const;
   
-  inline       iterator     end_col(const uword col_num);
-  inline const_iterator     end_col(const uword col_num) const;
+  inline       col_iterator end_col(const uword col_num);
+  inline const_col_iterator end_col(const uword col_num) const;
   
   inline       row_iterator begin_row(const uword row_num = 0);
   inline const_row_iterator begin_row(const uword row_num = 0) const;

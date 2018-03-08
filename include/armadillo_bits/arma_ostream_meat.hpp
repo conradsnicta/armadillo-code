@@ -650,20 +650,31 @@ arma_ostream::print_dense(std::ostream& o, const SpMat<eT>& m, const bool modify
   
   const arma_ostream_state stream_state(o);
   
+  std::streamsize cell_width = o.width();
+  
+  if(modify)
+    {
+    if(m.n_nonzero > 0)
+      {
+      cell_width = modify_stream<eT>(o, m.begin(), m.n_nonzero);
+      }
+    else
+      {
+      eT tmp[1];  tmp[0] = eT(0);
+      
+      cell_width = arma_ostream::modify_stream(o, &tmp[0], 1);
+      }
+    }
+  
   const uword m_n_rows = m.n_rows;
   const uword m_n_cols = m.n_cols;
-    
-  if(m.n_nonzero > 0)
+  
+  if(m.is_empty() == false)
     {
-    const std::streamsize cell_width = modify ? modify_stream<eT>(o, m.begin(), m.n_nonzero) : o.width();
-    
-    typename SpMat<eT>::const_iterator begin = m.begin();
-    
     if(m_n_cols > 0)
       {
       if(cell_width > 0)
         {
-        // An efficient row_iterator would make this simpler and faster
         for(uword row=0; row < m_n_rows; ++row)
           {
           for(uword col=0; col < m_n_cols; ++col)
@@ -671,41 +682,23 @@ arma_ostream::print_dense(std::ostream& o, const SpMat<eT>& m, const bool modify
             // the cell width appears to be reset after each element is printed,
             // hence we need to restore it
             o.width(cell_width);
-            eT val = eT(0);
-            for(typename SpMat<eT>::const_iterator it = begin; it.pos() < m.n_nonzero; ++it)
-              {
-              if(it.row() == row && it.col() == col)
-                {
-                val = *it;
-                break;
-                }
-              }
-            arma_ostream::print_elem(o,eT(val), modify);
+            arma_ostream::print_elem(o, m.at(row,col), modify);
             }
-
+          
           o << '\n';
           }
         }
       else
         {
-        // An efficient row_iterator would make this simpler and faster
         for(uword row=0; row < m_n_rows; ++row)
           {
-          for(uword col=0; col < m_n_cols; ++col)
+          for(uword col=0; col < m_n_cols-1; ++col)
             {
-            eT val = eT(0);
-            for(typename SpMat<eT>::const_iterator it = begin; it.pos() < m.n_nonzero; ++it)
-              {
-              if(it.row() == row && it.col() == col)
-                {
-                val = *it;
-                break;
-                }
-              }
-            arma_ostream::print_elem(o,eT(val), modify);
+            arma_ostream::print_elem(o, m.at(row,col), modify);
             o << ' ';
             }
-
+          
+          arma_ostream::print_elem(o, m.at(row, m_n_cols-1), modify);
           o << '\n';
           }
         }
@@ -713,31 +706,7 @@ arma_ostream::print_dense(std::ostream& o, const SpMat<eT>& m, const bool modify
     }
   else
     {
-    if(m.n_elem == 0)
-      {
-      o << "[matrix size: " << m_n_rows << 'x' << m_n_cols << "]\n";
-      }
-    else
-      {
-      eT tmp[1];
-      tmp[0] = eT(0);
-      
-      const std::streamsize cell_width = modify ? arma_ostream::modify_stream(o, &tmp[0], 1) : o.width();
-      
-      for(uword row=0; row < m_n_rows; ++row)
-        {
-        for(uword col=0; col < m_n_cols; ++col)
-          {
-          o.width(cell_width);
-          
-          arma_ostream::print_elem_zero<eT>(o, modify);
-          
-          o << ' ';
-          }
-        
-        o << '\n';
-        }
-      }
+    o << "[matrix size: " << m_n_rows << 'x' << m_n_cols << "]\n";
     }
   
   o.flush();

@@ -149,7 +149,7 @@ hr.greyline
 <!--  -->
 <a class="noprint" style="display:scroll; position:fixed; bottom:5px; right:5px;" href="#top"><font size=-1>[top]</font></a>
 
-<big><b>API Documentation for Armadillo 8.400</b></big>
+<big><b>API Documentation for Armadillo 8.500</b></big>
 <br>
 <br>
 <br>
@@ -5046,7 +5046,11 @@ Iterators for sparse matrices traverse over non-zero elements within the specifi
 </li>
 <br>
 <li>
-<b>Caveat:</b> writing a zero value into a sparse matrix through an iterator will invalidate all current iterators associated with the sparse matrix
+<b>Caveats:</b>
+<ul>
+<li>writing a zero value into a sparse matrix through an iterator will invalidate all current iterators associated with the sparse matrix</li>
+<li>row iterators are only useful with Armadillo versions 8.500 and later; in earlier versions they are inefficient
+</ul>
 </li>
 <br>
 <li>
@@ -5124,8 +5128,6 @@ Member functions:
       </td>
       <td style="vertical-align: top;">
         iterator referring to the <i>past-the-end</i> element of the specified row
-        <br>
-        <b>caveat</b>: sparse matrix row iterators are inefficient
       </td>
     </tr>
   </tbody>
@@ -5148,16 +5150,6 @@ Iterator types:
       </td>
       <td style="vertical-align: top;">
         bidirectional iterator, for read/write access to elements (which are stored column by column)
-      </td>
-    </tr>
-    <tr>
-      <td style="vertical-align: top;">
-      &nbsp;
-      </td>
-      <td style="vertical-align: top;">&nbsp;<br>
-      </td>
-      <td style="vertical-align: top;">
-      &nbsp;
       </td>
     </tr>
     <tr>
@@ -5191,16 +5183,6 @@ Iterator types:
       </td>
     </tr>
     <tr>
-      <td style="vertical-align: top;">
-      &nbsp;
-      </td>
-      <td style="vertical-align: top;">&nbsp;<br>
-      </td>
-      <td style="vertical-align: top;">
-      &nbsp;
-      </td>
-    </tr>
-    <tr>
       <td style="vertical-align: top; text-align: right;">
       <b>sp_mat::const_col_iterator</b>
       </td>
@@ -5228,16 +5210,6 @@ Iterator types:
       </td>
       <td style="vertical-align: top;">
         bidirectional iterator, for read/write access to the elements of a specific row
-      </td>
-    </tr>
-    <tr>
-      <td style="vertical-align: top;">
-      &nbsp;
-      </td>
-      <td style="vertical-align: top;">&nbsp;<br>
-      </td>
-      <td style="vertical-align: top;">
-      &nbsp;
       </td>
     </tr>
     <tr>
@@ -17404,6 +17376,14 @@ List of additions and changes for each version:
 
 
 
+<a name="version_8500"></a>
+<li>Version 8.500:
+<ul>
+<li>faster <a href="#iterators_spmat">row iterators</a> for sparse matrices</li>
+<li>faster <a href="#element_access">element access</a> in sparse matrices</li>
+</ul>
+</li>
+<br>
 <a name="version_8400"></a>
 <li>Version 8.400:
 <ul>

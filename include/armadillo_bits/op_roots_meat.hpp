@@ -75,7 +75,7 @@ op_roots::apply_noalias(Mat< std::complex<typename get_pod_type<eT>::result> >& 
   
   typedef typename get_pod_type<eT>::result T;
   
-  // typedef std::complex<typename get_pod_type<eT>::result> out_eT;
+  typedef std::complex<typename get_pod_type<eT>::result> out_eT;
   
   arma_debug_check( (X.is_vec() == false), "roots(): given object must be a vector" );
   
@@ -112,7 +112,9 @@ op_roots::apply_noalias(Mat< std::complex<typename get_pod_type<eT>::result> >& 
       tmp.row(0) = strans(-Z.subvec(1, Z.n_elem-1) / Z[0]);
       }
     
-    bool status = eig_gen(out, tmp);
+    Mat<out_eT> junk;
+    
+    const bool status = auxlib::eig_gen(out, junk, false, tmp);
     
     if(status == false)  { return false; }
     

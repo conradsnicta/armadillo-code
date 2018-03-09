@@ -54,6 +54,7 @@ class mtOp : public Base<out_eT, mtOp<out_eT, T1, op_type> >
     || (is_same_type<op_type, op_find_unique>::value)
     || (is_same_type<op_type, op_sort_index>::value)
     || (is_same_type<op_type, op_stable_sort_index>::value)
+    || (is_same_type<op_type, op_roots>::value)
     )
     ||
     (

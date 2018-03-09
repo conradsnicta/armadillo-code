@@ -53,7 +53,7 @@ inline
 typename enable_if2< is_supported_blas_type<typename T1::pod_type>::value, bool >::result
 eig_gen
   (
-         Mat< std::complex<typename T1::pod_type> >& eigvals,
+         Col< std::complex<typename T1::pod_type> >& eigvals,
   const Base< typename T1::elem_type, T1>&           expr
   )
   {
@@ -61,8 +61,6 @@ eig_gen
   
   typedef typename T1::pod_type     T;
   typedef typename std::complex<T> eT;
-  
-  arma_debug_check( (eigvals.vec_state == 2), "eig_gen(): parameter 'eigval' must be a column vector" );
   
   Mat<eT> eigvecs;
   
@@ -84,14 +82,12 @@ inline
 typename enable_if2< is_supported_blas_type<typename T1::pod_type>::value, bool >::result
 eig_gen
   (
-        Mat< std::complex<typename T1::pod_type> >& eigvals,
+        Col< std::complex<typename T1::pod_type> >& eigvals,
         Mat< std::complex<typename T1::pod_type> >& eigvecs,
   const Base<typename T1::elem_type, T1>&           expr
   )
   {
   arma_extra_debug_sigprint();
-  
-  arma_debug_check( (eigvals.vec_state == 2), "eig_gen(): parameter 'eigval' must be a column vector" );
   
   arma_debug_check( (void_ptr(&eigvals) == void_ptr(&eigvecs)), "eig_gen(): parameter 'eigval' is an alias of parameter 'eigvec'" );
   

@@ -692,8 +692,8 @@ Constructors:
 </li>
 <br>
 <li>
-When specifying the size with <i>n_rows</i> and <i>n_cols</i>, by default the memory is uninitialised (ie. may contain garbage);
-memory can be initialised by specifying the <i>fill_type</i>,
+When using the <i>mat(n_rows, n_cols)</i> or <i>mat(size(X)</i> constructors, by default the memory is uninitialised (ie. may contain garbage);
+memory can be explicitly initialised by specifying the <i>fill_type</i>,
 which is one of:
 <i>fill::zeros</i>,
 <i>fill::ones</i>,
@@ -717,8 +717,8 @@ with the following meanings:
 </li>
 <br>
 <li>
-The string format for the constructor is elements separated by spaces, and rows denoted by semicolons.
-For example, the 2x2 identity matrix can be created using <code>"1&nbsp;0;&nbsp;0&nbsp;1"</code>.
+When using the <i>mat(string)</i> constructor, the format is elements separated by spaces, and rows denoted by semicolons;
+for example, the 2x2 identity matrix can be created using <code>"1&nbsp;0;&nbsp;0&nbsp;1"</code>.
 <br>
 <b>Caveat:</b> string based initialisation is slower than directly <a href="#element_access">setting the elements</a> or using <a href="#element_initialisation">element initialisation</a>.
 </li>
@@ -1026,8 +1026,8 @@ In this documentation, the types <i>vec</i> or <i>colvec</i> are used for conven
 </li>
 <br>
 <li>
-Functions which take <i>Mat</i> as input can generally also take <i>Col</i> as input.
-Main exceptions are functions which require square matrices
+Functions which take <i>Mat</i> as input can generally also take <i>Col</i> as input;
+main exceptions are functions which require square matrices
 </li>
 <br>
 <li>
@@ -1052,8 +1052,8 @@ Constructors:
 </li>
 <br>
 <li>
-When specifying the size with <i>n_elem</i>, by default the memory is uninitialised (ie. may contain garbage);
-memory can be initialised by specifying the <i>fill_type</i>,
+When using the <i>vec(n_elem)</i> or <i>vec(size(X))</i> constructors, by default the memory is uninitialised (ie. may contain garbage);
+memory can be explicitly initialised by specifying the <i>fill_type</i>,
 as per the <a href="#Mat">Mat class</a>
 </li>
 <br>
@@ -1309,8 +1309,8 @@ Constructors:
 </li>
 <br>
 <li>
-When specifying the size with <i>n_elem</i>, by default the memory is uninitialised (ie. may contain garbage);
-memory can be initialised by specifying the <i>fill_type</i>,
+When using the <i>rowvec(n_elem)</i> or <i>rowvec(size(X))</i> constructors, by default the memory is uninitialised (ie. may contain garbage);
+memory can be explicitly initialised by specifying the <i>fill_type</i>,
 as per the <a href="#Mat">Mat class</a>
 </li>
 <br>
@@ -1557,19 +1557,23 @@ Each slice can be interpreted as a matrix, hence functions which take <i>Mat</i>
 <li>
 Constructors:
 <ul>
+<table>
+<tbody>
 <code>cube()</code>
-<br><code>cube(<i>n_rows</i>, <i>n_cols</i>, <i>n_slices</i>)</code>
-<br><code>cube(<i>n_rows</i>, <i>n_cols</i>, <i>n_slices</i>, <i>fill_type</i>)</code>
-<br><code>cube(size(<i>X</i>))</code>
-<br><code>cube(size(<i>X</i>), <i>fill_type</i>)</code>
-<br><code>cube(cube)</code>
-<br><code>cx_cube(cube, cube)</code> &nbsp; (for constructing a complex cube out of two real cubes)
+<tr><td><code>cube(<i>n_rows</i>, <i>n_cols</i>, <i>n_slices</i>)</code></td><td>&nbsp;</td><td>(memory is not initialised)</td></tr>
+<tr><td><code>cube(<i>n_rows</i>, <i>n_cols</i>, <i>n_slices</i>, <i>fill_type</i>)</code></td><td>&nbsp;</td><td>(memory is initialised)</td></tr>
+<tr><td><code>cube(size(<i>X</i>))</code></td><td>&nbsp;</td><td>(memory is not initialised)</td></tr>
+<tr><td><code>cube(size(<i>X</i>), <i>fill_type</i>)</code></td><td>&nbsp;</td><td>(memory is initialised)</td></tr>
+<tr><td><code>cube(cube)</code></td><td>&nbsp;</td><td>&nbsp;</td></tr>
+<tr><td><code>cx_cube(cube, cube)</code></td><td>&nbsp;</td><td>(for constructing a complex cube out of two real cubes)</td></tr>
+</tbody>
+</table>
 </ul>
 </li>
 <br>
 <li>
-When specifying the cube size with <i>n_rows</i>, <i>n_cols</i> and <i>n_slices</i>, by default the memory is uninitialised;
-memory can be initialised by specifying the <i>fill_type</i>,
+When using the <i>cube(n_rows, n_cols, n_slices)</i> or <i>cube(size(X))</i> constructors, by default the memory is uninitialised (ie. may contain garbage);
+memory can be explicitly initialised by specifying the <i>fill_type</i>,
 as per the <a href="#Mat">Mat class</a> (except for <i>fill::eye</i>)
 </li>
 <br>
@@ -1714,12 +1718,16 @@ Each element can have an arbitrary size (eg. in a field of matrices, each matrix
 <li>
 Constructors, where <i>object_type</i> is another class, eg. <i>vec</i>, <i>mat</i>, <i>std::string</i>, etc:
 <ul>
-<code>field&lt;<i>object_type</i>&gt;()</code>
-<br><code>field&lt;<i>object_type</i>&gt;(<i>n_elem</i>)</code>
-<br><code>field&lt;<i>object_type</i>&gt;(<i>n_rows</i>, <i>n_cols</i>)</code>
-<br><code>field&lt;<i>object_type</i>&gt;(<i>n_rows</i>, <i>n_cols</i>, <i>n_slices</i>)</code>
-<br><code>field&lt;<i>object_type</i>&gt;(size(<i>X</i>))</code>
-<br><code>field&lt;<i>object_type</i>&gt;(field&lt;<i>object_type</i>&gt;)</code>
+<table>
+<tbody>
+<tr><td><code>field&lt;<i>object_type</i>&gt;()</code></td></tr>
+<tr><td><code>field&lt;<i>object_type</i>&gt;(<i>n_elem</i>)</code></td></tr>
+<tr><td><code>field&lt;<i>object_type</i>&gt;(<i>n_rows</i>, <i>n_cols</i>)</code></td></tr>
+<tr><td><code>field&lt;<i>object_type</i>&gt;(<i>n_rows</i>, <i>n_cols</i>, <i>n_slices</i>)</code></td></tr>
+<tr><td><code>field&lt;<i>object_type</i>&gt;(size(<i>X</i>))</code></td></tr>
+<tr><td><code>field&lt;<i>object_type</i>&gt;(field&lt;<i>object_type</i>&gt;)</code></td></tr>
+</tbody>
+</table>
 </ul>
 </li>
 <br>
@@ -1904,12 +1912,16 @@ it is possible to use other types instead, eg. <i>sp_fmat</i>
 <li>
 Constructors:
 <ul>
-<code>sp_mat()</code>
-<br><code>sp_mat(<i>n_rows</i>, <i>n_cols</i>)</code>
-<br><code>sp_mat(size(<i>X</i>))</code>
-<br><code>sp_mat(sp_mat)</code>
-<br><code>sp_mat(mat)</code> &nbsp; (for converting a dense matrix to a sparse matrix)
-<br><code>sp_cx_mat(sp_mat,sp_mat)</code> &nbsp; (for constructing a complex matrix out of two real matrices)
+<table>
+<tbody>
+<tr><td><code>sp_mat()</code></td><td>&nbsp;</td><td>&nbsp;</td></tr>
+<tr><td><code>sp_mat(<i>n_rows</i>, <i>n_cols</i>)</code></td><td>&nbsp;</td><td>&nbsp;</td></tr>
+<tr><td><code>sp_mat(size(<i>X</i>))</code></td><td>&nbsp;</td><td>&nbsp;</td></tr>
+<tr><td><code>sp_mat(sp_mat)</code></td><td>&nbsp;</td><td>&nbsp;</td></tr>
+<tr><td><code>sp_mat(mat)</code></td><td>&nbsp;</td><td>(for converting a dense matrix to a sparse matrix)</td></tr>
+<tr><td><code>sp_cx_mat(sp_mat,sp_mat)</code></td><td>&nbsp;</td><td>(for constructing a complex matrix out of two real matrices)</td></tr>
+</tbody>
+</table>
 </ul>
 <br>
 <li>
@@ -1974,7 +1986,7 @@ If <i>check_for_zeros</i> is set to <i>false</i>, the <i>values</i> vector is as
 <li>
 <b>Caveats:</b>
 <ul>
-<li>support for sparse matrices in this version is <b>preliminary</b>;
+<li>support for sparse matrices in this version is <b>work in progress</b>;
 <br>
 the following subset of operations currently works with sparse matrices:
 <ul>
@@ -5650,7 +5662,7 @@ imag(A).eval().save("A_imag.dat", raw_ascii);
       </td>
     </tr>
     <tr>
-      <td style="vertical-align: top;"><b>.in_range( <font size=-1>span(</b>start_row<b>,</b> end_row<b>), span(</b>start_col<b>,</b> end_col<b>)</font> )</b></td>
+      <td style="vertical-align: top;"><b>.in_range(</b> <font size=-1><b>span(</b>start_row<b>,</b> end_row<b>), span(</b>start_col<b>,</b> end_col<b>)</b></font> <b>)</b></td>
       <td style="vertical-align: top;"><br>
       </td>
       <td>&nbsp;</td>
@@ -5671,7 +5683,7 @@ imag(A).eval().save("A_imag.dat", raw_ascii);
       </td>
     </tr>
     <tr>
-      <td style="vertical-align: top;"><b>.in_range( <font size=-1>span(</b>start_row<b>,</b> end_row<b>), span(</b>start_col<b>,</b> end_col<b>), span(</b>start_slice<b>,</b> end_slice<b>)</font> )</b></td>
+      <td style="vertical-align: top;"><b>.in_range(</b> <font size=-1><b>span(</b>start_row<b>,</b> end_row<b>), span(</b>start_col<b>,</b> end_col<b>), span(</b>start_slice<b>,</b> end_slice<b>)</b></font> <b>)</b></td>
       <td style="vertical-align: top;"><br>
       </td>
       <td>&nbsp;</td>

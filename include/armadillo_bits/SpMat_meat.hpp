@@ -4423,6 +4423,10 @@ SpMat<eT>::init(const MapMat<eT>& x)
   
   typename MapMat<eT>::map_type::const_iterator x_it = x_map_ref.begin();
   
+  uword x_col             = 0;
+  uword x_col_index_start = 0;
+  uword x_col_index_endp1 = x_n_rows;
+  
   for(uword i=0; i < x_n_nz; ++i)
     {
     const std::pair<uword, eT>& x_entry = (*x_it);
@@ -4430,8 +4434,24 @@ SpMat<eT>::init(const MapMat<eT>& x)
     const uword x_index = x_entry.first;
     const eT    x_val   = x_entry.second;
     
-    const uword x_row = x_index % x_n_rows;
-    const uword x_col = x_index / x_n_rows;
+    // have we gone past the curent column?
+    if(x_index >= x_col_index_endp1)
+      {
+      x_col = x_index / x_n_rows;
+      
+      x_col_index_start = x_col * x_n_rows;
+      x_col_index_endp1 = x_col_index_start + x_n_rows;
+      }
+    
+    const uword x_row = x_index - x_col_index_start;
+    
+    // // sanity check
+    // 
+    // const uword tmp_x_row = x_index % x_n_rows;
+    // const uword tmp_x_col = x_index / x_n_rows;
+    // 
+    // if(x_row != tmp_x_row)  { cout << "x_row != tmp_x_row" << endl; exit(-1); }
+    // if(x_col != tmp_x_col)  { cout << "x_col != tmp_x_col" << endl; exit(-1); }
     
     access::rw(values[i])      = x_val;
     access::rw(row_indices[i]) = x_row;
@@ -4446,6 +4466,33 @@ SpMat<eT>::init(const MapMat<eT>& x)
     {
     access::rw(col_ptrs[i + 1]) += col_ptrs[i];
     }
+  
+  
+  // // OLD METHOD
+  // 
+  // for(uword i=0; i < x_n_nz; ++i)
+  //   {
+  //   const std::pair<uword, eT>& x_entry = (*x_it);
+  //   
+  //   const uword x_index = x_entry.first;
+  //   const eT    x_val   = x_entry.second;
+  // 
+  // const uword x_row = x_index % x_n_rows;
+  // const uword x_col = x_index / x_n_rows;
+  // 
+  // access::rw(values[i])      = x_val;
+  // access::rw(row_indices[i]) = x_row;
+  // 
+  // access::rw(col_ptrs[ x_col + 1 ])++;
+  // 
+  // ++x_it;
+  // }
+  // 
+  // 
+  // for(uword i = 0; i < x_n_cols; ++i)
+  // {
+  // access::rw(col_ptrs[i + 1]) += col_ptrs[i];
+  // }
   }
 
 

@@ -185,7 +185,7 @@ norm
   
   const bool is_vec = (P.get_n_rows() == 1) || (P.get_n_cols() == 1);
   
-  if(is_vec == true)
+  if(is_vec)
     {
     const unwrap_spmat<typename SpProxy<T1>::stored_type> tmp(P.Q);
     const SpMat<eT>& A = tmp.M;
@@ -270,7 +270,7 @@ norm
   const char sig    = (method != NULL) ? method[0] : char(0);
   const bool is_vec = (P.get_n_rows() == 1) || (P.get_n_cols() == 1);  // TODO: (T1::is_row) || (T1::is_col) || ...
   
-  if(is_vec == true)
+  if(is_vec)
     {
     if( (sig == 'i') || (sig == 'I') || (sig == '+') )   // max norm
       {

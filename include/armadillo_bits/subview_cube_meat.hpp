@@ -583,7 +583,7 @@ subview_cube<eT>::operator= (const Base<eT,T1>& in)
     }
   else
     {
-    if(arma_config::debug == true)
+    if(arma_config::debug)
       {
       arma_stop_logic_error( arma_incompat_size_string(t, x, "copy into subcube") );
       }
@@ -686,7 +686,7 @@ subview_cube<eT>::operator+= (const Base<eT,T1>& in)
     }
   else
     {
-    if(arma_config::debug == true)
+    if(arma_config::debug)
       {
       arma_stop_logic_error( arma_incompat_size_string(t, x, "addition") );
       }
@@ -789,7 +789,7 @@ subview_cube<eT>::operator-= (const Base<eT,T1>& in)
     }
   else
     {
-    if(arma_config::debug == true)
+    if(arma_config::debug)
       {
       arma_stop_logic_error( arma_incompat_size_string(t, x, "subtraction") );
       }
@@ -892,7 +892,7 @@ subview_cube<eT>::operator%= (const Base<eT,T1>& in)
     }
   else
     {
-    if(arma_config::debug == true)
+    if(arma_config::debug)
       {
       arma_stop_logic_error( arma_incompat_size_string(t, x, "element-wise multiplication") );
       }
@@ -995,7 +995,7 @@ subview_cube<eT>::operator/= (const Base<eT,T1>& in)
     }
   else
     {
-    if(arma_config::debug == true)
+    if(arma_config::debug)
       {
       arma_stop_logic_error( arma_incompat_size_string(t, x, "element-wise division") );
       }

@@ -954,7 +954,7 @@ Row<eT>::insert_cols(const uword col_num, const uword N, const bool set_to_zero)
       arrayops::copy( &(out_mem[col_num + N]), &(t_mem[col_num]), B_n_cols );
       }
     
-    if(set_to_zero == true)
+    if(set_to_zero)
       {
       arrayops::inplace_set( &(out_mem[col_num]), eT(0), N );
       }

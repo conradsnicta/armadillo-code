@@ -27,18 +27,28 @@ op_normalise_vec::apply(Mat<typename T1::elem_type>& out, const Op<T1,op_normali
   {
   arma_extra_debug_sigprint();
   
-  typedef typename T1::pod_type T;
+  typedef typename T1::elem_type eT;
+  typedef typename T1::pod_type   T;
   
   const uword p = in.aux_uword_a;
   
   arma_debug_check( (p == 0), "normalise(): parameter 'p' must be greater than zero" );
   
-  const quasi_unwrap<T1> tmp(in.m);
+  const quasi_unwrap<T1> U(in.m);
   
-  const T norm_val_a = norm(tmp.M, p);
+  const T norm_val_a = norm(U.M, p);
   const T norm_val_b = (norm_val_a != T(0)) ? norm_val_a : T(1);
   
-  out = tmp.M / norm_val_b;
+  if(quasi_unwrap<T1>::has_subview && U.is_alias(out))
+    {
+    Mat<eT> tmp = U.M / norm_val_b;
+    
+    out.steal_mem(tmp);
+    }
+  else
+    {
+    out = U.M / norm_val_b;
+    }
   }
 
 

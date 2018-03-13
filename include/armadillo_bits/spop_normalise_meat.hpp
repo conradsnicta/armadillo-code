@@ -59,98 +59,86 @@ spop_normalise::apply_noalias(SpMat<eT>& out, const SpMat<eT>& X, const uword p,
   {
   arma_extra_debug_sigprint();
   
-  // NOTE: this is a brute force implementation that doesn't explicitly handle potential overflows/underflows;
-  // NOTE: however, since we're dealing with a sparse matrix (ie. a relatively small amount of non-zeros),
-  // NOTE: overflows/underflows are less likely
-  // 
-  // NOTE: a seemingly more efficient approach would be via inplace modification of elements via an iterator;
-  // NOTE: however, that approach is not robust, as writing a zero through an iterator will invalidate the iterator;
-  // NOTE: there are no guarantees that a normalised value will be non-zero, eg. in double precision floats: 1.0 / 1e312 = 0
+  typedef typename get_pod_type<eT>::result T;
   
   out.copy_size(X);
   
-  typename SpMat<eT>::const_iterator it_begin = X.begin();
-  typename SpMat<eT>::const_iterator it_end   = X.end();
-  
-  typename SpMat<eT>::const_iterator it = it_begin;
+  if( X.is_empty() || (X.n_nonzero == 0) )  { return; }
   
   if(dim == 0)
     {
-    podarray<eT> tmp(out.n_cols);
-    tmp.zeros();
+    X.sync();
     
-    eT* tmp_mem = tmp.memptr();
+    podarray<T> norm_vals(X.n_cols);
     
-    if(p == uword(1))
+    T* norm_vals_mem = norm_vals.memptr();
+    
+    for(uword i=0; i < norm_vals.n_elem; ++i)
       {
-      for(; it != it_end; ++it)  { const eT val = (*it); tmp_mem[ it.col() ] += std::abs(val); }
-      }
-    else
-    if(p == uword(2))
-      {
-      for(; it != it_end; ++it)  { const eT val = (*it); tmp_mem[ it.col() ] += (val*val); }
+      const uword      col_offset = X.col_ptrs[i    ];
+      const uword next_col_offset = X.col_ptrs[i + 1];
       
-      for(uword i=0; i<tmp.n_elem; ++i)  { eT& val = tmp_mem[i]; val = std::sqrt(val); }
-      }
-    else
-      {
-      const eT pp = eT(p);
+      const eT* start_ptr = &X.values[     col_offset];
+      const eT*   end_ptr = &X.values[next_col_offset];
       
-      for(; it != it_end; ++it)  { const eT val = (*it); tmp_mem[ it.col() ] += std::pow(val, pp); }
+      const uword n_elem = end_ptr - start_ptr;
       
-      const eT inv_pp = eT(1) / pp;
+      const Col<eT> fake_vec(const_cast<eT*>(start_ptr), n_elem, false, false);
       
-      for(uword i=0; i<tmp.n_elem; ++i)  { eT& val = tmp_mem[i]; val = std::pow(val, inv_pp); }
+      const T norm_val = norm(fake_vec, p);
+      
+      norm_vals_mem[i] = (norm_val != T(0)) ? norm_val : T(1);
       }
     
-    it = it_begin;
+    typename SpMat<eT>::const_iterator it     = X.begin();
+    typename SpMat<eT>::const_iterator it_end = X.end();
     
     for(; it != it_end; ++it)
       {
       const uword row = it.row();
       const uword col = it.col();
       
-      out.at(row, col) = (*it) / tmp_mem[col];
+      out.at(row, col) = (*it) / norm_vals_mem[col];
       }
     }
   else
   if(dim == 1)
     {
-    podarray<eT> tmp(out.n_rows);
-    tmp.zeros();
+    podarray< T> norm_vals(X.n_rows);
+    podarray<eT>  row_vals(X.n_cols);  // worst case scenario
     
-    eT* tmp_mem = tmp.memptr();
+    T* norm_vals_mem = norm_vals.memptr();
+    eT* row_vals_mem =  row_vals.memptr();
     
-    if(p == uword(1))
+    for(uword i=0; i < norm_vals.n_elem; ++i)
       {
-      for(; it != it_end; ++it)  { const eT val = (*it); tmp_mem[ it.row() ] += std::abs(val); }
-      }
-    else
-    if(p == uword(2))
-      {
-      for(; it != it_end; ++it)  { const eT val = (*it); tmp_mem[ it.row() ] += (val*val); }
+      typename SpMat<eT>::const_row_iterator row_it     = X.begin_row(i);
+      typename SpMat<eT>::const_row_iterator row_it_end = X.end_row(i);
       
-      for(uword i=0; i<tmp.n_elem; ++i)  { eT& val = tmp_mem[i]; val = std::sqrt(val); }
-      }
-    else
-      {
-      const eT pp = eT(p);
+      uword count = 0;
       
-      for(; it != it_end; ++it)  { const eT val = (*it); tmp_mem[ it.row() ] += std::pow(val, pp); }
+      for(; row_it != row_it_end; ++row_it)
+        {
+        row_vals_mem[count] = (*row_it);
+        ++count;
+        }
       
-      const eT inv_pp = eT(1) / pp;
+      const Row<eT> fake_vec(row_vals_mem, count, false, false);
       
-      for(uword i=0; i<tmp.n_elem; ++i)  { eT& val = tmp_mem[i]; val = std::pow(val, inv_pp); }
+      const T norm_val = norm(fake_vec, p);
+      
+      norm_vals_mem[i] = (norm_val != T(0)) ? norm_val : T(1);
       }
     
-    it = it_begin;
+    typename SpMat<eT>::const_iterator it     = X.begin();
+    typename SpMat<eT>::const_iterator it_end = X.end();
     
     for(; it != it_end; ++it)
       {
       const uword row = it.row();
       const uword col = it.col();
       
-      out.at(row, col) = (*it) / tmp_mem[row];
+      out.at(row, col) = (*it) / norm_vals_mem[row];
       }
     }
   }

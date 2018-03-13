@@ -5172,6 +5172,20 @@ SpMat<eT>::begin() const
 
 template<typename eT>
 inline
+typename SpMat<eT>::const_iterator
+SpMat<eT>::cbegin() const
+  {
+  arma_extra_debug_sigprint();
+  
+  sync_csc();
+  
+  return const_iterator(*this);
+  }
+
+
+
+template<typename eT>
+inline
 typename SpMat<eT>::iterator
 SpMat<eT>::end()
   {
@@ -5186,6 +5200,18 @@ template<typename eT>
 inline
 typename SpMat<eT>::const_iterator
 SpMat<eT>::end() const
+  {
+  sync_csc();
+  
+  return const_iterator(*this, 0, n_cols, n_nonzero);
+  }
+
+
+
+template<typename eT>
+inline
+typename SpMat<eT>::const_iterator
+SpMat<eT>::cend() const
   {
   sync_csc();
   

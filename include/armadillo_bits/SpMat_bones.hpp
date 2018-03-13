@@ -515,9 +515,11 @@ class SpMat : public SpBase< eT, SpMat<eT> >
   
   inline       iterator     begin();
   inline const_iterator     begin() const;
+  inline const_iterator    cbegin() const;
   
   inline       iterator     end();
   inline const_iterator     end() const;
+  inline const_iterator    cend() const;
   
   inline       col_iterator begin_col(const uword col_num);
   inline const_col_iterator begin_col(const uword col_num) const;

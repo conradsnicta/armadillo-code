@@ -103,16 +103,27 @@ op_normalise_mat::apply(Mat<eT>& out, const Mat<eT>& A, const uword p, const uwo
     }
   else
     {
-    // better-than-nothing implementation
-    
     const uword n_rows = A.n_rows;
+    
+    podarray<T> norm_vals(n_rows);
+    
+    T* norm_vals_mem = norm_vals.memptr();
     
     for(uword i=0; i<n_rows; ++i)
       {
-      const T norm_val_a = norm(A.row(i), p);
-      const T norm_val_b = (norm_val_a != T(0)) ? norm_val_a : T(1);
+      const T norm_val = norm(A.row(i), p);
       
-      out.row(i) = A.row(i) / norm_val_b;
+      norm_vals_mem[i] = (norm_val != T(0)) ? norm_val : T(1);
+      }
+    
+    typename Mat<eT>::const_row_col_iterator it     = A.begin_row_col();
+    typename Mat<eT>::const_row_col_iterator it_end = A.end_row_col();
+    
+    eT* out_mem = out.memptr();
+    
+    for(; it != it_end; ++it)
+      {
+      (*out_mem) = (*it) / norm_vals_mem[ it.row() ];  out_mem++;
       }
     }
   }

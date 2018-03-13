@@ -63,7 +63,7 @@ randn(const uword n_elem, const arma_empty_class junk1 = arma_empty_class(), con
   arma_ignore(junk1);
   arma_ignore(junk2);
   
-  if(is_Row<obj_type>::value == true)
+  if(is_Row<obj_type>::value)
     {
     return Gen<obj_type, gen_randn>(1, n_elem);
     }
@@ -109,12 +109,12 @@ randn(const uword n_rows, const uword n_cols, const typename arma_Mat_Col_Row_on
   arma_extra_debug_sigprint();
   arma_ignore(junk);
   
-  if(is_Col<obj_type>::value == true)
+  if(is_Col<obj_type>::value)
     {
     arma_debug_check( (n_cols != 1), "randn(): incompatible size" );
     }
   else
-  if(is_Row<obj_type>::value == true)
+  if(is_Row<obj_type>::value)
     {
     arma_debug_check( (n_rows != 1), "randn(): incompatible size" );
     }

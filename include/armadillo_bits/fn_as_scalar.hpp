@@ -87,7 +87,7 @@ as_scalar_redirect<2>::apply(const Glue<T1, T2, glue_times>& X)
   
   const bool do_partial_unwrap = (has_all_mat || use_at);
   
-  if(do_partial_unwrap == true)
+  if(do_partial_unwrap)
     {
     const partial_unwrap<T1> tmp1(X.A);
     const partial_unwrap<T2> tmp2(X.B);
@@ -176,8 +176,8 @@ as_scalar_redirect<3>::apply(const Glue< Glue<T1, T2, glue_times>, T3, glue_time
     
     const bool B_is_vec = B.is_vec();
     
-    const uword B_n_rows = (B_is_vec == true) ? B.n_elem : ( (tmp2.do_trans == false) ? B.n_rows : B.n_cols );
-    const uword B_n_cols = (B_is_vec == true) ? B.n_elem : ( (tmp2.do_trans == false) ? B.n_cols : B.n_rows );
+    const uword B_n_rows = (B_is_vec) ? B.n_elem : ( (tmp2.do_trans == false) ? B.n_rows : B.n_cols );
+    const uword B_n_cols = (B_is_vec) ? B.n_elem : ( (tmp2.do_trans == false) ? B.n_cols : B.n_rows );
     
     const uword C_n_rows = (tmp3.do_trans == false) ? C.n_rows : C.n_cols;
     const uword C_n_cols = (tmp3.do_trans == false) ? C.n_cols : C.n_rows;
@@ -195,9 +195,9 @@ as_scalar_redirect<3>::apply(const Glue< Glue<T1, T2, glue_times>, T3, glue_time
       );
     
     
-    if(B_is_vec == true)
+    if(B_is_vec)
       {
-      if(tmp2_do_inv == true)
+      if(tmp2_do_inv)
         {
         return val * op_dotext::direct_rowvec_invdiagvec_colvec(A.mem, B, C.mem);
         }
@@ -208,7 +208,7 @@ as_scalar_redirect<3>::apply(const Glue< Glue<T1, T2, glue_times>, T3, glue_time
       }
     else
       {
-      if(tmp2_do_inv == true)
+      if(tmp2_do_inv)
         {
         return val * op_dotext::direct_rowvec_invdiagmat_colvec(A.mem, B, C.mem);
         }
@@ -276,8 +276,8 @@ as_scalar_diag(const Glue< Glue<T1, T2, glue_times_diag>, T3, glue_times >& X)
   
   const bool B_is_vec = B.is_vec();
   
-  const uword B_n_rows = (B_is_vec == true) ? B.n_elem : ( (tmp2.do_trans == false) ? B.n_rows : B.n_cols );
-  const uword B_n_cols = (B_is_vec == true) ? B.n_elem : ( (tmp2.do_trans == false) ? B.n_cols : B.n_rows );
+  const uword B_n_rows = (B_is_vec) ? B.n_elem : ( (tmp2.do_trans == false) ? B.n_rows : B.n_cols );
+  const uword B_n_cols = (B_is_vec) ? B.n_elem : ( (tmp2.do_trans == false) ? B.n_cols : B.n_rows );
   
   const uword C_n_rows = (tmp3.do_trans == false) ? C.n_rows : C.n_cols;
   const uword C_n_cols = (tmp3.do_trans == false) ? C.n_cols : C.n_rows;
@@ -295,7 +295,7 @@ as_scalar_diag(const Glue< Glue<T1, T2, glue_times_diag>, T3, glue_times >& X)
     );
   
   
-  if(B_is_vec == true)
+  if(B_is_vec)
     {
     return val * op_dot::direct_dot(A.n_elem, A.mem, B.mem, C.mem);
     }

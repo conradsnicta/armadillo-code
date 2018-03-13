@@ -58,22 +58,19 @@ op_normalise_mat::apply(Mat<typename T1::elem_type>& out, const Op<T1,op_normali
   arma_debug_check( (p   == 0), "normalise(): parameter 'p' must be greater than zero" );
   arma_debug_check( (dim >  1), "normalise(): parameter 'dim' must be 0 or 1"          );
   
-  const unwrap<T1>   tmp(in.m);
-  const Mat<eT>& A = tmp.M;
+  const quasi_unwrap<T1> U(in.m);
   
-  const bool alias = ( (&out) == (&A) );
-  
-  if(alias)
+  if(U.is_alias(out))
     {
     Mat<eT> out2;
     
-    op_normalise_mat::apply(out2, A, p, dim);
+    op_normalise_mat::apply(out2, U.M, p, dim);
     
     out.steal_mem(out2);
     }
   else
     {
-    op_normalise_mat::apply(out, A, p, dim);
+    op_normalise_mat::apply(out, U.M, p, dim);
     }
   }
 

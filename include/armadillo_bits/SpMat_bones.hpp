@@ -302,7 +302,8 @@ class SpMat : public SpBase< eT, SpMat<eT> >
   
   inline void  reshape(const uword in_rows, const uword in_cols);
   inline void  reshape(const SizeMat& s);
-  inline void  reshape(const uword in_rows, const uword in_cols, const uword dim);  // this form is deprecated: don't use it
+  
+  arma_deprecated inline void reshape(const uword in_rows, const uword in_cols, const uword dim);  //!< NOTE: don't use this form: it will be removed
   
   template<typename functor> inline const SpMat&  for_each(functor F);
   template<typename functor> inline const SpMat&  for_each(functor F) const;

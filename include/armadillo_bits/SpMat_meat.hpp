@@ -3540,8 +3540,9 @@ SpMat<eT>::reshape(const SizeMat& s)
 
 
 
-// this form is deprecated: don't use it
+//! NOTE: don't use this form; it's deprecated and will be removed
 template<typename eT>
+arma_deprecated
 inline
 void
 SpMat<eT>::reshape(const uword in_rows, const uword in_cols, const uword dim)

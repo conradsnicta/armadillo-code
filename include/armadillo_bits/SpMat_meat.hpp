@@ -3659,6 +3659,55 @@ SpMat<eT>::for_each(functor F) const
 
 
 
+//! transform each non-zero element using a functor
+template<typename eT>
+template<typename functor>
+inline
+const SpMat<eT>&
+SpMat<eT>::transform(functor F)
+  {
+  arma_extra_debug_sigprint();
+  
+  typename SpMat<eT>::const_iterator it     = (*this).begin();
+  typename SpMat<eT>::const_iterator it_end = (*this).end();
+  
+  // use separate storage for the modified elements, to take into account possible zeros
+  
+  umat    new_locs(2, n_nonzero);
+  Col<eT> new_vals(   n_nonzero);
+  
+  uword* new_locs_mem = new_locs.memptr();
+     eT* new_vals_mem = new_vals.memptr();
+  
+  uword new_n_nonzero = 0;
+  
+  for(; it != it_end; ++it)
+    {
+    eT orig_val = (*it);  
+    eT new_val  = eT( F(orig_val) );
+    
+    if(new_val != eT(0))
+      {
+      (*new_vals_mem) = new_val;   new_vals_mem++;
+      (*new_locs_mem) = it.row();  new_locs_mem++;
+      (*new_locs_mem) = it.col();  new_locs_mem++;
+      
+      new_n_nonzero++;
+      }
+    }
+  
+  const umat    tmp_locs( new_locs.memptr(), 2, new_n_nonzero, false, false);
+  const Col<eT> tmp_vals( new_vals.memptr(),    new_n_nonzero, false, false);
+  
+  SpMat<eT> tmp(tmp_locs, tmp_vals, n_rows, n_cols, false, false);
+  
+  steal_mem(tmp);
+  
+  return *this;
+  }
+
+
+
 template<typename eT>
 inline
 const SpMat<eT>&

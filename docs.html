@@ -1998,7 +1998,7 @@ the following subset of operations works with sparse matrices:
 <li>generated matrices: <a href="#speye">speye()</a>, <a href="#spones">spones()</a>, <a href="#sprandu_sprandn">sprandu()</a>, <a href="#sprandu_sprandn">sprandn()</a>, <a href="#zeros_standalone">zeros()</a></li>
 <li>eigen and svd decomposition: <a href="#eigs_sym">eigs_sym()</a>, <a href="#eigs_gen">eigs_gen()</a>, <a href="#svds">svds()</a></li>
 <li>solution of sparse linear systems: <a href="#spsolve">spsolve()</a>
-<li>miscellaneous: <a href="#approx_equal">approx_equal()</a>, <a href="#element_access">element access</a>, <a href="#iterators_spmat">element iterators</a>, <a href="#for_each">.for_each()</a>, <a href="#is_finite">is_finite()</a>, <a href="#print">.print()</a>, <a href="#replace">.replace()</a></li>
+<li>miscellaneous: <a href="#approx_equal">approx_equal()</a>, <a href="#element_access">element access</a>, <a href="#iterators_spmat">element iterators</a>, <a href="#for_each">.for_each()</a>, <a href="#is_finite">is_finite()</a>, <a href="#print">.print()</a>, <a href="#replace">.replace()</a>, <a href="#transform">.transform()</a></li>
 </ul>
 </li>
 <br>
@@ -3050,7 +3050,7 @@ See also:
 <br>
 <ul>
 <li>
-Member functions of <i>Mat</i>, <i>Col</i>, <i>Row</i> and <i>Cube</i>
+Member functions of <i>Mat</i>, <i>Col</i>, <i>Row</i>, <i>Cube</i> and <i>SpMat</i>
 </li>
 <br>
 <li>
@@ -3058,7 +3058,11 @@ Transform each element using a functor or lambda function
 </li>
 <br>
 <li>
-For matrices, transformation is done column-by-column (ie. column 0 is transformed, then column 1, ...)
+For dense matrices, transformation is done column-by-column for all elements
+</li>
+<br>
+<li>
+For sparse matrices, transformation is done column-by-column for non-zero elements
 </li>
 <br>
 <li>
@@ -17475,7 +17479,7 @@ List of additions and changes for each version:
 <li>faster <a href="#element_access">element access</a> in sparse matrices</li>
 <li>faster <a href="#iterators_spmat">row iterators</a> for sparse matrices</li>
 <li>expanded <a href="#normalise">normalise()</a> to handle sparse matrices</li>
-<li>expanded <a href="#for_each">.for_each()</a> to handle sparse matrices</li>
+<li>expanded <a href="#transform">.transform()</a> and <a href="#for_each">.for_each()</a> to handle sparse matrices</li>
 <li>added <a href="#roots">roots()</a> for finding the roots of a polynomial</li>
 </ul>
 </li>

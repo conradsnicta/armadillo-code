@@ -3582,7 +3582,7 @@ template<typename eT>
 template<typename functor>
 inline
 const SpMat<eT>&
-SpMat<eT>::for_each_nonzero(functor F)
+SpMat<eT>::for_each(functor F)
   {
   arma_extra_debug_sigprint();
   
@@ -3640,7 +3640,7 @@ template<typename eT>
 template<typename functor>
 inline
 const SpMat<eT>&
-SpMat<eT>::for_each_nonzero(functor F) const
+SpMat<eT>::for_each(functor F) const
   {
   arma_extra_debug_sigprint();
   

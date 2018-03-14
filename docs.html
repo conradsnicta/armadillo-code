@@ -5081,7 +5081,8 @@ Iterators for sparse matrices traverse over non-zero elements within the specifi
 <li>
 <b>Caveats:</b>
 <ul>
-<li>writing a zero value into a sparse matrix through an iterator will invalidate all current iterators associated with the sparse matrix; consider using <a href="#for_each">.for_each()</a> as a safer alternative</li>
+<li>writing a zero value into a sparse matrix through an iterator will invalidate all current iterators associated with the sparse matrix;
+<br>consider using <a href="#transform">.transform()</a> and <a href="#for_each">.for_each()</a> as safer alternatives</li>
 <li>row iterators are only useful with Armadillo versions 8.500 and later; in earlier versions they are inefficient
 </ul>
 </li>

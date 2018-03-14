@@ -3594,12 +3594,18 @@ SpMat<eT>::for_each(functor F)
   
   eT* rw_values = access::rwp(values);
   
+  bool has_zero = false;
+  
   for(uword i=0; i < N; ++i)
     {
-    F(rw_values[i]);
+    eT& rw_values_i = rw_values[i];
+    
+    F(rw_values_i);
+    
+    if(rw_values_i == eT(0))  { has_zero = true; }
     }
   
-  remove_zeros();
+  if(has_zero)  { remove_zeros(); }
   
   return *this;
   }
@@ -3644,13 +3650,19 @@ SpMat<eT>::transform(functor F)
   
   eT* rw_values = access::rwp(values);
   
+  bool has_zero = false;
+  
   for(uword i=0; i < N; ++i)
     {
-    rw_values[i] = eT( F(rw_values[i]) );
+    eT& rw_values_i = rw_values[i];
+    
+    rw_values_i = eT( F(rw_values_i) );
+    
+    if(rw_values_i == eT(0))  { has_zero = true; }
     }
   
-  remove_zeros();
-  
+  if(has_zero)  { remove_zeros(); }
+    
   return *this;
   }
 

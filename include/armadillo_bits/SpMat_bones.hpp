@@ -304,6 +304,9 @@ class SpMat : public SpBase< eT, SpMat<eT> >
   inline void  reshape(const SizeMat& s);
   inline void  reshape(const uword in_rows, const uword in_cols, const uword dim);  // this form is deprecated: don't use it
   
+  template<typename functor> inline const SpMat& for_each_nonzero(functor F);
+  template<typename functor> inline const SpMat& for_each_nonzero(functor F) const;
+  
   inline const SpMat& replace(const eT old_val, const eT new_val);
   
   inline const SpMat& zeros();

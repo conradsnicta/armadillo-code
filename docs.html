@@ -1998,7 +1998,7 @@ the following subset of operations works with sparse matrices:
 <li>generated matrices: <a href="#speye">speye()</a>, <a href="#spones">spones()</a>, <a href="#sprandu_sprandn">sprandu()</a>, <a href="#sprandu_sprandn">sprandn()</a></li>
 <li>eigen and svd decomposition: <a href="#eigs_sym">eigs_sym()</a>, <a href="#eigs_gen">eigs_gen()</a>, <a href="#svds">svds()</a></li>
 <li>solution of sparse linear systems: <a href="#spsolve">spsolve()</a>
-<li>miscellaneous: <a href="#approx_equal">approx_equal()</a>, <a href="#element_access">element access</a>, <a href="#iterators_spmat">element iterators</a>, <a href="#is_finite">is_finite()</a>, <a href="#print">print()</a></li>
+<li>miscellaneous: <a href="#approx_equal">approx_equal()</a>, <a href="#element_access">element access</a>, <a href="#iterators_spmat">element iterators</a>, <a href="#for_each_nonzero">.for_each_nonzero()</a>, <a href="#is_finite">is_finite()</a>, <a href="#print">.print()</a></li>
 </ul>
 </li>
 <br>
@@ -3143,7 +3143,56 @@ See also:
 <ul>
 <li><a href="#transform">.transform()</a></li>
 <li><a href="#each_colrow">.each_col() &amp; .each_row()</a></li>
+<li><a href="#for_each_nonzero">.for_each_nonzero()</a></li>
 <li><a href="#misc_fns">miscellaneous element-wise functions</a> &nbsp; (exp, log, pow, sqrt, square, round, ...)</li>
+<li><a href="http://en.wikipedia.org/wiki/Function_object">function object</a> at Wikipedia</li>
+<li><a href="http://en.wikipedia.org/wiki/C%2B%2B11#Lambda_functions_and_expressions">C++11 lambda functions</a> at Wikipedia</li>
+<li><a href="http://www.cprogramming.com/c++11/c++11-lambda-closures.html">lambda function</a> at cprogramming.com</li>
+</ul>
+</li>
+<br>
+</ul>
+
+<div class="pagebreak"></div><div class="noprint"><hr class="greyline"><br></div>
+<a name="for_each_nonzero"></a>
+<b>.for_each_nonzero(&nbsp;</b>functor<b>&nbsp;)</b>
+<br>
+<b>.for_each_nonzero(&nbsp;</b>lambda_function<b>&nbsp;)</b>&nbsp;&nbsp;&nbsp;<i>(C++11 only)</i>
+<br>
+<ul>
+<li>
+Member functions of <i>SpMat</i>
+</li>
+<br>
+<li>
+For each non-zero element in the given sparse matrix, pass its reference to a functor or lambda function
+</li>
+<br>
+<li>
+The processing is done column-by-column
+</li>
+<br>
+<li>
+Examples:
+<ul>
+<pre>
+// C++11 only example
+
+sp_mat A; A.sprandu(1000, 2000, 0.1);
+
+// add 123 to each non-zero element
+A.for_each_nonzero( [](sp_mat::elem_type&amp; val) { val += 123.0; } );  // NOTE: the '&amp;' is crucial!
+</pre>
+</ul>
+</li>
+<br>
+<li>
+See also:
+<ul>
+<li><a href="#iterators_spmat">iterators (sparse matrices)</a></li>
+<li><a href="#for_each">.for_each()</a></li>
+<li><a href="#nonzeros">nonzeros()</a></li>
+<li><a href="#misc_fns">miscellaneous element-wise functions</a></li>
 <li><a href="http://en.wikipedia.org/wiki/Function_object">function object</a> at Wikipedia</li>
 <li><a href="http://en.wikipedia.org/wiki/C%2B%2B11#Lambda_functions_and_expressions">C++11 lambda functions</a> at Wikipedia</li>
 <li><a href="http://www.cprogramming.com/c++11/c++11-lambda-closures.html">lambda function</a> at cprogramming.com</li>
@@ -5062,7 +5111,7 @@ Iterators for sparse matrices traverse over non-zero elements within the specifi
 <li>
 <b>Caveats:</b>
 <ul>
-<li>writing a zero value into a sparse matrix through an iterator will invalidate all current iterators associated with the sparse matrix</li>
+<li>writing a zero value into a sparse matrix through an iterator will invalidate all current iterators associated with the sparse matrix; consider using <a href="#for_each_nonzero">.for_each_nonzero()</a> as a safer alternative</li>
 <li>row iterators are only useful with Armadillo versions 8.500 and later; in earlier versions they are inefficient
 </ul>
 </li>
@@ -5280,6 +5329,7 @@ See also:
 <ul>
 <li><a href="#SpMat">SpMat class</a></li>
 <li><a href="#element_access">element access</a></li>
+<li><a href="#for_each_nonzero">.for_each_nonzero()</a></li>
 <li><a href="#submat">submatrix views</a></li>
 <li><a href="#iterators_mat">iterators (dense matrices)</a></li>
 <li><a href="http://cplusplus.com/reference/std/iterator/">iterator at cplusplus.com</a></li>
@@ -9387,6 +9437,7 @@ See also:
 <li><a href="#find">find()</a>
 <li><a href="#unique">unique()</a></li>
 <li><a href="#vectorise">vectorise()</a>
+<li><a href="#for_each_nonzero">.for_each_nonzero()</a>
 </ul>
 </li>
 <br>
@@ -17457,6 +17508,7 @@ List of additions and changes for each version:
 <li>faster <a href="#element_access">element access</a> in sparse matrices</li>
 <li>faster <a href="#iterators_spmat">row iterators</a> for sparse matrices</li>
 <li>expanded <a href="#normalise">normalise()</a> to handle sparse matrices</li>
+<li>added <a href="#for_each_nonzero">.for_each_nonzero()</a></li>
 <li>added <a href="#roots">roots()</a> for finding the roots of a polynomial</li>
 </ul>
 </li>

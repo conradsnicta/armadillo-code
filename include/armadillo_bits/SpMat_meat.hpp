@@ -3614,7 +3614,6 @@ SpMat<eT>::for_each(functor F) const
   arma_extra_debug_sigprint();
   
   sync_csc();
-  invalidate_cache();
   
   const uword N = (*this).n_nonzero;
   

@@ -3586,8 +3586,8 @@ SpMat<eT>::for_each_nonzero(functor F)
   {
   arma_extra_debug_sigprint();
   
-  SpMat<eT>::const_iterator it     = (*this).begin();
-  SpMat<eT>::const_iterator it_end = (*this).end();
+  typename SpMat<eT>::const_iterator it     = (*this).begin();
+  typename SpMat<eT>::const_iterator it_end = (*this).end();
   
   // use separate storage for the modified elements, to take into account possible zeros
   
@@ -3644,8 +3644,8 @@ SpMat<eT>::for_each_nonzero(functor F) const
   {
   arma_extra_debug_sigprint();
   
-  SpMat<eT>::const_iterator it     = (*this).begin();
-  SpMat<eT>::const_iterator it_end = (*this).end();
+  typename SpMat<eT>::const_iterator it     = (*this).begin();
+  typename SpMat<eT>::const_iterator it_end = (*this).end();
   
   for(; it != it_end; ++it)
     {

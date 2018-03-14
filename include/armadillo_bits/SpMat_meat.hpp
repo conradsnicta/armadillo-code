@@ -3586,50 +3586,19 @@ SpMat<eT>::for_each(functor F)
   {
   arma_extra_debug_sigprint();
   
-  typename SpMat<eT>::const_iterator it     = (*this).begin();
-  typename SpMat<eT>::const_iterator it_end = (*this).end();
+  sync_csc();
+  invalidate_cache();
   
-  // use separate storage for the modified elements, to take into account possible zeros
+  const uword N = (*this).n_nonzero;
   
-  umat    new_locs(2, n_nonzero);
-  Col<eT> new_vals(   n_nonzero);
+  eT* rw_values = access::rwp(values);
   
-  uword* new_locs_mem = new_locs.memptr();
-     eT* new_vals_mem = new_vals.memptr();
-  
-  uword new_n_nonzero = 0;
-  
-  bool vals_modified = false;
-  
-  for(; it != it_end; ++it)
+  for(uword i=0; i < N; ++i)
     {
-    const eT orig_val = (*it);  
-    
-    eT val = orig_val;
-    
-    F(val);
-    
-    if(vals_modified == false)  { vals_modified = (val != orig_val); }
-    
-    if(val != eT(0))
-      {
-      (*new_vals_mem) = val;       new_vals_mem++;
-      (*new_locs_mem) = it.row();  new_locs_mem++;
-      (*new_locs_mem) = it.col();  new_locs_mem++;
-      
-      new_n_nonzero++;
-      }
+    F(rw_values[i]);
     }
   
-  if(vals_modified)
-    {
-    const umat    tmp_locs( new_locs.memptr(), 2, new_n_nonzero, false, false);
-    const Col<eT> tmp_vals( new_vals.memptr(),    new_n_nonzero, false, false);
-    
-    SpMat<eT> tmp(tmp_locs, tmp_vals, n_rows, n_cols, false, false);
-    
-    steal_mem(tmp);
-    }
+  remove_zeros();
   
   return *this;
   }
@@ -3644,14 +3613,14 @@ SpMat<eT>::for_each(functor F) const
   {
   arma_extra_debug_sigprint();
   
-  typename SpMat<eT>::const_iterator it     = (*this).begin();
-  typename SpMat<eT>::const_iterator it_end = (*this).end();
+  sync_csc();
+  invalidate_cache();
   
-  for(; it != it_end; ++it)
+  const uword N = (*this).n_nonzero;
+  
+  for(uword i=0; i < N; ++i)
     {
-    const eT val = (*it);  
-    
-    F(val);
+    F(values[i]);
     }
   
   return *this;
@@ -3668,40 +3637,19 @@ SpMat<eT>::transform(functor F)
   {
   arma_extra_debug_sigprint();
   
-  typename SpMat<eT>::const_iterator it     = (*this).begin();
-  typename SpMat<eT>::const_iterator it_end = (*this).end();
+  sync_csc();
+  invalidate_cache();
   
-  // use separate storage for the modified elements, to take into account possible zeros
+  const uword N = (*this).n_nonzero;
   
-  umat    new_locs(2, n_nonzero);
-  Col<eT> new_vals(   n_nonzero);
+  eT* rw_values = access::rwp(values);
   
-  uword* new_locs_mem = new_locs.memptr();
-     eT* new_vals_mem = new_vals.memptr();
-  
-  uword new_n_nonzero = 0;
-  
-  for(; it != it_end; ++it)
+  for(uword i=0; i < N; ++i)
     {
-    eT orig_val = (*it);  
-    eT new_val  = eT( F(orig_val) );
-    
-    if(new_val != eT(0))
-      {
-      (*new_vals_mem) = new_val;   new_vals_mem++;
-      (*new_locs_mem) = it.row();  new_locs_mem++;
-      (*new_locs_mem) = it.col();  new_locs_mem++;
-      
-      new_n_nonzero++;
-      }
+    rw_values[i] = eT( F(rw_values[i]) );
     }
   
-  const umat    tmp_locs( new_locs.memptr(), 2, new_n_nonzero, false, false);
-  const Col<eT> tmp_vals( new_vals.memptr(),    new_n_nonzero, false, false);
-  
-  SpMat<eT> tmp(tmp_locs, tmp_vals, n_rows, n_cols, false, false);
-  
-  steal_mem(tmp);
+  remove_zeros();
   
   return *this;
   }

@@ -579,6 +579,8 @@ SpSubview<eT>::const_row_iterator::const_row_iterator(const SpSubview<eT>& in_M,
   , internal_row(0)
   , actual_pos(0)
   {
+  // TODO: replace with more efficient implementation
+  
   // Corner case for empty subviews.
   if(in_M.n_nonzero == 0)
     {
@@ -650,6 +652,8 @@ SpSubview<eT>::const_row_iterator::const_row_iterator(const SpSubview<eT>& in_M,
   , internal_row(0)
   , actual_pos(0)
   {
+  // TODO: replace with more efficient implementation
+  
   // We have a destination we want to be just after, but don't know what that
   // position is.  Because we will have to loop over everything anyway, create
   // another iterator and loop it until it is at the right place, then take its
@@ -686,6 +690,8 @@ inline
 typename SpSubview<eT>::const_row_iterator&
 SpSubview<eT>::const_row_iterator::operator++()
   {
+  // TODO: replace with more efficient implementation
+  
   // We just need to find the next nonzero element.
   ++iterator_base::internal_pos;
 

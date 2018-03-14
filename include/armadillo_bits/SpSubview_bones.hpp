@@ -80,7 +80,12 @@ class SpSubview : public SpBase<eT, SpSubview<eT> >
   inline static void schur_inplace(Mat<eT>& out, const subview& in);
   inline static void   div_inplace(Mat<eT>& out, const subview& in);
   */
-
+  
+  template<typename functor> inline void  for_each(functor F);
+  template<typename functor> inline void  for_each(functor F) const;
+  
+  template<typename functor> inline void transform(functor F);
+  
   inline void replace(const eT old_val, const eT new_val);
 
   inline void fill(const eT val);

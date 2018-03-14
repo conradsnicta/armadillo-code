@@ -1996,10 +1996,10 @@ the following subset of operations works with sparse matrices:
 <li>scalar functions of matrices: <a href="#accu">accu()</a>, <a href="#as_scalar">as_scalar()</a>, <a href="#dot">dot()</a>, <a href="#norm">norm()</a>, <a href="#trace">trace()</a></li>
 <li>vector valued functions of matrices: <a href="#min_and_max">min()</a>, <a href="#min_and_max">max()</a>, <a href="#nonzeros">nonzeros()</a>, <a href="#sum">sum()</a>, <a href="#stats_fns">mean()</a>, <a href="#stats_fns">var()</a></li>
 <li>matrix valued functions of matrices: <a href="#diagmat">diagmat()</a>, <a href="#join">join_rows()</a>, <a href="#join">join_cols()</a>, <a href="#kron">kron()</a>, <a href="#normalise">normalise()</a>, <a href="#repmat">repmat()</a>, <a href="#reshape">reshape()</a>, <a href="#resize">resize()</a>, <a href="#symmat">symmatu()/symmatl()</a>, <a href="#trimat">trimatu()/trimatl()</a>, <a href="#t_st_members">.t()</a>, <a href="#trans">trans()</a></li>
-<li>generated matrices: <a href="#speye">speye()</a>, <a href="#spones">spones()</a>, <a href="#sprandu_sprandn">sprandu()</a>, <a href="#sprandu_sprandn">sprandn()</a></li>
+<li>generated matrices: <a href="#speye">speye()</a>, <a href="#spones">spones()</a>, <a href="#sprandu_sprandn">sprandu()</a>, <a href="#sprandu_sprandn">sprandn()</a>, <a href="#zeros_standalone">zeros()</a></li>
 <li>eigen and svd decomposition: <a href="#eigs_sym">eigs_sym()</a>, <a href="#eigs_gen">eigs_gen()</a>, <a href="#svds">svds()</a></li>
 <li>solution of sparse linear systems: <a href="#spsolve">spsolve()</a>
-<li>miscellaneous: <a href="#approx_equal">approx_equal()</a>, <a href="#element_access">element access</a>, <a href="#iterators_spmat">element iterators</a>, <a href="#for_each_nonzero">.for_each_nonzero()</a>, <a href="#is_finite">is_finite()</a>, <a href="#print">.print()</a></li>
+<li>miscellaneous: <a href="#approx_equal">approx_equal()</a>, <a href="#element_access">element access</a>, <a href="#iterators_spmat">element iterators</a>, <a href="#for_each_nonzero">.for_each_nonzero()</a>, <a href="#is_finite">is_finite()</a>, <a href="#print">.print()</a>, <a href="#replace">.replace()</a></li>
 </ul>
 </li>
 <br>
@@ -3032,6 +3032,7 @@ A.replace(datum::nan, 0);  // replace each NaN with 0
 See also:
 <ul>
 <li><a href="#transform">.transform()</a></li>
+<li><a href="#for_each">.for_each()</a></li>
 <li><a href="#fill">.fill()</a></li>
 <li><a href="#find">find()</a></li>
 <li><a href="#clamp">clamp()</a></li>
@@ -3143,6 +3144,7 @@ F.for_each( [](mat&amp; X) { X.zeros(4,5); } );  // NOTE: the '&amp;' is crucial
 See also:
 <ul>
 <li><a href="#transform">.transform()</a></li>
+<li><a href="#replace">.replace()</a></li>
 <li><a href="#each_colrow">.each_col() &amp; .each_row()</a></li>
 <li><a href="#for_each_nonzero">.for_each_nonzero()</a></li>
 <li><a href="#misc_fns">miscellaneous element-wise functions</a> &nbsp; (exp, log, pow, sqrt, square, round, ...)</li>
@@ -3191,6 +3193,7 @@ A.for_each_nonzero( [](sp_mat::elem_type&amp; val) { val += 123.0; } );  // NOTE
 See also:
 <ul>
 <li><a href="#iterators_spmat">iterators (sparse matrices)</a></li>
+<li><a href="#replace">.replace()</a></li>
 <li><a href="#for_each">.for_each()</a></li>
 <li><a href="#nonzeros">nonzeros()</a></li>
 <li><a href="#misc_fns">miscellaneous element-wise functions</a></li>
@@ -5331,6 +5334,7 @@ See also:
 <li><a href="#SpMat">SpMat class</a></li>
 <li><a href="#element_access">element access</a></li>
 <li><a href="#for_each_nonzero">.for_each_nonzero()</a></li>
+<li><a href="#replace">.replace()</a></li>
 <li><a href="#submat">submatrix views</a></li>
 <li><a href="#iterators_mat">iterators (dense matrices)</a></li>
 <li><a href="http://cplusplus.com/reference/std/iterator/">iterator at cplusplus.com</a></li>

@@ -3598,8 +3598,8 @@ SpMat<eT>::for_each(functor F)
   
   for(uword i=0; i < N; ++i)
     {
-    const eT  old_value = rw_values[i];
           eT& new_value = rw_values[i];
+    const eT  old_value = new_value;
     
     F(new_value);
     

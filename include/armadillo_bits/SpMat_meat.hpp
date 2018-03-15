@@ -3588,24 +3588,27 @@ SpMat<eT>::for_each(functor F)
   arma_extra_debug_sigprint();
   
   sync_csc();
-  invalidate_cache();
   
   const uword N = (*this).n_nonzero;
   
   eT* rw_values = access::rwp(values);
   
+  bool modified = false;
   bool has_zero = false;
   
   for(uword i=0; i < N; ++i)
     {
-    eT& rw_values_i = rw_values[i];
+    const eT  old_value = rw_values[i];
+          eT& new_value = rw_values[i];
     
-    F(rw_values_i);
+    F(new_value);
     
-    if(rw_values_i == eT(0))  { has_zero = true; }
+    if(new_value != old_value)  { modified = true; }
+    if(new_value == eT(0)    )  { has_zero = true; }
     }
   
-  if(has_zero)  { remove_zeros(); }
+  if(modified)  { invalidate_cache(); }
+  if(has_zero)  { remove_zeros();     }
   
   return *this;
   }

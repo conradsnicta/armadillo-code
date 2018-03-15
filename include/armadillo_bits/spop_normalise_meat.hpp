@@ -137,7 +137,7 @@ spop_normalise::apply_direct(SpMat<eT>& out, const SpMat<eT>& X, const uword p, 
       //   }
       
       
-      // using the .at() accessor, as it's faster for accessing a single row than const_row_iterator
+      // using the .at() accessor, as it's faster than const_row_iterator for accessing a single row
       
       uword count = 0;
       

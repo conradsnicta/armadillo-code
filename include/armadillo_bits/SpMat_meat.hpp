@@ -4617,7 +4617,13 @@ SpMat<eT>::init_batch_std(const Mat<uword>& locs, const Mat<eT>& vals, const boo
       const uword* locs_i   = locs.colptr(i  );
       const uword* locs_im1 = locs.colptr(i-1);
       
-      if( (locs_i[1] < locs_im1[1]) || (locs_i[1] == locs_im1[1]  &&  locs_i[0] <= locs_im1[0]) )
+      const uword row_i = locs_i[1];
+      const uword col_i = locs_i[0];
+      
+      const uword row_im1 = locs_im1[1];
+      const uword col_im1 = locs_im1[0];
+      
+      if( (row_i < row_im1) || ((row_i == row_im1) && (col_i <= col_im1)) )
         {
         actually_sorted = false;
         break;
@@ -4637,7 +4643,7 @@ SpMat<eT>::init_batch_std(const Mat<uword>& locs, const Mat<eT>& vals, const boo
         const uword row = (*locs_mem);  locs_mem++;
         const uword col = (*locs_mem);  locs_mem++;
         
-        packet_vec[i].val   = col * n_rows + row;
+        packet_vec[i].val   = (col * n_rows) + row;
         packet_vec[i].index = i;
         }
       
@@ -4645,7 +4651,7 @@ SpMat<eT>::init_batch_std(const Mat<uword>& locs, const Mat<eT>& vals, const boo
       
       std::sort( packet_vec.begin(), packet_vec.end(), comparator );
       
-      // Now we add the elements in this sorted order.
+      // insert the elements in the sorted order
       for (uword i = 0; i < locs_n_cols; ++i)
         {
         const uword index = packet_vec[i].index;
@@ -4681,29 +4687,38 @@ SpMat<eT>::init_batch_std(const Mat<uword>& locs, const Mat<eT>& vals, const boo
     {
     // Now set the values and row indices correctly.
     // Increment the column pointers in each column (so they are column "counts").
-    for(uword i = 0; i < vals.n_elem; ++i)
+    
+    const uword locs_n_cols = locs.n_cols;
+    
+    for(uword i=0; i < locs_n_cols; ++i)
       {
       const uword* locs_i = locs.colptr(i);
       
-      arma_debug_check( ( (locs_i[0] >= n_rows) || (locs_i[1] >= n_cols) ), "SpMat::SpMat(): invalid row or column index" );
+      const uword row_i = locs_i[0];
+      const uword col_i = locs_i[1];
+      
+      arma_debug_check( ( (row_i >= n_rows) || (col_i >= n_cols) ), "SpMat::SpMat(): invalid row or column index" );
       
       if(i > 0)
         {
         const uword* locs_im1 = locs.colptr(i-1);
         
+        const uword row_im1 = locs_im1[0];
+        const uword col_im1 = locs_im1[1];
+        
         arma_debug_check
           (
-          ( (locs_i[1] < locs_im1[1]) || (locs_i[1] == locs_im1[1]  &&  locs_i[0] < locs_im1[0]) ),
+          ( (col_i < col_im1) || ((col_i == col_im1) && (row_i < row_im1)) ),
           "SpMat::SpMat(): out of order points; either pass sort_locations = true, or sort points in column-major ordering"
           );
         
-        arma_debug_check( ( (locs_i[1] == locs_im1[1]) && (locs_i[0] == locs_im1[0]) ), "SpMat::SpMat(): detected identical locations" );
+        arma_debug_check( ( (col_i == col_im1) && (row_i == row_im1) ), "SpMat::SpMat(): detected identical locations" );
         }
       
       access::rw(values[i])      = vals[i];
-      access::rw(row_indices[i]) = locs_i[0];
+      access::rw(row_indices[i]) = row_i;
       
-      access::rw(col_ptrs[ locs_i[1] + 1 ])++;
+      access::rw(col_ptrs[ col_i + 1 ])++;
       }
     }
   

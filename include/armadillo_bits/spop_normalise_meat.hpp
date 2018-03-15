@@ -26,8 +26,6 @@ spop_normalise::apply(SpMat<typename T1::elem_type>& out, const SpOp<T1,spop_nor
   {
   arma_extra_debug_sigprint();
   
-  typedef typename T1::elem_type eT;
-  
   const uword p   = expr.aux_uword_a;
   const uword dim = expr.aux_uword_b;
   
@@ -36,18 +34,7 @@ spop_normalise::apply(SpMat<typename T1::elem_type>& out, const SpOp<T1,spop_nor
   
   const unwrap_spmat<T1> U(expr.m);
   
-  if(&out == &U.M)
-    {
-    SpMat<eT> tmp;
-    
-    spop_normalise::apply_noalias(tmp, U.M, p, dim);
-    
-    out.steal_mem(tmp);
-    }
-  else
-    {
-    spop_normalise::apply_noalias(out, U.M, p, dim);
-    }
+  spop_normalise::apply_direct(out, U.M, p, dim);
   }
 
 
@@ -55,7 +42,7 @@ spop_normalise::apply(SpMat<typename T1::elem_type>& out, const SpOp<T1,spop_nor
 template<typename eT>
 inline
 void
-spop_normalise::apply_noalias(SpMat<eT>& out, const SpMat<eT>& X, const uword p, const uword dim)
+spop_normalise::apply_direct(SpMat<eT>& out, const SpMat<eT>& X, const uword p, const uword dim)
   {
   arma_extra_debug_sigprint();
   
@@ -150,7 +137,7 @@ spop_normalise::apply_noalias(SpMat<eT>& out, const SpMat<eT>& X, const uword p,
       //   }
       
       
-      // using the .at() accessor, as it's faster to accessing a single row than const_row_iterator
+      // using the .at() accessor, as it's faster for accessing a single row than const_row_iterator
       
       uword count = 0;
       

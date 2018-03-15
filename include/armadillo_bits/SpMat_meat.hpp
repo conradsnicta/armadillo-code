@@ -4605,8 +4605,8 @@ SpMat<eT>::init_batch_std(const Mat<uword>& locs, const Mat<eT>& vals, const boo
   
   if(sort_locations == true)
     {
-    // sort_index() uses std::sort() which may use quicksort... so we better
-    // make sure it's not already sorted before taking an O(N^2) sort penalty.
+    // check if we really need a time consuming sort
+    
     for (uword i = 1; i < locs.n_cols; ++i)
       {
       const uword* locs_i   = locs.colptr(i  );
@@ -4621,33 +4621,41 @@ SpMat<eT>::init_batch_std(const Mat<uword>& locs, const Mat<eT>& vals, const boo
     
     if(actually_sorted == false)
       {
-      // This may not be the fastest possible implementation but it maximizes code reuse.
-      Col<uword> abslocs(locs.n_cols);
+      // see op_sort_index_bones.hpp for the definition of arma_sort_index_packet and arma_sort_index_helper_ascend
+      
+      std::vector< arma_sort_index_packet<uword> > packet_vec(locs.n_cols);
       
       for (uword i = 0; i < locs.n_cols; ++i)
         {
         const uword* locs_i = locs.colptr(i);
         
-        abslocs[i] = locs_i[1] * n_rows + locs_i[0];
+        packet_vec[i].val   = locs_i[1] * n_rows + locs_i[0];
+        packet_vec[i].index = i;
         }
       
-      uvec sorted_indices = sort_index(abslocs); // Ascending sort.
+      arma_sort_index_helper_ascend<uword> comparator;
+      
+      std::sort( packet_vec.begin(), packet_vec.end(), comparator );
       
       // Now we add the elements in this sorted order.
-      for (uword i = 0; i < sorted_indices.n_elem; ++i)
+      for (uword i = 0; i < locs.n_cols; ++i)
         {
-        const uword* locs_i = locs.colptr( sorted_indices[i] );
+        const uword index = packet_vec[i].index;
+        
+        const uword* locs_i = locs.colptr(index);
         
         arma_debug_check( ( (locs_i[0] >= n_rows) || (locs_i[1] >= n_cols) ), "SpMat::SpMat(): invalid row or column index" );
         
         if(i > 0)
           {
-          const uword* locs_im1 = locs.colptr( sorted_indices[i-1] );
+          const uword prev_index = packet_vec[i-1].index;
+          
+          const uword* locs_im1 = locs.colptr(prev_index);
           
           arma_debug_check( ( (locs_i[1] == locs_im1[1]) && (locs_i[0] == locs_im1[0]) ), "SpMat::SpMat(): detected identical locations" );
           }
         
-        access::rw(values[i])      = vals[ sorted_indices[i] ];
+        access::rw(values[i])      = vals[index];
         access::rw(row_indices[i]) = locs_i[0];
         
         access::rw(col_ptrs[ locs_i[1] + 1 ])++;

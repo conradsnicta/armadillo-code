@@ -40,7 +40,7 @@ class spglue_join_rows
   inline static void apply(SpMat<typename T1::elem_type>& out, const SpGlue<T1,T2,spglue_join_rows>& X);
   
   template<typename eT>
-  inline static void apply_noalias(SpMat<eT>& out, const SpMat<eT>& A, const SpMat<eT>& B);
+  inline static void apply_direct(SpMat<eT>& out, const SpMat<eT>& A, const SpMat<eT>& B);
   };
 
 

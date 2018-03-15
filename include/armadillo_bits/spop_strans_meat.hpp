@@ -27,8 +27,6 @@ spop_strans::apply_spmat(SpMat<eT>& out, const SpMat<eT>& X)
   {
   arma_extra_debug_sigprint();
   
-  typedef typename umat::elem_type ueT;
-  
   const uword N = X.n_nonzero;
   
   if(N == uword(0))
@@ -39,21 +37,24 @@ spop_strans::apply_spmat(SpMat<eT>& out, const SpMat<eT>& X)
   
   umat locs(2, N);
   
+  uword* locs_mem = locs.memptr();
+  
   typename SpMat<eT>::const_iterator it = X.begin();
   
-  for(uword count = 0; count < N; ++count)
+  for(uword i=0; i < N; ++i)
     {
-    ueT* locs_ptr = locs.colptr(count);
+    const uword row = it.col();
+    const uword col = it.row();
     
-    locs_ptr[0] = it.col();
-    locs_ptr[1] = it.row();
+    (*locs_mem) = row;  locs_mem++;
+    (*locs_mem) = col;  locs_mem++;
     
     ++it;
     }
   
   const Col<eT> vals(const_cast<eT*>(X.values), N, false);
   
-  SpMat<eT> tmp(locs, vals, X.n_cols, X.n_rows);
+  SpMat<eT> tmp(locs, vals, X.n_cols, X.n_rows, true, false);
   
   out.steal_mem(tmp);
   }
@@ -68,8 +69,7 @@ spop_strans::apply_proxy(SpMat<typename T1::elem_type>& out, const T1& X)
   {
   arma_extra_debug_sigprint();
   
-  typedef typename   T1::elem_type  eT;
-  typedef typename umat::elem_type ueT;
+  typedef typename T1::elem_type eT;
   
   const SpProxy<T1> p(X);
   
@@ -81,27 +81,28 @@ spop_strans::apply_proxy(SpMat<typename T1::elem_type>& out, const T1& X)
     return;
     }
   
-  umat locs(2, N);
+  umat    locs(2, N);
+  Col<eT> vals(   N);
   
-  Col<eT> vals(N);
-  
-  eT* vals_ptr = vals.memptr();
+  uword* locs_mem = locs.memptr();
+  eT*    vals_mem = vals.memptr();
   
   typename SpProxy<T1>::const_iterator_type it = p.begin();
   
-  for(uword count = 0; count < N; ++count)
+  for(uword i=0; i < N; ++i)
     {
-    ueT* locs_ptr = locs.colptr(count);
+    const uword row = it.col();
+    const uword col = it.row();
     
-    locs_ptr[0] = it.col();
-    locs_ptr[1] = it.row();
+    (*locs_mem) = row;  locs_mem++;
+    (*locs_mem) = col;  locs_mem++;
     
-    vals_ptr[count] = (*it);
+    (*vals_mem) = (*it);  vals_mem++;
     
     ++it;
     }
   
-  SpMat<eT> tmp(locs, vals, p.get_n_cols(), p.get_n_rows());
+  SpMat<eT> tmp(locs, vals, p.get_n_cols(), p.get_n_rows(), true, false);
   
   out.steal_mem(tmp);
   }

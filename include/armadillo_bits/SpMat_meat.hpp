@@ -4617,13 +4617,13 @@ SpMat<eT>::init_batch_std(const Mat<uword>& locs, const Mat<eT>& vals, const boo
       const uword* locs_i   = locs.colptr(i  );
       const uword* locs_im1 = locs.colptr(i-1);
       
-      const uword row_i = locs_i[1];
-      const uword col_i = locs_i[0];
+      const uword row_i = locs_i[0];
+      const uword col_i = locs_i[1];
       
-      const uword row_im1 = locs_im1[1];
-      const uword col_im1 = locs_im1[0];
+      const uword row_im1 = locs_im1[0];
+      const uword col_im1 = locs_im1[1];
       
-      if( (row_i < row_im1) || ((row_i == row_im1) && (col_i <= col_im1)) )
+      if( (col_i < col_im1) || ((col_i == col_im1) && (row_i <= row_im1)) )
         {
         actually_sorted = false;
         break;

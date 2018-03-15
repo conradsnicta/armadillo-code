@@ -224,33 +224,50 @@ trace(const Glue<T1, T2, glue_times>& X)
 //! trace of sparse object
 template<typename T1>
 arma_warn_unused
-arma_hot
 inline
-typename enable_if2<is_arma_sparse_type<T1>::value, typename T1::elem_type>::result
-trace(const T1& x)
+typename T1::elem_type
+trace(const SpBase<typename T1::elem_type,T1>& expr)
   {
   arma_extra_debug_sigprint();
   
-  const SpProxy<T1> p(x);
-  
   typedef typename T1::elem_type eT;
   
-  eT result = eT(0);
+  const SpProxy<T1> P(expr.get_ref());
   
-  typename SpProxy<T1>::const_iterator_type it     = p.begin();
-  typename SpProxy<T1>::const_iterator_type it_end = p.end();
+  const double density   = double(P.get_n_nonzero()) / double(P.get_n_elem());
+  const double threshold = double(3) / double(P.get_n_rows());
   
-  while(it != it_end)
+  eT acc = eT(0);
+  
+  if( (is_SpMat<typename SpProxy<T1>::stored_type>::value) && (density >= threshold) )
     {
-    if(it.row() == it.col())
-      {
-      result += (*it);
-      }
+    const unwrap_spmat<typename SpProxy<T1>::stored_type> U(P.Q);
     
-    ++it;
+    const SpMat<eT>& X = U.M;
+    
+    const uword N = (std::min)(X.n_rows, X.n_cols);
+    
+    for(uword i=0; i < N; ++i)
+      {
+      acc += X.at(i,i);  // use binary search
+      }
+    }
+  else
+    {
+    typename SpProxy<T1>::const_iterator_type it = P.begin();
+    
+    const uword P_n_nz = P.get_n_nonzero();
+    
+    
+    for(uword i=0; i < P_n_nz; ++i)
+      {
+      if(it.row() == it.col())  { acc += (*it); }
+      
+      ++it;
+      }
     }
   
-  return result;
+  return acc;
   }
 
 

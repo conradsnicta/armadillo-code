@@ -79,12 +79,15 @@ spop_mean::apply_noalias_fast
     {
     Row<eT> acc(p_n_cols, fill::zeros);
     
+    eT* acc_mem = acc.memptr();
+    
     if(SpProxy<T1>::use_iterator)
       {
-      typename SpProxy<T1>::const_iterator_type it     = p.begin();
-      typename SpProxy<T1>::const_iterator_type it_end = p.end();
+      typename SpProxy<T1>::const_iterator_type it = p.begin();
       
-      while(it != it_end)  { acc[it.col()] += (*it);  ++it; }
+      const uword N = p.get_n_nonzero();
+      
+      for(uword i=0; i < N; ++i)  { acc_mem[it.col()] += (*it); ++it; }
       
       acc /= T(p_n_rows);
       }
@@ -92,7 +95,7 @@ spop_mean::apply_noalias_fast
       {
       for(uword col = 0; col < p_n_cols; ++col)
         {
-        acc[col] = arrayops::accumulate
+        acc_mem[col] = arrayops::accumulate
           (
           &p.get_values()[p.get_col_ptrs()[col]],
           p.get_col_ptrs()[col + 1] - p.get_col_ptrs()[col]
@@ -107,10 +110,13 @@ spop_mean::apply_noalias_fast
     {
     Col<eT> acc(p_n_rows, fill::zeros);
     
-    typename SpProxy<T1>::const_iterator_type it     = p.begin();
-    typename SpProxy<T1>::const_iterator_type it_end = p.end();
+    eT* acc_mem = acc.memptr();
     
-    while(it != it_end)  { acc[it.row()] += (*it);  ++it; }
+    typename SpProxy<T1>::const_iterator_type it = p.begin();
+    
+    const uword N = p.get_n_nonzero();
+    
+    for(uword i=0; i < N; ++i)  { acc_mem[it.row()] += (*it); ++it; }
     
     acc /= T(p_n_cols);
     

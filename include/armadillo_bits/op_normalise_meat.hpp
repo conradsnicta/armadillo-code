@@ -114,6 +114,7 @@ op_normalise_mat::apply(Mat<eT>& out, const Mat<eT>& A, const uword p, const uwo
   else
     {
     const uword n_rows = A.n_rows;
+    const uword n_cols = A.n_cols;
     
     podarray<T> norm_vals(n_rows);
     
@@ -126,14 +127,16 @@ op_normalise_mat::apply(Mat<eT>& out, const Mat<eT>& A, const uword p, const uwo
       norm_vals_mem[i] = (norm_val != T(0)) ? norm_val : T(1);
       }
     
-    typename Mat<eT>::const_row_col_iterator it     = A.begin_row_col();
-    typename Mat<eT>::const_row_col_iterator it_end = A.end_row_col();
+    const eT*   A_mem =   A.memptr();
+          eT* out_mem = out.memptr();
     
-    eT* out_mem = out.memptr();
-    
-    for(; it != it_end; ++it)
+    for(uword col=0; col < n_cols; ++col)
+    for(uword row=0; row < n_rows; ++row)
       {
-      (*out_mem) = (*it) / norm_vals_mem[ it.row() ];  out_mem++;
+      (*out_mem) = (*A_mem) / norm_vals_mem[row];
+      
+      A_mem++;
+      out_mem++;
       }
     }
   }

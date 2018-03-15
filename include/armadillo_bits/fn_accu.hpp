@@ -715,36 +715,32 @@ accu(const T& x)
 //! accumulate values in a sparse object
 template<typename T1>
 arma_warn_unused
-arma_hot
 inline
-typename enable_if2<is_arma_sparse_type<T1>::value, typename T1::elem_type>::result
-accu(const T1& x)
+typename T1::elem_type
+accu(const SpBase<typename T1::elem_type,T1>& expr)
   {
   arma_extra_debug_sigprint();
   
   typedef typename T1::elem_type eT;
   
-  const SpProxy<T1> p(x);
+  const SpProxy<T1> P(expr.get_ref());
   
   if(SpProxy<T1>::use_iterator == false)
     {
     // direct counting
-    return arrayops::accumulate(p.get_values(), p.get_n_nonzero());
+    return arrayops::accumulate(P.get_values(), P.get_n_nonzero());
     }
   else
     {
-    typename SpProxy<T1>::const_iterator_type it     = p.begin();
-    typename SpProxy<T1>::const_iterator_type it_end = p.end();
+    typename SpProxy<T1>::const_iterator_type it = P.begin();
     
-    eT result = eT(0);
+    const uword P_n_nz = P.get_n_nonzero();
     
-    while(it != it_end)
-      {
-      result += (*it);
-      ++it;
-      }
+    eT val = eT(0);
     
-    return result;
+    for(uword i=0; i < P_n_nz; ++i)  { val += (*it); ++it; }
+    
+    return val;
     }
   }
 

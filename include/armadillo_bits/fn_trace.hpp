@@ -234,18 +234,15 @@ trace(const SpBase<typename T1::elem_type,T1>& expr)
   
   const SpProxy<T1> P(expr.get_ref());
   
-  const double density   = double(P.get_n_nonzero()) / double(P.get_n_elem());
-  const double threshold = double(3) / double(P.get_n_rows());
+  const uword N = (std::min)(P.get_n_rows(), P.get_n_cols());
   
   eT acc = eT(0);
   
-  if( (is_SpMat<typename SpProxy<T1>::stored_type>::value) && (density >= threshold) )
+  if( (is_SpMat<typename SpProxy<T1>::stored_type>::value) && (P.get_n_nonzero() >= 5*N) )
     {
     const unwrap_spmat<typename SpProxy<T1>::stored_type> U(P.Q);
     
     const SpMat<eT>& X = U.M;
-    
-    const uword N = (std::min)(X.n_rows, X.n_cols);
     
     for(uword i=0; i < N; ++i)
       {
@@ -257,7 +254,6 @@ trace(const SpBase<typename T1::elem_type,T1>& expr)
     typename SpProxy<T1>::const_iterator_type it = P.begin();
     
     const uword P_n_nz = P.get_n_nonzero();
-    
     
     for(uword i=0; i < P_n_nz; ++i)
       {

@@ -55,24 +55,23 @@ spop_diagmat::apply_noalias(SpMat<typename T1::elem_type>& out, const SpProxy<T1
   
   typedef typename T1::elem_type eT;
   
-  const uword n_rows = P.get_n_rows();
-  const uword n_cols = P.get_n_cols();
+  const uword P_n_rows = P.get_n_rows();
+  const uword P_n_cols = P.get_n_cols();
+  const uword P_n_nz   = P.get_n_nonzero();
   
-  const bool P_is_vec = (n_rows == 1) || (n_cols == 1);
+  const bool P_is_vec = (P_n_rows == 1) || (P_n_cols == 1);
   
   if(P_is_vec)    // generate a diagonal matrix out of a vector
     {
-    const uword N = (n_rows == 1) ? n_cols : n_rows;
+    const uword N = (P_n_rows == 1) ? P_n_cols : P_n_rows;
     
     out.zeros(N, N);
-    
-    const uword P_n_nz = P.get_n_nonzero();
     
     if(P_n_nz == 0)  { return; }
     
     typename SpProxy<T1>::const_iterator_type it = P.begin();
     
-    if(n_cols == 1)
+    if(P_n_cols == 1)
       {
       for(uword i=0; i < P_n_nz; ++i)
         {
@@ -84,7 +83,7 @@ spop_diagmat::apply_noalias(SpMat<typename T1::elem_type>& out, const SpProxy<T1
         }
       }
     else
-    if(n_rows == 1)
+    if(P_n_rows == 1)
       {
       for(uword i=0; i < P_n_nz; ++i)
         {
@@ -98,18 +97,15 @@ spop_diagmat::apply_noalias(SpMat<typename T1::elem_type>& out, const SpProxy<T1
     }
   else   // generate a diagonal matrix out of a matrix
     {
-    out.zeros(n_rows, n_cols);
+    out.zeros(P_n_rows, P_n_cols);
     
-    const double density   = double(P.get_n_nonzero()) / double(P.get_n_elem());
-    const double threshold = double(3) / double(P.get_n_rows());
+    const uword N = (std::min)(P_n_rows, P_n_cols);
     
-    if( (is_SpMat<typename SpProxy<T1>::stored_type>::value) && (density >= threshold) )
+    if( (is_SpMat<typename SpProxy<T1>::stored_type>::value) && (P_n_nz >= 5*N) )
       {
       const unwrap_spmat<typename SpProxy<T1>::stored_type> U(P.Q);
       
       const SpMat<eT>& X = U.M;
-      
-      const uword N = (std::min)(X.n_rows, X.n_cols);
       
       for(uword i=0; i < N; ++i)
         {
@@ -118,8 +114,6 @@ spop_diagmat::apply_noalias(SpMat<typename T1::elem_type>& out, const SpProxy<T1
       }
     else
       {
-      const uword P_n_nz = P.get_n_nonzero();
-      
       if(P_n_nz == 0)  { return; }
       
       typename SpProxy<T1>::const_iterator_type it = P.begin();

@@ -119,16 +119,37 @@ trace(const Glue<T1, T2, glue_times>& X)
     {
     const uword N = (std::min)(A_n_rows, B_n_cols);
     
+    eT acc1 = eT(0);
+    eT acc2 = eT(0);
+    
     for(uword k=0; k < N; ++k)
       {
       const eT* B_colptr = B.colptr(k);
       
       // condition: A_n_cols = B_n_rows
-      for(uword i=0; i < A_n_cols; ++i)
+      
+      uword j;
+      
+      for(j=1; j < A_n_cols; j+=2)
         {
-        acc += A.at(k,i) * B_colptr[i];
+        const uword i = (j-1);
+        
+        const eT tmp_i = B_colptr[i];
+        const eT tmp_j = B_colptr[j];
+        
+        acc1 += A.at(k, i) * tmp_i;
+        acc2 += A.at(k, j) * tmp_j;
+        }
+      
+      const uword i = (j-1);
+      
+      if(i < A_n_cols)
+        {
+        acc1 += A.at(k, i) * B_colptr[i];
         }
       }
+      
+    acc = (acc1 + acc2);
     }
   else
   if( (partial_unwrap<T1>::do_trans == true ) && (partial_unwrap<T2>::do_trans == false) )

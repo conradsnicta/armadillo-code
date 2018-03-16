@@ -109,7 +109,9 @@ spop_diagmat::apply_noalias(SpMat<typename T1::elem_type>& out, const SpProxy<T1
       
       for(uword i=0; i < N; ++i)
         {
-        out.at(i,i) = X.at(i,i);  // use binary search
+        const eT val = X.at(i,i);  // use binary search
+        
+        if(val != eT(0))  { out.at(i,i) = val; }
         }
       }
     else
@@ -233,7 +235,9 @@ spop_diagmat2::apply_noalias(SpMat<eT>& out, const SpMat<eT>& X, const uword row
       const uword row = i + row_offset;
       const uword col = i + col_offset;
       
-      out.at(row,col) = X.at(row,col);
+      const eT val = X.at(row,col);
+      
+      if(val != eT(0))  { out.at(row,col) = val; }
       }
     }
   }

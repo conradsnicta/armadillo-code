@@ -101,6 +101,8 @@ class op_find_simple;
 class op_find_unique;
 class op_flipud;
 class op_fliplr;
+class op_reverse_vec;
+class op_reverse_mat;
 class op_real;
 class op_imag;
 class op_nonzeros;

@@ -26,26 +26,50 @@ op_flipud::apply(Mat<typename T1::elem_type>& out, const Op<T1,op_flipud>& in)
   {
   arma_extra_debug_sigprint();
   
-  typedef typename T1::elem_type eT;
+  const unwrap<T1> U(in.m);
   
-  const unwrap<T1>   tmp(in.m);
-  const Mat<eT>& X = tmp.M;
+  op_flipud::apply_direct(out, U.M);
+  }
+
+
+
+template<typename eT>
+inline
+void
+op_flipud::apply_direct(Mat<eT>& out, const Mat<eT>& X)
+  {
+  arma_extra_debug_sigprint();
   
-  const uword X_n_rows = T1::is_row ? uword(1) : X.n_rows;
-  const uword X_n_cols = T1::is_col ? uword(1) : X.n_cols;
+  const uword X_n_rows = X.n_rows;
+  const uword X_n_cols = X.n_cols;
+  
+  const uword X_n_rows_m1 = X_n_rows - 1;
   
   if(&out != &X)
     {
     out.copy_size(X);
     
-    for(uword col=0; col<X_n_cols; ++col)
+    if(X_n_cols == 1)
       {
-      const eT*   X_data =   X.colptr(col);
-            eT* out_data = out.colptr(col);
+      const eT*   X_mem =   X.memptr();
+            eT* out_mem = out.memptr();
       
-      for(uword row=0; row<X_n_rows; ++row)
+      for(uword row=0; row < X_n_rows; ++row)
         {
-        out_data[row] = X_data[X_n_rows-1 - row];
+        out_mem[row] = X_mem[X_n_rows_m1 - row];
+        }
+      }
+    else
+      {
+      for(uword col=0; col < X_n_cols; ++col)
+        {
+        const eT*   X_colmem =   X.colptr(col);
+              eT* out_colmem = out.colptr(col);
+        
+        for(uword row=0; row < X_n_rows; ++row)
+          {
+          out_colmem[row] = X_colmem[X_n_rows_m1 - row];
+          }
         }
       }
     }
@@ -53,13 +77,25 @@ op_flipud::apply(Mat<typename T1::elem_type>& out, const Op<T1,op_flipud>& in)
     {
     const uword N = X_n_rows / 2;
     
-    for(uword col=0; col<X_n_cols; ++col)
+    if(X_n_cols == 1)
       {
-      eT* out_data = out.colptr(col);
+      eT* out_mem = out.memptr();
       
-      for(uword row=0; row<N; ++row)
+      for(uword row=0; row < N; ++row)
         {
-        std::swap(out_data[row], out_data[X_n_rows-1 - row]);
+        std::swap(out_mem[row], out_mem[X_n_rows_m1 - row]);
+        }
+      }
+    else
+      {
+      for(uword col=0; col < X_n_cols; ++col)
+        {
+        eT* out_colmem = out.colptr(col);
+        
+        for(uword row=0; row < N; ++row)
+          {
+          std::swap(out_colmem[row], out_colmem[X_n_rows_m1 - row]);
+          }
         }
       }
     }
@@ -74,37 +110,54 @@ op_fliplr::apply(Mat<typename T1::elem_type>& out, const Op<T1,op_fliplr>& in)
   {
   arma_extra_debug_sigprint();
   
-  typedef typename T1::elem_type eT;
+  const unwrap<T1> U(in.m);
   
-  const unwrap<T1>   tmp(in.m);
-  const Mat<eT>& X = tmp.M;
+  op_fliplr::apply_direct(out, U.M);
+  }
+
+
+
+template<typename eT>
+inline
+void
+op_fliplr::apply_direct(Mat<eT>& out, const Mat<eT>& X)
+  {
+  arma_extra_debug_sigprint();
   
   const uword X_n_cols = X.n_cols;
+  const uword X_n_rows = X.n_rows;
+  
+  const uword X_n_cols_m1 = X_n_cols - 1;
   
   if(&out != &X)
     {
     out.copy_size(X);
     
-    if(T1::is_row || X.is_rowvec())
+    if(X_n_rows == 1)
       {
-      for(uword i=0; i<X_n_cols; ++i)  { out[i] = X[X_n_cols-1 - i]; }
+      const eT*   X_mem =   X.memptr();
+            eT* out_mem = out.memptr();
+      
+      for(uword i=0; i < X_n_cols; ++i)  { out_mem[i] = X_mem[X_n_cols_m1 - i]; }
       }
     else
       {
-      for(uword i=0; i<X_n_cols; ++i)  { out.col(i) = X.col(X_n_cols-1 - i); }
+      for(uword i=0; i < X_n_cols; ++i)  { out.col(i) = X.col(X_n_cols_m1 - i); }
       }
     }
-  else
+  else  // in-place operation
     {
     const uword N = X_n_cols / 2;
     
-    if(T1::is_row || X.is_rowvec())
+    if(X_n_rows == 1)
       {
-      for(uword i=0; i<N; ++i)  { std::swap(out[i], out[X_n_cols-1 - i]); }
+      eT* out_mem = out.memptr();
+      
+      for(uword i=0; i < N; ++i)  { std::swap(out_mem[i], out_mem[X_n_cols_m1 - i]); }
       }
     else
       {
-      for(uword i=0; i<N; ++i)  { out.swap_cols(i, X_n_cols-1 - i); }
+      for(uword i=0; i < N; ++i)  { out.swap_cols(i, X_n_cols_m1 - i); }
       }
     }
   }

@@ -14,34 +14,28 @@
 // ------------------------------------------------------------------------
 
 
-//! \addtogroup op_flip
+//! \addtogroup op_reverse
 //! @{
 
 
 
-class op_flipud
+class op_reverse_vec
   {
   public:
   
   template<typename T1>
-  inline static void apply(Mat<typename T1::elem_type>& out, const Op<T1,op_flipud>& in);
-  
-  template<typename eT>
-  inline static void apply_direct(Mat<eT>& out, const Mat<eT>& X);
+  inline static void apply(Mat<typename T1::elem_type>& out, const Op<T1,op_reverse_vec>& in);
   };
 
 
 
 
-class op_fliplr
+class op_reverse_mat
   {
   public:
   
   template<typename T1>
-  inline static void apply(Mat<typename T1::elem_type>& out, const Op<T1,op_fliplr>& in);
-  
-  template<typename eT>
-  inline static void apply_direct(Mat<eT>& out, const Mat<eT>& X);
+  inline static void apply(Mat<typename T1::elem_type>& out, const Op<T1,op_reverse_mat>& in);
   };
 
 

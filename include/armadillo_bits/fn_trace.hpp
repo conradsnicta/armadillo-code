@@ -248,4 +248,55 @@ trace(const SpBase<typename T1::elem_type,T1>& expr)
 
 
 
+//! trace of sparse object; speedup for trace(A*B)
+template<typename T1, typename T2>
+arma_warn_unused
+inline
+typename T1::elem_type
+trace(const SpGlue<T1, T2, spglue_times>& expr)
+  {
+  arma_extra_debug_sigprint();
+  
+  typedef typename T1::elem_type eT;
+  
+  // better-than-nothing implementation
+  
+  const unwrap_spmat<T1> UA(expr.A);
+  const unwrap_spmat<T2> UB(expr.B);
+  
+  const SpMat<eT>& A = UA.M;
+  const SpMat<eT>& B = UB.M;
+  
+  arma_debug_assert_mul_size(A.n_rows, A.n_cols, B.n_rows, B.n_cols, "matrix multiplication");
+  
+  if( (A.n_nonzero == 0) || (B.n_nonzero == 0) )
+    {
+    return eT(0);
+    }
+  
+  const uword N = (std::min)(A.n_rows, B.n_cols);
+  
+  eT acc = eT(0);
+  
+  for(uword k=0; k < N; ++k)
+    {
+    typename SpMat<eT>::const_col_iterator B_it     = B.begin_col(k);
+    typename SpMat<eT>::const_col_iterator B_it_end = B.end_col(k);
+    
+    while(B_it != B_it_end)
+      {
+      const eT    B_val = (*B_it);
+      const uword i     = B_it.row();
+      
+      acc += A.at(k,i) * B_val;
+      
+      ++B_it;
+      }
+    }
+  
+  return acc;
+  }
+
+
+
 //! @}

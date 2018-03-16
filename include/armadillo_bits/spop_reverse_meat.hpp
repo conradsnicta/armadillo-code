@@ -50,8 +50,8 @@ spop_reverse::apply_spmat(SpMat<eT>& out, const SpMat<eT>& X, const uword dim)
     {
     for(uword i=0; i < N; ++i)
       {
-      const uword row = it.col();
-      const uword col = it.row();
+      const uword row = it.row();
+      const uword col = it.col();
       
       (*locs_mem) = X_n_rows_m1 - row;  locs_mem++;
       (*locs_mem) =               col;  locs_mem++;
@@ -64,8 +64,8 @@ spop_reverse::apply_spmat(SpMat<eT>& out, const SpMat<eT>& X, const uword dim)
     {
     for(uword i=0; i < N; ++i)
       {
-      const uword row = it.col();
-      const uword col = it.row();
+      const uword row = it.row();
+      const uword col = it.col();
       
       (*locs_mem) =               row;  locs_mem++;
       (*locs_mem) = X_n_cols_m1 - col;  locs_mem++;
@@ -114,14 +114,14 @@ spop_reverse::apply_proxy(SpMat<typename T1::elem_type>& out, const T1& X, const
   uword* locs_mem = locs.memptr();
   eT*    vals_mem = vals.memptr();
   
-  typename SpProxy<T1>::const_iterator_type it = p.begin();
+  typename SpProxy<T1>::const_iterator_type it = P.begin();
   
   if(dim == 0)
     {
     for(uword i=0; i < N; ++i)
       {
-      const uword row = it.col();
-      const uword col = it.row();
+      const uword row = it.row();
+      const uword col = it.col();
       
       (*locs_mem) = P_n_rows_m1 - row;  locs_mem++;
       (*locs_mem) =               col;  locs_mem++;
@@ -136,8 +136,8 @@ spop_reverse::apply_proxy(SpMat<typename T1::elem_type>& out, const T1& X, const
     {
     for(uword i=0; i < N; ++i)
       {
-      const uword row = it.col();
-      const uword col = it.row();
+      const uword row = it.row();
+      const uword col = it.col();
       
       (*locs_mem) =               row;  locs_mem++;
       (*locs_mem) = P_n_cols_m1 - col;  locs_mem++;

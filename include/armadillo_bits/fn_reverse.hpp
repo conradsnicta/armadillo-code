@@ -84,4 +84,21 @@ reverse
 
 
 
+template<typename T1>
+arma_warn_unused
+inline
+const SpOp<T1, spop_reverse>
+reverse
+  (
+  const SpBase<typename T1::elem_type,T1>& X,
+  const uword dim = 0
+  )
+  {
+  arma_extra_debug_sigprint();
+  
+  return SpOp<T1, spop_reverse>(X.get_ref(), dim, 0);
+  }
+
+
+
 //! @}

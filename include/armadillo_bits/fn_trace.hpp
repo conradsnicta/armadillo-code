@@ -20,18 +20,17 @@
 
 template<typename T1>
 arma_warn_unused
-arma_hot
 inline
-typename enable_if2<is_arma_type<T1>::value, typename T1::elem_type>::result
-trace(const T1& X)
+typename T1::elem_type
+trace(const Base<typename T1::elem_type, T1>& X)
   {
   arma_extra_debug_sigprint();
   
   typedef typename T1::elem_type eT;
   
-  const Proxy<T1> A(X);
+  const Proxy<T1> P(X.get_ref());
   
-  const uword N = (std::min)(A.get_n_rows(), A.get_n_cols());
+  const uword N = (std::min)(P.get_n_rows(), P.get_n_cols());
   
   eT val1 = eT(0);
   eT val2 = eT(0);
@@ -39,13 +38,13 @@ trace(const T1& X)
   uword i,j;
   for(i=0, j=1; j<N; i+=2, j+=2)
     {
-    val1 += A.at(i,i);
-    val2 += A.at(j,j);
+    val1 += P.at(i,i);
+    val2 += P.at(j,j);
     }
   
   if(i < N)
     {
-    val1 += A.at(i,i);
+    val1 += P.at(i,i);
     }
   
   return val1 + val2;
@@ -55,7 +54,6 @@ trace(const T1& X)
 
 template<typename T1>
 arma_warn_unused
-arma_hot
 inline
 typename T1::elem_type
 trace(const Op<T1, op_diagmat>& X)
@@ -201,7 +199,7 @@ trace(const Glue<T1, T2, glue_times>& X)
 
 
 
-//! trace of sparse object
+//! trace of sparse object; generic version
 template<typename T1>
 arma_warn_unused
 inline

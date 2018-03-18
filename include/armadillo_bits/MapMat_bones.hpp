@@ -31,9 +31,9 @@ class MapMat
   static const bool is_row = false;
   static const bool is_col = false;
   
-  arma_aligned const uword n_rows;    //!< number of rows     (read-only)
-  arma_aligned const uword n_cols;    //!< number of columns  (read-only)
-  arma_aligned const uword n_elem;    //!< number of elements (read-only)
+  const uword n_rows;    //!< number of rows     (read-only)
+  const uword n_cols;    //!< number of columns  (read-only)
+  const uword n_elem;    //!< number of elements (read-only)
   
   
   private:

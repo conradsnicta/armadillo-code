@@ -26,16 +26,33 @@ op_reverse_vec::apply(Mat<typename T1::elem_type>& out, const Op<T1,op_reverse_v
   {
   arma_extra_debug_sigprint();
   
-  const unwrap<T1> U(in.m);
+  const Proxy<T1> P(in.m);
   
-  if(T1::is_col || U.M.is_colvec())
+  if(is_Mat<typename Proxy<T1>::stored_type>::value || P.is_alias(out))
     {
-    op_flipud::apply_direct(out, U.M);
+    const unwrap<typename Proxy<T1>::stored_type> U(P.Q);
+    
+    if((T1::is_col) || (P.get_n_cols() == 1))
+      {
+      op_flipud::apply_direct(out, U.M);
+      }
+    else
+    if((T1::is_row) || (P.get_n_rows() == 1))
+      {
+      op_fliplr::apply_direct(out, U.M);
+      }
     }
   else
-  if(T1::is_row || U.M.is_rowvec())
     {
-    op_fliplr::apply_direct(out, U.M);
+    if((T1::is_col) || (P.get_n_cols() == 1))
+      {
+      op_flipud::apply_proxy_noalias(out, P);
+      }
+    else
+    if((T1::is_row) || (P.get_n_rows() == 1))
+      {
+      op_fliplr::apply_proxy_noalias(out, P);
+      }
     }
   }
 
@@ -52,14 +69,33 @@ op_reverse_mat::apply(Mat<typename T1::elem_type>& out, const Op<T1,op_reverse_m
   
   arma_debug_check( (dim > 1), "reverse(): parameter 'dim' must be 0 or 1" );
   
-  if(dim == 0)
+  const Proxy<T1> P(in.m);
+  
+  if(is_Mat<typename Proxy<T1>::stored_type>::value || P.is_alias(out))
     {
-    op_flipud::apply_direct(out, in.m);
+    const unwrap<typename Proxy<T1>::stored_type> U(P.Q);
+    
+    if(dim == 0)
+      {
+      op_flipud::apply_direct(out, U.M);
+      }
+    else
+    if(dim == 1)
+      {
+      op_fliplr::apply_direct(out, U.M);
+      }
     }
   else
-  if(dim == 1)
     {
-    op_fliplr::apply_direct(out, in.m);
+    if(dim == 0)
+      {
+      op_flipud::apply_proxy_noalias(out, P);
+      }
+    else
+    if(dim == 1)
+      {
+      op_fliplr::apply_proxy_noalias(out, P);
+      }
     }
   }
 

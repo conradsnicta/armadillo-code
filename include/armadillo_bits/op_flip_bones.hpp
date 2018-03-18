@@ -28,6 +28,9 @@ class op_flipud
   
   template<typename eT>
   inline static void apply_direct(Mat<eT>& out, const Mat<eT>& X);
+  
+  template<typename T1>
+  inline static void apply_proxy_noalias(Mat<typename T1::elem_type>& out, const Proxy<T1>& P);
   };
 
 
@@ -42,6 +45,9 @@ class op_fliplr
   
   template<typename eT>
   inline static void apply_direct(Mat<eT>& out, const Mat<eT>& X);
+  
+  template<typename T1>
+  inline static void apply_proxy_noalias(Mat<typename T1::elem_type>& out, const Proxy<T1>& P);
   };
 
 

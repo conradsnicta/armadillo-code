@@ -4634,7 +4634,7 @@ SpMat<eT>::init_batch_std(const Mat<uword>& locs, const Mat<eT>& vals, const boo
       {
       // see op_sort_index_bones.hpp for the definition of arma_sort_index_packet and arma_sort_index_helper_ascend
       
-      std::vector< arma_sort_index_packet<uword> > packet_vec(locs.n_cols);
+      std::vector< arma_sort_index_packet<uword> > packet_vec(locs_n_cols);
       
       const uword* locs_mem = locs.memptr();
       

@@ -151,19 +151,14 @@ class SpSubview : public SpBase<eT, SpSubview<eT> >
     public:
 
     inline iterator_base(const SpSubview& in_M);
-    inline iterator_base(const SpSubview& in_M, const uword col, const uword pos, const uword skip_pos);
+    inline iterator_base(const SpSubview& in_M, const uword col, const uword pos);
 
-    arma_inline eT operator*() const;
-
-    // Don't hold location internally; call "dummy" methods to get that information.
-    arma_inline uword row() const { return M.m.row_indices[internal_pos + skip_pos] - M.aux_row1; }
     arma_inline uword col() const { return internal_col;                                          }
     arma_inline uword pos() const { return internal_pos;                                          }
 
-    arma_aligned const SpSubview& M;
+    arma_aligned const SpSubview* M;
     arma_aligned       uword      internal_col;
     arma_aligned       uword      internal_pos;
-    arma_aligned       uword      skip_pos; // not used in row_iterator or const_row_iterator
 
     typedef std::bidirectional_iterator_tag iterator_category;
     typedef eT                              value_type;
@@ -180,6 +175,11 @@ class SpSubview : public SpBase<eT, SpSubview<eT> >
     inline const_iterator(const SpSubview& in_M, uword in_row, uword in_col);
     inline const_iterator(const SpSubview& in_M, uword in_row, uword in_col, uword in_pos, uword skip_pos);
     inline const_iterator(const const_iterator& other);
+
+    arma_inline eT operator*() const;
+
+    // Don't hold location internally; call "dummy" methods to get that information.
+    arma_inline uword row() const { return iterator_base::M->m.row_indices[iterator_base::internal_pos + skip_pos] - iterator_base::M->aux_row1; }
 
     inline const_iterator& operator++();
     inline const_iterator  operator++(int);
@@ -198,6 +198,8 @@ class SpSubview : public SpBase<eT, SpSubview<eT> >
 
     inline bool operator!=(const typename SpMat<eT>::const_row_iterator& rhs) const;
     inline bool operator==(const typename SpMat<eT>::const_row_iterator& rhs) const;
+
+    arma_aligned       uword      skip_pos; // not used in row_iterator or const_row_iterator
     };
 
   class iterator : public const_iterator
@@ -228,6 +230,7 @@ class SpSubview : public SpBase<eT, SpSubview<eT> >
     {
     public:
 
+    inline const_row_iterator();
     inline const_row_iterator(const SpSubview& in_M, uword initial_pos = 0);
     inline const_row_iterator(const SpSubview& in_M, uword in_row, uword in_col);
     inline const_row_iterator(const const_row_iterator& other);
@@ -241,7 +244,7 @@ class SpSubview : public SpBase<eT, SpSubview<eT> >
     uword internal_row; // Hold row internally because we use internal_pos differently.
     uword actual_pos; // Actual position in subview's parent matrix.
 
-    arma_inline eT operator*() const { return iterator_base::M.m.values[actual_pos]; }
+    arma_inline eT operator*() const { return iterator_base::M->m.values[actual_pos]; }
 
     arma_inline uword row() const { return internal_row; }
 

@@ -93,20 +93,20 @@ class SpSubview : public SpBase<eT, SpSubview<eT> >
   inline void ones();
   inline void eye();
 
-  arma_hot inline SpSubview_MapMat_elem<eT> operator[](const uword i);
-  arma_hot inline eT                        operator[](const uword i) const;
+  arma_hot inline SpSubview_MapMat_val<eT> operator[](const uword i);
+  arma_hot inline eT                       operator[](const uword i) const;
 
-  arma_hot inline SpSubview_MapMat_elem<eT> operator()(const uword i);
-  arma_hot inline eT                        operator()(const uword i) const;
+  arma_hot inline SpSubview_MapMat_val<eT> operator()(const uword i);
+  arma_hot inline eT                       operator()(const uword i) const;
 
-  arma_hot inline SpSubview_MapMat_elem<eT> operator()(const uword in_row, const uword in_col);
-  arma_hot inline eT                        operator()(const uword in_row, const uword in_col) const;
+  arma_hot inline SpSubview_MapMat_val<eT> operator()(const uword in_row, const uword in_col);
+  arma_hot inline eT                       operator()(const uword in_row, const uword in_col) const;
 
-  arma_hot inline SpSubview_MapMat_elem<eT> at(const uword i);
-  arma_hot inline eT                        at(const uword i) const;
+  arma_hot inline SpSubview_MapMat_val<eT> at(const uword i);
+  arma_hot inline eT                       at(const uword i) const;
 
-  arma_hot inline SpSubview_MapMat_elem<eT> at(const uword in_row, const uword in_col);
-  arma_hot inline eT                        at(const uword in_row, const uword in_col) const;
+  arma_hot inline SpSubview_MapMat_val<eT> at(const uword in_row, const uword in_col);
+  arma_hot inline eT                       at(const uword in_row, const uword in_col) const;
 
   inline bool check_overlap(const SpSubview& x) const;
 

@@ -52,8 +52,8 @@ template<typename eT> class spdiagview;
 
 template<typename eT> class MapMat;
 template<typename eT> class MapMat_val;
-template<typename eT> class SpMat_MapMat_elem;
-template<typename eT> class SpSubview_MapMat_elem;
+template<typename eT> class SpMat_MapMat_val;
+template<typename eT> class SpSubview_MapMat_val;
 
 template<typename eT, typename T1>              class subview_elem1;
 template<typename eT, typename T1, typename T2> class subview_elem2;

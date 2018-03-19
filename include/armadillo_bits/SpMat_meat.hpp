@@ -2786,13 +2786,13 @@ SpMat<eT>::shed_cols(const uword in_col1, const uword in_col2)
 template<typename eT>
 arma_inline
 arma_warn_unused
-SpMat_MapMat_elem<eT>
+SpMat_MapMat_val<eT>
 SpMat<eT>::operator[](const uword i)
   {
   const uword in_col = i / n_rows;
   const uword in_row = i % n_rows;
   
-  return SpMat_MapMat_elem<eT>((*this), cache, in_row, in_col);
+  return SpMat_MapMat_val<eT>((*this), cache, in_row, in_col);
   }
 
 
@@ -2811,13 +2811,13 @@ SpMat<eT>::operator[](const uword i) const
 template<typename eT>
 arma_inline
 arma_warn_unused
-SpMat_MapMat_elem<eT>
+SpMat_MapMat_val<eT>
 SpMat<eT>::at(const uword i)
   {
   const uword in_col = i / n_rows;
   const uword in_row = i % n_rows;
   
-  return SpMat_MapMat_elem<eT>((*this), cache, in_row, in_col);
+  return SpMat_MapMat_val<eT>((*this), cache, in_row, in_col);
   }
 
 
@@ -2836,7 +2836,7 @@ SpMat<eT>::at(const uword i) const
 template<typename eT>
 arma_inline
 arma_warn_unused
-SpMat_MapMat_elem<eT>
+SpMat_MapMat_val<eT>
 SpMat<eT>::operator()(const uword i)
   {
   arma_debug_check( (i >= n_elem), "SpMat::operator(): out of bounds");
@@ -2844,7 +2844,7 @@ SpMat<eT>::operator()(const uword i)
   const uword in_col = i / n_rows;
   const uword in_row = i % n_rows;
   
-  return SpMat_MapMat_elem<eT>((*this), cache, in_row, in_col);
+  return SpMat_MapMat_val<eT>((*this), cache, in_row, in_col);
   }
 
 
@@ -2870,10 +2870,10 @@ SpMat<eT>::operator()(const uword i) const
 template<typename eT>
 arma_inline
 arma_warn_unused
-SpMat_MapMat_elem<eT>
+SpMat_MapMat_val<eT>
 SpMat<eT>::at(const uword in_row, const uword in_col)
   {
-  return SpMat_MapMat_elem<eT>((*this), cache, in_row, in_col);
+  return SpMat_MapMat_val<eT>((*this), cache, in_row, in_col);
   }
 
 
@@ -2892,12 +2892,12 @@ SpMat<eT>::at(const uword in_row, const uword in_col) const
 template<typename eT>
 arma_inline
 arma_warn_unused
-SpMat_MapMat_elem<eT>
+SpMat_MapMat_val<eT>
 SpMat<eT>::operator()(const uword in_row, const uword in_col)
   {
   arma_debug_check( ((in_row >= n_rows) || (in_col >= n_cols)), "SpMat::operator(): out of bounds");
   
-  return SpMat_MapMat_elem<eT>((*this), cache, in_row, in_col);
+  return SpMat_MapMat_val<eT>((*this), cache, in_row, in_col);
   }
 
 

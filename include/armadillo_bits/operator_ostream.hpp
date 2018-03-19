@@ -84,7 +84,7 @@ operator<< (std::ostream& o, const MapMat_val<eT>& X)
 template<typename eT>
 inline
 std::ostream&
-operator<< (std::ostream& o, const SpMat_MapMat_elem<eT>& X)
+operator<< (std::ostream& o, const SpMat_MapMat_val<eT>& X)
   {
   arma_extra_debug_sigprint();
   
@@ -98,7 +98,7 @@ operator<< (std::ostream& o, const SpMat_MapMat_elem<eT>& X)
 template<typename eT>
 inline
 std::ostream&
-operator<< (std::ostream& o, const SpSubview_MapMat_elem<eT>& X)
+operator<< (std::ostream& o, const SpSubview_MapMat_val<eT>& X)
   {
   arma_extra_debug_sigprint();
   

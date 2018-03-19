@@ -2218,7 +2218,6 @@ See also:
 <li><a href="#replace">.replace()</a></li>
 <li><a href="#transform">.transform()</a></li>
 <li><a href="#each_colrow">.each_col() &amp; .each_row()</a></li>
-<li><a href="#kron">kron()</a></li>
 <li><a href="#misc_fns">miscellaneous element-wise functions</a> &nbsp; (exp, log, pow, sqrt, square, round, ...)</li>
 <li><a href="https://en.wikipedia.org/wiki/Floating_point">floating point representation in Wikipedia</a></li>
 <li><a href="http://mathworld.wolfram.com/Floating-PointRepresentation.html">floating point representation in MathWorld</a></li>
@@ -3979,7 +3978,7 @@ Member functions of <i>Mat</i>
 </li>
 <br>
 <li>
-Repeat a vector operation on each column or row of a matrix
+Apply a vector operation to each column or row of a matrix
 </li>
 <br>
 <li>
@@ -4066,7 +4065,7 @@ Member function of <i>Cube</i>
 </li>
 <br>
 <li>
-Repeat a matrix operation on each slice of a cube, with each slice treated as a matrix
+Apply a matrix operation to each slice of a cube, with each slice treated as a matrix
 </li>
 <br>
 <li>
@@ -9127,7 +9126,7 @@ mat K = kron(A,B);
 <li>
 See also:
 <ul>
-<li><a href="#operators">math &amp; relational operators</a></li>
+<li><a href="#repmat">repmat()</a></li>
 <li><a href="http://mathworld.wolfram.com/KroneckerProduct.html">Kronecker product in MathWorld</a></li>
 <li><a href="http://en.wikipedia.org/wiki/Kronecker_product">Kronecker product in Wikipedia</a></li>
 </ul>
@@ -9677,11 +9676,16 @@ See also:
 <ul>
 <table border="0">
 <tbody>
-<tr><td>rows</td><td>&nbsp;=&nbsp;</td><td>num_copies_per_row</td><td>*</td><td>A.n_rows</td></tr>
-<tr><td>cols</td><td>&nbsp;=&nbsp;</td><td>num_copies_per_col</td><td>*</td><td>A.n_cols</td></tr>
+<tr><td>n_rows</td><td>&nbsp;=&nbsp;</td><td>num_copies_per_row</td><td>*</td><td>A.n_rows</td></tr>
+<tr><td>n_cols</td><td>&nbsp;=&nbsp;</td><td>num_copies_per_col</td><td>*</td><td>A.n_cols</td></tr>
 </tbody>
 </table>
 </ul>
+</li>
+<br>
+<li>
+<b>Caveat:</b> to apply a vector operation on each row or column of a matrix,
+it's generally more efficient to use <a href="#each_colrow">.each_row()</a> or <a href="#each_colrow">.each_col()</a>
 </li>
 <br>
 <li>
@@ -9696,8 +9700,9 @@ mat B = repmat(A, 4, 5);
 </li>
 <li>See also:
 <ul>
-<li><a href="#each_colrow">.each_col() &amp; .each_row()</a> &nbsp; (vector operations repeated on each column or row)</li>
+<li><a href="#each_colrow">.each_col() &amp; .each_row()</a> &nbsp; (vector operations applied to each column or row)</li>
 <li><a href="#copy_size">.copy_size()</a></li>
+<li><a href="#kron">kron()</a></li>
 <li><a href="#reshape">reshape()</a></li>
 <li><a href="#resize">resize()</a></li>
 </ul>

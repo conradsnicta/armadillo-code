@@ -750,6 +750,8 @@ inline
 typename SpSubview<eT>::const_row_iterator&
 SpSubview<eT>::const_row_iterator::operator++()
   {
+  // TODO: replace with more efficient implementation
+  
   // We just need to find the next nonzero element.
   ++iterator_base::internal_pos;
 

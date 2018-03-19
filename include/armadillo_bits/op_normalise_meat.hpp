@@ -27,18 +27,28 @@ op_normalise_vec::apply(Mat<typename T1::elem_type>& out, const Op<T1,op_normali
   {
   arma_extra_debug_sigprint();
   
-  typedef typename T1::pod_type T;
+  typedef typename T1::elem_type eT;
+  typedef typename T1::pod_type   T;
   
   const uword p = in.aux_uword_a;
   
   arma_debug_check( (p == 0), "normalise(): parameter 'p' must be greater than zero" );
   
-  const quasi_unwrap<T1> tmp(in.m);
+  const quasi_unwrap<T1> U(in.m);
   
-  const T norm_val_a = norm(tmp.M, p);
+  const T norm_val_a = norm(U.M, p);
   const T norm_val_b = (norm_val_a != T(0)) ? norm_val_a : T(1);
   
-  out = tmp.M / norm_val_b;
+  if(quasi_unwrap<T1>::has_subview && U.is_alias(out))
+    {
+    Mat<eT> tmp = U.M / norm_val_b;
+    
+    out.steal_mem(tmp);
+    }
+  else
+    {
+    out = U.M / norm_val_b;
+    }
   }
 
 
@@ -58,22 +68,19 @@ op_normalise_mat::apply(Mat<typename T1::elem_type>& out, const Op<T1,op_normali
   arma_debug_check( (p   == 0), "normalise(): parameter 'p' must be greater than zero" );
   arma_debug_check( (dim >  1), "normalise(): parameter 'dim' must be 0 or 1"          );
   
-  const unwrap<T1>   tmp(in.m);
-  const Mat<eT>& A = tmp.M;
+  const quasi_unwrap<T1> U(in.m);
   
-  const bool alias = ( (&out) == (&A) );
-  
-  if(alias)
+  if(quasi_unwrap<T1>::has_subview && U.is_alias(out))
     {
     Mat<eT> out2;
     
-    op_normalise_mat::apply(out2, A, p, dim);
+    op_normalise_mat::apply(out2, U.M, p, dim);
     
     out.steal_mem(out2);
     }
   else
     {
-    op_normalise_mat::apply(out, A, p, dim);
+    op_normalise_mat::apply(out, U.M, p, dim);
     }
   }
 
@@ -106,16 +113,30 @@ op_normalise_mat::apply(Mat<eT>& out, const Mat<eT>& A, const uword p, const uwo
     }
   else
     {
-    // better-than-nothing implementation
-    
     const uword n_rows = A.n_rows;
+    const uword n_cols = A.n_cols;
+    
+    podarray<T> norm_vals(n_rows);
+    
+    T* norm_vals_mem = norm_vals.memptr();
     
     for(uword i=0; i<n_rows; ++i)
       {
-      const T norm_val_a = norm(A.row(i), p);
-      const T norm_val_b = (norm_val_a != T(0)) ? norm_val_a : T(1);
+      const T norm_val = norm(A.row(i), p);
       
-      out.row(i) = A.row(i) / norm_val_b;
+      norm_vals_mem[i] = (norm_val != T(0)) ? norm_val : T(1);
+      }
+    
+    const eT*   A_mem =   A.memptr();
+          eT* out_mem = out.memptr();
+    
+    for(uword col=0; col < n_cols; ++col)
+    for(uword row=0; row < n_rows; ++row)
+      {
+      (*out_mem) = (*A_mem) / norm_vals_mem[row];
+      
+      A_mem++;
+      out_mem++;
       }
     }
   }

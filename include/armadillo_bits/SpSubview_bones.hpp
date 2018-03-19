@@ -80,7 +80,12 @@ class SpSubview : public SpBase<eT, SpSubview<eT> >
   inline static void schur_inplace(Mat<eT>& out, const subview& in);
   inline static void   div_inplace(Mat<eT>& out, const subview& in);
   */
-
+  
+  template<typename functor> inline void  for_each(functor F);
+  template<typename functor> inline void  for_each(functor F) const;
+  
+  template<typename functor> inline void transform(functor F);
+  
   inline void replace(const eT old_val, const eT new_val);
 
   inline void fill(const eT val);
@@ -88,20 +93,20 @@ class SpSubview : public SpBase<eT, SpSubview<eT> >
   inline void ones();
   inline void eye();
 
-  arma_hot inline SpSubview_MapMat_elem<eT> operator[](const uword i);
-  arma_hot inline eT                        operator[](const uword i) const;
+  arma_hot inline SpSubview_MapMat_val<eT> operator[](const uword i);
+  arma_hot inline eT                       operator[](const uword i) const;
 
-  arma_hot inline SpSubview_MapMat_elem<eT> operator()(const uword i);
-  arma_hot inline eT                        operator()(const uword i) const;
+  arma_hot inline SpSubview_MapMat_val<eT> operator()(const uword i);
+  arma_hot inline eT                       operator()(const uword i) const;
 
-  arma_hot inline SpSubview_MapMat_elem<eT> operator()(const uword in_row, const uword in_col);
-  arma_hot inline eT                        operator()(const uword in_row, const uword in_col) const;
+  arma_hot inline SpSubview_MapMat_val<eT> operator()(const uword in_row, const uword in_col);
+  arma_hot inline eT                       operator()(const uword in_row, const uword in_col) const;
 
-  arma_hot inline SpSubview_MapMat_elem<eT> at(const uword i);
-  arma_hot inline eT                        at(const uword i) const;
+  arma_hot inline SpSubview_MapMat_val<eT> at(const uword i);
+  arma_hot inline eT                       at(const uword i) const;
 
-  arma_hot inline SpSubview_MapMat_elem<eT> at(const uword in_row, const uword in_col);
-  arma_hot inline eT                        at(const uword in_row, const uword in_col) const;
+  arma_hot inline SpSubview_MapMat_val<eT> at(const uword in_row, const uword in_col);
+  arma_hot inline eT                       at(const uword in_row, const uword in_col) const;
 
   inline bool check_overlap(const SpSubview& x) const;
 

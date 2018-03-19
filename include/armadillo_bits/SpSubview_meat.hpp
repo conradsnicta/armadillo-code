@@ -834,6 +834,159 @@ SpSubview<eT>::operator/=(const SpBase<eT, T1>& x)
 
 
 
+//! apply a functor to each element
+template<typename eT>
+template<typename functor>
+inline
+void
+SpSubview<eT>::for_each(functor F)
+  {
+  arma_extra_debug_sigprint();
+  
+  m.sync_csc();
+  m.invalidate_cache();
+  
+  const uword lstart_row = aux_row1;
+  const uword lend_row   = aux_row1 + n_rows;
+  
+  const uword lstart_col = aux_col1;
+  const uword lend_col   = aux_col1 + n_cols;
+  
+  const uword* m_row_indices = m.row_indices;
+        eT*    m_values      = access::rwp(m.values);
+  
+  bool has_zero = false;
+  
+  for(uword c = lstart_col; c < lend_col; ++c)
+    {
+    const uword r_start = m.col_ptrs[c    ];
+    const uword r_end   = m.col_ptrs[c + 1];
+    
+    for(uword r = r_start; r < r_end; ++r)
+      {
+      const uword m_row_indices_r = m_row_indices[r];
+      
+      if( (m_row_indices_r >= lstart_row) && (m_row_indices_r < lend_row) )
+        {
+        eT& m_values_r = m_values[r];
+        
+        F(m_values_r);
+        
+        if(m_values_r == eT(0))  { has_zero = true; }
+        }
+      }
+    }
+  
+  if(has_zero)
+    {
+    const uword old_m_n_nonzero = m.n_nonzero;
+    
+    access::rw(m).remove_zeros();
+    
+    if(m.n_nonzero != old_m_n_nonzero)
+      {
+      access::rw(n_nonzero) = n_nonzero - (old_m_n_nonzero - m.n_nonzero); 
+      }
+    }
+  }
+
+
+
+template<typename eT>
+template<typename functor>
+inline
+void
+SpSubview<eT>::for_each(functor F) const
+  {
+  arma_extra_debug_sigprint();
+  
+  m.sync_csc();
+  
+  const uword lstart_row = aux_row1;
+  const uword lend_row   = aux_row1 + n_rows;
+  
+  const uword lstart_col = aux_col1;
+  const uword lend_col   = aux_col1 + n_cols;
+  
+  const uword* m_row_indices = m.row_indices;
+  
+  for(uword c = lstart_col; c < lend_col; ++c)
+    {
+    const uword r_start = m.col_ptrs[c    ];
+    const uword r_end   = m.col_ptrs[c + 1];
+    
+    for(uword r = r_start; r < r_end; ++r)
+      {
+      const uword m_row_indices_r = m_row_indices[r];
+      
+      if( (m_row_indices_r >= lstart_row) && (m_row_indices_r < lend_row) )
+        {
+        F(m.values[r]);
+        }
+      }
+    }
+  }
+
+
+
+//! transform each element using a functor
+template<typename eT>
+template<typename functor>
+inline
+void
+SpSubview<eT>::transform(functor F)
+  {
+  arma_extra_debug_sigprint();
+  
+  m.sync_csc();
+  m.invalidate_cache();
+  
+  const uword lstart_row = aux_row1;
+  const uword lend_row   = aux_row1 + n_rows;
+  
+  const uword lstart_col = aux_col1;
+  const uword lend_col   = aux_col1 + n_cols;
+  
+  const uword* m_row_indices = m.row_indices;
+        eT*    m_values      = access::rwp(m.values);
+  
+  bool has_zero = false;
+  
+  for(uword c = lstart_col; c < lend_col; ++c)
+    {
+    const uword r_start = m.col_ptrs[c    ];
+    const uword r_end   = m.col_ptrs[c + 1];
+    
+    for(uword r = r_start; r < r_end; ++r)
+      {
+      const uword m_row_indices_r = m_row_indices[r];
+      
+      if( (m_row_indices_r >= lstart_row) && (m_row_indices_r < lend_row) )
+        {
+        eT& m_values_r = m_values[r];
+        
+        m_values_r = eT( F(m_values_r) );
+        
+        if(m_values_r == eT(0))  { has_zero = true; }
+        }
+      }
+    }
+  
+  if(has_zero)
+    {
+    const uword old_m_n_nonzero = m.n_nonzero;
+    
+    access::rw(m).remove_zeros();
+    
+    if(m.n_nonzero != old_m_n_nonzero)
+      {
+      access::rw(n_nonzero) = n_nonzero - (old_m_n_nonzero - m.n_nonzero); 
+      }
+    }
+  }
+
+
+
 template<typename eT>
 inline
 void
@@ -979,7 +1132,7 @@ SpSubview<eT>::eye()
 template<typename eT>
 arma_hot
 inline
-SpSubview_MapMat_elem<eT>
+SpSubview_MapMat_val<eT>
 SpSubview<eT>::operator[](const uword i)
   {
   const uword lrow = i % n_rows;
@@ -1007,7 +1160,7 @@ SpSubview<eT>::operator[](const uword i) const
 template<typename eT>
 arma_hot
 inline
-SpSubview_MapMat_elem<eT>
+SpSubview_MapMat_val<eT>
 SpSubview<eT>::operator()(const uword i)
   {
   arma_debug_check( (i >= n_elem), "SpSubview::operator(): index out of bounds");
@@ -1039,7 +1192,7 @@ SpSubview<eT>::operator()(const uword i) const
 template<typename eT>
 arma_hot
 inline
-SpSubview_MapMat_elem<eT>
+SpSubview_MapMat_val<eT>
 SpSubview<eT>::operator()(const uword in_row, const uword in_col)
   {
   arma_debug_check( (in_row >= n_rows) || (in_col >= n_cols), "SpSubview::operator(): index out of bounds");
@@ -1065,7 +1218,7 @@ SpSubview<eT>::operator()(const uword in_row, const uword in_col) const
 template<typename eT>
 arma_hot
 inline
-SpSubview_MapMat_elem<eT>
+SpSubview_MapMat_val<eT>
 SpSubview<eT>::at(const uword i)
   {
   const uword lrow = i % n_rows;
@@ -1093,10 +1246,10 @@ SpSubview<eT>::at(const uword i) const
 template<typename eT>
 arma_hot
 inline
-SpSubview_MapMat_elem<eT>
+SpSubview_MapMat_val<eT>
 SpSubview<eT>::at(const uword in_row, const uword in_col)
   {
-  return SpSubview_MapMat_elem<eT>((*this), m.cache, aux_row1 + in_row, aux_col1 + in_col);
+  return SpSubview_MapMat_val<eT>((*this), m.cache, aux_row1 + in_row, aux_col1 + in_col);
   }
 
 

@@ -70,4 +70,24 @@ normalise
 
 
 
+template<typename T1>
+arma_warn_unused
+inline
+const SpOp<T1, spop_normalise>
+normalise
+  (
+  const SpBase<typename T1::elem_type, T1>& expr,
+  const uword p = uword(2),
+  const uword dim = 0,
+  const typename arma_real_or_cx_only<typename T1::elem_type>::result* junk = 0
+  )
+  {
+  arma_extra_debug_sigprint();
+  arma_ignore(junk);
+  
+  return SpOp<T1, spop_normalise>(expr.get_ref(), p, dim);
+  }
+
+
+
 //! @}

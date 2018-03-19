@@ -69,20 +69,20 @@ class spdiagview : public SpBase<eT, spdiagview<eT> >
   template<typename T1> inline void operator%=(const SpBase<eT,T1>& x);
   template<typename T1> inline void operator/=(const SpBase<eT,T1>& x);
   
-  inline SpMat_MapMat_elem<eT> operator[](const uword ii);
-  inline eT                    operator[](const uword ii) const;
+  inline SpMat_MapMat_val<eT> operator[](const uword ii);
+  inline eT                   operator[](const uword ii) const;
   
-  inline SpMat_MapMat_elem<eT> at(const uword ii);
-  inline eT                    at(const uword ii) const;
+  inline SpMat_MapMat_val<eT> at(const uword ii);
+  inline eT                   at(const uword ii) const;
   
-  inline SpMat_MapMat_elem<eT> operator()(const uword ii);
-  inline eT                    operator()(const uword ii) const;
+  inline SpMat_MapMat_val<eT> operator()(const uword ii);
+  inline eT                   operator()(const uword ii) const;
   
-  inline SpMat_MapMat_elem<eT> at(const uword in_n_row, const uword);
-  inline eT                    at(const uword in_n_row, const uword) const;
+  inline SpMat_MapMat_val<eT> at(const uword in_n_row, const uword);
+  inline eT                   at(const uword in_n_row, const uword) const;
   
-  inline SpMat_MapMat_elem<eT> operator()(const uword in_n_row, const uword in_n_col);
-  inline eT                    operator()(const uword in_n_row, const uword in_n_col) const;
+  inline SpMat_MapMat_val<eT> operator()(const uword in_n_row, const uword in_n_col);
+  inline eT                   operator()(const uword in_n_row, const uword in_n_col) const;
   
   
   inline void fill(const eT val);

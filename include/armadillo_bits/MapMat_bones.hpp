@@ -31,9 +31,9 @@ class MapMat
   static const bool is_row = false;
   static const bool is_col = false;
   
-  arma_aligned const uword n_rows;    //!< number of rows     (read-only)
-  arma_aligned const uword n_cols;    //!< number of columns  (read-only)
-  arma_aligned const uword n_elem;    //!< number of elements (read-only)
+  const uword n_rows;    //!< number of rows     (read-only)
+  const uword n_cols;    //!< number of columns  (read-only)
+  const uword n_elem;    //!< number of elements (read-only)
   
   
   private:
@@ -116,9 +116,9 @@ class MapMat
        inline void erase_val(const uword index);
   
   
-  friend class MapMat_val<eT>;
-  friend class SpMat_MapMat_elem<eT>;
-  friend class SpSubview_MapMat_elem<eT>;
+  friend class           MapMat_val<eT>;
+  friend class     SpMat_MapMat_val<eT>;
+  friend class SpSubview_MapMat_val<eT>;
   friend class SpMat<eT>;
   };
 
@@ -159,7 +159,7 @@ class MapMat_val
 
 
 template<typename eT>
-class SpMat_MapMat_elem
+class SpMat_MapMat_val
   {
   private:
   
@@ -169,7 +169,7 @@ class SpMat_MapMat_elem
   arma_aligned const uword row;
   arma_aligned const uword col;
   
-  inline SpMat_MapMat_elem(SpMat<eT>& in_s_parent, MapMat<eT>& in_m_parent, const uword in_row, const uword in_col);
+  inline SpMat_MapMat_val(SpMat<eT>& in_s_parent, MapMat<eT>& in_m_parent, const uword in_row, const uword in_col);
   
   friend class  SpMat<eT>;
   friend class MapMat<eT>;
@@ -179,25 +179,25 @@ class SpMat_MapMat_elem
   
   arma_inline operator eT() const;
   
-  arma_inline SpMat_MapMat_elem<eT>& operator= (const SpMat_MapMat_elem<eT>& x);
+  arma_inline SpMat_MapMat_val<eT>& operator= (const SpMat_MapMat_val<eT>& x);
   
-  inline SpMat_MapMat_elem<eT>& operator= (const eT in_val);
-  inline SpMat_MapMat_elem<eT>& operator+=(const eT in_val);
-  inline SpMat_MapMat_elem<eT>& operator-=(const eT in_val);
-  inline SpMat_MapMat_elem<eT>& operator*=(const eT in_val);
-  inline SpMat_MapMat_elem<eT>& operator/=(const eT in_val);
+  inline SpMat_MapMat_val<eT>& operator= (const eT in_val);
+  inline SpMat_MapMat_val<eT>& operator+=(const eT in_val);
+  inline SpMat_MapMat_val<eT>& operator-=(const eT in_val);
+  inline SpMat_MapMat_val<eT>& operator*=(const eT in_val);
+  inline SpMat_MapMat_val<eT>& operator/=(const eT in_val);
   
-  inline SpMat_MapMat_elem<eT>& operator++();
-  inline eT                     operator++(int);
+  inline SpMat_MapMat_val<eT>& operator++();
+  inline eT                    operator++(int);
   
-  inline SpMat_MapMat_elem<eT>& operator--();
-  inline eT                     operator--(int);
+  inline SpMat_MapMat_val<eT>& operator--();
+  inline eT                    operator--(int);
   };
 
 
 
 template<typename eT>
-class SpSubview_MapMat_elem
+class SpSubview_MapMat_val
   {
   private:
   
@@ -207,7 +207,7 @@ class SpSubview_MapMat_elem
   arma_aligned const uword row;
   arma_aligned const uword col;
   
-  arma_inline SpSubview_MapMat_elem(SpSubview<eT>& in_v_parent, MapMat<eT>& in_m_parent, const uword in_row, const uword in_col);
+  arma_inline SpSubview_MapMat_val(SpSubview<eT>& in_v_parent, MapMat<eT>& in_m_parent, const uword in_row, const uword in_col);
   
   arma_inline void update_n_nonzeros();
   
@@ -220,19 +220,19 @@ class SpSubview_MapMat_elem
   
   arma_inline operator eT() const;
   
-  arma_inline SpSubview_MapMat_elem<eT>& operator= (const SpSubview_MapMat_elem<eT>& x);
+  arma_inline SpSubview_MapMat_val<eT>& operator= (const SpSubview_MapMat_val<eT>& x);
   
-  inline SpSubview_MapMat_elem<eT>& operator= (const eT in_val);
-  inline SpSubview_MapMat_elem<eT>& operator+=(const eT in_val);
-  inline SpSubview_MapMat_elem<eT>& operator-=(const eT in_val);
-  inline SpSubview_MapMat_elem<eT>& operator*=(const eT in_val);
-  inline SpSubview_MapMat_elem<eT>& operator/=(const eT in_val);
+  inline SpSubview_MapMat_val<eT>& operator= (const eT in_val);
+  inline SpSubview_MapMat_val<eT>& operator+=(const eT in_val);
+  inline SpSubview_MapMat_val<eT>& operator-=(const eT in_val);
+  inline SpSubview_MapMat_val<eT>& operator*=(const eT in_val);
+  inline SpSubview_MapMat_val<eT>& operator/=(const eT in_val);
   
-  inline SpSubview_MapMat_elem<eT>& operator++();
-  inline eT                         operator++(int);
+  inline SpSubview_MapMat_val<eT>& operator++();
+  inline eT                        operator++(int);
   
-  inline SpSubview_MapMat_elem<eT>& operator--();
-  inline eT                         operator--(int);
+  inline SpSubview_MapMat_val<eT>& operator--();
+  inline eT                        operator--(int);
   };
 
 

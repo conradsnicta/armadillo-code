@@ -1080,13 +1080,13 @@ MapMat_val<eT>::operator--(int)
 
 
 
-// SpMat_MapMat_elem
+// SpMat_MapMat_val
 
 
 
 template<typename eT>
 arma_inline
-SpMat_MapMat_elem<eT>::SpMat_MapMat_elem(SpMat<eT>& in_s_parent, MapMat<eT>& in_m_parent, const uword in_row, const uword in_col)
+SpMat_MapMat_val<eT>::SpMat_MapMat_val(SpMat<eT>& in_s_parent, MapMat<eT>& in_m_parent, const uword in_row, const uword in_col)
   : s_parent(in_s_parent)
   , m_parent(in_m_parent)
   , row     (in_row     )
@@ -1099,7 +1099,7 @@ SpMat_MapMat_elem<eT>::SpMat_MapMat_elem(SpMat<eT>& in_s_parent, MapMat<eT>& in_
 
 template<typename eT>
 arma_inline
-SpMat_MapMat_elem<eT>::operator eT() const
+SpMat_MapMat_val<eT>::operator eT() const
   {
   arma_extra_debug_sigprint();
   
@@ -1120,8 +1120,8 @@ SpMat_MapMat_elem<eT>::operator eT() const
 
 template<typename eT>
 inline
-SpMat_MapMat_elem<eT>&
-SpMat_MapMat_elem<eT>::operator=(const SpMat_MapMat_elem<eT>& x)
+SpMat_MapMat_val<eT>&
+SpMat_MapMat_val<eT>::operator=(const SpMat_MapMat_val<eT>& x)
   {
   arma_extra_debug_sigprint();
   
@@ -1142,8 +1142,8 @@ SpMat_MapMat_elem<eT>::operator=(const SpMat_MapMat_elem<eT>& x)
 
 template<typename eT>
 inline
-SpMat_MapMat_elem<eT>&
-SpMat_MapMat_elem<eT>::operator=(const eT in_val)
+SpMat_MapMat_val<eT>&
+SpMat_MapMat_val<eT>::operator=(const eT in_val)
   {
   arma_extra_debug_sigprint();
   
@@ -1163,8 +1163,8 @@ SpMat_MapMat_elem<eT>::operator=(const eT in_val)
 
 template<typename eT>
 inline
-SpMat_MapMat_elem<eT>&
-SpMat_MapMat_elem<eT>::operator+=(const eT in_val)
+SpMat_MapMat_val<eT>&
+SpMat_MapMat_val<eT>::operator+=(const eT in_val)
   {
   arma_extra_debug_sigprint();
   
@@ -1193,8 +1193,8 @@ SpMat_MapMat_elem<eT>::operator+=(const eT in_val)
 
 template<typename eT>
 inline
-SpMat_MapMat_elem<eT>&
-SpMat_MapMat_elem<eT>::operator-=(const eT in_val)
+SpMat_MapMat_val<eT>&
+SpMat_MapMat_val<eT>::operator-=(const eT in_val)
   {
   arma_extra_debug_sigprint();
   
@@ -1223,8 +1223,8 @@ SpMat_MapMat_elem<eT>::operator-=(const eT in_val)
 
 template<typename eT>
 inline
-SpMat_MapMat_elem<eT>&
-SpMat_MapMat_elem<eT>::operator*=(const eT in_val)
+SpMat_MapMat_val<eT>&
+SpMat_MapMat_val<eT>::operator*=(const eT in_val)
   {
   arma_extra_debug_sigprint();
   
@@ -1263,8 +1263,8 @@ SpMat_MapMat_elem<eT>::operator*=(const eT in_val)
 
 template<typename eT>
 inline
-SpMat_MapMat_elem<eT>&
-SpMat_MapMat_elem<eT>::operator/=(const eT in_val)
+SpMat_MapMat_val<eT>&
+SpMat_MapMat_val<eT>::operator/=(const eT in_val)
   {
   arma_extra_debug_sigprint();
   
@@ -1310,8 +1310,8 @@ SpMat_MapMat_elem<eT>::operator/=(const eT in_val)
 
 template<typename eT>
 inline
-SpMat_MapMat_elem<eT>&
-SpMat_MapMat_elem<eT>::operator++()
+SpMat_MapMat_val<eT>&
+SpMat_MapMat_val<eT>::operator++()
   {
   arma_extra_debug_sigprint();
   
@@ -1338,7 +1338,7 @@ SpMat_MapMat_elem<eT>::operator++()
 template<typename eT>
 inline
 eT
-SpMat_MapMat_elem<eT>::operator++(int)
+SpMat_MapMat_val<eT>::operator++(int)
   {
   arma_extra_debug_sigprint();
   
@@ -1366,8 +1366,8 @@ SpMat_MapMat_elem<eT>::operator++(int)
 
 template<typename eT>
 inline
-SpMat_MapMat_elem<eT>&
-SpMat_MapMat_elem<eT>::operator--()
+SpMat_MapMat_val<eT>&
+SpMat_MapMat_val<eT>::operator--()
   {
   arma_extra_debug_sigprint();
   
@@ -1394,7 +1394,7 @@ SpMat_MapMat_elem<eT>::operator--()
 template<typename eT>
 inline
 eT
-SpMat_MapMat_elem<eT>::operator--(int)
+SpMat_MapMat_val<eT>::operator--(int)
   {
   arma_extra_debug_sigprint();
   
@@ -1422,13 +1422,13 @@ SpMat_MapMat_elem<eT>::operator--(int)
 
 
 
-// SpSubview_MapMat_elem
+// SpSubview_MapMat_val
 
 
 
 template<typename eT>
 arma_inline
-SpSubview_MapMat_elem<eT>::SpSubview_MapMat_elem(SpSubview<eT>& in_v_parent, MapMat<eT>& in_m_parent, const uword in_row, const uword in_col)
+SpSubview_MapMat_val<eT>::SpSubview_MapMat_val(SpSubview<eT>& in_v_parent, MapMat<eT>& in_m_parent, const uword in_row, const uword in_col)
   : v_parent(in_v_parent)
   , m_parent(in_m_parent)
   , row     (in_row     )
@@ -1442,7 +1442,7 @@ SpSubview_MapMat_elem<eT>::SpSubview_MapMat_elem(SpSubview<eT>& in_v_parent, Map
 template<typename eT>
 arma_inline
 void
-SpSubview_MapMat_elem<eT>::update_n_nonzeros()
+SpSubview_MapMat_val<eT>::update_n_nonzeros()
   {
   arma_extra_debug_sigprint();
   
@@ -1458,7 +1458,7 @@ SpSubview_MapMat_elem<eT>::update_n_nonzeros()
 
 template<typename eT>
 arma_inline
-SpSubview_MapMat_elem<eT>::operator eT() const
+SpSubview_MapMat_val<eT>::operator eT() const
   {
   arma_extra_debug_sigprint();
   
@@ -1479,8 +1479,8 @@ SpSubview_MapMat_elem<eT>::operator eT() const
 
 template<typename eT>
 inline
-SpSubview_MapMat_elem<eT>&
-SpSubview_MapMat_elem<eT>::operator=(const SpSubview_MapMat_elem<eT>& x)
+SpSubview_MapMat_val<eT>&
+SpSubview_MapMat_val<eT>::operator=(const SpSubview_MapMat_val<eT>& x)
   {
   arma_extra_debug_sigprint();
   
@@ -1501,8 +1501,8 @@ SpSubview_MapMat_elem<eT>::operator=(const SpSubview_MapMat_elem<eT>& x)
 
 template<typename eT>
 inline
-SpSubview_MapMat_elem<eT>&
-SpSubview_MapMat_elem<eT>::operator=(const eT in_val)
+SpSubview_MapMat_val<eT>&
+SpSubview_MapMat_val<eT>::operator=(const eT in_val)
   {
   arma_extra_debug_sigprint();
   
@@ -1522,8 +1522,8 @@ SpSubview_MapMat_elem<eT>::operator=(const eT in_val)
 
 template<typename eT>
 inline
-SpSubview_MapMat_elem<eT>&
-SpSubview_MapMat_elem<eT>::operator+=(const eT in_val)
+SpSubview_MapMat_val<eT>&
+SpSubview_MapMat_val<eT>::operator+=(const eT in_val)
   {
   arma_extra_debug_sigprint();
   
@@ -1552,8 +1552,8 @@ SpSubview_MapMat_elem<eT>::operator+=(const eT in_val)
 
 template<typename eT>
 inline
-SpSubview_MapMat_elem<eT>&
-SpSubview_MapMat_elem<eT>::operator-=(const eT in_val)
+SpSubview_MapMat_val<eT>&
+SpSubview_MapMat_val<eT>::operator-=(const eT in_val)
   {
   arma_extra_debug_sigprint();
   
@@ -1582,8 +1582,8 @@ SpSubview_MapMat_elem<eT>::operator-=(const eT in_val)
 
 template<typename eT>
 inline
-SpSubview_MapMat_elem<eT>&
-SpSubview_MapMat_elem<eT>::operator*=(const eT in_val)
+SpSubview_MapMat_val<eT>&
+SpSubview_MapMat_val<eT>::operator*=(const eT in_val)
   {
   arma_extra_debug_sigprint();
   
@@ -1622,8 +1622,8 @@ SpSubview_MapMat_elem<eT>::operator*=(const eT in_val)
 
 template<typename eT>
 inline
-SpSubview_MapMat_elem<eT>&
-SpSubview_MapMat_elem<eT>::operator/=(const eT in_val)
+SpSubview_MapMat_val<eT>&
+SpSubview_MapMat_val<eT>::operator/=(const eT in_val)
   {
   arma_extra_debug_sigprint();
   
@@ -1669,8 +1669,8 @@ SpSubview_MapMat_elem<eT>::operator/=(const eT in_val)
 
 template<typename eT>
 inline
-SpSubview_MapMat_elem<eT>&
-SpSubview_MapMat_elem<eT>::operator++()
+SpSubview_MapMat_val<eT>&
+SpSubview_MapMat_val<eT>::operator++()
   {
   arma_extra_debug_sigprint();
   
@@ -1697,7 +1697,7 @@ SpSubview_MapMat_elem<eT>::operator++()
 template<typename eT>
 inline
 eT
-SpSubview_MapMat_elem<eT>::operator++(int)
+SpSubview_MapMat_val<eT>::operator++(int)
   {
   arma_extra_debug_sigprint();
   
@@ -1725,8 +1725,8 @@ SpSubview_MapMat_elem<eT>::operator++(int)
 
 template<typename eT>
 inline
-SpSubview_MapMat_elem<eT>&
-SpSubview_MapMat_elem<eT>::operator--()
+SpSubview_MapMat_val<eT>&
+SpSubview_MapMat_val<eT>::operator--()
   {
   arma_extra_debug_sigprint();
   
@@ -1753,7 +1753,7 @@ SpSubview_MapMat_elem<eT>::operator--()
 template<typename eT>
 inline
 eT
-SpSubview_MapMat_elem<eT>::operator--(int)
+SpSubview_MapMat_val<eT>::operator--(int)
   {
   arma_extra_debug_sigprint();
   

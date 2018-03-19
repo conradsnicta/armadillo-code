@@ -14,40 +14,22 @@
 // ------------------------------------------------------------------------
 
 
-//! \addtogroup op_flip
+//! \addtogroup spop_reverse
 //! @{
 
 
-
-class op_flipud
+class spop_reverse
   {
   public:
   
-  template<typename T1>
-  inline static void apply(Mat<typename T1::elem_type>& out, const Op<T1,op_flipud>& in);
-  
   template<typename eT>
-  inline static void apply_direct(Mat<eT>& out, const Mat<eT>& X);
+  inline static void apply_spmat(SpMat<eT>& out, const SpMat<eT>& X, const uword dim);
   
   template<typename T1>
-  inline static void apply_proxy_noalias(Mat<typename T1::elem_type>& out, const Proxy<T1>& P);
-  };
-
-
-
-
-class op_fliplr
-  {
-  public:
+  inline static void apply_proxy(SpMat<typename T1::elem_type>& out, const T1& X, const uword dim);
   
   template<typename T1>
-  inline static void apply(Mat<typename T1::elem_type>& out, const Op<T1,op_fliplr>& in);
-  
-  template<typename eT>
-  inline static void apply_direct(Mat<eT>& out, const Mat<eT>& X);
-  
-  template<typename T1>
-  inline static void apply_proxy_noalias(Mat<typename T1::elem_type>& out, const Proxy<T1>& P);
+  inline static void apply(SpMat<typename T1::elem_type>& out, const SpOp<T1,spop_reverse>& in);
   };
 
 

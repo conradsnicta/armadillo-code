@@ -14,59 +14,89 @@
 // ------------------------------------------------------------------------
 
 
-//! \addtogroup fn_flip
+//! \addtogroup fn_reverse
 //! @{
 
 
 
 template<typename T1>
 arma_warn_unused
-arma_inline
-typename enable_if2< is_arma_type<T1>::value, const Op<T1, op_flipud> >::result
-flipud(const T1& X)
+inline
+typename
+enable_if2
+  <
+  (is_arma_type<T1>::value && (resolves_to_vector<T1>::value == true)),
+  const Op<T1, op_reverse_vec>
+  >::result
+reverse
+  (
+  const T1& X
+  )
   {
   arma_extra_debug_sigprint();
   
-  return Op<T1, op_flipud>(X);
+  return Op<T1, op_reverse_vec>(X);
   }
 
 
 
 template<typename T1>
 arma_warn_unused
-arma_inline
-typename enable_if2< is_arma_type<T1>::value, const Op<T1, op_fliplr> >::result
-fliplr(const T1& X)
+inline
+typename
+enable_if2
+  <
+  (is_arma_type<T1>::value && (resolves_to_vector<T1>::value == true)),
+  const Op<T1, op_reverse_mat>
+  >::result
+reverse
+  (
+  const T1&   X,
+  const uword dim
+  )
   {
   arma_extra_debug_sigprint();
   
-  return Op<T1, op_fliplr>(X);
+  return Op<T1, op_reverse_mat>(X, dim, 0);
   }
 
 
 
 template<typename T1>
 arma_warn_unused
-arma_inline
-const SpOp<T1, spop_flipud>
-flipud(const SpBase<typename T1::elem_type,T1>& X)
+inline
+typename
+enable_if2
+  <
+  (is_arma_type<T1>::value && (resolves_to_vector<T1>::value == false)),
+  const Op<T1, op_reverse_mat>
+  >::result
+reverse
+  (
+  const T1&   X,
+  const uword dim = 0
+  )
   {
   arma_extra_debug_sigprint();
   
-  return SpOp<T1, spop_flipud>(X.get_ref());
+  return Op<T1, op_reverse_mat>(X, dim, 0);
   }
 
 
 
 template<typename T1>
 arma_warn_unused
-arma_inline
-const SpOp<T1, spop_fliplr>
-fliplr(const SpBase<typename T1::elem_type,T1>& X)
+inline
+const SpOp<T1, spop_reverse>
+reverse
+  (
+  const SpBase<typename T1::elem_type,T1>& X,
+  const uword dim = 0
+  )
   {
   arma_extra_debug_sigprint();
   
-  return SpOp<T1, spop_fliplr>(X.get_ref());
+  return SpOp<T1, spop_reverse>(X.get_ref(), dim, 0);
   }
 
 

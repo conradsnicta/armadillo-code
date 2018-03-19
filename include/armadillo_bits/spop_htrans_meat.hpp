@@ -42,8 +42,7 @@ spop_htrans::apply(SpMat<typename T1::elem_type>& out, const SpOp<T1,spop_htrans
   arma_extra_debug_sigprint();
   arma_ignore(junk);
   
-  typedef typename   T1::elem_type  eT;
-  typedef typename umat::elem_type ueT;
+  typedef typename T1::elem_type  eT;
   
   const SpProxy<T1> p(in.m);
   
@@ -55,27 +54,28 @@ spop_htrans::apply(SpMat<typename T1::elem_type>& out, const SpOp<T1,spop_htrans
     return;
     }
   
-  umat locs(2, N);
+  umat    locs(2, N);
+  Col<eT> vals(   N);
   
-  Col<eT> vals(N);
-  
-  eT* vals_ptr = vals.memptr();
+  uword* locs_mem = locs.memptr();
+  eT*    vals_mem = vals.memptr();
   
   typename SpProxy<T1>::const_iterator_type it = p.begin();
   
-  for(uword count = 0; count < N; ++count)
+  for(uword i=0; i < N; ++i)
     {
-    ueT* locs_ptr = locs.colptr(count);
+    const uword row = it.col();
+    const uword col = it.row();
     
-    locs_ptr[0] = it.col();
-    locs_ptr[1] = it.row();
+    (*locs_mem) = row;  locs_mem++;
+    (*locs_mem) = col;  locs_mem++;
     
-    vals_ptr[count] = std::conj(*it);
+    (*vals_mem) = std::conj(*it);  vals_mem++;
     
     ++it;
     }
   
-  SpMat<eT> tmp(locs, vals, p.get_n_cols(), p.get_n_rows());
+  SpMat<eT> tmp(locs, vals, p.get_n_cols(), p.get_n_rows(), true, false);
   
   out.steal_mem(tmp);
   }

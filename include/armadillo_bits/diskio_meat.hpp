@@ -613,9 +613,22 @@ diskio::gen_tmp_name(const std::string& x)
   u.val = uword(0);
   u.ptr = const_cast<std::string*>(&x);
   
+  const u16 a = u16( (u.val >> 8)   & 0xFFFF );
+  const u16 b = u16( (std::clock()) & 0xFFFF );
+  
   std::stringstream ss;
   
-  ss << x << ".tmp_" << std::hex << std::noshowbase << (u.val) << (std::clock());
+  ss << x << ".tmp_";
+  
+  ss.setf(std::ios_base::hex, std::ios_base::basefield);
+  
+  ss.width(4);
+  ss.fill('0');
+  ss << a;
+  
+  ss.width(4);
+  ss.fill('0');
+  ss << b;
   
   return ss.str();
   }

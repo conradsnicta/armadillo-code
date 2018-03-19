@@ -802,7 +802,7 @@ subview_elem1<eT,T1>::extract(Mat<eT>& actual_out, const subview_elem1<eT,T1>& i
     out_mem[i] = m_mem[ii];
     }
   
-  if(alias == true)
+  if(alias)
     {
     actual_out.steal_mem(out);
     delete tmp_out;

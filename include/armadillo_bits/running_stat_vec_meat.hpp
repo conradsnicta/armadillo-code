@@ -255,7 +255,7 @@ running_stat_vec<obj_type>::cov(const uword norm_type)
   {
   arma_extra_debug_sigprint();
   
-  if(calc_cov == true)
+  if(calc_cov)
     {
     const T N = counter.value();
     
@@ -382,7 +382,7 @@ running_stat_vec_aux::update_stats
     const T  N_plus_1   = x.counter.value_plus_1();
     const T  N_minus_1  = x.counter.value_minus_1();
     
-    if(x.calc_cov == true)
+    if(x.calc_cov)
       {
       Mat<eT>& tmp1 = x.tmp1;
       Mat<eT>& tmp2 = x.tmp2;
@@ -433,7 +433,7 @@ running_stat_vec_aux::update_stats
     
     x.r_var.zeros(sample.n_rows, sample.n_cols);
     
-    if(x.calc_cov == true)
+    if(x.calc_cov)
       {
       x.r_cov.zeros(sample.n_elem, sample.n_elem);
       }
@@ -541,7 +541,7 @@ running_stat_vec_aux::update_stats
     const T  N_plus_1   = x.counter.value_plus_1();
     const T  N_minus_1  = x.counter.value_minus_1();
     
-    if(x.calc_cov == true)
+    if(x.calc_cov)
       {
       Mat<eT>& tmp1 = x.tmp1;
       Mat<eT>& tmp2 = x.tmp2;
@@ -594,7 +594,7 @@ running_stat_vec_aux::update_stats
     
     x.r_var.zeros(sample.n_rows, sample.n_cols);
     
-    if(x.calc_cov == true)
+    if(x.calc_cov)
       {
       x.r_cov.zeros(sample.n_elem, sample.n_elem);
       }

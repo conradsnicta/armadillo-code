@@ -1351,6 +1351,7 @@ sp_auxlib::run_aupd
       switch (ido)
         {
         case -1:
+          // fallthrough
         case 1:
           {
           // We need to calculate the matrix-vector multiplication y = OP * x

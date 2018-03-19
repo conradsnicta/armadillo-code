@@ -83,9 +83,9 @@ arma_ostream::modify_stream(std::ostream& o, const eT* data, const uword n_elem)
     if(
       ( val >= eT(+100) )
       ||
-      //( (is_signed<eT>::value == true) && (val <= eT(-100)) ) ||
-      //( (is_non_integral<eT>::value == true) && (val > eT(0)) && (val <= eT(+1e-4)) ) ||
-      //( (is_non_integral<eT>::value == true) && (is_signed<eT>::value == true) && (val < eT(0)) && (val >= eT(-1e-4)) ) 
+      //( (is_signed<eT>::value) && (val <= eT(-100)) ) ||
+      //( (is_non_integral<eT>::value) && (val > eT(0)) && (val <= eT(+1e-4)) ) ||
+      //( (is_non_integral<eT>::value) && (is_signed<eT>::value) && (val < eT(0)) && (val >= eT(-1e-4)) ) 
         (
         cond_rel< is_signed<eT>::value >::leq(val, eT(-100))
         )
@@ -108,7 +108,7 @@ arma_ostream::modify_stream(std::ostream& o, const eT* data, const uword n_elem)
       }
       
     if(
-      // (val >= eT(+10)) || ( (is_signed<eT>::value == true) && (val <= eT(-10)) )
+      // (val >= eT(+10)) || ( (is_signed<eT>::value) && (val <= eT(-10)) )
       (val >= eT(+10)) || ( cond_rel< is_signed<eT>::value >::leq(val, eT(-10)) )
       )
       {
@@ -210,9 +210,9 @@ arma_ostream::modify_stream(std::ostream& o, typename SpMat<eT>::const_iterator 
     
     if(
       val >= eT(+100) ||
-      ( (is_signed<eT>::value == true) && (val <= eT(-100)) ) ||
-      ( (is_non_integral<eT>::value == true) && (val > eT(0)) && (val <= eT(+1e-4)) ) ||
-      ( (is_non_integral<eT>::value == true) && (is_signed<eT>::value == true) && (val < eT(0)) && (val >= eT(-1e-4)) )
+      ( (is_signed<eT>::value) && (val <= eT(-100)) ) ||
+      ( (is_non_integral<eT>::value) && (val > eT(0)) && (val <= eT(+1e-4)) ) ||
+      ( (is_non_integral<eT>::value) && (is_signed<eT>::value) && (val < eT(0)) && (val >= eT(-1e-4)) )
       )
       {
       use_layout_C = true;
@@ -220,7 +220,7 @@ arma_ostream::modify_stream(std::ostream& o, typename SpMat<eT>::const_iterator 
       }
 
     if(
-      (val >= eT(+10)) || ( (is_signed<eT>::value == true) && (val <= eT(-10)) )
+      (val >= eT(+10)) || ( (is_signed<eT>::value) && (val <= eT(-10)) )
       )
       {
       use_layout_B = true;
@@ -292,7 +292,7 @@ inline
 void
 arma_ostream::print_elem_zero(std::ostream& o, const bool modify)
   {
-  if(modify == true)
+  if(modify)
     {
     const ios::fmtflags   save_flags     = o.flags();
     const std::streamsize save_precision = o.precision();

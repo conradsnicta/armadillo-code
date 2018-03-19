@@ -544,4 +544,28 @@ spop_diagvec::apply(SpMat<typename T1::elem_type>& out, const SpOp<T1,spop_diagv
 
 
 
+template<typename T1>
+inline
+void
+spop_flipud::apply(SpMat<typename T1::elem_type>& out, const SpOp<T1,spop_flipud>& in)
+  {
+  arma_extra_debug_sigprint();
+  
+  out = reverse(in.m, 0);
+  }
+
+
+
+template<typename T1>
+inline
+void
+spop_fliplr::apply(SpMat<typename T1::elem_type>& out, const SpOp<T1,spop_fliplr>& in)
+  {
+  arma_extra_debug_sigprint();
+  
+  out = reverse(in.m, 1);
+  }
+
+
+
 //! @}

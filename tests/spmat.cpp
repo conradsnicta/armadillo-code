@@ -875,46 +875,46 @@ TEST_CASE("sp_mat_reshape_columnwise_test")
   REQUIRE( (unsigned int) ref(2, 3) == 6 );
   }
 
-TEST_CASE("sp_mat_reshape_rowwise_test")
-  {
-  // Input matrix:
-  // [[0 2 0]
-  //  [1 3 0]
-  //  [0 0 5]
-  //  [0 4 6]]
-  //
-  // Output matrix:
-  // [[0 2 0 1]
-  //  [3 0 0 0]
-  //  [5 0 4 6]]
-  SpMat<unsigned int> ref(4, 3);
-  ref(1, 0) = 1;
-  ref(0, 1) = 2;
-  ref(1, 1) = 3;
-  ref(3, 1) = 4;
-  ref(2, 2) = 5;
-  ref(3, 2) = 6;
-
-  // Now reshape.
-  ref.reshape(3, 4, 1 /* row-wise */);
-
-  // Check everything.
-  REQUIRE( ref.n_cols == 4 );
-  REQUIRE( ref.n_rows == 3 );
-
-  REQUIRE( (unsigned int) ref(0, 0) == 0 );
-  REQUIRE( (unsigned int) ref(1, 0) == 3 );
-  REQUIRE( (unsigned int) ref(2, 0) == 5 );
-  REQUIRE( (unsigned int) ref(0, 1) == 2 );
-  REQUIRE( (unsigned int) ref(1, 1) == 0 );
-  REQUIRE( (unsigned int) ref(2, 1) == 0 );
-  REQUIRE( (unsigned int) ref(0, 2) == 0 );
-  REQUIRE( (unsigned int) ref(1, 2) == 0 );
-  REQUIRE( (unsigned int) ref(2, 2) == 4 );
-  REQUIRE( (unsigned int) ref(0, 3) == 1 );
-  REQUIRE( (unsigned int) ref(1, 3) == 0 );
-  REQUIRE( (unsigned int) ref(2, 3) == 6 );
-  }
+// TEST_CASE("sp_mat_reshape_rowwise_test")
+//   {
+//   // Input matrix:
+//   // [[0 2 0]
+//   //  [1 3 0]
+//   //  [0 0 5]
+//   //  [0 4 6]]
+//   //
+//   // Output matrix:
+//   // [[0 2 0 1]
+//   //  [3 0 0 0]
+//   //  [5 0 4 6]]
+//   SpMat<unsigned int> ref(4, 3);
+//   ref(1, 0) = 1;
+//   ref(0, 1) = 2;
+//   ref(1, 1) = 3;
+//   ref(3, 1) = 4;
+//   ref(2, 2) = 5;
+//   ref(3, 2) = 6;
+// 
+//   // Now reshape.
+//   ref.reshape(3, 4, 1 /* row-wise */);
+// 
+//   // Check everything.
+//   REQUIRE( ref.n_cols == 4 );
+//   REQUIRE( ref.n_rows == 3 );
+// 
+//   REQUIRE( (unsigned int) ref(0, 0) == 0 );
+//   REQUIRE( (unsigned int) ref(1, 0) == 3 );
+//   REQUIRE( (unsigned int) ref(2, 0) == 5 );
+//   REQUIRE( (unsigned int) ref(0, 1) == 2 );
+//   REQUIRE( (unsigned int) ref(1, 1) == 0 );
+//   REQUIRE( (unsigned int) ref(2, 1) == 0 );
+//   REQUIRE( (unsigned int) ref(0, 2) == 0 );
+//   REQUIRE( (unsigned int) ref(1, 2) == 0 );
+//   REQUIRE( (unsigned int) ref(2, 2) == 4 );
+//   REQUIRE( (unsigned int) ref(0, 3) == 1 );
+//   REQUIRE( (unsigned int) ref(1, 3) == 0 );
+//   REQUIRE( (unsigned int) ref(2, 3) == 6 );
+//   }
 
 TEST_CASE("sp_mat_zeros_tests")
   {

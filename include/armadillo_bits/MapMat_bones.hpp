@@ -116,8 +116,8 @@ class MapMat
        inline void erase_val(const uword index);
   
   
-  friend class MapMat_val<eT>;
-  friend class SpMat_MapMat_val<eT>;
+  friend class           MapMat_val<eT>;
+  friend class     SpMat_MapMat_val<eT>;
   friend class SpSubview_MapMat_val<eT>;
   friend class SpMat<eT>;
   };

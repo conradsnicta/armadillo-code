@@ -208,4 +208,24 @@ class spop_diagvec
 
 
 
+class spop_flipud
+  {
+  public:
+  
+  template<typename T1>
+  inline static void apply(SpMat<typename T1::elem_type>& out, const SpOp<T1, spop_flipud>& in);
+  };
+
+
+
+class spop_fliplr
+  {
+  public:
+  
+  template<typename T1>
+  inline static void apply(SpMat<typename T1::elem_type>& out, const SpOp<T1, spop_fliplr>& in);
+  };
+
+
+
 //! @}

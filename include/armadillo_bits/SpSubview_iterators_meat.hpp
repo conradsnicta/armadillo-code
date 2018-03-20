@@ -614,7 +614,7 @@ SpSubview<eT>::const_row_iterator::const_row_iterator(const SpSubview<eT>& in_M,
 
   const uword aux_col = iterator_base::M->aux_col1;
   const uword aux_row = iterator_base::M->aux_row1;
-  const uword ln_cols = iterator_base::M->n_cols;
+  //const uword ln_cols = iterator_base::M->n_cols;
 
   // We don't count zeros in our position count, so we have to find the nonzero
   // value corresponding to the given initial position, and we also have to skip
@@ -669,7 +669,7 @@ SpSubview<eT>::const_row_iterator::const_row_iterator(const SpSubview<eT>& in_M,
     }
 
   // This shouldn't happen.
-  iterator_base::internal_pos = iterator_base::M.n_nonzero;
+  iterator_base::internal_pos = iterator_base::M->n_nonzero;
   iterator_base::internal_col = 0;
   internal_row = iterator_base::M->n_rows;
   actual_pos = iterator_base::M->n_nonzero;
@@ -920,14 +920,15 @@ SpSubview<eT>::const_row_iterator::operator--()
 
   const uword aux_col = iterator_base::M->aux_col1;
   const uword aux_row = iterator_base::M->aux_row1;
-  const uword n_cols = iterator_base::M->n_cols;
+  //const uword n_cols = iterator_base::M->n_cols;
 
   // We have to search backwards.
   uword max_row = 0;
   uword max_col = 0;
   uword next_actual_pos = 0;
 
-  for (uword col = iterator_base::internal_col; col > 1; --col)
+  //for (uword col = iterator_base::internal_col; col > 1; --col)
+  for (uword col = iterator_base::internal_col; col >= 1; --col)
     {
     // Find the first element with row greater than or equal to in_row + 1.
     const uword      col_offset = iterator_base::M->m.col_ptrs[col + aux_col - 1];

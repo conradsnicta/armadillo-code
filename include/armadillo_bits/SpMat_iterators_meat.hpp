@@ -728,7 +728,8 @@ SpMat<eT>::const_row_iterator::operator--()
   uword max_col = 0;
   uword next_actual_pos = 0;
 
-  for (uword col = iterator_base::internal_col; col > 1; --col)
+  //for (uword col = iterator_base::internal_col; col > 1; --col)
+  for (uword col = iterator_base::internal_col; col >= 1; --col)
     {
     // Find the first element with row greater than or equal to in_row + 1.
     const uword      col_offset = iterator_base::M->col_ptrs[col - 1];

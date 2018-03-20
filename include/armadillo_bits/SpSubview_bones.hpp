@@ -304,8 +304,8 @@ class SpSubview : public SpBase<eT, SpSubview<eT> >
   inline row_iterator       end_row();
   inline const_row_iterator end_row() const;
 
-  inline row_iterator       end_row(const uword row_num = 0);
-  inline const_row_iterator end_row(const uword row_num = 0) const;
+  inline row_iterator       end_row(const uword row_num);
+  inline const_row_iterator end_row(const uword row_num) const;
 
 
   private:

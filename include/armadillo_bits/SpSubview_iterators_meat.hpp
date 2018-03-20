@@ -423,6 +423,7 @@ SpSubview<eT>::const_iterator::operator--(int)
 
 template<typename eT>
 inline
+arma_hot
 bool
 SpSubview<eT>::const_iterator::operator==(const const_iterator& rhs) const
   {
@@ -433,6 +434,7 @@ SpSubview<eT>::const_iterator::operator==(const const_iterator& rhs) const
 
 template<typename eT>
 inline
+arma_hot
 bool
 SpSubview<eT>::const_iterator::operator!=(const const_iterator& rhs) const
   {
@@ -443,6 +445,7 @@ SpSubview<eT>::const_iterator::operator!=(const const_iterator& rhs) const
 
 template<typename eT>
 inline
+arma_hot
 bool
 SpSubview<eT>::const_iterator::operator==(const typename SpMat<eT>::const_iterator& rhs) const
   {
@@ -453,6 +456,7 @@ SpSubview<eT>::const_iterator::operator==(const typename SpMat<eT>::const_iterat
 
 template<typename eT>
 inline
+arma_hot
 bool
 SpSubview<eT>::const_iterator::operator!=(const typename SpMat<eT>::const_iterator& rhs) const
   {
@@ -463,6 +467,7 @@ SpSubview<eT>::const_iterator::operator!=(const typename SpMat<eT>::const_iterat
 
 template<typename eT>
 inline
+arma_hot
 bool
 SpSubview<eT>::const_iterator::operator==(const const_row_iterator& rhs) const
   {
@@ -473,6 +478,7 @@ SpSubview<eT>::const_iterator::operator==(const const_row_iterator& rhs) const
 
 template<typename eT>
 inline
+arma_hot
 bool
 SpSubview<eT>::const_iterator::operator!=(const const_row_iterator& rhs) const
   {
@@ -483,6 +489,7 @@ SpSubview<eT>::const_iterator::operator!=(const const_row_iterator& rhs) const
 
 template<typename eT>
 inline
+arma_hot
 bool
 SpSubview<eT>::const_iterator::operator==(const typename SpMat<eT>::const_row_iterator& rhs) const
   {
@@ -493,6 +500,7 @@ SpSubview<eT>::const_iterator::operator==(const typename SpMat<eT>::const_row_it
 
 template<typename eT>
 inline
+arma_hot
 bool
 SpSubview<eT>::const_iterator::operator!=(const typename SpMat<eT>::const_row_iterator& rhs) const
   {
@@ -1015,6 +1023,7 @@ SpSubview<eT>::const_row_iterator::operator--(int)
 
 template<typename eT>
 inline
+arma_hot
 bool
 SpSubview<eT>::const_row_iterator::operator==(const const_iterator& rhs) const
   {
@@ -1025,6 +1034,7 @@ SpSubview<eT>::const_row_iterator::operator==(const const_iterator& rhs) const
 
 template<typename eT>
 inline
+arma_hot
 bool
 SpSubview<eT>::const_row_iterator::operator!=(const const_iterator& rhs) const
   {
@@ -1035,6 +1045,7 @@ SpSubview<eT>::const_row_iterator::operator!=(const const_iterator& rhs) const
 
 template<typename eT>
 inline
+arma_hot
 bool
 SpSubview<eT>::const_row_iterator::operator==(const typename SpMat<eT>::const_iterator& rhs) const
   {
@@ -1045,6 +1056,7 @@ SpSubview<eT>::const_row_iterator::operator==(const typename SpMat<eT>::const_it
 
 template<typename eT>
 inline
+arma_hot
 bool
 SpSubview<eT>::const_row_iterator::operator!=(const typename SpMat<eT>::const_iterator& rhs) const
   {
@@ -1055,6 +1067,7 @@ SpSubview<eT>::const_row_iterator::operator!=(const typename SpMat<eT>::const_it
 
 template<typename eT>
 inline
+arma_hot
 bool
 SpSubview<eT>::const_row_iterator::operator==(const const_row_iterator& rhs) const
   {
@@ -1065,6 +1078,7 @@ SpSubview<eT>::const_row_iterator::operator==(const const_row_iterator& rhs) con
 
 template<typename eT>
 inline
+arma_hot
 bool
 SpSubview<eT>::const_row_iterator::operator!=(const const_row_iterator& rhs) const
   {
@@ -1075,6 +1089,7 @@ SpSubview<eT>::const_row_iterator::operator!=(const const_row_iterator& rhs) con
 
 template<typename eT>
 inline
+arma_hot
 bool
 SpSubview<eT>::const_row_iterator::operator==(const typename SpMat<eT>::const_row_iterator& rhs) const
   {
@@ -1085,6 +1100,7 @@ SpSubview<eT>::const_row_iterator::operator==(const typename SpMat<eT>::const_ro
 
 template<typename eT>
 inline
+arma_hot
 bool
 SpSubview<eT>::const_row_iterator::operator!=(const typename SpMat<eT>::const_row_iterator& rhs) const
   {

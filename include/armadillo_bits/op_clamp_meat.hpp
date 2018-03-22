@@ -114,36 +114,9 @@ op_clamp::apply_direct(Mat<eT>& out, const Mat<eT>& X, const eT min_val, const e
   
   if(&out != &X)
     {
-    out.set_size(X.n_rows, X.n_cols);
+    const Proxy< Mat<eT> > P(X);
     
-    const eT*   X_mem =   X.memptr();
-          eT* out_mem = out.memptr();
-    
-    const uword N = X.n_elem;
-    
-    uword j;
-    for(j=1; j<N; j+=2)
-      {
-      eT val_i = X_mem[j-1];
-      eT val_j = X_mem[j  ];
-      
-      val_i = (val_i < min_val) ? min_val : ((val_i > max_val) ? max_val : val_i);
-      val_j = (val_j < min_val) ? min_val : ((val_j > max_val) ? max_val : val_j);
-      
-      (*out_mem) = val_i;  out_mem++;
-      (*out_mem) = val_j;  out_mem++;
-      }
-    
-    const uword i = j-1;
-    
-    if(i < N)
-      {
-      eT val_i = X_mem[i];
-      
-      val_i = (val_i < min_val) ? min_val : ((val_i > max_val) ? max_val : val_i);
-      
-      (*out_mem) = val_i;
-      }
+    op_clamp::apply_proxy_noalias(out, P, min_val, max_val);
     }
   else  // inplace operation
     {
@@ -155,8 +128,8 @@ op_clamp::apply_direct(Mat<eT>& out, const Mat<eT>& X, const eT min_val, const e
       {
       eT& out_val = out_mem[i];
       
-           if(out_val > max_val)  { out_val = max_val; }
-      else if(out_val < min_val)  { out_val = min_val; }
+           if(out_val < min_val)  { out_val = min_val; }
+      else if(out_val > max_val)  { out_val = max_val; }
       }
     }
   }
@@ -263,36 +236,9 @@ op_clamp::apply_direct(Cube<eT>& out, const Cube<eT>& X, const eT min_val, const
   
   if(&out != &X)
     {
-    out.set_size(X.n_rows, X.n_cols, X.n_slices);
+    const ProxyCube< Cube<eT> > P(X);
     
-    const eT*   X_mem =   X.memptr();
-          eT* out_mem = out.memptr();
-    
-    const uword N = X.n_elem;
-    
-    uword j;
-    for(j=1; j<N; j+=2)
-      {
-      eT val_i = X_mem[j-1];
-      eT val_j = X_mem[j  ];
-      
-      val_i = (val_i < min_val) ? min_val : ((val_i > max_val) ? max_val : val_i);
-      val_j = (val_j < min_val) ? min_val : ((val_j > max_val) ? max_val : val_j);
-      
-      (*out_mem) = val_i;  out_mem++;
-      (*out_mem) = val_j;  out_mem++;
-      }
-    
-    const uword i = j-1;
-    
-    if(i < N)
-      {
-      eT val_i = X_mem[i];
-      
-      val_i = (val_i < min_val) ? min_val : ((val_i > max_val) ? max_val : val_i);
-      
-      (*out_mem) = val_i;
-      }
+    op_clamp::apply_proxy_noalias(out, P, min_val, max_val);
     }
   else  // inplace operation
     {
@@ -304,8 +250,8 @@ op_clamp::apply_direct(Cube<eT>& out, const Cube<eT>& X, const eT min_val, const
       {
       eT& out_val = out_mem[i];
       
-           if(out_val > max_val)  { out_val = max_val; }
-      else if(out_val < min_val)  { out_val = min_val; }
+           if(out_val < min_val)  { out_val = min_val; }
+      else if(out_val > max_val)  { out_val = max_val; }
       }
     }
   }

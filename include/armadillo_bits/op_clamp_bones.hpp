@@ -28,14 +28,17 @@ class op_clamp
   
   template<typename T1> inline static void apply(Mat<typename T1::elem_type>& out, const mtOp<typename T1::elem_type, T1, op_clamp>& in);
   
-  template<typename T1> inline static void apply_noalias(Mat<typename T1::elem_type>& out, const Proxy<T1>& P, const typename T1::elem_type min_val, const typename T1::elem_type max_val);
+  template<typename T1> inline static void apply_proxy_noalias(Mat<typename T1::elem_type>& out, const Proxy<T1>& P, const typename T1::elem_type min_val, const typename T1::elem_type max_val);
   
+  template<typename eT> inline static void apply_direct(Mat<eT>& out, const Mat<eT>& X, const eT min_val, const eT max_val);
   
   // cubes
 
   template<typename T1> inline static void apply(Cube<typename T1::elem_type>& out, const mtOpCube<typename T1::elem_type, T1, op_clamp>& in);
   
-  template<typename T1> inline static void apply_noalias(Cube<typename T1::elem_type>& out, const ProxyCube<T1>& P, const typename T1::elem_type min_val, const typename T1::elem_type max_val);
+  template<typename T1> inline static void apply_proxy_noalias(Cube<typename T1::elem_type>& out, const ProxyCube<T1>& P, const typename T1::elem_type min_val, const typename T1::elem_type max_val);
+  
+  template<typename eT> inline static void apply_direct(Cube<eT>& out, const Cube<eT>& X, const eT min_val, const eT max_val);
   };
 
 

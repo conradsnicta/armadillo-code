@@ -5605,6 +5605,7 @@ See also:
 <li><a href="#index_min_and_index_max_standalone">index_min() &amp; index_max()</a> (standalone functions)</li>
 <li><a href="#ind2sub">ind2sub()</a></li>
 <li><a href="#sort_index">sort_index()</a></li>
+<li><a href="#find">find()</a></li>
 <li><a href="#element_access">element access</a></li>
 </ul>
 </li>
@@ -7764,7 +7765,8 @@ See also:
 <b>clamp( X, min_val, max_val )</b>
 <ul>
 <li>
-Create a copy of <i>X</i> with each element clamped to be between <i>min_val</i> and <i>max_val</i>
+Create a copy of <i>X</i> with each element clamped to the [<i>min_val</i>,&nbsp;<i>max_val</i>] interval;
+<br>any value lower than <i>min_val</i> will be set to <i>min_val</i>, and any value higher than <i>max_val</i> will be set to <i>max_val</i>
 </li>
 <br>
 <li>
@@ -7773,7 +7775,7 @@ Examples:
 <pre>
 mat A = randu&lt;mat&gt;(5,5);
 
-mat B = clamp(A, 0.2, 0.8); 
+mat B = clamp(A, 0.2,     0.8); 
 
 mat C = clamp(A, A.min(), 0.8); 
 
@@ -7784,8 +7786,8 @@ mat D = clamp(A, 0.2, A.max());
 <li>
 See also:
 <ul>
-<li><a href="#min_and_max">min() &amp; max()</a></li>
-<li><a href="#min_and_max_member">.min() &amp; .max()</a> (member functions of Mat)</li>
+<li><a href="#min_and_max">min() &amp; max()</a> (standalone functions)</li>
+<li><a href="#min_and_max_member">.min() &amp; .max()</a> (member functions)</li>
 <li><a href="#replace">.replace()</a></li>
 <li><a href="#find">find()</a></li>
 </ul>
@@ -8421,6 +8423,14 @@ See also:
 </li>
 <br>
 <li>
+<b>Caveats:</b>
+<ul>
+<li>to clamp values to an interval, <a href="#clamp">clamp()</a> is more efficient</li>
+<li>to replace a specific value, <a href="#replace">.repalce()</a> is more efficient</li>
+</ul>
+ </li>
+<br>
+ <li>
 Examples:
 <ul>
 <pre>
@@ -8442,9 +8452,9 @@ See also:
 <ul>
 <li><a href="#all">all()</a></li>
 <li><a href="#any">any()</a></li>
+<li><a href="#clamp">clamp()</a></li>
 <li><a href="#replace">.replace()</a></li>
 <li><a href="#approx_equal">approx_equal()</a></li>
-<li><a href="#clamp">clamp()</a></li>
 <li><a href="#find_finite">find_finite()</a></li>
 <li><a href="#find_nonfinite">find_nonfinite()</a></li>
 <li><a href="#find_unique">find_unique()</a></li>
@@ -8820,6 +8830,7 @@ See also:
 <li><a href="#min_and_max">min() &amp; max()</a></li>
 <li><a href="#index_min_and_index_max_member">.index_min() &amp; .index_max()</a> (member functions)</li>
 <li><a href="#sort_index">sort_index()</a></li>
+<li><a href="#find">find()</a></li>
 </ul>
 </li>
 <br>

@@ -953,7 +953,7 @@ SpSubview<eT>::const_row_iterator::operator--()
           max_col = col - 1;
           next_actual_pos = col_offset + (pos_ptr - 1 - start_ptr);
           }
-        else if (*(pos_ptr - 1) == max_row + aux_row && (col - 1) > max_col)
+        else if (*(pos_ptr - 1) == max_row + aux_row && (col - 1) >= max_col)
           {
           max_col = col - 1;
           next_actual_pos = col_offset + (pos_ptr - 1 - start_ptr);
@@ -962,7 +962,7 @@ SpSubview<eT>::const_row_iterator::operator--()
       }
     }
 
-  for (uword col = iterator_base::M->m.n_cols - 1; col >= iterator_base::internal_col; --col)
+  for (uword col = iterator_base::M->n_cols - 1; col >= iterator_base::internal_col; --col)
     {
     // Find the first element with row greater than or equal to row + 1.
     const uword      col_offset = iterator_base::M->m.col_ptrs[col + aux_col    ];
@@ -985,7 +985,7 @@ SpSubview<eT>::const_row_iterator::operator--()
           max_col = col;
           next_actual_pos = col_offset + (pos_ptr - 1 - start_ptr);
           }
-        else if (*(pos_ptr - 1) == max_row && col > max_col)
+        else if (*(pos_ptr - 1) == max_row + aux_row && col >= max_col)
           {
           max_col = col;
           next_actual_pos = col_offset + (pos_ptr - 1 - start_ptr);

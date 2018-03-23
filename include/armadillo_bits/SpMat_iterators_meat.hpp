@@ -529,9 +529,14 @@ SpMat<eT>::const_row_iterator::const_row_iterator(const SpMat<eT>& in_M, uword i
         // greater than or equal to in_row.
         if ((*pos_ptr) < cur_min_row)
           {
-          cur_min_row = (*pos_ptr);
-          cur_min_col = col;
-          cur_actual_pos = col_offset + offset;
+          // If we are in the desired row but before the desired column, we
+          // can't take this.
+          if (col >= in_col)
+            {
+            cur_min_row = (*pos_ptr);
+            cur_min_col = col;
+            cur_actual_pos = col_offset + offset;
+            }
           }
         }
       }

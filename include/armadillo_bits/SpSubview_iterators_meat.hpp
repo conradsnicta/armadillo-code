@@ -732,9 +732,14 @@ SpSubview<eT>::const_row_iterator::const_row_iterator(const SpSubview<eT>& in_M,
           // index greater than or equal to in_row + aux_row.
           if ((*pos_ptr) - aux_row < cur_min_row)
             {
-            cur_min_row = (*pos_ptr) - aux_row;
-            cur_min_col = col;
-            cur_actual_pos = col_offset + (pos_ptr - start_ptr);
+            // If we are in the desired row but before the desired column, we
+            // can't take this.
+            if (col >= in_col)
+              {
+              cur_min_row = (*pos_ptr) - aux_row;
+              cur_min_col = col;
+              cur_actual_pos = col_offset + (pos_ptr - start_ptr);
+              }
             }
           }
         }

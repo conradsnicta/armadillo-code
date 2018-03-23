@@ -2741,3 +2741,36 @@ TEST_CASE("spmat_sprow_col_iterator_test")
 
   REQUIRE( count == 1 );
   }
+
+
+TEST_CASE("spmat_row_iterator_constructor")
+  {
+  // Create a row iterator with an exact position.
+  Mat<double> tmp =
+      { { 5.5, 0.0, 0.0 },
+        { 0.0, 0.0, 6.5 },
+        { 0.0, 7.5, 0.0 } };
+
+  SpMat<double> X(tmp);
+
+  SpMat<double>::const_row_iterator cri(X, 0, 1);
+
+  // This should end up at (1, 2) with value 6.5.
+  REQUIRE( cri.row() == 1 );
+  REQUIRE( cri.col() == 2 );
+  REQUIRE( (*cri) == Approx(6.5) );
+
+  cri = SpMat<double>::const_row_iterator(X, 0, 0);
+
+  // This should end up at (0, 0) with value 5.5.
+  REQUIRE( cri.row() == 0 );
+  REQUIRE( cri.col() == 0 );
+  REQUIRE( (*cri) == Approx(5.5) );
+
+  cri = SpMat<double>::const_row_iterator(X, 2, 1);
+
+  // This should end up at (2, 1) with value 7.5.
+  REQUIRE( cri.row() == 2 );
+  REQUIRE( cri.col() == 1 );
+  REQUIRE( (*cri) == Approx(7.5) );
+  }

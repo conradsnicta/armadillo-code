@@ -1447,3 +1447,92 @@ TEST_CASE("sp_subview_division_sp_base")
       REQUIRE( d[i] == Approx(dd[i]) );
     }
   }
+
+
+
+TEST_CASE("sp_subview_row_iterator_constructor")
+  {
+  // Create a row iterator with an exact position.
+  Mat<double> tmp =
+    { { 1.1, 1.2, 1.3, 1.4, 1.5 },
+      { 2.1, 5.5, 0.0, 0.0, 3.1 },
+      { 2.2, 0.0, 0.0, 6.5, 3.2 },
+      { 2.3, 0.0, 7.5, 0.0, 3.3 },
+      { 2.4, 4.2, 4.3, 4.4, 3.4 } };
+
+  SpMat<double> X(tmp);
+  SpSubview<double> sv = X.submat(1, 1, 3, 3);
+
+  // Now create an iterator to an exact position.
+  SpSubview<double>::const_row_iterator cri(sv, 0, 1);
+
+  // This should end up at (1, 2) with value 6.5.
+  REQUIRE( cri.row() == 1 );
+  REQUIRE( cri.col() == 2 );
+  REQUIRE( (*cri) == Approx(6.5) );
+
+  cri = SpSubview<double>::const_row_iterator(sv, 0, 0);
+
+  // This should end up at (0, 0) with value 5.5.
+  REQUIRE( cri.row() == 0 );
+  REQUIRE( cri.col() == 0 );
+  REQUIRE( (*cri) == Approx(5.5) );
+
+  cri = SpSubview<double>::const_row_iterator(sv, 2, 1);
+
+  // This should end up at (2, 1) with value 7.5.
+  REQUIRE( cri.row() == 2 );
+  REQUIRE( cri.col() == 1 );
+  REQUIRE( (*cri) == Approx(7.5) );
+  }
+
+
+
+TEST_CASE("sp_subview_row_iterator_test_1")
+  {
+  Mat<double> tmp =
+    { { 1.1, 1.2, 1.3, 1.4, 1.5 },
+      { 2.1, 5.5, 0.0, 0.0, 3.1 },
+      { 2.2, 0.0, 0.0, 6.5, 3.2 },
+      { 2.3, 0.0, 7.5, 0.0, 3.3 },
+      { 2.4, 4.2, 4.3, 4.4, 3.4 } };
+
+  SpMat<double> X(tmp);
+  SpSubview<double> sv = X.submat(1, 1, 3, 3);
+
+  SpSubview<double>::row_iterator it = sv.begin_row();
+  SpSubview<double>::row_iterator it2 = sv.begin_row();
+
+  ++it;
+  --it;
+
+  REQUIRE( it.row() == it2.row() );
+  REQUIRE( it.col() == it2.col() );
+  REQUIRE( (*it) == Approx(*it2) );
+  REQUIRE( it.pos() == it2.pos() );
+  }
+
+
+
+TEST_CASE("sp_subview_row_iterator_test_2")
+  {
+  // Make sure the loop terminates.
+  Mat<double> tmp =
+    { { 1.1, 1.2, 1.3, 1.4, 1.5 },
+      { 2.1, 5.5, 0.0, 0.0, 3.1 },
+      { 2.2, 0.0, 0.0, 6.5, 3.2 },
+      { 2.3, 0.0, 7.5, 0.0, 3.3 },
+      { 2.4, 4.2, 4.3, 4.4, 3.4 } };
+
+  SpMat<double> X(tmp);
+  SpSubview<double> sv = X.submat(1, 1, 3, 3);
+
+  SpSubview<double>::row_iterator it     = sv.end_row(sv.n_rows - 1);  // points to past-the-end
+  SpSubview<double>::row_iterator it_end = sv.begin_row();
+
+  do {
+    --it;
+  } while(it != it_end);
+
+  REQUIRE( true );
+  }

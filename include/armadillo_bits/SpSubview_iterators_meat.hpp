@@ -614,7 +614,6 @@ SpSubview<eT>::const_row_iterator::const_row_iterator(const SpSubview<eT>& in_M,
 
   const uword aux_col = iterator_base::M->aux_col1;
   const uword aux_row = iterator_base::M->aux_row1;
-  //const uword ln_cols = iterator_base::M->n_cols;
 
   // We don't count zeros in our position count, so we have to find the nonzero
   // value corresponding to the given initial position, and we also have to skip
@@ -732,9 +731,14 @@ SpSubview<eT>::const_row_iterator::const_row_iterator(const SpSubview<eT>& in_M,
           // index greater than or equal to in_row + aux_row.
           if ((*pos_ptr) - aux_row < cur_min_row)
             {
-            cur_min_row = (*pos_ptr) - aux_row;
-            cur_min_col = col;
-            cur_actual_pos = col_offset + (pos_ptr - start_ptr);
+            // If we are in the desired row but before the desired column, we
+            // can't take this.
+            if (col >= in_col)
+              {
+              cur_min_row = (*pos_ptr) - aux_row;
+              cur_min_col = col;
+              cur_actual_pos = col_offset + (pos_ptr - start_ptr);
+              }
             }
           }
         }
@@ -920,14 +924,12 @@ SpSubview<eT>::const_row_iterator::operator--()
 
   const uword aux_col = iterator_base::M->aux_col1;
   const uword aux_row = iterator_base::M->aux_row1;
-  //const uword n_cols = iterator_base::M->n_cols;
 
   // We have to search backwards.
   uword max_row = 0;
   uword max_col = 0;
   uword next_actual_pos = 0;
 
-  //for (uword col = iterator_base::internal_col; col > 1; --col)
   for (uword col = iterator_base::internal_col; col >= 1; --col)
     {
     // Find the first element with row greater than or equal to in_row + 1.
@@ -944,7 +946,6 @@ SpSubview<eT>::const_row_iterator::operator--()
 
       if (pos_ptr != start_ptr)
         {
-        // The element before pos_ptr is the one we are interested in.
         if (*(pos_ptr - 1) > max_row + aux_row)
           {
           // There are elements in this column with row index < internal_row.
@@ -952,7 +953,7 @@ SpSubview<eT>::const_row_iterator::operator--()
           max_col = col - 1;
           next_actual_pos = col_offset + (pos_ptr - 1 - start_ptr);
           }
-        else if (*(pos_ptr - 1) == max_row + aux_row && (col - 1) > max_col)
+        else if (*(pos_ptr - 1) == max_row + aux_row && (col - 1) >= max_col)
           {
           max_col = col - 1;
           next_actual_pos = col_offset + (pos_ptr - 1 - start_ptr);
@@ -961,7 +962,7 @@ SpSubview<eT>::const_row_iterator::operator--()
       }
     }
 
-  for (uword col = iterator_base::M->m.n_cols - 1; col >= iterator_base::internal_col; --col)
+  for (uword col = iterator_base::M->n_cols - 1; col >= iterator_base::internal_col; --col)
     {
     // Find the first element with row greater than or equal to row + 1.
     const uword      col_offset = iterator_base::M->m.col_ptrs[col + aux_col    ];
@@ -984,7 +985,7 @@ SpSubview<eT>::const_row_iterator::operator--()
           max_col = col;
           next_actual_pos = col_offset + (pos_ptr - 1 - start_ptr);
           }
-        else if (*(pos_ptr - 1) == max_row && col > max_col)
+        else if (*(pos_ptr - 1) == max_row + aux_row && col >= max_col)
           {
           max_col = col;
           next_actual_pos = col_offset + (pos_ptr - 1 - start_ptr);

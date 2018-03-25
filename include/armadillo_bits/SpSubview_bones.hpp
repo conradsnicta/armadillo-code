@@ -289,22 +289,24 @@ class SpSubview : public SpBase<eT, SpSubview<eT> >
     typedef const SpValProxy<SpSubview<eT> >& reference;
     };
   
-  inline iterator           begin();
+  inline       iterator     begin();
   inline const_iterator     begin() const;
+  inline const_iterator    cbegin() const;
   
-  inline iterator           begin_col(const uword col_num);
+  inline       iterator     begin_col(const uword col_num);
   inline const_iterator     begin_col(const uword col_num) const;
 
-  inline row_iterator       begin_row(const uword row_num = 0);
+  inline       row_iterator begin_row(const uword row_num = 0);
   inline const_row_iterator begin_row(const uword row_num = 0) const;
 
-  inline iterator           end();
+  inline       iterator     end();
   inline const_iterator     end() const;
+  inline const_iterator    cend() const;
 
-  inline row_iterator       end_row();
+  inline       row_iterator end_row();
   inline const_row_iterator end_row() const;
 
-  inline row_iterator       end_row(const uword row_num);
+  inline       row_iterator end_row(const uword row_num);
   inline const_row_iterator end_row(const uword row_num) const;
 
 

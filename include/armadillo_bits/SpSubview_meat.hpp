@@ -1678,6 +1678,18 @@ SpSubview<eT>::begin() const
 
 template<typename eT>
 inline
+typename SpSubview<eT>::const_iterator
+SpSubview<eT>::cbegin() const
+  {
+  m.sync_csc();
+  
+  return const_iterator(*this);
+  }
+
+
+
+template<typename eT>
+inline
 typename SpSubview<eT>::iterator
 SpSubview<eT>::begin_col(const uword col_num)
   {
@@ -1739,6 +1751,18 @@ template<typename eT>
 inline
 typename SpSubview<eT>::const_iterator
 SpSubview<eT>::end() const
+  {
+  m.sync_csc();
+  
+  return const_iterator(*this, 0, n_cols, n_nonzero, m.n_nonzero - n_nonzero);
+  }
+
+
+
+template<typename eT>
+inline
+typename SpSubview<eT>::const_iterator
+SpSubview<eT>::cend() const
   {
   m.sync_csc();
   

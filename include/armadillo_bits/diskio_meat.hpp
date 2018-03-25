@@ -608,17 +608,13 @@ arma_cold
 std::string
 diskio::gen_tmp_name(const std::string& x)
   {
-  int* junk_mem = memory::acquire<int>(1);
-  
   union { uword val; void* ptr; } u;
   
   u.val = uword(0);
-  u.ptr = junk_mem;
+  u.ptr = const_cast<std::string*>(&x);
   
   const u16 a = u16( (u.val >> 8)   & 0xFFFF );
   const u16 b = u16( (std::clock()) & 0xFFFF );
-  
-  memory::release(junk_mem);
   
   std::stringstream ss;
   

@@ -614,7 +614,7 @@ arrayops::inplace_set(eT* dest, const eT val, const uword n_elem)
     {
     if( (val == eT(0)) && (std::numeric_limits<eT>::is_integer || (std::numeric_limits<pod_type>::is_iec559 && is_real<pod_type>::value)) )
       {
-      std::memset(dest, 0, sizeof(eT)*n_elem);
+      std::memset((void*)dest, 0, sizeof(eT)*n_elem);
       }
     else
       {

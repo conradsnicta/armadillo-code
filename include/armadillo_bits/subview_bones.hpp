@@ -122,7 +122,8 @@ class subview : public Base<eT, subview<eT> >
   arma_inline       eT* colptr(const uword in_col);
   arma_inline const eT* colptr(const uword in_col) const;
   
-  inline bool check_overlap(const subview& x) const;
+  template<typename eT2>
+  inline bool check_overlap(const subview<eT2>& x) const;
   
   inline arma_warn_unused bool is_vec()    const;
   inline arma_warn_unused bool is_finite() const;

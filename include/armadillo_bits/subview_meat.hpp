@@ -122,10 +122,6 @@ subview<eT>::inplace_op(const Base<eT,T1>& in, const char* identifier)
   
   const Proxy<T1> P(in.get_ref());
   
-  // TODO: expand the Proxy class to have has_overlap() member function
-  // TODO: in order to allow more nuanced handling of aliasing with subviews;
-  // TODO: for example; X.col(1) = X.col(2) + X.col(3);
-  
   subview<eT>& s = *this;
   
   const uword s_n_rows = s.n_rows;
@@ -133,14 +129,14 @@ subview<eT>::inplace_op(const Base<eT,T1>& in, const char* identifier)
   
   arma_debug_assert_same_size(s, P, identifier);
   
-  const bool use_mp   = arma_config::cxx11 && arma_config::openmp && Proxy<T1>::use_mp && mp_gate<eT>::eval(s.n_elem);
-  const bool is_alias = P.is_alias(s.m);
+  const bool use_mp      = arma_config::cxx11 && arma_config::openmp && Proxy<T1>::use_mp && mp_gate<eT>::eval(s.n_elem);
+  const bool has_overlap = P.has_overlap(s);
   
-  if(is_alias)  { arma_extra_debug_print("aliasing detected"); }
+  if(has_overlap)  { arma_extra_debug_print("aliasing or overlap detected"); }
   
-  if( (is_Mat<typename Proxy<T1>::stored_type>::value) || (use_mp) || (is_alias) )
+  if( (is_Mat<typename Proxy<T1>::stored_type>::value) || (use_mp) || (has_overlap) )
     {
-    const unwrap_check<typename Proxy<T1>::stored_type> tmp(P.Q, is_alias);
+    const unwrap_check<typename Proxy<T1>::stored_type> tmp(P.Q, has_overlap);
     const Mat<eT>& B = tmp.M;
     
     if(s_n_rows == 1)
@@ -1206,44 +1202,37 @@ subview<eT>::colptr(const uword in_col) const
 
 
 template<typename eT>
+template<typename eT2>
 inline
 bool
-subview<eT>::check_overlap(const subview<eT>& x) const
+subview<eT>::check_overlap(const subview<eT2>& x) const
   {
-  const subview<eT>& s = *this;
+  if(is_same_type<eT,eT2>::value == false)  { return false; }
   
-  if(&s.m != &x.m)
-    {
-    return false;
-    }
-  else
-    {
-    if( (s.n_elem == 0) || (x.n_elem == 0) )
-      {
-      return false;
-      }
-    else
-      {
-      const uword s_row_start  = s.aux_row1;
-      const uword s_row_end_p1 = s_row_start + s.n_rows;
-      
-      const uword s_col_start  = s.aux_col1;
-      const uword s_col_end_p1 = s_col_start + s.n_cols;
-      
-      
-      const uword x_row_start  = x.aux_row1;
-      const uword x_row_end_p1 = x_row_start + x.n_rows;
-      
-      const uword x_col_start  = x.aux_col1;
-      const uword x_col_end_p1 = x_col_start + x.n_cols;
-      
-      
-      const bool outside_rows = ( (x_row_start >= s_row_end_p1) || (s_row_start >= x_row_end_p1) );
-      const bool outside_cols = ( (x_col_start >= s_col_end_p1) || (s_col_start >= x_col_end_p1) );
-      
-      return ( (outside_rows == false) && (outside_cols == false) );
-      }
-    }
+  const subview<eT>& s = (*this);
+  
+  if(void_ptr(&(s.m)) != void_ptr(&(x.m)))  { return false; }
+  
+  if( (s.n_elem == 0) || (x.n_elem == 0) )  { return false; }
+  
+  const uword s_row_start  = s.aux_row1;
+  const uword s_row_end_p1 = s_row_start + s.n_rows;
+  
+  const uword s_col_start  = s.aux_col1;
+  const uword s_col_end_p1 = s_col_start + s.n_cols;
+  
+  
+  const uword x_row_start  = x.aux_row1;
+  const uword x_row_end_p1 = x_row_start + x.n_rows;
+  
+  const uword x_col_start  = x.aux_col1;
+  const uword x_col_end_p1 = x_col_start + x.n_cols;
+  
+  
+  const bool outside_rows = ( (x_row_start >= s_row_end_p1) || (s_row_start >= x_row_end_p1) );
+  const bool outside_cols = ( (x_col_start >= s_col_end_p1) || (s_col_start >= x_col_end_p1) );
+  
+  return ( (outside_rows == false) && (outside_cols == false) );
   }
 
 

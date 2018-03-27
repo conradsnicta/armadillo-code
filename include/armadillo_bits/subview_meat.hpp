@@ -122,6 +122,10 @@ subview<eT>::inplace_op(const Base<eT,T1>& in, const char* identifier)
   
   const Proxy<T1> P(in.get_ref());
   
+  // TODO: expand the Proxy class to have has_overlap() member function
+  // TODO: in order to allow more nuanced handling of aliasing with subviews;
+  // TODO: for example; X.col(1) = X.col(2) + X.col(3);
+  
   subview<eT>& s = *this;
   
   const uword s_n_rows = s.n_rows;

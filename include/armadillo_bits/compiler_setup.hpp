@@ -295,7 +295,10 @@
     #define arma_hot __attribute__((__hot__))
   #endif
   
-  #if __has_attribute(__cold__)
+  #if __has_attribute(__minsize__)
+    #undef  arma_cold
+    #define arma_cold __attribute__((__minsize__))
+  #elif __has_attribute(__cold__)
     #undef  arma_cold
     #define arma_cold __attribute__((__cold__))
   #endif

@@ -1821,6 +1821,8 @@ auxlib::chol_band(Mat< std::complex<T> >& X, const uword KD, const uword layout)
   
   #if defined(ARMA_CRIPPLED_LAPACK)
     {
+    arma_extra_debug_print("auxlib::chol_band(): redirecting to auxlib::chol() due to crippled LAPACK");
+    
     arma_ignore(KD);
     
     return auxlib::chol(X, layout);
@@ -4543,6 +4545,8 @@ auxlib::crippled_lapack(const Base<typename T1::elem_type, T1>&)
   {
   #if defined(ARMA_CRIPPLED_LAPACK)
     {
+    arma_extra_debug_print("auxlib::crippled_lapack(): true");
+    
     return (is_cx<typename T1::elem_type>::yes);
     }
   #else

@@ -1331,6 +1331,7 @@ field<oT>::operator()(const uword in_row1, const uword in_col1, const uword in_s
 //! has been defined.
 
 template<typename oT>
+arma_cold
 inline
 void
 field<oT>::print(const std::string extra_text) const
@@ -1361,6 +1362,7 @@ field<oT>::print(const std::string extra_text) const
 //! has been defined.
 
 template<typename oT>
+arma_cold
 inline
 void
 field<oT>::print(std::ostream& user_stream, const std::string extra_text) const

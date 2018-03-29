@@ -30,6 +30,7 @@ Base<elem_type,derived>::get_ref() const
 
 
 template<typename elem_type, typename derived>
+arma_cold
 inline
 void
 Base<elem_type,derived>::print(const std::string extra_text) const
@@ -53,6 +54,7 @@ Base<elem_type,derived>::print(const std::string extra_text) const
 
 
 template<typename elem_type, typename derived>
+arma_cold
 inline
 void
 Base<elem_type,derived>::print(std::ostream& user_stream, const std::string extra_text) const
@@ -76,6 +78,7 @@ Base<elem_type,derived>::print(std::ostream& user_stream, const std::string extr
 
 
 template<typename elem_type, typename derived>
+arma_cold
 inline
 void
 Base<elem_type,derived>::raw_print(const std::string extra_text) const
@@ -99,6 +102,7 @@ Base<elem_type,derived>::raw_print(const std::string extra_text) const
 
 
 template<typename elem_type, typename derived>
+arma_cold
 inline
 void
 Base<elem_type,derived>::raw_print(std::ostream& user_stream, const std::string extra_text) const

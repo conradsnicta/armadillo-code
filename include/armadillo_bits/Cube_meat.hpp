@@ -3003,6 +3003,7 @@ Cube<eT>::slice_colptr(const uword uslice, const uword col) const
 //! the precision and cell width are modified.
 //! on return, the stream's state are restored to their original values.
 template<typename eT>
+arma_cold
 inline
 void
 Cube<eT>::impl_print(const std::string& extra_text) const
@@ -3023,6 +3024,7 @@ Cube<eT>::impl_print(const std::string& extra_text) const
 //! the precision and cell width are modified.
 //! on return, the stream's state are restored to their original values.
 template<typename eT>
+arma_cold
 inline
 void
 Cube<eT>::impl_print(std::ostream& user_stream, const std::string& extra_text) const
@@ -3044,6 +3046,7 @@ Cube<eT>::impl_print(std::ostream& user_stream, const std::string& extra_text) c
 //! the stream's state are used as is and are not modified
 //! (i.e. the precision and cell width are not modified).
 template<typename eT>
+arma_cold
 inline
 void
 Cube<eT>::impl_raw_print(const std::string& extra_text) const
@@ -3065,6 +3068,7 @@ Cube<eT>::impl_raw_print(const std::string& extra_text) const
 //! the stream's state are used as is and are not modified.
 //! (i.e. the precision and cell width are not modified).
 template<typename eT>
+arma_cold
 inline
 void
 Cube<eT>::impl_raw_print(std::ostream& user_stream, const std::string& extra_text) const

@@ -159,8 +159,8 @@ class field
   inline const subview_field<oT> operator()(const uword in_row1, const uword in_col1, const uword in_slice1, const SizeCube& s) const;
   
   
-  inline void print(                           const std::string extra_text = "") const;
-  inline void print(std::ostream& user_stream, const std::string extra_text = "") const;
+  arma_cold inline void print(                           const std::string extra_text = "") const;
+  arma_cold inline void print(std::ostream& user_stream, const std::string extra_text = "") const;
   
   #if defined(ARMA_USE_CXX11)
   inline const field& for_each(const std::function< void(      oT&) >& F);

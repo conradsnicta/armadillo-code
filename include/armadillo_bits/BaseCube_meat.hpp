@@ -30,6 +30,7 @@ BaseCube<elem_type,derived>::get_ref() const
 
 
 template<typename elem_type, typename derived>
+arma_cold
 inline
 void
 BaseCube<elem_type,derived>::print(const std::string extra_text) const
@@ -42,6 +43,7 @@ BaseCube<elem_type,derived>::print(const std::string extra_text) const
 
 
 template<typename elem_type, typename derived>
+arma_cold
 inline
 void
 BaseCube<elem_type,derived>::print(std::ostream& user_stream, const std::string extra_text) const
@@ -54,6 +56,7 @@ BaseCube<elem_type,derived>::print(std::ostream& user_stream, const std::string 
 
 
 template<typename elem_type, typename derived>
+arma_cold
 inline
 void
 BaseCube<elem_type,derived>::raw_print(const std::string extra_text) const
@@ -66,6 +69,7 @@ BaseCube<elem_type,derived>::raw_print(const std::string extra_text) const
 
 
 template<typename elem_type, typename derived>
+arma_cold
 inline
 void
 BaseCube<elem_type,derived>::raw_print(std::ostream& user_stream, const std::string extra_text) const

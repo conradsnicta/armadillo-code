@@ -3160,6 +3160,7 @@ SpMat<eT>::in_range(const uword in_row, const uword in_col, const SizeMat& s) co
 
 
 template<typename eT>
+arma_cold
 inline
 void
 SpMat<eT>::impl_print(const std::string& extra_text) const
@@ -3183,6 +3184,7 @@ SpMat<eT>::impl_print(const std::string& extra_text) const
 
 
 template<typename eT>
+arma_cold
 inline
 void
 SpMat<eT>::impl_print(std::ostream& user_stream, const std::string& extra_text) const
@@ -3206,6 +3208,7 @@ SpMat<eT>::impl_print(std::ostream& user_stream, const std::string& extra_text) 
 
 
 template<typename eT>
+arma_cold
 inline
 void
 SpMat<eT>::impl_raw_print(const std::string& extra_text) const
@@ -3228,6 +3231,7 @@ SpMat<eT>::impl_raw_print(const std::string& extra_text) const
 
 
 template<typename eT>
+arma_cold
 inline
 void
 SpMat<eT>::impl_raw_print(std::ostream& user_stream, const std::string& extra_text) const
@@ -3255,6 +3259,7 @@ SpMat<eT>::impl_raw_print(std::ostream& user_stream, const std::string& extra_te
  * Prints 0 wherever no element exists.
  */
 template<typename eT>
+arma_cold
 inline
 void
 SpMat<eT>::impl_print_dense(const std::string& extra_text) const
@@ -3278,6 +3283,7 @@ SpMat<eT>::impl_print_dense(const std::string& extra_text) const
 
 
 template<typename eT>
+arma_cold
 inline
 void
 SpMat<eT>::impl_print_dense(std::ostream& user_stream, const std::string& extra_text) const
@@ -3301,6 +3307,7 @@ SpMat<eT>::impl_print_dense(std::ostream& user_stream, const std::string& extra_
 
 
 template<typename eT>
+arma_cold
 inline
 void
 SpMat<eT>::impl_raw_print_dense(const std::string& extra_text) const
@@ -3324,6 +3331,7 @@ SpMat<eT>::impl_raw_print_dense(const std::string& extra_text) const
 
 
 template<typename eT>
+arma_cold
 inline
 void
 SpMat<eT>::impl_raw_print_dense(std::ostream& user_stream, const std::string& extra_text) const

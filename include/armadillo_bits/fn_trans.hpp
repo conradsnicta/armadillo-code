@@ -60,92 +60,36 @@ htrans
 
 template<typename T1>
 arma_warn_unused
-inline
-typename
-enable_if2
-  <
-  is_arma_sparse_type<T1>::value,
-  const SpOp<T1,spop_strans>
-  >::result
+arma_inline
+const SpOp<T1, spop_htrans>
 trans
   (
-  const T1& x,
-  const typename arma_not_cx<typename T1::elem_type>::result* junk = 0
+  const T1& X,
+  const typename enable_if< is_arma_sparse_type<T1>::value == true >::result* junk = 0
   )
   {
   arma_extra_debug_sigprint();
   arma_ignore(junk);
   
-  return SpOp<T1,spop_strans>(x);
+  return SpOp<T1, spop_htrans>(X);
   }
 
 
 
 template<typename T1>
 arma_warn_unused
-inline
-typename
-enable_if2
-  <
-  is_arma_sparse_type<T1>::value,
-  const SpOp<T1,spop_htrans>
-  >::result
-trans
-  (
-  const T1& x,
-  const typename arma_cx_only<typename T1::elem_type>::result* junk = 0
-  )
-  {
-  arma_extra_debug_sigprint();
-  arma_ignore(junk);
-  
-  return SpOp<T1,spop_htrans>(x);
-  }
-
-
-
-template<typename T1>
-arma_warn_unused
-inline
-typename
-enable_if2
-  <
-  is_arma_sparse_type<T1>::value,
-  const SpOp<T1,spop_strans>
-  >::result
+arma_inline
+const SpOp<T1, spop_htrans>
 htrans
   (
-  const T1& x,
-  const typename arma_not_cx<typename T1::elem_type>::result* junk = 0
+  const T1& X,
+  const typename enable_if< is_arma_sparse_type<T1>::value == true >::result* junk = 0
   )
   {
   arma_extra_debug_sigprint();
   arma_ignore(junk);
   
-  return SpOp<T1,spop_strans>(x);
-  }
-
-
-
-template<typename T1>
-arma_warn_unused
-inline
-typename
-enable_if2
-  <
-  is_arma_sparse_type<T1>::value,
-  const SpOp<T1,spop_htrans>
-  >::result
-htrans
-  (
-  const T1& x,
-  const typename arma_cx_only<typename T1::elem_type>::result* junk = 0
-  )
-  {
-  arma_extra_debug_sigprint();
-  arma_ignore(junk);
-  
-  return SpOp<T1,spop_htrans>(x);
+  return SpOp<T1, spop_htrans>(X);
   }
 
 

@@ -1149,6 +1149,65 @@ SpMat<eT>::operator%=(const Base<eT, T1>& x)
 
 
 
+template<typename eT>
+template<typename T1>
+inline
+SpMat<eT>&
+SpMat<eT>::operator=(const Op<T1, op_diagmat>& expr)
+  {
+  arma_extra_debug_sigprint();
+  
+  const Proxy<T1> P(expr.m);
+  
+  const uword P_n_rows = P.get_n_rows();
+  const uword P_n_cols = P.get_n_cols();
+  
+  const bool P_is_vec = (P_n_rows == 1) || (P_n_cols == 1);
+  
+  if(P_is_vec)    // generate diagonal sparse matrix from dense vector
+    {
+    const uword N = (P_n_rows == 1) ? P_n_cols : P_n_rows;
+    
+    (*this).eye(N,N);
+    
+    eT* this_values = access::rwp(values);
+    
+    if(Proxy<T1>::use_at == false)
+      {
+      typename Proxy<T1>::ea_type P_ea = P.get_ea();
+      
+      for(uword i=0; i < N; ++i) { this_values[i] = P_ea[i]; }
+      }
+    else
+      {
+      if(P_n_rows == 1)
+        {
+        for(uword i=0; i < N; ++i) { this_values[i] = P.at(0,i); }
+        }
+      else
+        {
+        for(uword i=0; i < N; ++i) { this_values[i] = P.at(i,0); }
+        }
+      }
+    }
+  else   // generate diagonal sparse matrix from dense matrix
+    {
+    (*this).eye(P_n_rows, P_n_cols);
+    
+    eT* this_values = access::rwp(values);
+    
+    const uword N = (std::min)(P_n_rows, P_n_cols);
+    
+    for(uword i=0; i < N; ++i) { this_values[i] = P.at(i,i); }
+    }
+  
+  remove_zeros();
+  
+  return *this;
+  }
+
+
+
 /**
  * Functions on subviews.
  */

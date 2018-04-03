@@ -546,10 +546,10 @@ operator*
       #pragma omp parallel for schedule(static) num_threads(n_threads)
       for (uword i = 0; i < Y_n_cols; ++i)
         {
-        const arma::uword col_ptr_1 = pb.get_col_ptrs()[i];
-        const arma::uword col_ptr_2 = pb.get_col_ptrs()[i + 1];
-        const arma::uvec idx = arma::uvec(&pb.get_row_indices()[col_ptr_1], col_ptr_2 - col_ptr_1);
-        const arma::Col<eT> y_csc_col = arma::Col<eT>(&pb.get_values()[col_ptr_1], col_ptr_2 - col_ptr_1);
+        const uword col_ptr_1 = pb.get_col_ptrs()[i];
+        const uword col_ptr_2 = pb.get_col_ptrs()[i + 1];
+        const uvec idx = uvec(&pb.get_row_indices()[col_ptr_1], col_ptr_2 - col_ptr_1);
+        const Col<eT> y_csc_col = Col<eT>(&pb.get_values()[col_ptr_1], col_ptr_2 - col_ptr_1);
         result.col(i) = x.cols(idx) * y_csc_col;
         }
       }

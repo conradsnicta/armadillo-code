@@ -538,29 +538,45 @@ operator*
   
   if( (pa.get_n_elem() > 0) && (pb.get_n_nonzero() > 0) )
     {
-    typename SpProxy<T2>::const_iterator_type y_it     = pb.begin();
-    typename SpProxy<T2>::const_iterator_type y_it_end = pb.end();
-    
-    const uword result_n_rows = result.n_rows;
-    
-    while(y_it != y_it_end)
+    #if defined(ARMA_USE_OPENMP) 
       {
-      const eT    y_it_val = (*y_it);
-      const uword y_it_col = y_it.col();
-      const uword y_it_row = y_it.row();
-      
-      for(uword row = 0; row < result_n_rows; ++row)
+      const uword Y_n_cols = pb.get_n_cols();
+      const uword n_threads = uword( mp_thread_limit::get() );
+
+      #pragma omp parallel for schedule(static) num_threads(n_threads)
+      for (uword i = 0; i < Y_n_cols; ++i)
         {
-        result.at(row, y_it_col) += pa.at(row, y_it_row) * y_it_val;
+        const uword col_ptr_1 = pb.get_col_ptrs()[i];
+        const uword col_ptr_2 = pb.get_col_ptrs()[i + 1];
+        const uvec idx = uvec(&pb.get_row_indices()[col_ptr_1], col_ptr_2 - col_ptr_1);
+        const Col<eT> y_csc_col = Col<eT>(&pb.get_values()[col_ptr_1], col_ptr_2 - col_ptr_1);
+        result.col(i) = x.cols(idx) * y_csc_col;
         }
-      
-      ++y_it;
       }
+    #else
+      {
+      typename SpProxy<T2>::const_iterator_type y_it     = pb.begin();
+      typename SpProxy<T2>::const_iterator_type y_it_end = pb.end();
+      
+      const uword result_n_rows = result.n_rows;
+      
+      while(y_it != y_it_end)
+        {
+        const eT    y_it_val = (*y_it);
+        const uword y_it_col = y_it.col();
+        const uword y_it_row = y_it.row();
+        
+        for(uword row = 0; row < result_n_rows; ++row)
+          {
+          result.at(row, y_it_col) += pa.at(row, y_it_row) * y_it_val;
+          }
+        
+        ++y_it;
+        }
+      }
+      #endif
     }
   
   return result;
   }
-
-
-
 //! @}

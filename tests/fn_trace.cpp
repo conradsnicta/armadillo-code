@@ -62,3 +62,41 @@ TEST_CASE("fn_trace_spmat")
 
   REQUIRE( trace(a.submat(2, 2, 4, 4)) == Approx(7.3) );
   }
+
+
+
+TEST_CASE("fn_trace_spmat_mul")
+  {
+  // Test trace(SpMat * SpMat) and ensure the result is the same as if we
+  // pre-multiplied the matrices.
+  sp_mat a;
+  a.sprandu(20, 20, 0.1);
+  sp_mat b;
+  b.sprandu(20, 20, 0.1);
+
+  sp_mat c = a * b;
+
+  const double trc = trace(c);
+  const double trab = trace(a * b);
+
+  REQUIRE( trc == Approx(trab) );
+  }
+
+
+
+TEST_CASE("fn_trace_spmat_t_mul")
+  {
+  // Test trace(SpMat.t() * SpMat) and ensure the result is the same as if we
+  // pre-multiplied the matrices.
+  sp_mat a;
+  a.sprandu(20, 20, 0.1);
+  sp_mat b;
+  b.sprandu(20, 20, 0.1);
+
+  sp_mat c = a.t() * b;
+
+  const double trc = trace(c);
+  const double trab = trace(a.t() * b);
+
+  REQUIRE( trc == Approx(trab) );
+  }

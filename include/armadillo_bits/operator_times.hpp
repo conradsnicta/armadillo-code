@@ -541,22 +541,26 @@ operator*
     arma_debug_assert_mul_size(X.n_rows, X.n_cols, Y.n_rows, Y.n_cols, "matrix multiplication");
     
     Mat<eT> result(X.n_rows, Y.n_cols);
+    result.zeros();
     
-    const uword Y_n_cols  = Y.n_cols;
-    const int   n_threads = mp_thread_limit::get();
-    
-    #pragma omp parallel for schedule(static) num_threads(n_threads)
-    for(uword i=0; i < Y_n_cols; ++i)
+    if( (X.n_elem > 0) && (Y.n_nonzero > 0) )
       {
-      const uword col_offset_1 = Y.col_ptrs[i  ];
-      const uword col_offset_2 = Y.col_ptrs[i+1];
+      const uword Y_n_cols  = Y.n_cols;
+      const int   n_threads = mp_thread_limit::get();
       
-      const uword col_offset_delta = col_offset_2 - col_offset_1;
-      
-      const uvec    indices(const_cast<uword*>(&(Y.row_indices[col_offset_1])), col_offset_delta, false, false);
-      const Col<eT>   Y_col(const_cast<   eT*>(&(Y.values[col_offset_1])     ), col_offset_delta, false, false);
-      
-      result.col(i) = X.cols(indices) * Y_col;
+      #pragma omp parallel for schedule(static) num_threads(n_threads)
+      for(uword i=0; i < Y_n_cols; ++i)
+        {
+        const uword col_offset_1 = Y.col_ptrs[i  ];
+        const uword col_offset_2 = Y.col_ptrs[i+1];
+        
+        const uword col_offset_delta = col_offset_2 - col_offset_1;
+        
+        const uvec    indices(const_cast<uword*>(&(Y.row_indices[col_offset_1])), col_offset_delta, false, false);
+        const Col<eT>   Y_col(const_cast<   eT*>(&(Y.values[col_offset_1])     ), col_offset_delta, false, false);
+        
+        result.col(i) = X.cols(indices) * Y_col;
+        }
       }
     
     return result;

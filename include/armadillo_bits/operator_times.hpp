@@ -592,9 +592,11 @@ operator*
         const uword y_it_col = y_it.col();
         const uword y_it_row = y_it.row();
         
+        eT* result_col = result.colptr(y_it_col);
+        
         for(uword row = 0; row < result_n_rows; ++row)
           {
-          result.at(row, y_it_col) += pa.at(row, y_it_row) * y_it_val;
+          result_col[row] += pa.at(row, y_it_row) * y_it_val;
           }
         
         ++y_it;

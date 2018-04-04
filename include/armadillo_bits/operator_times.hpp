@@ -528,44 +528,47 @@ operator*
   
   typedef typename T1::elem_type eT;
   
-  #if defined(ARMA_USE_OPENMP)
+  Mat<eT> result;
+  
+  if( (arma_config::openmp) && (mp_thread_limit::in_parallel() == false) )
     {
-    arma_extra_debug_print("using parallelised multiplication");
-    
-    const quasi_unwrap<T1> UX(x);
-    const unwrap_spmat<T2> UY(y);
-    
-    const   Mat<eT>& X = UX.M;
-    const SpMat<eT>& Y = UY.M;
-    
-    arma_debug_assert_mul_size(X.n_rows, X.n_cols, Y.n_rows, Y.n_cols, "matrix multiplication");
-    
-    Mat<eT> result(X.n_rows, Y.n_cols);
-    result.zeros();
-    
-    if( (X.n_elem > 0) && (Y.n_nonzero > 0) )
+    #if defined(ARMA_USE_OPENMP)
       {
-      const uword Y_n_cols  = Y.n_cols;
-      const int   n_threads = mp_thread_limit::get();
+      arma_extra_debug_print("using parallelised multiplication");
       
-      #pragma omp parallel for schedule(static) num_threads(n_threads)
-      for(uword i=0; i < Y_n_cols; ++i)
+      const quasi_unwrap<T1> UX(x);
+      const unwrap_spmat<T2> UY(y);
+      
+      const   Mat<eT>& X = UX.M;
+      const SpMat<eT>& Y = UY.M;
+      
+      arma_debug_assert_mul_size(X.n_rows, X.n_cols, Y.n_rows, Y.n_cols, "matrix multiplication");
+      
+      result.zeros(X.n_rows, Y.n_cols);
+      
+      if( (X.n_elem > 0) && (Y.n_nonzero > 0) )
         {
-        const uword col_offset_1 = Y.col_ptrs[i  ];
-        const uword col_offset_2 = Y.col_ptrs[i+1];
+        const uword Y_n_cols  = Y.n_cols;
+        const int   n_threads = mp_thread_limit::get();
         
-        const uword col_offset_delta = col_offset_2 - col_offset_1;
-        
-        const uvec    indices(const_cast<uword*>(&(Y.row_indices[col_offset_1])), col_offset_delta, false, false);
-        const Col<eT>   Y_col(const_cast<   eT*>(&(Y.values[col_offset_1])     ), col_offset_delta, false, false);
-        
-        result.col(i) = X.cols(indices) * Y_col;
+        #pragma omp parallel for schedule(static) num_threads(n_threads)
+        for(uword i=0; i < Y_n_cols; ++i)
+          {
+          const uword col_offset_1 = Y.col_ptrs[i  ];
+          const uword col_offset_2 = Y.col_ptrs[i+1];
+          
+          const uword col_offset_delta = col_offset_2 - col_offset_1;
+          
+          const uvec    indices(const_cast<uword*>(&(Y.row_indices[col_offset_1])), col_offset_delta, false, false);
+          const Col<eT>   Y_col(const_cast<   eT*>(&(Y.values[col_offset_1])     ), col_offset_delta, false, false);
+          
+          result.col(i) = X.cols(indices) * Y_col;
+          }
         }
       }
-    
-    return result;
+    #endif
     }
-  #else
+  else
     {
     arma_extra_debug_print("using standard multiplication");
     
@@ -574,8 +577,7 @@ operator*
     
     arma_debug_assert_mul_size(pa.get_n_rows(), pa.get_n_cols(), pb.get_n_rows(), pb.get_n_cols(), "matrix multiplication");
     
-    Mat<eT> result(pa.get_n_rows(), pb.get_n_cols());
-    result.zeros();
+    result.zeros(pa.get_n_rows(), pb.get_n_cols());
     
     if( (pa.get_n_elem() > 0) && (pb.get_n_nonzero() > 0) )
       {
@@ -598,10 +600,9 @@ operator*
         ++y_it;
         }
       }
-    
-    return result;
     }
-  #endif
+  
+  return result;
   }
 
 

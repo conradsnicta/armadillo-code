@@ -66,6 +66,22 @@ struct mp_thread_limit
     
     return n_threads;
     }
+  
+  arma_inline
+  static
+  bool
+  in_parallel()
+    {
+    #if defined(ARMA_USE_OPENMP)
+      {
+      return bool(omp_in_parallel());
+      }
+    #else
+      {
+      return false;
+      }
+    #endif
+    }
   };
 
 

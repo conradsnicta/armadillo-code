@@ -474,33 +474,43 @@ operator*
   
   typedef typename T1::elem_type eT;
   
-  const SpProxy<T1> pa(x);
-  const   Proxy<T2> pb(y);
+  Mat<eT> result;
   
-  arma_debug_assert_mul_size(pa.get_n_rows(), pa.get_n_cols(), pb.get_n_rows(), pb.get_n_cols(), "matrix multiplication");
-  
-  Mat<eT> result(pa.get_n_rows(), pb.get_n_cols());
-  result.zeros();
-  
-  if( (pa.get_n_nonzero() > 0) && (pb.get_n_elem() > 0) )
+  if(is_op_diagmat<T2>::value)
     {
-    typename SpProxy<T1>::const_iterator_type x_it     = pa.begin();
-    typename SpProxy<T1>::const_iterator_type x_it_end = pa.end();
+    const SpMat<eT> tmp(y);
     
-    const uword result_n_cols = result.n_cols;
-      
-    while(x_it != x_it_end)
+    result = x * tmp;
+    }
+  else
+    {
+    const SpProxy<T1> pa(x);
+    const   Proxy<T2> pb(y);
+    
+    arma_debug_assert_mul_size(pa.get_n_rows(), pa.get_n_cols(), pb.get_n_rows(), pb.get_n_cols(), "matrix multiplication");
+    
+    result.zeros(pa.get_n_rows(), pb.get_n_cols());
+    
+    if( (pa.get_n_nonzero() > 0) && (pb.get_n_elem() > 0) )
       {
-      const eT    x_it_val = (*x_it);
-      const uword x_it_row = x_it.row();
-      const uword x_it_col = x_it.col();
+      typename SpProxy<T1>::const_iterator_type x_it     = pa.begin();
+      typename SpProxy<T1>::const_iterator_type x_it_end = pa.end();
       
-      for(uword col = 0; col < result_n_cols; ++col)
+      const uword result_n_cols = result.n_cols;
+        
+      while(x_it != x_it_end)
         {
-        result.at(x_it_row, col) += x_it_val * pb.at(x_it_col, col);
+        const eT    x_it_val = (*x_it);
+        const uword x_it_row = x_it.row();
+        const uword x_it_col = x_it.col();
+        
+        for(uword col = 0; col < result_n_cols; ++col)
+          {
+          result.at(x_it_row, col) += x_it_val * pb.at(x_it_col, col);
+          }
+        
+        ++x_it;
         }
-      
-      ++x_it;
       }
     }
   
@@ -528,70 +538,80 @@ operator*
   
   typedef typename T1::elem_type eT;
   
-  const   Proxy<T1> pa(x);
-  const SpProxy<T2> pb(y);
+  Mat<eT> result;
   
-  arma_debug_assert_mul_size(pa.get_n_rows(), pa.get_n_cols(), pb.get_n_rows(), pb.get_n_cols(), "matrix multiplication");
-  
-  Mat<eT> result(pa.get_n_rows(), pb.get_n_cols());
-  result.zeros();
-  
-  if( (pa.get_n_elem() > 0) && (pb.get_n_nonzero() > 0) )
+  if(is_op_diagmat<T1>::value)
     {
-    if( (arma_config::openmp) && (mp_thread_limit::in_parallel() == false) && (pa.get_n_rows() <= (pa.get_n_cols() / uword(100))) )
+    const SpMat<eT> tmp(x);
+    
+    result = tmp * y;
+    }
+  else
+    {
+    const   Proxy<T1> pa(x);
+    const SpProxy<T2> pb(y);
+    
+    arma_debug_assert_mul_size(pa.get_n_rows(), pa.get_n_cols(), pb.get_n_rows(), pb.get_n_cols(), "matrix multiplication");
+    
+    result.zeros(pa.get_n_rows(), pb.get_n_cols());
+    
+    if( (pa.get_n_elem() > 0) && (pb.get_n_nonzero() > 0) )
       {
-      #if defined(ARMA_USE_OPENMP)
+      if( (arma_config::openmp) && (mp_thread_limit::in_parallel() == false) && (pa.get_n_rows() <= (pa.get_n_cols() / uword(100))) )
         {
-        arma_extra_debug_print("using parallelised multiplication");
-        
-        const quasi_unwrap<typename   Proxy<T1>::stored_type> UX(pa.Q);
-        const unwrap_spmat<typename SpProxy<T2>::stored_type> UY(pb.Q);
-        
-        const   Mat<eT>& X = UX.M;
-        const SpMat<eT>& Y = UY.M;
-        
-        const uword Y_n_cols  = Y.n_cols;
-        const int   n_threads = mp_thread_limit::get();
-        
-        #pragma omp parallel for schedule(static) num_threads(n_threads)
-        for(uword i=0; i < Y_n_cols; ++i)
+        #if defined(ARMA_USE_OPENMP)
           {
-          const uword col_offset_1 = Y.col_ptrs[i  ];
-          const uword col_offset_2 = Y.col_ptrs[i+1];
+          arma_extra_debug_print("using parallelised multiplication");
           
-          const uword col_offset_delta = col_offset_2 - col_offset_1;
+          const quasi_unwrap<typename   Proxy<T1>::stored_type> UX(pa.Q);
+          const unwrap_spmat<typename SpProxy<T2>::stored_type> UY(pb.Q);
           
-          const uvec    indices(const_cast<uword*>(&(Y.row_indices[col_offset_1])), col_offset_delta, false, false);
-          const Col<eT>   Y_col(const_cast<   eT*>(&(Y.values[col_offset_1])     ), col_offset_delta, false, false);
+          const   Mat<eT>& X = UX.M;
+          const SpMat<eT>& Y = UY.M;
           
-          result.col(i) = X.cols(indices) * Y_col;
+          const uword Y_n_cols  = Y.n_cols;
+          const int   n_threads = mp_thread_limit::get();
+          
+          #pragma omp parallel for schedule(static) num_threads(n_threads)
+          for(uword i=0; i < Y_n_cols; ++i)
+            {
+            const uword col_offset_1 = Y.col_ptrs[i  ];
+            const uword col_offset_2 = Y.col_ptrs[i+1];
+            
+            const uword col_offset_delta = col_offset_2 - col_offset_1;
+            
+            const uvec    indices(const_cast<uword*>(&(Y.row_indices[col_offset_1])), col_offset_delta, false, false);
+            const Col<eT>   Y_col(const_cast<   eT*>(&(Y.values[col_offset_1])     ), col_offset_delta, false, false);
+            
+            result.col(i) = X.cols(indices) * Y_col;
+            }
           }
+        #endif
         }
-      #endif
-      }
-    else
-      {
-      arma_extra_debug_print("using standard multiplication");
-      
-      typename SpProxy<T2>::const_iterator_type y_it     = pb.begin();
-      typename SpProxy<T2>::const_iterator_type y_it_end = pb.end();
-      
-      const uword result_n_rows = result.n_rows;
-      
-      while(y_it != y_it_end)
+      else
         {
-        const eT    y_it_val = (*y_it);
-        const uword y_it_col = y_it.col();
-        const uword y_it_row = y_it.row();
+        arma_extra_debug_print("using standard multiplication");
         
-        eT* result_col = result.colptr(y_it_col);
+        typename SpProxy<T2>::const_iterator_type y_it     = pb.begin();
+        typename SpProxy<T2>::const_iterator_type y_it_end = pb.end();
         
-        for(uword row = 0; row < result_n_rows; ++row)
+        const uword result_n_rows = result.n_rows;
+        
+        while(y_it != y_it_end)
           {
-          result_col[row] += pa.at(row, y_it_row) * y_it_val;
+          const eT    y_it_val = (*y_it);
+          const uword y_it_col = y_it.col();
+          const uword y_it_row = y_it.row();
+          
+          eT* result_col = result.colptr(y_it_col);
+          
+          for(uword row = 0; row < result_n_rows; ++row)
+            {
+            result_col[row] += pa.at(row, y_it_row) * y_it_val;
+            }
+          
+          ++y_it;
           }
-        
-        ++y_it;
         }
       }
     }

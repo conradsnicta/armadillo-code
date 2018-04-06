@@ -497,19 +497,49 @@ operator*
       typename SpProxy<T1>::const_iterator_type x_it_end = pa.end();
       
       const uword result_n_cols = result.n_cols;
-        
-      while(x_it != x_it_end)
+      
+      if( (arma_config::openmp) && (mp_thread_limit::in_parallel() == false) )
         {
-        const eT    x_it_val = (*x_it);
-        const uword x_it_row = x_it.row();
-        const uword x_it_col = x_it.col();
-        
-        for(uword col = 0; col < result_n_cols; ++col)
+        #if defined(ARMA_USE_OPENMP)
           {
-          result.at(x_it_row, col) += x_it_val * pb.at(x_it_col, col);
+          arma_extra_debug_print("using parallelised multiplication");
+          
+          const int n_threads = mp_thread_limit::get();
+          
+          while(x_it != x_it_end)
+            {
+            const eT    x_it_val = (*x_it);
+            const uword x_it_row = x_it.row();
+            const uword x_it_col = x_it.col();
+            
+            #pragma omp parallel for schedule(static) num_threads(n_threads)
+            for(uword col = 0; col < result_n_cols; ++col)
+              {
+              result.at(x_it_row, col) += x_it_val * pb.at(x_it_col, col);
+              }
+            
+            ++x_it;
+            }
           }
+        #endif
+        }
+      else
+        {
+        arma_extra_debug_print("using standard multiplication");
         
-        ++x_it;
+        while(x_it != x_it_end)
+          {
+          const eT    x_it_val = (*x_it);
+          const uword x_it_row = x_it.row();
+          const uword x_it_col = x_it.col();
+          
+          for(uword col = 0; col < result_n_cols; ++col)
+            {
+            result.at(x_it_row, col) += x_it_val * pb.at(x_it_col, col);
+            }
+          
+          ++x_it;
+          }
         }
       }
     }

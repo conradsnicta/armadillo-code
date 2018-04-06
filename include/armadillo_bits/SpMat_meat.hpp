@@ -1152,6 +1152,26 @@ SpMat<eT>::operator%=(const Base<eT, T1>& x)
 template<typename eT>
 template<typename T1>
 inline
+SpMat<eT>::SpMat(const Op<T1, op_diagmat>& expr)
+  : n_rows(0)
+  , n_cols(0)
+  , n_elem(0)
+  , n_nonzero(0)
+  , vec_state(0)
+  , values(NULL)
+  , row_indices(NULL)
+  , col_ptrs(NULL)
+  {
+  arma_extra_debug_sigprint_this(this);
+
+  (*this).operator=(expr);
+  }
+
+
+
+template<typename eT>
+template<typename T1>
+inline
 SpMat<eT>&
 SpMat<eT>::operator=(const Op<T1, op_diagmat>& expr)
   {
@@ -1204,6 +1224,81 @@ SpMat<eT>::operator=(const Op<T1, op_diagmat>& expr)
   remove_zeros();
   
   return *this;
+  }
+
+
+
+template<typename eT>
+template<typename T1>
+inline
+SpMat<eT>&
+SpMat<eT>::operator+=(const Op<T1, op_diagmat>& expr)
+  {
+  arma_extra_debug_sigprint();
+  
+  const SpMat<eT> tmp(expr);
+  
+  return (*this).operator+=(tmp);
+  }
+
+
+
+template<typename eT>
+template<typename T1>
+inline
+SpMat<eT>&
+SpMat<eT>::operator-=(const Op<T1, op_diagmat>& expr)
+  {
+  arma_extra_debug_sigprint();
+  
+  const SpMat<eT> tmp(expr);
+  
+  return (*this).operator-=(tmp);
+  }
+
+
+
+template<typename eT>
+template<typename T1>
+inline
+SpMat<eT>&
+SpMat<eT>::operator*=(const Op<T1, op_diagmat>& expr)
+  {
+  arma_extra_debug_sigprint();
+  
+  const SpMat<eT> tmp(expr);
+  
+  return (*this).operator*=(tmp);
+  }
+
+
+
+template<typename eT>
+template<typename T1>
+inline
+SpMat<eT>&
+SpMat<eT>::operator/=(const Op<T1, op_diagmat>& expr)
+  {
+  arma_extra_debug_sigprint();
+  
+  const SpMat<eT> tmp(expr);
+  
+  return (*this).operator/=(tmp);
+  }
+
+
+
+template<typename eT>
+template<typename T1>
+inline
+SpMat<eT>&
+SpMat<eT>::operator%=(const Op<T1, op_diagmat>& expr)
+  {
+  arma_extra_debug_sigprint();
+  
+  const SpMat<eT> tmp(expr);
+  
+  return (*this).operator%=(tmp);
   }
 
 

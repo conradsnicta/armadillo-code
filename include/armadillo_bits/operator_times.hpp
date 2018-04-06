@@ -498,7 +498,7 @@ operator*
       
       const uword result_n_cols = result.n_cols;
       
-      if( (arma_config::openmp) && (mp_thread_limit::in_parallel() == false) )
+      if( (arma_config::openmp) && (mp_thread_limit::in_parallel() == false) && (pb.get_n_cols() >= (pb.get_n_rows() / uword(20))) )
         {
         #if defined(ARMA_USE_OPENMP)
           {

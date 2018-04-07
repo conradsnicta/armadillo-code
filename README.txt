@@ -1,4 +1,4 @@
-Armadillo C++ Linear Algebra Library
+Armadillo: C++ Library for Linear Algebra & Scientific Computing
 http://arma.sourceforge.net
 
 Copyright 2008-2018 Conrad Sanderson (http://conradsanderson.id.au)
@@ -40,7 +40,7 @@ Contents
 1: Introduction
 ===============
 
-Armadillo is a high quality C++ linear algebra library,
+Armadillo is a high quality C++ library for linear algebra and scientific computing,
 aiming towards a good balance between speed and ease of use.
 
 It's useful for algorithm development directly in C++,

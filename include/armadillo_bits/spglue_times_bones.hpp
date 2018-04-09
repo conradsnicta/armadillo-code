@@ -42,5 +42,18 @@ class spglue_times2
 
 
 
+class spglue_times_misc
+  {
+  public:
+  
+  template<typename T1, typename T2>
+  inline static void sparse_times_dense(Mat<typename T1::elem_type>& out, const T1& x, const T2& y);
+  
+  template<typename T1, typename T2>
+  inline static void dense_times_sparse(Mat<typename T1::elem_type>& out, const T1& x, const T2& y);
+  };
+
+
+
 //! @}
 

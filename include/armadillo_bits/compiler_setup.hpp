@@ -507,7 +507,7 @@
 
 #if defined(ARMA_GCC_VERSION) && (ARMA_GCC_VERSION >= 50400) && !defined(ARMA_USE_CXX11)
   #if !defined(ARMA_PRINT_CXX11_WARNING) && !defined(ARMA_PRINT_OPENMP_CXX11_WARNING) && !defined(ARMA_DONT_PRINT_CXX11_WARNING)
-    #pragma message ("NOTE: suggest to enable C++11 mode for faster code; add -std=c++11 to compiler flags")
+    #pragma message ("NOTE: suggest to enable C++14 mode for faster code; add -std=c++14 to compiler flags")
   #endif
 #endif
 

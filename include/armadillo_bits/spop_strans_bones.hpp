@@ -25,16 +25,13 @@ class spop_strans
   public:
   
   template<typename eT>
-  arma_hot inline static void apply_spmat(SpMat<eT>& out, const SpMat<eT>& X);
+  inline static void apply_noalias(SpMat<eT>& B, const SpMat<eT>& A);
   
   template<typename T1>
-  arma_hot inline static void apply_proxy(SpMat<typename T1::elem_type>& out, const T1& X);
+  inline static void apply(SpMat<typename T1::elem_type>& out, const SpOp<T1,spop_strans>& in);
   
   template<typename T1>
-  arma_hot inline static void apply(SpMat<typename T1::elem_type>& out, const SpOp<T1,spop_strans>& in);
-  
-  template<typename T1>
-  arma_hot inline static void apply(SpMat<typename T1::elem_type>& out, const SpOp<T1,spop_htrans>& in);
+  inline static void apply(SpMat<typename T1::elem_type>& out, const SpOp<T1,spop_htrans>& in);
   };
 
 

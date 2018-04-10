@@ -48,15 +48,12 @@ spop_strans::apply_noalias(SpMat<eT>& B, const SpMat<eT>& A)
         uword* ib = access::rwp(B.col_ptrs);
         uword* jb = access::rwp(B.row_indices);
   
-  for(uword i=0; i < (m+1); ++i)
-    {
-    ib[i] = 0;
-    }
-  
-  for(uword i=0; i < (m+1); ++i)
-    {
-    b[i] = eT(0);
-    }
+  // // ib is already zeroed 
+  // 
+  // for(uword i=0; i < (m+1); ++i)
+  //   {
+  //   ib[i] = 0;
+  //   }
   
   ib[0] = 0;
   

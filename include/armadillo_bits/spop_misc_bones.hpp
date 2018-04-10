@@ -128,6 +128,16 @@ class spop_repmat
 
 
 
+class spop_repelem
+  {
+  public:
+  
+  template<typename T1>
+  inline static void apply(SpMat<typename T1::elem_type>& out, const SpOp<T1, spop_repelem>& in);
+  };
+
+
+
 class spop_reshape
   {
   public:

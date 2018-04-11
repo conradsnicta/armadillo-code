@@ -375,6 +375,7 @@ spop_repelem::apply(SpMat<typename T1::elem_type>& out, const SpOp<T1, spop_repe
       {
       const uword col_base = copies_per_col * X_it.col();
       const uword row_base = copies_per_row * X_it.row();
+      
       for(uword cols = 0; cols < copies_per_col; cols++)
       for(uword rows = 0; rows < copies_per_row; rows++)
         {

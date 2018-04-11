@@ -36,35 +36,35 @@ op_repelem::apply_noalias(Mat<typename obj::elem_type>& out, const obj& X, const
   
   const uword out_n_rows = out.n_rows;
   const uword out_n_cols = out.n_cols;
-
   
   if( (out_n_rows > 0) && (out_n_cols > 0) )
     {
-      for(uword col=0; col < X_n_cols; ++col)
+    for(uword col=0; col < X_n_cols; ++col)
+      {
+      const uword out_col_offset = col * copies_per_col;
+      eT* out_colptr_first = out.colptr(out_col_offset);
+      
+      for(uword row=0; row < X_n_rows; ++row)
         {
-          const uword out_col_offset = col * copies_per_col;
-          eT* out_colptr_first = out.colptr(out_col_offset);
-
-          for(uword row=0; row < X_n_rows; ++row)
+        const uword out_row_offset = row * copies_per_row;
+        const eT copy_value = X(row, col);
+        
+        for(uword row_copy=0; row_copy < copies_per_row; ++row_copy)
+          {
+          out_colptr_first[out_row_offset + row_copy] = copy_value;
+          }
+        
+        if(copies_per_col != 1)
+          {
+          for(uword col_copy=1; col_copy < copies_per_col; ++col_copy)
             {
-              const uword out_row_offset = row * copies_per_row;
-              const eT copy_value = X(row, col);
-
-              for(uword row_copy=0; row_copy < copies_per_row; ++row_copy)
-                {
-                  out_colptr_first[out_row_offset + row_copy] = copy_value;
-                }
-
-              if(copies_per_col != 1)
-                {
-                  for(uword col_copy=1; col_copy < copies_per_col; ++col_copy)
-                  {
-                    eT* out_colptr = out.colptr(out_col_offset + col_copy);
-                    arrayops::copy(&out_colptr[out_row_offset], &out_colptr_first[out_row_offset], copies_per_row);
-                  }
-                } 
+            eT* out_colptr = out.colptr(out_col_offset + col_copy);
+            
+            arrayops::copy(&out_colptr[out_row_offset], &out_colptr_first[out_row_offset], copies_per_row);
             }
+          } 
         }
+      }
     }
   }
 

@@ -356,7 +356,7 @@ spglue_times_misc::sparse_times_dense(Mat<typename T1::elem_type>& out, const T1
         }
       else
         {
-        out = trans(Bt * At);
+        out = strans(Bt * At);
         }
       }
     else

@@ -57,7 +57,6 @@ spop_strans::apply_noalias(SpMat<eT>& B, const SpMat<eT>& A)
   
   for(uword i=0; i < n; ++i)
     {
-    //for(uword j = ia[i]; j < ia[i+1] - 1; ++j)  // ORIG
     for(uword j = ia[i]; j < ia[i+1]; ++j)
       {
       ib[ ja[j] + 1 ]++;
@@ -71,7 +70,6 @@ spop_strans::apply_noalias(SpMat<eT>& B, const SpMat<eT>& A)
  
   for(uword i=0; i < n; ++i)
     {
-    //for(uword j = ia[i]; j < (ia[i+1] - 1); ++j)  // ORIG
     for(uword j = ia[i]; j < ia[i+1]; ++j)
       {
       const uword jj = ja[j];

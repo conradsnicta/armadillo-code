@@ -394,7 +394,7 @@ Conrad Sanderson and Ryan Curtin.
 <tr style="background-color: #F5F5F5;"><td><a href="#prod">prod</a></td><td>&nbsp;</td><td>product of elements</td></tr>
 <tr><td><a href="#rank">rank</a></td><td>&nbsp;</td><td>rank of matrix</td></tr>
 <tr><td><a href="#rcond">rcond</a></td><td>&nbsp;</td><td>reciprocal of condition number</td></tr>
-<tr><td><a href="#repelem">repelem</a></td><td>&nbsp;</td><td>replicate each element of matrix</td></tr>
+<tr><td><a href="#repelem">repelem</a></td><td>&nbsp;</td><td>replicate elements</td></tr>
 <tr style="background-color: #F5F5F5;"><td><a href="#repmat">repmat</a></td><td>&nbsp;</td><td>replicate matrix in block-like fashion</td></tr>
 <tr style="background-color: #F5F5F5;"><td><a href="#reshape">reshape</a></td><td>&nbsp;</td><td>change size while keeping elements</td></tr>
 <tr style="background-color: #F5F5F5;"><td><a href="#resize">resize</a></td><td>&nbsp;</td><td>change size while keeping elements and preserving layout</td></tr>
@@ -9714,9 +9714,8 @@ mat B = repelem(A, 4, 5);
 </li>
 <li>See also:
 <ul>
-<li><a href="#each_colrow">.each_col() &amp; .each_row()</a> &nbsp; (vector operations applied to each column or row)</li>
-<li><a href="#kron">kron()</a></li>
 <li><a href="#repmat">repmat()</a></li>
+<li><a href="#kron">kron()</a></li>
 <li><a href="#reshape">reshape()</a></li>
 <li><a href="#resize">resize()</a></li>
 </ul>
@@ -17600,8 +17599,8 @@ List of additions and changes for each version:
 <li>expanded <a href="#normalise">normalise()</a> to handle sparse matrices</li>
 <li>expanded <a href="#transform">.transform()</a> and <a href="#for_each">.for_each()</a> to handle sparse matrices</li>
 <li>added <a href="#reverse">reverse()</a> for reversing order of elements</li>
+<li>added <a href="#repelem">repelem()</a> for replicating elements</li>
 <li>added <a href="#roots">roots()</a> for finding the roots of a polynomial</li>
-<li>added <a href="#repelem">repelem()</a> for replicating each element of matrix</li>
 </ul>
 </li>
 <br>

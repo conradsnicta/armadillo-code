@@ -30,7 +30,7 @@ spop_repmat::apply(SpMat<typename T1::elem_type>& out, const SpOp<T1,spop_repmat
   
   const unwrap_spmat<T1> U(X.m);
   
-  if(&out == &(U.M))
+  if(U.is_alias(out))
     {
     SpMat<eT> tmp;
     

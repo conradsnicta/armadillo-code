@@ -149,7 +149,7 @@ spop_diagmat2::apply(SpMat<typename T1::elem_type>& out, const SpOp<T1, spop_dia
   
   const unwrap_spmat<T1> U(in.m);
   
-  if(&(U.M) == &out)
+  if(U.is_alias(out))
     {
     SpMat<eT> tmp;
     

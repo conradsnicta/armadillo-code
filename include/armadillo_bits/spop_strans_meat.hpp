@@ -105,7 +105,7 @@ spop_strans::apply(SpMat<typename T1::elem_type>& out, const SpOp<T1,spop_strans
   
   const unwrap_spmat<T1> U(in.m);
   
-  if(&out == &(U.M))
+  if(U.is_alias(out))
     {
     SpMat<eT> tmp;
     
@@ -133,7 +133,7 @@ spop_strans::apply(SpMat<typename T1::elem_type>& out, const SpOp<T1,spop_htrans
   
   const unwrap_spmat<T1> U(in.m);
   
-  if(&out == &(U.M))
+  if(U.is_alias(out))
     {
     SpMat<eT> tmp;
     

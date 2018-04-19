@@ -28,23 +28,20 @@ spglue_join_cols::apply(SpMat<typename T1::elem_type>& out, const SpGlue<T1,T2,s
   
   typedef typename T1::elem_type eT;
   
-  const unwrap_spmat<T1> A_tmp(X.A);
-  const unwrap_spmat<T2> B_tmp(X.B);
+  const unwrap_spmat<T1> UA(X.A);
+  const unwrap_spmat<T2> UB(X.B);
   
-  const SpMat<eT>& A = A_tmp.M;
-  const SpMat<eT>& B = B_tmp.M;
-  
-  if( (&out != &A) && (&out != &B) )
-    {
-    spglue_join_cols::apply_noalias(out, A, B);
-    }
-  else
+  if(UA.is_alias(out) || UB.is_alias(out))
     {
     SpMat<eT> tmp;
     
-    spglue_join_cols::apply_noalias(tmp, A, B);
+    spglue_join_cols::apply_noalias(tmp, UA.M, UB.M);
     
     out.steal_mem(tmp);
+    }
+  else
+    {
+    spglue_join_cols::apply_noalias(out, UA.M, UB.M);
     }
   }
 

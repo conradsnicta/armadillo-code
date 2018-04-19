@@ -322,6 +322,7 @@ namespace arma
   #include "armadillo_bits/spop_symmat_bones.hpp"
   #include "armadillo_bits/spop_normalise_bones.hpp"
   #include "armadillo_bits/spop_reverse_bones.hpp"
+  #include "armadillo_bits/spop_repmat_bones.hpp"
   
   #include "armadillo_bits/spglue_plus_bones.hpp"
   #include "armadillo_bits/spglue_minus_bones.hpp"
@@ -720,6 +721,7 @@ namespace arma
   #include "armadillo_bits/spop_symmat_meat.hpp"
   #include "armadillo_bits/spop_normalise_meat.hpp"
   #include "armadillo_bits/spop_reverse_meat.hpp"
+  #include "armadillo_bits/spop_repmat_meat.hpp"
   
   #include "armadillo_bits/spglue_plus_meat.hpp"
   #include "armadillo_bits/spglue_minus_meat.hpp"

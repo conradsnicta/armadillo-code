@@ -63,9 +63,13 @@ spglue_kron::apply_noalias(SpMat<eT>& out, const SpMat<eT>& A, const SpMat<eT>& 
   const uword B_n_rows = B.n_rows;
   const uword B_n_cols = B.n_cols;
   
-  out.set_size(A_n_rows * B_n_rows, A_n_cols * B_n_cols);
+  out.zeros(A_n_rows * B_n_rows, A_n_cols * B_n_cols);
   
-  out.mem_resize(A.n_nonzero * B.n_nonzero);
+  const uword out_n_nonzero = A.n_nonzero * B.n_nonzero;
+  
+  if(out_n_nonzero == 0)  { return; }
+  
+  out.mem_resize(out_n_nonzero);
 
   access::rw(out.col_ptrs[0]) = 0;
   

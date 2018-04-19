@@ -25,6 +25,9 @@ class spglue_kron
   
   template<typename T1, typename T2>
   inline static void apply(SpMat<typename T1::elem_type>& out, const SpGlue<T1,T2,spglue_kron>& X);
+  
+  template<typename eT>
+  inline static void apply_noalias(SpMat<eT>& out, const SpMat<eT>& A, const SpMat<eT>& B);
   };
 
 

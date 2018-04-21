@@ -529,6 +529,7 @@ namespace arma
   #include "armadillo_bits/fn_interp1.hpp"
   #include "armadillo_bits/fn_qz.hpp"
   #include "armadillo_bits/fn_diff.hpp"
+  #include "armadillo_bits/fn_hess.hpp"
   #include "armadillo_bits/fn_schur.hpp"
   #include "armadillo_bits/fn_kmeans.hpp"
   #include "armadillo_bits/fn_sqrtmat.hpp"

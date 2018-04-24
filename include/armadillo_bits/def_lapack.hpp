@@ -23,11 +23,6 @@
 #endif
 
 #if !defined(ARMA_BLAS_CAPITALS)
-  #define arma_sgehrd sgehrd
-  #define arma_dgehrd dgehrd
-  #define arma_cgehrd cgehrd
-  #define arma_zgehrd zgehrd
-
   #define arma_sgetrf sgetrf
   #define arma_dgetrf dgetrf
   #define arma_cgetrf cgetrf
@@ -197,12 +192,12 @@
   #define arma_slarnv slarnv
   #define arma_dlarnv dlarnv
   
+  #define arma_sgehrd sgehrd
+  #define arma_dgehrd dgehrd
+  #define arma_cgehrd cgehrd
+  #define arma_zgehrd zgehrd
+  
 #else
-
-  #define arma_sgehrd SGEHRD
-  #define arma_dgehrd DGEHRD
-  #define arma_cgehrd CGEHRD
-  #define arma_zgehrd ZGEHRD
   
   #define arma_sgetrf SGETRF
   #define arma_dgetrf DGETRF
@@ -372,6 +367,11 @@
   
   #define arma_slarnv SLARNV
   #define arma_dlarnv DLARNV
+
+  #define arma_sgehrd SGEHRD
+  #define arma_dgehrd DGEHRD
+  #define arma_cgehrd CGEHRD
+  #define arma_zgehrd ZGEHRD
   
 #endif
 
@@ -379,12 +379,6 @@
 
 extern "C"
   {
-  // hessenberg decomposition
-  void arma_fortran(arma_sgehrd)(blas_int* n, blas_int* ilo, blas_int* ihi, float* a, blas_int* lda, float* tao, float* work, blas_int* lwork, blas_int* info);
-  void arma_fortran(arma_dgehrd)(blas_int* n, blas_int* ilo, blas_int* ihi, double* a, blas_int* lda, double* tao, double* work, blas_int* lwork, blas_int* info);
-  void arma_fortran(arma_cgehrd)(blas_int* n, blas_int* ilo, blas_int* ihi, void* a, blas_int* lda, void* tao, void* work, blas_int* lwork, blas_int* info);
-  void arma_fortran(arma_zgehrd)(blas_int* n, blas_int* ilo, blas_int* ihi, void* a, blas_int* lda, void* tao, void* work, blas_int* lwork, blas_int* info);
-
   // LU factorisation
   void arma_fortran(arma_sgetrf)(blas_int* m, blas_int* n,  float* a, blas_int* lda, blas_int* ipiv, blas_int* info);
   void arma_fortran(arma_dgetrf)(blas_int* m, blas_int* n, double* a, blas_int* lda, blas_int* ipiv, blas_int* info);
@@ -607,6 +601,12 @@ extern "C"
   // generate a vector of random numbers
   void arma_fortran(arma_slarnv)(blas_int* idist, blas_int* iseed, blas_int* n, float*  x);
   void arma_fortran(arma_dlarnv)(blas_int* idist, blas_int* iseed, blas_int* n, double* x);
+  
+  // hessenberg decomposition
+  void arma_fortran(arma_sgehrd)(blas_int* n, blas_int* ilo, blas_int* ihi, float*  a, blas_int* lda, float*  tao, float*  work, blas_int* lwork, blas_int* info);
+  void arma_fortran(arma_dgehrd)(blas_int* n, blas_int* ilo, blas_int* ihi, double* a, blas_int* lda, double* tao, double* work, blas_int* lwork, blas_int* info);
+  void arma_fortran(arma_cgehrd)(blas_int* n, blas_int* ilo, blas_int* ihi, void*   a, blas_int* lda, void*   tao, void*   work, blas_int* lwork, blas_int* info);
+  void arma_fortran(arma_zgehrd)(blas_int* n, blas_int* ilo, blas_int* ihi, void*   a, blas_int* lda, void*   tao, void*   work, blas_int* lwork, blas_int* info);
   }
 
 

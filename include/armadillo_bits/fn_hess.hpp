@@ -32,21 +32,25 @@ hess
   arma_ignore(junk);
   
   typedef typename T1::elem_type eT;
-
+  
   Col<eT> tao;
+  
   const bool status = auxlib::hess(H, X.get_ref(), tao);
-  if (H.n_rows>2) {
-  	for (uword i=0; i<H.n_rows-2; i++) {
-    	H(span(i+2, H.n_rows-1), i).zeros();
-  	}
-  }
+  
+  if(H.n_rows > 2)
+    {
+    for(uword i=0; i < H.n_rows-2; ++i)
+      {
+      H(span(i+2, H.n_rows-1), i).zeros();
+      }
+    }
   
   if(status == false)
     {
     H.soft_reset();
     arma_debug_warn("hess(): decomposition failed");
     }
-
+  
   return status;
   }
 
@@ -71,11 +75,14 @@ hess
   Col<eT> tao;
   
   const bool status = auxlib::hess(H, X.get_ref(), tao);
-  if (H.n_rows>2) {
-  	for (uword i=0; i<H.n_rows-2; i++) {
-    	H(span(i+2, H.n_rows-1), i).zeros();
-  	}
-  }
+  
+  if(H.n_rows > 2)
+    {
+    for(uword i=0; i < H.n_rows-2; ++i)
+      {
+      H(span(i+2, H.n_rows-1), i).zeros();
+      }
+    }
   
   if(status == false)
     {
@@ -105,43 +112,48 @@ hess
   arma_debug_check( void_ptr(&U) == void_ptr(&H), "hess(): 'U' is an alias of 'H'" );
   
   typedef typename T1::elem_type eT;
-
+  
   Col<eT> tao;
-
+  
   const bool status = auxlib::hess(H, X.get_ref(), tao);
   
-  if (H.n_rows==0) {
-  	U.reset();
-  }
-
-  else if (H.n_rows==1) {
-  	U.set_size(1, 1);
-  	U.ones();
-  }
-
-  else if (H.n_rows==2) {
-  	U.set_size(2, 2);
-  	U.eye();
-  }
-
-  else {
-		U.set_size(size(H));
-  	U.eye();
-
-  	for (uword i=0; i<H.n_rows-2; i++) {
-    	Col<eT> v(H.n_rows-i-1, fill::ones);
-    	v(span(1, H.n_rows-i-2)) = H(span(i+2, H.n_rows-1), i);
-    	U(span::all, span(i+1, H.n_rows-1)) = U(span::all, span(i+1, H.n_rows-1))-tao(i)*U(span::all, span(i+1, H.n_rows-1))*v*v.t();
-  	}
-
-  	Col<eT> yi(1, fill::ones);
-  	U(span::all, H.n_rows-1) = U(span::all, H.n_rows-1)*(yi-tao(H.n_rows-2));
-
-  	for (uword i=0; i<H.n_rows-2; i++){
-    	H(span(i+2, H.n_rows-1), i).zeros();
-  	}
-  }
-
+  if(H.n_rows == 0)
+    {
+    U.reset();
+    }
+  else
+  if(H.n_rows == 1)
+    {
+    U.ones(1, 1);
+    }
+  else
+  if(H.n_rows == 2)
+    {
+    U.eye(2, 2);
+    }
+  else
+    {
+    U.eye(size(H));
+    
+    for(uword i=0; i < H.n_rows-2; ++i)
+      {
+      Col<eT> v(H.n_rows-i-1, fill::ones);
+      
+      v(span(1, H.n_rows-i-2)) = H(span(i+2, H.n_rows-1), i);
+      
+      U(span::all, span(i+1, H.n_rows-1)) = U(span::all, span(i+1, H.n_rows-1)) - tao(i) * (U(span::all, span(i+1, H.n_rows-1)) * v * v.t());
+      }
+    
+    Col<eT> yi(1, fill::ones);
+    
+    U(span::all, H.n_rows-1) = U(span::all, H.n_rows-1) * (yi - tao(H.n_rows-2));
+    
+    for(uword i=0; i < H.n_rows-2; ++i)
+      {
+      H(span(i+2, H.n_rows-1), i).zeros();
+      }
+    }
+  
   if(status == false)
     {
     U.soft_reset();

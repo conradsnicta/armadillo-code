@@ -1,5 +1,5 @@
 Name:           armadillo
-Version:        8.200.0
+Version:        8.500.0
 Release:        1%{?dist}
 Summary:        Fast C++ matrix library with syntax similar to MATLAB and Octave
 
@@ -16,7 +16,7 @@ BuildRequires:  SuperLU-devel
 
 
 %description
-Armadillo is a high quality C++ linear algebra library,
+Armadillo is a high quality C++ library for linear algebra and scientific computing,
 aiming towards a good balance between speed and ease of use.
 Useful for algorithm development directly in C++,
 and/or quick conversion of research code into production environments.

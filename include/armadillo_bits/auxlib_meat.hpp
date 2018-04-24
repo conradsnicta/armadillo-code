@@ -1883,6 +1883,60 @@ auxlib::chol_band_common(Mat<eT>& X, const uword KD, const uword layout)
   }
 
 
+//
+// hessenberg decomposition
+template<typename eT, typename T1>
+inline
+bool
+auxlib::hess(Mat<eT>& H, const Base<eT,T1>& X, Col<eT>& tao)
+  {
+  arma_extra_debug_sigprint();
+  
+  #if defined(ARMA_USE_LAPACK)
+    {
+    H = X.get_ref();
+    
+    arma_debug_check( (H.is_square() == false), "hess(): given matrix must be square sized" );
+    
+    if(H.is_empty())
+      {
+      H.reset();
+      return true;
+      }
+    
+    arma_debug_assert_blas_size(H);
+    
+    const uword H_n_rows = H.n_rows;
+    if (H_n_rows>2) {
+      tao.set_size(H_n_rows-1);
+    
+      blas_int  n      = blas_int(H_n_rows);
+      blas_int  ilo    = 1;
+      blas_int  ihi    = blas_int(H_n_rows);
+      blas_int  lda    = blas_int(H_n_rows);
+      blas_int  lwork  = 64*blas_int(H_n_rows);
+      blas_int  info   = 0;
+    
+      podarray<eT> work(static_cast<uword>(lwork));
+    
+      arma_extra_debug_print("lapack::gehrd()");
+      lapack::gehrd(&n, &ilo, &ihi, H.memptr(), &lda, tao.memptr(), work.memptr(), &lwork, &info);
+    
+      return (info == 0);
+      }
+    else return true;
+    }
+  #else
+    {
+    arma_ignore(H);
+    arma_ignore(X);
+    arma_stop_logic_error("hess(): use of LAPACK must be enabled");
+    return false;
+    }
+  #endif
+  }
+
+
 
 template<typename eT, typename T1>
 inline

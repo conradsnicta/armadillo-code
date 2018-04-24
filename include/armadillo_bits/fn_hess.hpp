@@ -139,11 +139,14 @@ hess
     
     for(uword i=0; i < H.n_rows-2; ++i)
       {
+      // TODO: generate v in a more efficient manner; 
+      // TODO: the .ones() operation is an overkill, as most of v is overwritten afterwards
+      
       v.ones(H.n_rows-i-1);
       
       v(span(1, H.n_rows-i-2)) = H(span(i+2, H.n_rows-1), i);
       
-      U(span::all, span(i+1, H.n_rows-1)) = U(span::all, span(i+1, H.n_rows-1)) - tao(i) * (U(span::all, span(i+1, H.n_rows-1)) * v * v.t());
+      U(span::all, span(i+1, H.n_rows-1)) -= tao(i) * (U(span::all, span(i+1, H.n_rows-1)) * v * v.t());
       }
     
     U(span::all, H.n_rows-1) = U(span::all, H.n_rows-1) * (eT(1) - tao(H.n_rows-2));

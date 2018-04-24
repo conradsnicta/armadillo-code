@@ -135,18 +135,18 @@ hess
     {
     U.eye(size(H));
     
+    Col<eT> v;
+    
     for(uword i=0; i < H.n_rows-2; ++i)
       {
-      Col<eT> v(H.n_rows-i-1, fill::ones);
+      v.ones(H.n_rows-i-1);
       
       v(span(1, H.n_rows-i-2)) = H(span(i+2, H.n_rows-1), i);
       
       U(span::all, span(i+1, H.n_rows-1)) = U(span::all, span(i+1, H.n_rows-1)) - tao(i) * (U(span::all, span(i+1, H.n_rows-1)) * v * v.t());
       }
     
-    Col<eT> yi(1, fill::ones);
-    
-    U(span::all, H.n_rows-1) = U(span::all, H.n_rows-1) * (yi - tao(H.n_rows-2));
+    U(span::all, H.n_rows-1) = U(span::all, H.n_rows-1) * (eT(1) - tao(H.n_rows-2));
     
     for(uword i=0; i < H.n_rows-2; ++i)
       {

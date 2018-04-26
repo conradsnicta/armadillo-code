@@ -8,6 +8,15 @@ Copyright 2017-2018 Data61, CSIRO
 
 
 
+Quick Links
+===========
+
+- download latest release:         http://arma.sourceforge.net/download.html
+- function & syntax documentation: http://arma.sourceforge.net/docs.html
+- bug reports & questions:         http://arma.sourceforge.net/faq.html
+
+
+
 Contents
 ========
 

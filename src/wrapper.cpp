@@ -941,6 +941,28 @@ extern "C"
       arma_fortran_noprefix(arma_dlarnv)(idist, iseed, n, x);
       }
     
+    
+    
+    void arma_fortran_prefix(arma_sgehrd)(blas_int* n, blas_int* ilo, blas_int* ihi, float*  a, blas_int* lda, float*  tao, float*  work, blas_int* lwork, blas_int* info)
+      {
+      arma_fortran_noprefix(arma_sgehrd)(n, ilo, ihi, a, lda, tao, work, lwork, info);
+      }
+    
+    void arma_fortran_prefix(arma_dgehrd)(blas_int* n, blas_int* ilo, blas_int* ihi, double* a, blas_int* lda, double* tao, double* work, blas_int* lwork, blas_int* info)
+      {
+      arma_fortran_noprefix(arma_dgehrd)(n, ilo, ihi, a, lda, tao, work, lwork, info);
+      }
+    
+    void arma_fortran_prefix(arma_cgehrd)(blas_int* n, blas_int* ilo, blas_int* ihi, void*   a, blas_int* lda, void*   tao, void*   work, blas_int* lwork, blas_int* info)
+      {
+      arma_fortran_noprefix(arma_cgehrd)(n, ilo, ihi, a, lda, tao, work, lwork, info);
+      }
+    
+    void arma_fortran_prefix(arma_zgehrd)(blas_int* n, blas_int* ilo, blas_int* ihi, void*   a, blas_int* lda, void*   tao, void*   work, blas_int* lwork, blas_int* info)
+      {
+      arma_fortran_noprefix(arma_zgehrd)(n, ilo, ihi, a, lda, tao, work, lwork, info);
+      }
+    
   #endif
   
   

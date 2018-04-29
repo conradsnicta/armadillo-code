@@ -26,39 +26,6 @@ namespace lapack
   template<typename eT>
   inline
   void
-  gehrd(blas_int* n, blas_int* ilo, blas_int* ihi, eT* a, blas_int* lda, eT* tao, eT* work, blas_int* lwork, blas_int* info)
-    {
-    arma_type_check(( is_supported_blas_type<eT>::value == false ));
-    
-    if(is_float<eT>::value)
-      {
-      typedef float T;
-      arma_fortran(arma_sgehrd)(n, ilo, ihi, (T*)a, lda, (T*)tao, (T*)work, lwork, info);
-      }
-    else
-    if(is_double<eT>::value)
-      {
-      typedef double T;
-      arma_fortran(arma_dgehrd)(n, ilo, ihi, (T*)a, lda, (T*)tao, (T*)work, lwork, info);
-      }
-    else
-    if(is_supported_complex_float<eT>::value)
-      {
-      typedef std::complex<float> T;
-      arma_fortran(arma_cgehrd)(n, ilo, ihi, (T*)a, lda, (T*)tao, (T*)work, lwork, info);
-      }
-    else
-    if(is_supported_complex_double<eT>::value)
-      {
-      typedef std::complex<double> T;
-      arma_fortran(arma_zgehrd)(n, ilo, ihi, (T*)a, lda, (T*)tao, (T*)work, lwork, info);
-      }
-    }
-
-
-  template<typename eT>
-  inline
-  void
   getrf(blas_int* m, blas_int* n, eT* a, blas_int* lda, blas_int* ipiv, blas_int* info)
     {
     arma_type_check(( is_supported_blas_type<eT>::value == false ));
@@ -1414,6 +1381,39 @@ namespace lapack
       {
       typedef double T;
       arma_fortran(arma_dlarnv)(idist, iseed, n, (T*)x);
+      }
+    }
+  
+  
+  template<typename eT>
+  inline
+  void
+  gehrd(blas_int* n, blas_int* ilo, blas_int* ihi, eT* a, blas_int* lda, eT* tao, eT* work, blas_int* lwork, blas_int* info)
+    {
+    arma_type_check(( is_supported_blas_type<eT>::value == false ));
+    
+    if(is_float<eT>::value)
+      {
+      typedef float T;
+      arma_fortran(arma_sgehrd)(n, ilo, ihi, (T*)a, lda, (T*)tao, (T*)work, lwork, info);
+      }
+    else
+    if(is_double<eT>::value)
+      {
+      typedef double T;
+      arma_fortran(arma_dgehrd)(n, ilo, ihi, (T*)a, lda, (T*)tao, (T*)work, lwork, info);
+      }
+    else
+    if(is_supported_complex_float<eT>::value)
+      {
+      typedef std::complex<float> T;
+      arma_fortran(arma_cgehrd)(n, ilo, ihi, (T*)a, lda, (T*)tao, (T*)work, lwork, info);
+      }
+    else
+    if(is_supported_complex_double<eT>::value)
+      {
+      typedef std::complex<double> T;
+      arma_fortran(arma_zgehrd)(n, ilo, ihi, (T*)a, lda, (T*)tao, (T*)work, lwork, info);
       }
     }
   

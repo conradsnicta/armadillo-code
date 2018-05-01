@@ -785,9 +785,9 @@ SpSubview<eT>::const_row_iterator::operator++()
     return *this;
     }
 
-  const uword aux_col = iterator_base::M->aux_col1;
-  const uword aux_row = iterator_base::M->aux_row1;
-  const uword n_cols = iterator_base::M->n_cols;
+  const uword aux_col  = iterator_base::M->aux_col1;
+  const uword aux_row  = iterator_base::M->aux_row1;
+  const uword M_n_cols = iterator_base::M->n_cols;
 
   // Otherwise, we need to search.  We have to loop over all of the columns in
   // the subview.

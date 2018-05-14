@@ -78,13 +78,17 @@ Authors:
 2: Citation Details
 ===================
 
-Please cite the following article if you use Armadillo in your
+Please cite one of the following papers if you use Armadillo in your
 research and/or software. Citations are useful for the continued
 development and maintenance of the library.
 
   Conrad Sanderson and Ryan Curtin.
   Armadillo: a template-based C++ library for linear algebra.
   Journal of Open Source Software, Vol. 1, pp. 26, 2016.
+  
+  Conrad Sanderson and Ryan Curtin.
+  A User-Friendly Hybrid Sparse Matrix Class in C++.
+  International Congress on Mathematical Software, 2018.
 
 
 
@@ -127,7 +131,7 @@ For example, for GCC and Clang compilers use -O2 or -O3
 
 
 5: Linux and macOS: Installation
-===================================
+================================
 
 * Step 1:
   Ensure a C++ compiler is installed on your system.
@@ -220,7 +224,7 @@ For example, for GCC and Clang compilers use -O2 or -O3
 
 
 6: Linux and macOS: Compiling & Linking
-==========================================
+=======================================
 
 The "examples" directory contains several quick example programs
 that use the Armadillo library.

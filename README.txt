@@ -8,6 +8,15 @@ Copyright 2017-2018 Data61, CSIRO
 
 
 
+Quick Links
+===========
+
+- download latest release:         http://arma.sourceforge.net/download.html
+- function & syntax documentation: http://arma.sourceforge.net/docs.html
+- bug reports & questions:         http://arma.sourceforge.net/faq.html
+
+
+
 Contents
 ========
 
@@ -69,13 +78,17 @@ Authors:
 2: Citation Details
 ===================
 
-Please cite the following article if you use Armadillo in your
+Please cite one of the following papers if you use Armadillo in your
 research and/or software. Citations are useful for the continued
 development and maintenance of the library.
 
   Conrad Sanderson and Ryan Curtin.
   Armadillo: a template-based C++ library for linear algebra.
   Journal of Open Source Software, Vol. 1, pp. 26, 2016.
+  
+  Conrad Sanderson and Ryan Curtin.
+  A User-Friendly Hybrid Sparse Matrix Class in C++.
+  International Congress on Mathematical Software, 2018.
 
 
 
@@ -118,7 +131,7 @@ For example, for GCC and Clang compilers use -O2 or -O3
 
 
 5: Linux and macOS: Installation
-===================================
+================================
 
 * Step 1:
   Ensure a C++ compiler is installed on your system.
@@ -211,7 +224,7 @@ For example, for GCC and Clang compilers use -O2 or -O3
 
 
 6: Linux and macOS: Compiling & Linking
-==========================================
+=======================================
 
 The "examples" directory contains several quick example programs
 that use the Armadillo library.
@@ -315,33 +328,26 @@ the following defines:
 
 See the documentation for more information on the above defines.
 
-On Linux systems, MKL might be installed in a non-standard location
-such as /opt which can cause problems during linking.
-Before installing Armadillo, the system should know where the MKL libraries
-are located. For example, "/opt/intel/mkl/lib/intel64/".
-This can be achieved by setting the LD_LIBRARY_PATH environment variable,
-or for a more permanent solution, adding the directory locations
-to "/etc/ld.so.conf". It may also be possible to store a text file 
-with the locations in the "/etc/ld.so.conf.d" directory.
-For example, "/etc/ld.so.conf.d/mkl.conf".
-If you modify "/etc/ld.so.conf" or create "/etc/ld.so.conf.d/mkl.conf",
-you will need to run "/sbin/ldconfig" afterwards.
+On Linux-based systems, MKL might be installed in a non-standard location
+such as /opt which can cause problems during linking.  Before installing
+Armadillo, the system should know where the MKL libraries are located.
+For example, /opt/intel/mkl/lib/intel64/.  This can be achieved by setting
+the LD_LIBRARY_PATH environment variable, or for a more permanent solution,
+adding the directory locations to /etc/ld.so.conf.  It may also be possible
+to store a text file with the locations in the /etc/ld.so.conf.d directory.
+For example, /etc/ld.so.conf.d/mkl.conf.  If you modify /etc/ld.so.conf
+or create /etc/ld.so.conf.d/mkl.conf, you will need to run /sbin/ldconfig
+afterwards.
 
-Example of the contents of "/etc/ld.so.conf.d/mkl.conf" on a RHEL 6 system,
-where Intel MKL version 11.0.3 is installed in "/opt/intel":
+Below is an example of /etc/ld.so.conf.d/mkl.conf
+where Intel MKL is installed in /opt/intel
 
 /opt/intel/lib/intel64
 /opt/intel/mkl/lib/intel64
 
-The default installations of MKL 10.2.2.025 are known to have issues with
-SELinux, which is turned on by default in Fedora and RHEL.
-The problem may manifest itself during run-time, where the run-time linker
-reports permission problems. It is possible to work around the problem by
-applying an appropriate SELinux type to all MKL libraries.
-
-If you have MKL installed and its persistently giving you problems
-during linking, you can disable the support for MKL by editing the 
-"CMakeLists.txt" file, deleting "CMakeCache.txt" and re-running
+If you have MKL installed and it is persistently giving problems
+during linking, you can disable Armadillo's support for MKL by editing
+the CMakeLists.txt file, deleting CMakeCache.txt and re-running
 the CMake based installation. Comment out the lines containing:
   INCLUDE(ARMA_FindMKL)
   INCLUDE(ARMA_FindACMLMP)

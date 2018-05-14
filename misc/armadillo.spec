@@ -92,6 +92,10 @@ rm -rf examples/lib_win64
 %{_datadir}/Armadillo/
 %doc README.txt index.html docs.html
 %doc examples armadillo_icon.png
-%doc armadillo_nicta_2010.pdf rcpp_armadillo_csda_2014.pdf armadillo_joss_2016.pdf armadillo_mtgmm_2017.pdf
+%doc armadillo_joss_2016.pdf
+%doc arma_spmat_icms_2018.pdf
+%doc arma_gmm_joss_2017.pdf
+%doc arma_gmm_spcs_2017.pdf
+%doc rcpp_armadillo_csda_2014.pdf
+%doc armadillo_nicta_2010.pdf
 %doc mex_interface
-

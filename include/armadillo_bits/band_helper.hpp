@@ -80,8 +80,8 @@ is_band(uword& out_KL, uword& out_KU, const Mat<eT>& A, const uword N_min)
     
     if( (L_count > KL) || (U_count > KU) )
       {
-      KL = L_count;
-      KU = U_count;
+      KL = (std::max)(KL, L_count);
+      KU = (std::max)(KU, U_count);
       
       const uword n_nonzero = N*(KL+KU+1) - (KL*(KL+1) + KU*(KU+1))/2;
       

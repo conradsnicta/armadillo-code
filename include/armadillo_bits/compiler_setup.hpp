@@ -170,7 +170,7 @@
     #error "*** newer compiler required ***"
   #endif
   
-  #if (ARMA_GCC_VERSION < 40600)
+  #if (ARMA_GCC_VERSION < 40800)
     #undef  ARMA_PRINT_CXX98_WARNING
     #define ARMA_PRINT_CXX98_WARNING
   #endif

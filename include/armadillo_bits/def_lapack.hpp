@@ -545,17 +545,17 @@ extern "C"
   void arma_fortran(arma_cgbsvx)(char* fact, char* trans, blas_int* n, blas_int* kl, blas_int* ku, blas_int* nrhs, void* ab, blas_int* ldab, void* afb, blas_int* ldafb, blas_int* ipiv, char* equed,  float* r,  float* c, void* b, blas_int* ldb, void* x, blas_int* ldx,  float* rcond,  float* ferr,  float* berr, void* work,  float* rwork, blas_int* info);
   void arma_fortran(arma_zgbsvx)(char* fact, char* trans, blas_int* n, blas_int* kl, blas_int* ku, blas_int* nrhs, void* ab, blas_int* ldab, void* afb, blas_int* ldafb, blas_int* ipiv, char* equed, double* r, double* c, void* b, blas_int* ldb, void* x, blas_int* ldx, double* rcond, double* ferr, double* berr, void* work, double* rwork, blas_int* info);
   
-  // solve system of linear equations (tri-diagonal band matrix)
+  // solve system of linear equations (tridiagonal band matrix)
   void arma_fortran(arma_sgtsv)(blas_int* n, blas_int* nrhs,  float* dl,  float* d,  float* du,  float* b, blas_int* ldb, blas_int* info);
   void arma_fortran(arma_dgtsv)(blas_int* n, blas_int* nrhs, double* dl, double* d, double* du, double* b, blas_int* ldb, blas_int* info);
   void arma_fortran(arma_cgtsv)(blas_int* n, blas_int* nrhs,   void* dl,   void* d,   void* du,   void* b, blas_int* ldb, blas_int* info);
   void arma_fortran(arma_zgtsv)(blas_int* n, blas_int* nrhs,   void* dl,   void* d,   void* du,   void* b, blas_int* ldb, blas_int* info);
   
-  // solve system of linear equations (tri-diagonal band matrix, advaned form, real matrices)
+  // solve system of linear equations (tridiagonal band matrix, advaned form, real matrices)
   void arma_fortran(arma_sgtsvx)(char* fact, char* trans, blas_int* n, blas_int* nrhs,  float* dl,  float* d,  float* du,  float* dlf,  float* df,  float* duf,  float* du2, blas_int* ipiv,  float* b, blas_int* ldb,  float* x, blas_int* ldx,  float* rcond,  float* ferr,  float* berr,  float* work, blas_int* iwork, blas_int* info);
   void arma_fortran(arma_dgtsvx)(char* fact, char* trans, blas_int* n, blas_int* nrhs, double* dl, double* d, double* du, double* dlf, double* df, double* duf, double* du2, blas_int* ipiv, double* b, blas_int* ldb, double* x, blas_int* ldx, double* rcond, double* ferr, double* berr, double* work, blas_int* iwork, blas_int* info);
   
-  // solve system of linear equations (tri-diagonal band matrix, advaned form, complex matrices)
+  // solve system of linear equations (tridiagonal band matrix, advaned form, complex matrices)
   void arma_fortran(arma_cgtsvx)(char* fact, char* trans, blas_int* n, blas_int* nrhs, void* dl, void* d, void* du, void* dlf, void* df, void* duf, void* du2, blas_int* ipiv, void* b, blas_int* ldb, void* x, blas_int* ldx,  float* rcond,  float* ferr,  float* berr, void* work,  float* rwork, blas_int* info);
   void arma_fortran(arma_zgtsvx)(char* fact, char* trans, blas_int* n, blas_int* nrhs, void* dl, void* d, void* du, void* dlf, void* df, void* duf, void* du2, blas_int* ipiv, void* b, blas_int* ldb, void* x, blas_int* ldx, double* rcond, double* ferr, double* berr, void* work, double* rwork, blas_int* info);
   

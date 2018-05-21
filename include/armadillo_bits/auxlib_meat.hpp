@@ -4096,6 +4096,95 @@ auxlib::solve_band_refine(Mat< std::complex<typename T1::pod_type> >& out, typen
 
 
 
+//! solve a system of linear equations via LU decomposition (real tri-diagonal band matrix)
+template<typename T1>
+inline
+bool
+auxlib::solve_tridiag_fast(Mat<typename T1::pod_type>& out, Mat<typename T1::pod_type>& A, const Base<typename T1::pod_type,T1>& B_expr)
+  {
+  arma_extra_debug_sigprint();
+  
+  return auxlib::solve_tridiag_fast_common(out, A, B_expr);
+  }
+
+
+
+//! solve a system of linear equations via LU decomposition (complex tri-diagonal band matrix)
+template<typename T1>
+inline
+bool
+auxlib::solve_tridiag_fast(Mat< std::complex<typename T1::pod_type> >& out, Mat< std::complex<typename T1::pod_type> >& A, const Base< std::complex<typename T1::pod_type>,T1>& B_expr)
+  {
+  arma_extra_debug_sigprint();
+  
+  #if defined(ARMA_CRIPPLED_LAPACK)
+    {
+    arma_extra_debug_print("auxlib::solve_band_fast(): redirecting to auxlib::solve_square_fast() due to crippled LAPACK");
+    
+    return auxlib::solve_square_fast(out, A, B_expr);
+    }
+  #else
+    {
+    return auxlib::solve_tridiag_fast_common(out, A, B_expr);
+    }
+  #endif
+  }
+
+
+
+//! solve a system of linear equations via LU decomposition (tri-diagonal band matrix)
+template<typename T1>
+inline
+bool
+auxlib::solve_tridiag_fast_common(Mat<typename T1::elem_type>& out, const Mat<typename T1::elem_type>& A, const Base<typename T1::elem_type,T1>& B_expr)
+  {
+  arma_extra_debug_sigprint();
+  
+  #if defined(ARMA_USE_LAPACK)
+    {
+    typedef typename T1::elem_type eT;
+    
+    out = B_expr.get_ref();
+    
+    const uword B_n_rows = out.n_rows;
+    const uword B_n_cols = out.n_cols;
+    
+    arma_debug_check( (A.n_rows != B_n_rows), "solve(): number of rows in the given matrices must be the same" );
+    
+    if(A.is_empty() || out.is_empty())
+      {
+      out.zeros(A.n_rows, B_n_cols);
+      return true;
+      }
+    
+    Mat<eT> tridiag;
+    band_helper::extract_tridiag(tridiag, A);
+    
+    arma_debug_assert_blas_size(tridiag, out);
+    
+    blas_int n    = blas_int(A.n_rows);
+    blas_int nrhs = blas_int(B_n_cols);
+    blas_int ldb  = blas_int(B_n_rows);
+    blas_int info = blas_int(0);
+    
+    arma_extra_debug_print("lapack::gtsv()");
+    lapack::gtsv<eT>(&n, &nrhs, tridiag.colptr(0), tridiag.colptr(1), tridiag.colptr(2), out.memptr(), &ldb, &info);
+    
+    return (info == 0);
+    }
+  #else
+    {
+    arma_ignore(out);
+    arma_ignore(A);
+    arma_ignore(B_expr);
+    arma_stop_logic_error("solve(): use of LAPACK must be enabled");
+    return false;
+    }
+  #endif
+  }
+
+
+
 //
 // Schur decomposition
 

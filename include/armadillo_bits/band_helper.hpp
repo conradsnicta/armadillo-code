@@ -321,6 +321,56 @@ uncompress(Mat<eT>& A, const Mat<eT>& AB, const uword KL, const uword KU, const 
 
 
 
+template<typename eT>
+inline
+void
+extract_tridiag(Mat<eT>& out, const Mat<eT>& A)
+  {
+  arma_extra_debug_sigprint();
+  
+  // NOTE: assuming that A has a square size and is at least 2x2
+  
+  const uword N = A.n_rows;
+  
+  out.set_size(N, 3);  // assuming there is no aliasing between 'out' and 'A'
+  
+  if(N < 2)  { return; }
+  
+  eT* DL = out.colptr(0);
+  eT* DD = out.colptr(1);
+  eT* DU = out.colptr(2);
+  
+  DD[0] = A[0];
+  DL[0] = A[1];
+  
+  const uword Nm1 = N-1;
+  const uword Nm2 = N-2;
+  
+  for(uword i=0; i < Nm2; ++i)
+    {
+    const uword ip1 = i+1;
+    
+    const eT* data = &(A.at(i, ip1));
+    
+    const eT tmp0 = data[0];
+    const eT tmp1 = data[1];
+    const eT tmp2 = data[2];
+    
+    DL[ip1] = tmp2;
+    DD[ip1] = tmp1;
+    DU[i  ] = tmp0;
+    }
+  
+  const eT* data = &(A.at(Nm2, Nm1));
+  
+  DL[Nm1] = 0;
+  DU[Nm2] = data[0];
+  DU[Nm1] = 0;
+  DD[Nm1] = data[1]; 
+  }
+
+
+
 }  // end of namespace band_helper
 
 

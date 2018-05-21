@@ -82,14 +82,23 @@ glue_solve_gen::apply(Mat<eT>& out, const Base<eT,T1>& A_expr, const Base<eT,T2>
       if(is_band == false)
         {
         arma_extra_debug_print("glue_solve_gen::apply(): fast + dense");
-      
+        
         status = auxlib::solve_square_fast(out, A, B_expr.get_ref());  // A is overwritten
         }
       else
         {
-        arma_extra_debug_print("glue_solve_gen::apply(): fast + band");
-        
-        status = auxlib::solve_band_fast(out, A, KL, KU, B_expr.get_ref());
+        if( (KL == 1) && (KU == 1) )
+          {
+          arma_extra_debug_print("glue_solve_gen::apply(): fast + tridiagonal");
+          
+          status = auxlib::solve_tridiag_fast(out, A, B_expr.get_ref());
+          }
+        else
+          {
+          arma_extra_debug_print("glue_solve_gen::apply(): fast + band");
+          
+          status = auxlib::solve_band_fast(out, A, KL, KU, B_expr.get_ref());
+          }
         }
       }
     else

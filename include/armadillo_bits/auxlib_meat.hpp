@@ -4096,7 +4096,7 @@ auxlib::solve_band_refine(Mat< std::complex<typename T1::pod_type> >& out, typen
 
 
 
-//! solve a system of linear equations via LU decomposition (real tri-diagonal band matrix)
+//! solve a system of linear equations via Gaussian elimination with partial pivoting (real tri-diagonal band matrix)
 template<typename T1>
 inline
 bool
@@ -4109,7 +4109,7 @@ auxlib::solve_tridiag_fast(Mat<typename T1::pod_type>& out, Mat<typename T1::pod
 
 
 
-//! solve a system of linear equations via LU decomposition (complex tri-diagonal band matrix)
+//! solve a system of linear equations via Gaussian elimination with partial pivoting (complex tri-diagonal band matrix)
 template<typename T1>
 inline
 bool
@@ -4132,7 +4132,7 @@ auxlib::solve_tridiag_fast(Mat< std::complex<typename T1::pod_type> >& out, Mat<
 
 
 
-//! solve a system of linear equations via LU decomposition (tri-diagonal band matrix)
+//! solve a system of linear equations via Gaussian elimination with partial pivoting (tri-diagonal band matrix)
 template<typename T1>
 inline
 bool

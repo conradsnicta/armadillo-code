@@ -4185,6 +4185,189 @@ auxlib::solve_tridiag_fast_common(Mat<typename T1::elem_type>& out, const Mat<ty
 
 
 
+//! solve a system of linear equations via LU decomposition with refinement (real tri-diagonal band matrix)
+template<typename T1>
+inline
+bool
+auxlib::solve_tridiag_refine(Mat<typename T1::pod_type>& out, typename T1::pod_type& out_rcond, Mat<typename T1::pod_type>& A, const Base<typename T1::pod_type,T1>& B_expr)
+  {
+  arma_extra_debug_sigprint();
+  
+  #if defined(ARMA_USE_LAPACK)
+    {
+    typedef typename T1::pod_type eT;
+    
+    Mat<eT> B = B_expr.get_ref();  // B is overwritten
+    
+    arma_debug_check( (A.n_rows != B.n_rows), "solve(): number of rows in the given matrices must be the same" );
+      
+    if(A.is_empty() || B.is_empty())
+      {
+      out.zeros(A.n_rows, B.n_cols);
+      return true;
+      }
+    
+    Mat<eT> tridiag;
+    band_helper::extract_tridiag(tridiag, A);
+    
+    const uword N = A.n_rows;
+    
+    out.set_size(N, B.n_cols);
+    
+    arma_debug_assert_blas_size(out, B);
+    
+    char     fact  = 'N'; 
+    char     trans = 'N';
+    blas_int n     = blas_int(N);
+    blas_int nrhs  = blas_int(B.n_cols);
+    blas_int ldb   = blas_int(B.n_rows);
+    blas_int ldx   = blas_int(N);
+    blas_int info  = blas_int(0);
+    eT       rcond = eT(0);
+    
+    podarray<eT>         DLF(  N);
+    podarray<eT>          DF(  N);
+    podarray<eT>         DUF(  N);
+    podarray<eT>         DU2(  N);
+    podarray<blas_int>  IPIV(  N);
+    podarray<eT>        FERR(  B.n_cols);
+    podarray<eT>        BERR(  B.n_cols);
+    podarray<eT>        WORK(3*N);
+    podarray<blas_int> IWORK(  N);
+    
+    arma_extra_debug_print("lapack::gtsvx()");
+    lapack::gtsvx
+      (
+      &fact, &trans, &n, &nrhs,
+      tridiag.colptr(0), tridiag.colptr(1), tridiag.colptr(2),
+       DLF.memptr(),
+        DF.memptr(),
+       DUF.memptr(),
+       DU2.memptr(),
+      IPIV.memptr(),
+         B.memptr(), &ldb,
+       out.memptr(), &ldx,
+      &rcond,
+       FERR.memptr(),
+       BERR.memptr(),
+       WORK.memptr(),
+      IWORK.memptr(),
+      &info
+      );
+    
+    out_rcond = rcond;
+    
+    return (info == 0);
+    }
+  #else
+    {
+    arma_ignore(out);
+    arma_ignore(out_rcond);
+    arma_ignore(A);
+    arma_ignore(B_expr);
+    arma_stop_logic_error("solve(): use of LAPACK must be enabled");
+    return false;
+    }
+  #endif
+  }
+
+
+
+//! solve a system of linear equations via LU decomposition with refinement (complex tri-diagonal band matrix)
+template<typename T1>
+inline
+bool
+auxlib::solve_tridiag_refine(Mat< std::complex<typename T1::pod_type> >& out, typename T1::pod_type& out_rcond, Mat< std::complex<typename T1::pod_type> >& A, const Base<std::complex<typename T1::pod_type>,T1>& B_expr)
+  {
+  arma_extra_debug_sigprint();
+  
+  #if defined(ARMA_CRIPPLED_LAPACK)
+    {
+    arma_extra_debug_print("auxlib::solve_tridiag_refine(): redirecting to auxlib::solve_square_refine() due to crippled LAPACK");
+    
+    return auxlib::solve_square_refine(out, out_rcond, A, B_expr, false);
+    }
+  #elif defined(ARMA_USE_LAPACK)
+    {
+    typedef typename T1::pod_type     T;
+    typedef typename std::complex<T> eT;
+    
+    Mat<eT> B = B_expr.get_ref();  // B is overwritten
+    
+    arma_debug_check( (A.n_rows != B.n_rows), "solve(): number of rows in the given matrices must be the same" );
+      
+    if(A.is_empty() || B.is_empty())
+      {
+      out.zeros(A.n_rows, B.n_cols);
+      return true;
+      }
+    
+    Mat<eT> tridiag;
+    band_helper::extract_tridiag(tridiag, A);
+    
+    const uword N = A.n_rows;
+    
+    out.set_size(N, B.n_cols);
+    
+    arma_debug_assert_blas_size(out, B);
+    
+    char     fact  = 'N'; 
+    char     trans = 'N';
+    blas_int n     = blas_int(N);
+    blas_int nrhs  = blas_int(B.n_cols);
+    blas_int ldb   = blas_int(B.n_rows);
+    blas_int ldx   = blas_int(N);
+    blas_int info  = blas_int(0);
+    T        rcond = T(0);
+    
+    podarray<eT>         DLF(  N);
+    podarray<eT>          DF(  N);
+    podarray<eT>         DUF(  N);
+    podarray<eT>         DU2(  N);
+    podarray<blas_int>  IPIV(  N);
+    podarray< T>        FERR(  B.n_cols);
+    podarray< T>        BERR(  B.n_cols);
+    podarray<eT>        WORK(2*N);
+    podarray< T>       RWORK(  N);
+    
+    arma_extra_debug_print("lapack::cx_gtsvx()");
+    lapack::cx_gtsvx
+      (
+      &fact, &trans, &n, &nrhs,
+      tridiag.colptr(0), tridiag.colptr(1), tridiag.colptr(2),
+        DLF.memptr(),
+         DF.memptr(),
+        DUF.memptr(),
+        DU2.memptr(),
+       IPIV.memptr(),
+          B.memptr(), &ldb,
+        out.memptr(), &ldx,
+      &rcond,
+       FERR.memptr(),
+       BERR.memptr(),
+       WORK.memptr(),
+      RWORK.memptr(),
+      &info
+      );
+    
+    out_rcond = rcond;
+    
+    return (info == 0);
+    }
+  #else
+    {
+    arma_ignore(out);
+    arma_ignore(out_rcond);
+    arma_ignore(A);
+    arma_ignore(B_expr);
+    arma_stop_logic_error("solve(): use of LAPACK must be enabled");
+    return false;
+    }
+  #endif
+  }
+
+
+
 //
 // Schur decomposition
 

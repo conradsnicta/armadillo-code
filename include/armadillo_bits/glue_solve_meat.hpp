@@ -111,9 +111,18 @@ glue_solve_gen::apply(Mat<eT>& out, const Base<eT,T1>& A_expr, const Base<eT,T2>
         }
       else
         {
-        arma_extra_debug_print("glue_solve_gen::apply(): refine + band");
-        
-        status = auxlib::solve_band_refine(out, rcond, A, KL, KU, B_expr, equilibrate);
+        if( (KL == 1) && (KU == 1) && (equilibrate == false) )
+          {
+          arma_extra_debug_print("glue_solve_gen::apply(): refine + tridiagonal");
+          
+          status = auxlib::solve_tridiag_refine(out, rcond, A, B_expr);
+          }
+        else
+          {
+          arma_extra_debug_print("glue_solve_gen::apply(): refine + band");
+          
+          status = auxlib::solve_band_refine(out, rcond, A, KL, KU, B_expr, equilibrate);
+          }
         }
       }
     

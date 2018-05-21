@@ -682,6 +682,30 @@ extern "C"
     
     
     
+    
+    void arma_fortran_prefix(arma_sgtsv)(blas_int* n, blas_int* nrhs,  float* dl,  float* d,  float* du,  float* b, blas_int* ldb, blas_int* info)
+      {
+      arma_fortran_noprefix(arma_sgtsv)(n, nrhs, dl, d, du, b, ldb, info);
+      }
+    
+    void arma_fortran_prefix(arma_dgtsv)(blas_int* n, blas_int* nrhs, double* dl, double* d, double* du, double* b, blas_int* ldb, blas_int* info)
+      {
+      arma_fortran_noprefix(arma_dgtsv)(n, nrhs, dl, d, du, b, ldb, info);
+      }
+    
+    void arma_fortran_prefix(arma_cgtsv)(blas_int* n, blas_int* nrhs,   void* dl,   void* d,   void* du,   void* b, blas_int* ldb, blas_int* info)
+      {
+      arma_fortran_noprefix(arma_cgtsv)(n, nrhs, dl, d, du, b, ldb, info);
+      }
+    
+    void arma_fortran_prefix(arma_zgtsv)(blas_int* n, blas_int* nrhs,   void* dl,   void* d,   void* du,   void* b, blas_int* ldb, blas_int* info)
+      {
+      arma_fortran_noprefix(arma_zgtsv)(n, nrhs, dl, d, du, b, ldb, info);
+      }
+    
+    
+    
+    
     void arma_fortran_prefix(arma_sgees)(char* jobvs, char* sort, void* select, blas_int* n, float*  a, blas_int* lda, blas_int* sdim, float*  wr, float*  wi, float*  vs, blas_int* ldvs, float*  work, blas_int* lwork, blas_int* bwork, blas_int* info)
       {
       arma_fortran_noprefix(arma_sgees)(jobvs, sort, select, n, a, lda, sdim, wr, wi, vs, ldvs, work, lwork, bwork, info);

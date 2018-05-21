@@ -133,6 +133,11 @@
   #define arma_cgbsvx cgbsvx
   #define arma_zgbsvx zgbsvx
   
+  #define arma_sgtsv  sgtsv
+  #define arma_dgtsv  dgtsv
+  #define arma_cgtsv  cgtsv
+  #define arma_zgtsv  zgtsv
+  
   #define arma_sgees  sgees
   #define arma_dgees  dgees
   #define arma_cgees  cgees
@@ -308,6 +313,11 @@
   #define arma_dgbsvx DGBSVX
   #define arma_cgbsvx CGBSVX
   #define arma_zgbsvx ZGBSVX
+  
+  #define arma_sgtsv  SGTSV
+  #define arma_dgtsv  DGTSV
+  #define arma_cgtsv  CGTSV
+  #define arma_zgtsv  ZGTSV
   
   #define arma_sgees  SGEES
   #define arma_dgees  DGEES
@@ -524,6 +534,12 @@ extern "C"
   // solve system of linear equations (general band matrix, advanced form, complex matrices)
   void arma_fortran(arma_cgbsvx)(char* fact, char* trans, blas_int* n, blas_int* kl, blas_int* ku, blas_int* nrhs, void* ab, blas_int* ldab, void* afb, blas_int* ldafb, blas_int* ipiv, char* equed,  float* r,  float* c, void* b, blas_int* ldb, void* x, blas_int* ldx,  float* rcond,  float* ferr,  float* berr, void* work,  float* rwork, blas_int* info);
   void arma_fortran(arma_zgbsvx)(char* fact, char* trans, blas_int* n, blas_int* kl, blas_int* ku, blas_int* nrhs, void* ab, blas_int* ldab, void* afb, blas_int* ldafb, blas_int* ipiv, char* equed, double* r, double* c, void* b, blas_int* ldb, void* x, blas_int* ldx, double* rcond, double* ferr, double* berr, void* work, double* rwork, blas_int* info);
+  
+  // solve system of linear equations (tri-diagonal band matrix)
+  void arma_fortran(arma_sgtsv)(blas_int* n, blas_int* nrhs,  float* dl,  float* d,  float* du,  float* b, blas_int* ldb, blas_int* info);
+  void arma_fortran(arma_dgtsv)(blas_int* n, blas_int* nrhs, double* dl, double* d, double* du, double* b, blas_int* ldb, blas_int* info);
+  void arma_fortran(arma_cgtsv)(blas_int* n, blas_int* nrhs,   void* dl,   void* d,   void* du,   void* b, blas_int* ldb, blas_int* info);
+  void arma_fortran(arma_zgtsv)(blas_int* n, blas_int* nrhs,   void* dl,   void* d,   void* du,   void* b, blas_int* ldb, blas_int* info);
   
   // Schur decomposition (real matrices)
   void arma_fortran(arma_sgees)(char* jobvs, char* sort, void* select, blas_int* n, float*  a, blas_int* lda, blas_int* sdim, float*  wr, float*  wi, float*  vs, blas_int* ldvs, float*  work, blas_int* lwork, blas_int* bwork, blas_int* info);

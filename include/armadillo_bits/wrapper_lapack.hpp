@@ -960,6 +960,52 @@ namespace lapack
   template<typename eT>
   inline
   void
+  gtsvx(char* fact, char* trans, blas_int* n, blas_int* nrhs, eT* dl, eT* d, eT* du, eT* dlf, eT* df, eT* duf, eT* du2, blas_int* ipiv, eT* b, blas_int* ldb, eT* x, blas_int* ldx, eT* rcond, eT* ferr, eT* berr, eT* work, blas_int* iwork, blas_int* info)
+    {
+    arma_type_check(( is_supported_blas_type<eT>::value == false ));
+    
+    if(is_float<eT>::value)
+      {
+      typedef float T;
+      arma_fortran(arma_sgtsvx)(fact, trans, n, nrhs, (T*)dl, (T*)d, (T*)du, (T*)dlf, (T*)df, (T*)duf, (T*)du2, ipiv, (T*)b, ldb, (T*)x, ldx, (T*)rcond, (T*)ferr, (T*)berr, (T*)work, iwork, info);
+      }
+    else
+    if(is_double<eT>::value)
+      {
+      typedef double T;
+      arma_fortran(arma_dgtsvx)(fact, trans, n, nrhs, (T*)dl, (T*)d, (T*)du, (T*)dlf, (T*)df, (T*)duf, (T*)du2, ipiv, (T*)b, ldb, (T*)x, ldx, (T*)rcond, (T*)ferr, (T*)berr, (T*)work, iwork, info);
+      }
+    }
+  
+  
+  
+  template<typename T, typename eT>
+  inline
+  void
+  cx_gtsvx(char* fact, char* trans, blas_int* n, blas_int* nrhs, eT* dl, eT* d, eT* du, eT* dlf, eT* df, eT* duf, eT* du2, blas_int* ipiv, eT* b, blas_int* ldb, eT* x, blas_int* ldx, T* rcond, T* ferr, T* berr, eT* work, T* rwork, blas_int* info)
+    {
+    arma_type_check(( is_supported_blas_type<eT>::value == false ));
+    
+    if(is_supported_complex_float<eT>::value)
+      {
+      typedef float               pod_T;
+      typedef std::complex<float>  cx_T;
+      arma_fortran(arma_cgtsvx)(fact, trans, n, nrhs, (cx_T*)dl, (cx_T*)d, (cx_T*)du, (cx_T*)dlf, (cx_T*)df, (cx_T*)duf, (cx_T*)du2, ipiv, (cx_T*)b, ldb, (cx_T*)x, ldx, (pod_T*)rcond, (pod_T*)ferr, (pod_T*)berr, (cx_T*)work, (pod_T*)rwork, info);
+      }
+    else
+    if(is_supported_complex_double<eT>::value)
+      {
+      typedef double               pod_T;
+      typedef std::complex<double>  cx_T;
+      arma_fortran(arma_zgtsvx)(fact, trans, n, nrhs, (cx_T*)dl, (cx_T*)d, (cx_T*)du, (cx_T*)dlf, (cx_T*)df, (cx_T*)duf, (cx_T*)du2, ipiv, (cx_T*)b, ldb, (cx_T*)x, ldx, (pod_T*)rcond, (pod_T*)ferr, (pod_T*)berr, (cx_T*)work, (pod_T*)rwork, info);
+      }
+    }
+  
+  
+  
+  template<typename eT>
+  inline
+  void
   gees(char* jobvs, char* sort, void* select, blas_int* n, eT* a, blas_int* lda, blas_int* sdim, eT* wr, eT* wi, eT* vs, blas_int* ldvs, eT* work, blas_int* lwork, blas_int* bwork, blas_int* info)
     {
     arma_type_check(( is_supported_blas_type<eT>::value == false ));

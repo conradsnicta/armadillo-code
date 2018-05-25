@@ -56,24 +56,59 @@ class gemm_mixed_large
       podarray<in_eT1> tmp(A_n_cols);
       in_eT1* A_rowdata = tmp.memptr();
       
-      for(uword row_A=0; row_A < A_n_rows; ++row_A)
+      const bool use_mp = arma_config::openmp && (B_n_cols > 1) && (B.n_elem >= 4096) && (mp_thread_limit::in_parallel() == false);
+      
+      if(use_mp)
         {
-        tmp.copy_row(A, row_A);
-        
-        for(uword col_B=0; col_B < B_n_cols; ++col_B)
+        #if defined(ARMA_USE_OPENMP)
           {
-          const in_eT2* B_coldata = B.colptr(col_B);
+          const int n_threads = int( (std::min)( uword(mp_thread_limit::get()), uword(B_n_cols) ) );
           
-          out_eT acc = out_eT(0);
-          for(uword i=0; i < B_n_rows; ++i)
+          for(uword row_A=0; row_A < A_n_rows; ++row_A)
             {
-            acc += upgrade_val<in_eT1,in_eT2>::apply(A_rowdata[i]) * upgrade_val<in_eT1,in_eT2>::apply(B_coldata[i]);
+            tmp.copy_row(A, row_A);
+            
+            #pragma omp parallel for schedule(static) num_threads(n_threads)
+            for(uword col_B=0; col_B < B_n_cols; ++col_B)
+              {
+              const in_eT2* B_coldata = B.colptr(col_B);
+              
+              out_eT acc = out_eT(0);
+              for(uword i=0; i < B_n_rows; ++i)
+                {
+                acc += upgrade_val<in_eT1,in_eT2>::apply(A_rowdata[i]) * upgrade_val<in_eT1,in_eT2>::apply(B_coldata[i]);
+                }
+              
+                   if( (use_alpha == false) && (use_beta == false) )  { C.at(row_A,col_B) =       acc;                          }
+              else if( (use_alpha == true ) && (use_beta == false) )  { C.at(row_A,col_B) = alpha*acc;                          }
+              else if( (use_alpha == false) && (use_beta == true ) )  { C.at(row_A,col_B) =       acc + beta*C.at(row_A,col_B); }
+              else if( (use_alpha == true ) && (use_beta == true ) )  { C.at(row_A,col_B) = alpha*acc + beta*C.at(row_A,col_B); }
+              }
             }
-        
-               if( (use_alpha == false) && (use_beta == false) )  { C.at(row_A,col_B) =       acc;                          }
-          else if( (use_alpha == true ) && (use_beta == false) )  { C.at(row_A,col_B) = alpha*acc;                          }
-          else if( (use_alpha == false) && (use_beta == true ) )  { C.at(row_A,col_B) =       acc + beta*C.at(row_A,col_B); }
-          else if( (use_alpha == true ) && (use_beta == true ) )  { C.at(row_A,col_B) = alpha*acc + beta*C.at(row_A,col_B); }
+          }
+        #endif
+        }
+      else
+        {
+        for(uword row_A=0; row_A < A_n_rows; ++row_A)
+          {
+          tmp.copy_row(A, row_A);
+            
+          for(uword col_B=0; col_B < B_n_cols; ++col_B)
+            {
+            const in_eT2* B_coldata = B.colptr(col_B);
+            
+            out_eT acc = out_eT(0);
+            for(uword i=0; i < B_n_rows; ++i)
+              {
+              acc += upgrade_val<in_eT1,in_eT2>::apply(A_rowdata[i]) * upgrade_val<in_eT1,in_eT2>::apply(B_coldata[i]);
+              }
+          
+                 if( (use_alpha == false) && (use_beta == false) )  { C.at(row_A,col_B) =       acc;                          }
+            else if( (use_alpha == true ) && (use_beta == false) )  { C.at(row_A,col_B) = alpha*acc;                          }
+            else if( (use_alpha == false) && (use_beta == true ) )  { C.at(row_A,col_B) =       acc + beta*C.at(row_A,col_B); }
+            else if( (use_alpha == true ) && (use_beta == true ) )  { C.at(row_A,col_B) = alpha*acc + beta*C.at(row_A,col_B); }
+            }
           }
         }
       }

@@ -24,7 +24,7 @@ struct strip_diagmat
   {
   typedef T1 stored_type;
   
-  arma_hot inline
+  inline
   strip_diagmat(const T1& X)
     : M(X)
     {
@@ -43,7 +43,7 @@ struct strip_diagmat< Op<T1, op_diagmat> >
   {
   typedef T1 stored_type;
   
-  arma_hot inline
+  inline
   strip_diagmat(const Op<T1, op_diagmat>& X)
     : M(X.m)
     {
@@ -62,7 +62,7 @@ struct strip_inv
   {
   typedef T1 stored_type;
   
-  arma_hot inline
+  inline
   strip_inv(const T1& X)
     : M(X)
     {
@@ -81,7 +81,7 @@ struct strip_inv< Op<T1, op_inv> >
   {
   typedef T1 stored_type;
   
-  arma_hot inline
+  inline
   strip_inv(const Op<T1, op_inv>& X)
     : M(X.m)
     {
@@ -100,7 +100,7 @@ struct strip_inv< Op<T1, op_inv_sympd> >
   {
   typedef T1 stored_type;
   
-  arma_hot inline
+  inline
   strip_inv(const Op<T1, op_inv_sympd>& X)
     : M(X.m)
     {

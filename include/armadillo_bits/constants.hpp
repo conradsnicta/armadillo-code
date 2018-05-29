@@ -229,7 +229,6 @@ namespace priv
   template<typename eT>
   static
   arma_inline
-  arma_hot
   typename arma_real_only<eT>::result
   most_neg(typename arma_real_only<eT>::result* junk = 0)
     {
@@ -249,7 +248,6 @@ namespace priv
   template<typename eT>
   static
   arma_inline
-  arma_hot
   typename arma_integral_only<eT>::result
   most_neg(typename arma_integral_only<eT>::result* junk = 0)
     {
@@ -262,7 +260,6 @@ namespace priv
   template<typename eT>
   static
   arma_inline
-  arma_hot
   typename arma_real_only<eT>::result
   most_pos(typename arma_real_only<eT>::result* junk = 0)
     {
@@ -282,7 +279,6 @@ namespace priv
   template<typename eT>
   static
   arma_inline
-  arma_hot
   typename arma_integral_only<eT>::result
   most_pos(typename arma_integral_only<eT>::result* junk = 0)
     {

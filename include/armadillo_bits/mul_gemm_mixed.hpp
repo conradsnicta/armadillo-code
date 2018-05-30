@@ -56,7 +56,11 @@ class gemm_mixed_large
       podarray<in_eT1> tmp(A_n_cols);
       in_eT1* A_rowdata = tmp.memptr();
       
-      const bool use_mp = arma_config::openmp && (B_n_cols >= 2) && (B.n_elem >= 4096) && (mp_thread_limit::in_parallel() == false);
+      #if defined(ARMA_USE_OPENMP)
+      const bool use_mp = (B_n_cols >= 2) && (B.n_elem >= 16384) && (mp_thread_limit::in_parallel() == false);
+      #else
+      const bool use_mp = false;
+      #endif
       
       if(use_mp)
         {
@@ -115,7 +119,11 @@ class gemm_mixed_large
     else
     if( (do_trans_A == true) && (do_trans_B == false) )
       {
-      const bool use_mp = arma_config::openmp && (B_n_cols >= 2) && (B.n_elem >= 4096) && (mp_thread_limit::in_parallel() == false);
+      #if defined(ARMA_USE_OPENMP)
+      const bool use_mp = (B_n_cols >= 2) && (B.n_elem >= 16384) && (mp_thread_limit::in_parallel() == false);
+      #else
+      const bool use_mp = false;
+      #endif
       
       if(use_mp)
         {

@@ -933,7 +933,7 @@ Cube<eT>::slices(const uword in_slice1, const uword in_slice2) const
   arma_debug_check
     (
     (in_slice1 > in_slice2) || (in_slice2 >= n_slices),
-    "Cube::rows(): indices out of bounds or incorrectly used"
+    "Cube::slices(): indices out of bounds or incorrectly used"
     );
   
   const uword subcube_n_slices = in_slice2 - in_slice1 + 1;

@@ -101,10 +101,22 @@ class Cube : public BaseCube< eT, Cube<eT> >
   inline Cube& operator-=(const subview_cube<eT>& X);
   inline Cube& operator%=(const subview_cube<eT>& X);
   inline Cube& operator/=(const subview_cube<eT>& X);
+
+  arma_inline       subview_cube<eT> row(const uword in_row);
+  arma_inline const subview_cube<eT> row(const uword in_row) const;
+  
+  arma_inline       subview_cube<eT> col(const uword in_col);
+  arma_inline const subview_cube<eT> col(const uword in_col) const;
   
   inline       Mat<eT>& slice(const uword in_slice);
   inline const Mat<eT>& slice(const uword in_slice) const;
+
+  arma_inline       subview_cube<eT> rows(const uword in_row1, const uword in_row2);
+  arma_inline const subview_cube<eT> rows(const uword in_row1, const uword in_row2) const;
   
+  arma_inline       subview_cube<eT> cols(const uword in_col1, const uword in_col2);
+  arma_inline const subview_cube<eT> cols(const uword in_col1, const uword in_col2) const;
+
   arma_inline       subview_cube<eT> slices(const uword in_slice1, const uword in_slice2);
   arma_inline const subview_cube<eT> slices(const uword in_slice1, const uword in_slice2) const;
   
@@ -162,9 +174,13 @@ class Cube : public BaseCube< eT, Cube<eT> >
   inline const Cube& each_slice(const std::function< void(const Mat<eT>&) >& F, const bool use_mp) const;
   #endif
   
-  
+
+  inline void shed_row(const uword row_num);
+  inline void shed_col(const uword col_num);
   inline void shed_slice(const uword slice_num);
   
+  inline void shed_rows(const uword in_row1, const uword in_row2);
+  inline void shed_cols(const uword in_col1, const uword in_col2);
   inline void shed_slices(const uword in_slice1, const uword in_slice2);
   
   inline void insert_slices(const uword slice_num, const uword N, const bool set_to_zero = true);

@@ -33,16 +33,17 @@ Contents
  8: Windows: Compiling & Linking
 
  9: Support for OpenBLAS and Intel MKL
-10: Support for ATLAS
-11: Support for C++11 / C++14 Features
-12: Support for OpenMP
+10: Support for Accelerate
+11: Support for ATLAS
+12: Support for C++11 / C++14 Features
+13: Support for OpenMP
 
-13: API Documentation
-14: API Stability and Versioning
-15: Bug Reports and Frequently Asked Questions
+14: API Documentation
+15: API Stability and Versioning
+16: Bug Reports and Frequently Asked Questions
 
-16: MEX Interface to Octave/Matlab
-17: Related Software
+17: MEX Interface to Octave/Matlab
+18: Related Software
 
 
 
@@ -355,7 +356,15 @@ the CMake based installation. Comment out the lines containing:
 
 
 
-10: Support for ATLAS
+10: Support for Accelerate
+=========================
+
+Armadillo can use Accelerate on OS X and iOS. In order to avoid warning
+about private apis, ARMA_BLAS_CBLAS=1 and  ARMA_BLAS_NO_UNDERSCORE=1 must
+be set. If using cmake, these will be set automatically for you.
+
+
+11: Support for ATLAS
 =====================
 
 Armadillo can use the ATLAS library for faster versions of a subset
@@ -368,7 +377,7 @@ results and/or corrupt memory, leading to random crashes.
 
 
 
-11: Support for C++11 / C++14 Features
+12: Support for C++11 / C++14 Features
 ======================================
 
 Armadillo works with compilers supporting the older C++98 and C++03 standards,
@@ -388,7 +397,7 @@ which creates lots of short lived temporaries that are not handled by auto.
 
 
 
-12: Support for OpenMP
+13: Support for OpenMP
 ======================
 
 Armadillo can use OpenMP to automatically speed up computationally
@@ -403,7 +412,7 @@ may lead to speed regressions on recent processors.
 
 
 
-13: API Documentation
+14: API Documentation
 =====================
 
 Documentation of functions, classes and options is available at:
@@ -415,7 +424,7 @@ which can be viewed with a web browser.
 
 
 
-14: API Stability and Versioning
+15: API Stability and Versioning
 ================================
 
 Each release of Armadillo has its public API (functions, classes, constants)
@@ -451,7 +460,7 @@ implementation details, and may change or be removed without notice.
 
 
 
-15: Bug Reports and Frequently Asked Questions
+16: Bug Reports and Frequently Asked Questions
 ==============================================
 
 Armadillo has gone through extensive testing and has been successfully
@@ -474,7 +483,7 @@ Further information about Armadillo is on the frequently asked questions page:
 
 
 
-16: MEX Interface to Octave/Matlab
+17: MEX Interface to Octave/Matlab
 ==================================
 
 The "mex_interface" folder contains examples of how to interface
@@ -482,7 +491,7 @@ Octave/Matlab with C++ code that uses Armadillo matrices.
 
 
 
-17: Related Software
+18: Related Software
 ====================
 
 * MLPACK: C++ library for machine learning and pattern recognition, built on top of Armadillo.

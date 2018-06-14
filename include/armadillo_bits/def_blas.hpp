@@ -22,7 +22,33 @@
   #pragma message ("WARNING: include the armadillo header before any other header as a workaround")
 #endif
 
-#if !defined(ARMA_BLAS_CAPITALS)
+#if defined(ARMA_BLAS_CBLAS)
+  #define arma_sasum cblas_sasum
+  #define arma_dasum cblas_dasum
+
+  #define arma_snrm2 cblas_snrm2
+  #define arma_dnrm2 cblas_dnrm2
+
+  #define arma_sdot  cblas_sdot
+  #define arma_ddot  cblas_ddot
+
+  #define arma_sgemv cblas_sgemv
+  #define arma_dgemv cblas_dgemv
+  #define arma_cgemv cblas_cgemv
+  #define arma_zgemv cblas_zgemv
+
+  #define arma_sgemm cblas_sgemm
+  #define arma_dgemm cblas_dgemm
+  #define arma_cgemm cblas_cgemm
+  #define arma_zgemm cblas_zgemm
+
+  #define arma_ssyrk cblas_ssyrk
+  #define arma_dsyrk cblas_dsyrk
+
+  #define arma_cherk cblas_cherk
+  #define arma_zherk cblas_zherk
+
+#elif !defined(ARMA_BLAS_CAPITALS)
   
   #define arma_sasum sasum
   #define arma_dasum dasum

@@ -14,7 +14,7 @@
 [**arma.sourceforge.net/docs.html**](http://arma.sourceforge.net/docs.html)
 
 * **Related Projects:**
-  - [ensmallen](https://ensmallen.org) - fast non-linear numerical optimisation library
+  - [Bandicoot](https://coot.sourceforge.io) - C++ library for accelerated linear algebra on GPUs with Armadillo API
+  - [ensmallen](https://ensmallen.org) - fast library for non-linear numerical optimisation
   - [mlpack](https://mlpack.org) - extensive library of machine learning algorithms
-  - [PyArmadillo](https://pyarma.sourceforge.io) - linear algebra library for Python with Matlab-like syntax <!--([repo](https://gitlab.com/jason-rumengan/pyarma/))-->
   - [CARMA](https://github.com/RUrlus/carma) - bidirectional interface between Python and Armadillo

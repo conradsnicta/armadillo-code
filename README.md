@@ -13,6 +13,9 @@
 * **Documentation & Examples:**  
 [**arma.sourceforge.net/docs.html**](http://arma.sourceforge.net/docs.html)
 
+* **Conversion Table Between Matlab and Armadillo Syntax**  
+[**https://arma.sourceforge.net/docs.html#syntax**](https://arma.sourceforge.net/docs.html#syntax)
+
 * **Related Projects:**
   - [ensmallen](https://ensmallen.org) - C++ library for non-linear numerical optimisation
   - [Bandicoot](https://coot.sourceforge.io) - C++ library for accelerated linear algebra on GPUs

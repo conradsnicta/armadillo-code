@@ -13,7 +13,7 @@
 * **Documentation & Examples:**  
 [**arma.sourceforge.net/docs.html**](http://arma.sourceforge.net/docs.html)
 
-* **Conversion Table Between Matlab and Armadillo Syntax**  
+* **Conversion Table Between Matlab and Armadillo Syntax:**  
 [**https://arma.sourceforge.net/docs.html#syntax**](https://arma.sourceforge.net/docs.html#syntax)
 
 * **Related Projects:**

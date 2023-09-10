@@ -5,13 +5,13 @@
 `git clone https://gitlab.com/conradsnicta/armadillo-code.git`  
 
 * **Releases:**  
-[**arma.sourceforge.net/download.html**](http://arma.sourceforge.net/download.html)
+[**arma.sourceforge.net/download.html**](https://arma.sourceforge.net/download.html)
 
 * **Bug Reports & Questions:**  
-[**arma.sourceforge.net/faq.html**](http://arma.sourceforge.net/faq.html)
+[**arma.sourceforge.net/faq.html**](https://arma.sourceforge.net/faq.html)
 
 * **Documentation & Examples:**  
-[**arma.sourceforge.net/docs.html**](http://arma.sourceforge.net/docs.html)
+[**arma.sourceforge.net/docs.html**](https://arma.sourceforge.net/docs.html)
 
 * **Conversion Table Between Matlab and Armadillo Syntax:**  
 [**arma.sourceforge.net/docs.html#syntax**](https://arma.sourceforge.net/docs.html#syntax)

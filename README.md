@@ -1,4 +1,4 @@
-**Armadillo: C++ library for linear algebra & scientific computing**
+**Armadillo: a user-friendly C++ library for linear algebra & scientific computing**
 
 * **Git repo moved to GitLab:**  
 [**gitlab.com/conradsnicta/armadillo-code**](http://gitlab.com/conradsnicta/armadillo-code)  

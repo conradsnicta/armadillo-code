@@ -1,8 +1,8 @@
 **Armadillo: a user-friendly C++ library for linear algebra & scientific computing**
 
-* **Git repo:**  [gitlab.com/armadillo-lib/armadillo-code](https://gitlab.com/armadillo-lib/armadillo-code)  
+* **Releases:**  [arma.sourceforge.net/download.html](https://arma.sourceforge.net/download.html)  
 
-* **Releases:**  [arma.sourceforge.net/download.html](https://arma.sourceforge.net/download.html)
+* **Git repo:**  [gitlab.com/armadillo-lib/armadillo-code](https://gitlab.com/armadillo-lib/armadillo-code)
 
 * **Bug Reports & Questions:**  [arma.sourceforge.net/faq.html](https://arma.sourceforge.net/faq.html)
 
